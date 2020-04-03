@@ -78,7 +78,7 @@ export default (props: StudentProps) => {
             <div className=" w-32 h-32 lg:w-1/2 xl:w-1/2 md:w-2/5 flex justify-around items-center content-around flex-wrap p-2 xl:mt-3">
                 <button
                     onClick={() => setBehaviour(behaviour + 1)}
-                    className="flex p-2 bg-blue-500 hover:opacity-50 hover:opacity-50 text-white rounded-full w-12 h-12 xl:w-32 xl:h-32 lg:h-24 lg:w-24 md:h-20 md:w-20"
+                    className="bg-red-600 hover:opacity-50 flex p-2 text-white rounded-full w-12 h-12 xl:w-32 xl:h-32 lg:h-24 lg:w-24 md:h-20 md:w-20"
                 >
                     <img
                         className="md:w-16 md:h-16 md:p-1 lg:w-16 lg:h-16 lg:mx-2 xl:w-20 xl:h-20 xl:mx-4"
@@ -88,7 +88,7 @@ export default (props: StudentProps) => {
                 </button>
                 <button
                     onClick={() => setHomework(homework + 1)}
-                    className="bg-yellow-500 hover:opacity-50 p-2 text-white rounded-full w-12 h-12 xl:w-32 xl:h-32 lg:h-24 lg:w-24 md:h-20 md:w-20"
+                    className="bg-blue-600 hover:opacity-50 p-2 text-white rounded-full w-12 h-12 xl:w-32 xl:h-32 lg:h-24 lg:w-24 md:h-20 md:w-20"
                 >
                     <img
                         className="md:w-16 md:h-16 md:p-1 lg:w-16 lg:h-16 lg:mx-2 xl:w-20 xl:h-20 xl:mx-4"
@@ -98,7 +98,7 @@ export default (props: StudentProps) => {
                 </button>
                 <button
                     onClick={() => setSupply(supply + 1)}
-                    className="bg-green-500 hover:opacity-50 p-2 text-white rounded-full w-12 h-12 xl:w-32 xl:h-32 lg:h-24 lg:w-24 md:h-20 md:w-20"
+                    className="bg-green-600 hover:opacity-50 p-2 text-white rounded-full w-12 h-12 xl:w-32 xl:h-32 lg:h-24 lg:w-24 md:h-20 md:w-20"
                 >
                     {' '}
                     <img
@@ -109,7 +109,7 @@ export default (props: StudentProps) => {
                 </button>
                 <button
                     onClick={() => setObservation(observation + 1)}
-                    className="bg-red-500 hover:opacity-50 p-2 text-white rounded-full w-12 h-12 xl:w-32 xl:h-32 lg:h-24 lg:w-24 md:h-20 md:w-20"
+                    className="bg-orange-500 hover:opacity-50 p-2 text-white rounded-full w-12 h-12 xl:w-32 xl:h-32 lg:h-24 lg:w-24 md:h-20 md:w-20"
                 >
                     <img
                         className="md:w-16 md:h-16 md:p-1 lg:w-16 lg:h-16 lg:mx-2 xl:w-20 xl:h-20 xl:mx-4"
