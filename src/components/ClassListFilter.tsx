@@ -12,7 +12,7 @@ export default ({ groups, onFilter }: ClassListFilterProps) => {
                 return (
                     <button
                         onClick={() => onFilter(group)}
-                        className={`hover:bg-gray-800 h-8 mx-2 bg-white border-black-900 my-2 w-16 text-center rounded-lg`}
+                        className={`font-studentName hover:bg-gray-500 h-8 mx-2 bg-white border-black-900 my-2 w-16 text-center rounded-lg`}
                         key={index}
                     >
                         {group}

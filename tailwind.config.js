@@ -2,10 +2,13 @@ module.exports = {
     theme: {
       extend: {
         fontFamily:{
-          studentName:["Patrick Hand","sans-serif"]
+          studentName:["Open Sans","sans-serif"]
         }
       }
     },
-    variants: {},
+    variants: {
+      backgroundColor:['responsive','hover', 'focus', 'active']
+
+    },
     plugins: [],
   }

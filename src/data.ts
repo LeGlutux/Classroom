@@ -7,7 +7,7 @@ export default [
     },
     {
         name: 'Max',
-        surname: 'Hollywood',
+        surname: 'Gartig',
         classe: '5ème5',
 
         avatar: 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/15/15b5366ebd28731d2b87f0a7c12f144467fc633c_full.jpg'
