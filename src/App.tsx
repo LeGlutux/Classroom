@@ -1,41 +1,23 @@
 import React, { useState, ChangeEvent } from 'react'
-import Student from './components/Student'
-import data from './data'
-import ClassListFilter from './components/ClassListFilter'
+import FrontPage from './components/FrontPage'
+import SettingsPage from './components/SettingsPage'
+import nut from './images/nut.png'
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 
 export default () => {
-    //    const groups = ['5ème3', '5ème5', '3ème3', '3ème5']
-    const [students, setStudents] = useState(data)
-    const handleFilter = (group: string) =>
-        setStudents(data.filter((student) => student.classe === group))
+    const [flag, setFlag] = useState(true)
 
     return (
-        <div className="flex w-full h-screen flex-col p-2">
-            <div className="w-full h-12 bg-gray-400 flex flex-row justify-between">
-                <div className="ml-3 my-2 font-bold text-xl flex justify-around">
-                    Groupes{' '}
-                    <div className="mt-2 ml-10 bg-purple-500 md:bg-red-400 lg:bg-purple-800 xl:bg-black h-4 w-4">
-                        {' '}
-                    </div>
-                </div>
-                <ClassListFilter
-                    onFilter={(group) => handleFilter(group)}
-                    groups={Array.from(
-                        new Set(data.flatMap((student) => student.classe))
-                    )}
-                />
+        <div className="flex w-full h-screen flex-col">
+            <div className="w-full">
+                <button
+                    className="mt-3 hover:opacity-50"
+                    onClick={() => setFlag(!flag)}
+                >
+                    <img className="h-12 w-12" src={nut} alt="" />
+                </button>
             </div>
-            {students.map(({ name, surname, avatar, classe }, index) => {
-                return (
-                    <Student
-                        key={index}
-                        classe={classe}
-                        name={name}
-                        avatar={avatar}
-                        surname={surname}
-                    />
-                )
-            })}
+            {flag ? <FrontPage /> : <SettingsPage />}
         </div>
     )
 }
