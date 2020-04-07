@@ -137,22 +137,21 @@ export default (props: StudentProps) => {
             </div>
             {/* Dépliage de carte */}
             <div
-                onMouseOut={() => setVisible(false)}
-                className={`flex flex-row justify-between w-full ${
+                className={`flex flex-row justify-between w-full flex-wrap ${
                     visible ? 'mt-4' : 'invisible h-0'
                 } `}
             >
                 <div className="flex flex-col">
                     <div className="flex flex-row">
                         <button
-                            className="mx-2 w-12 h-12 flex self-center"
+                            className="mx-1 w-12 h-12 flex self-center"
                             onClick={() => setBehaviour(behaviour - 1)}
                         >
                             <img src={moins} alt="" />
                         </button>
-                        <img className="w-20 h-20" src={alarm} alt="" />
+                        <img className="w-12 h-12" src={alarm} alt="" />
                         <button
-                            className="mx-2 w-12 h-12 flex self-center"
+                            className="mx-1 w-12 h-12 flex self-center"
                             onClick={() => setBehaviour(behaviour + 1)}
                         >
                             <img src={plus} alt="" />
@@ -163,14 +162,14 @@ export default (props: StudentProps) => {
                 <div className="flex flex-col">
                     <div className="flex flex-row">
                         <button
-                            className="mx-2 w-12 h-12 flex self-center"
+                            className="mx-1 w-12 h-12 flex self-center"
                             onClick={() => setHomework(homework - 1)}
                         >
                             <img src={moins} alt="" />
                         </button>
-                        <img className="w-20 h-20" src={bookPile} alt="" />
+                        <img className="w-12 h-12" src={bookPile} alt="" />
                         <button
-                            className="mx-2 w-12 h-12 flex self-center"
+                            className="mx-1 w-12 h-12 flex self-center"
                             onClick={() => setHomework(homework + 1)}
                         >
                             <img src={plus} alt="" />
@@ -181,14 +180,14 @@ export default (props: StudentProps) => {
                 <div className="flex flex-col">
                     <div className="flex flex-row">
                         <button
-                            className="mx-2 w-12 h-12 flex self-center"
+                            className="mx-1 w-12 h-12 flex self-center"
                             onClick={() => setSupply(supply - 1)}
                         >
                             <img src={moins} alt="" />{' '}
                         </button>
-                        <img className="w-20 h-20" src={schoolBag} alt="" />
+                        <img className="w-12 h-12" src={schoolBag} alt="" />
                         <button
-                            className="mx-2 w-12 h-12 flex self-center"
+                            className="mx-1 w-12 h-12 flex self-center"
                             onClick={() => setSupply(supply + 1)}
                         >
                             <img src={plus} alt="" />
@@ -199,14 +198,14 @@ export default (props: StudentProps) => {
                 <div className="flex flex-col">
                     <div className="flex flex-row">
                         <button
-                            className="mx-2 w-12 h-12 flex self-center"
+                            className="mx-1 w-12 h-12 flex self-center"
                             onClick={() => setObservation(observation - 1)}
                         >
                             <img src={moins} alt="" />
                         </button>
-                        <img className="w-20 h-20" src={pen} alt="" />
+                        <img className="w-12 h-12" src={pen} alt="" />
                         <button
-                            className="mx-2 w-12 h-12 flex self-center"
+                            className="mx-1 w-12 h-12 flex self-center"
                             onClick={() => setObservation(observation + 1)}
                         >
                             <img src={plus} alt="" />

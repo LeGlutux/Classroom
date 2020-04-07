@@ -6,6 +6,14 @@ interface ClassListFilterProps {
 }
 
 export default ({ groups, onFilter }: ClassListFilterProps) => {
+    const click = (
+        group: string,
+        setVisible: React.Dispatch<React.SetStateAction<boolean>>
+    ) => {
+        onFilter(group)
+        setVisible(false)
+    }
+
     return (
         <div className="flex overflow-auto ml-2">
             {groups.map((group, index) => {
