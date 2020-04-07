@@ -2,11 +2,7 @@ import React, { useState, ChangeEvent } from 'react'
 import add from '../../images/add.png'
 import group from '../../images/group.png'
 
-interface CreateGroupsProps {
-    groups: {}[]
-}
-
-export default (props: CreateGroupsProps) => {
+export default () => {
     const [groups, setGroups] = useState([{ name: 'Tous' }])
     const [inputValue, setInputValue] = useState('')
 

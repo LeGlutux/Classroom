@@ -5,7 +5,7 @@ import CreateStudent from './Create/CreateStudent'
 export default () => {
     return (
         <div className="w-full h-screen flex flex-col flex items-center bg-gray-400">
-            <CreateGroups groups={[{ name: 'Tous' }]} />
+            <CreateGroups />
             <CreateStudent />
         </div>
     )

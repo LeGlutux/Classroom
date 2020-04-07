@@ -1,12 +1,10 @@
 import React, { useState, ChangeEvent } from 'react'
 import add from '../../images/add.png'
-import group from '../../images/group.png'
 import solo from '../../images/solo.png'
 import NewStudentGroups from '../NewStudentGroups'
-import data from '../../data'
 
 export default () => {
-    const [groups, setGroups] = useState([{ name: 'Tous' }])
+    const [groups, setGroups] = useState([{ name: 'Tous', isActive: false }])
     const [nameInputValue, setNameInputValue] = useState('')
     const [surnameInputValue, setSurnameInputValue] = useState('')
     const [studentGroups, setStudentGroups] = useState([])
@@ -65,8 +63,14 @@ export default () => {
             </div>
             <div className="w-11/12 flex flex-row align-middle justify-around content-center border-gray-800 rounded-b-lg pb-2 bg-white">
                 <div className="w-full flex flex-wrap flex-row justify-center mr-2">
-                    {groups.map(({ name }, index) => {
-                        return <NewStudentGroups key={index} name={name} />
+                    {groups.map(({ name, isActive }, index) => {
+                        return (
+                            <NewStudentGroups
+                                key={index}
+                                name={name}
+                                isActive={isActive}
+                            />
+                        )
                     })}
                 </div>
             </div>
