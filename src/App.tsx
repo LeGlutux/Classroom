@@ -17,7 +17,31 @@ export default () => {
                     <img className="h-12 w-12" src={nut} alt="" />
                 </button>
             </div>
-            {flag ? <FrontPage /> : <SettingsPage />}
+            <div>
+                <Router>
+                    <li>
+                        <Link to="/">
+                            >
+                            <img src={nut} alt="" />
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="/">
+                            {' '}
+                            to="/create">
+                            <img src={nut} alt="" />
+                        </Link>
+                    </li>
+                </Router>
+                <Switch>
+                    <Route path="/">
+                        <FrontPage />
+                    </Route>
+                    <Route path="/create">
+                        <SettingsPage />
+                    </Route>
+                </Switch>
+            </div>
         </div>
     )
 }
