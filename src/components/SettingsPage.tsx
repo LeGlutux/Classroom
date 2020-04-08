@@ -4,9 +4,11 @@ import CreateStudent from './Create/CreateStudent'
 
 export default () => {
     return (
-        <div className="w-full h-screen flex flex-col flex items-center bg-gray-400">
-            <CreateGroups />
-            <CreateStudent />
+        <div className="w-full h-screen flex flex-col flex items-center px-2">
+            <div className="h-full w-full p-2 bg-gray-400">
+                <CreateGroups />
+                <CreateStudent />
+            </div>
         </div>
     )
 }
