@@ -3,30 +3,49 @@ import add from '../images/add.png'
 import femaleUser from '../images/femaleUser.png'
 import lock from '../images/lock.png'
 import { ImageBackground, StyleSheet, Text, View } from 'react-native'
+import classroom from '../images/classroom.png'
 
-export default () => {
-    const [groups, setGroups] = useState([{ name: 'Tous', isActive: false }])
-    const [nameInputValue, setNameInputValue] = useState('')
-    const [surnameInputValue, setSurnameInputValue] = useState('')
-    const [studentGroups, setStudentGroups] = useState([])
+interface LoginPageProps {
+    onLog: () => void
+}
+
+export default ({ onLog }: LoginPageProps) => {
+    const [logInputValue, setLogInputValue] = useState('')
+    const [passwordInputValue, setPasswordInputValue] = useState('')
+    const [logging, setLogging] = useState(true)
+    const [errorMessage, setErrorMessage] = useState('')
+
     return (
-        <div className="w-full h-screen flex flex-col flex items-center px-2">
-            <div className="w-full h-screen bg-blue-200 flex flex justify-center p-2">
-                {' '}
+        <div
+            className={`w-full flex flex-col lg:flex-row xl:flex-row flex items-center ${
+                !logging ? 'invisible h-0' : 'h-screen'
+            }`}
+        >
+            {' '}
+            <div className="w-full h-screen bg-blue-200 flex flex justify-center">
                 <div className="w-11/12 flex flex-row align-middle justify-between content-center rounded-lg h-64 bg-white mt-16">
                     <form
                         className="flex flex-col w-full"
                         onSubmit={(e) => {
                             if (
-                                nameInputValue !== '' &&
-                                surnameInputValue !== '' &&
-                                studentGroups !== []
+                                logInputValue !== '' &&
+                                passwordInputValue !== ''
                             ) {
-                                setNameInputValue('')
-                                setSurnameInputValue('')
+                                setLogInputValue('')
+                                setPasswordInputValue('')
+                                onLog()
+                                setLogging(false)
+                                e.preventDefault()
+                                e.stopPropagation()
+                            } else {
+                                setLogInputValue('')
+                                setPasswordInputValue('')
+                                setErrorMessage(
+                                    'Indentifiant ou Mot de Passe incorect'
+                                )
+                                e.preventDefault()
+                                e.stopPropagation()
                             }
-                            e.preventDefault()
-                            e.stopPropagation()
                         }}
                         action=""
                     >
@@ -38,13 +57,13 @@ export default () => {
                                     alt=""
                                 />
                                 <input
-                                    value={nameInputValue}
+                                    value={logInputValue}
                                     onChange={(e) =>
-                                        setNameInputValue(e.target.value)
+                                        setLogInputValue(e.target.value)
                                     }
-                                    className="h-10 mt-3 w-full placeholder-gray-700"
+                                    className="h-10 mt-3 w-full placeholder-gray-700 ml-5"
                                     type="text"
-                                    placeholder="   Identifiant"
+                                    placeholder="Identifiant"
                                 />
                             </div>
                             <div className="w-8/12 border-b-2 border-gray-400 flex flex-row items-center">
@@ -54,25 +73,33 @@ export default () => {
                                     alt=""
                                 />
                                 <input
-                                    value={surnameInputValue}
+                                    value={passwordInputValue}
                                     onChange={(e) =>
-                                        setSurnameInputValue(e.target.value)
+                                        setPasswordInputValue(e.target.value)
                                     }
-                                    className="h-10 mt-3 w-full placeholder-gray-700"
+                                    className="h-10 mt-3 w-full placeholder-gray-700 ml-5"
                                     type="text"
-                                    placeholder="   Mot de Passe"
+                                    placeholder="Mot de Passe"
                                 />
                             </div>
                             <input
-                                type="button"
+                                type="submit"
                                 className="flex h-10 w-48 self-center mt-5 bg-green-600 rounded text-white flex text-xl font-bold justify-center"
                                 src={add}
                                 value="Se Connecter"
                             />
                         </div>
+                        <div className="h-8 flex text-center w-full justify-center text-red-600">
+                            {errorMessage}
+                        </div>
                     </form>
                 </div>
             </div>
+            <img
+                className="bg-blue-200 lg:w-1/2 lg:h-1/2"
+                src={classroom}
+                alt=""
+            />
         </div>
     )
 }
