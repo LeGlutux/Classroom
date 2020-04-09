@@ -8,6 +8,7 @@ import LoginPage from './components/LoginPage'
 import login from './images/login.png'
 import SignIn from './components/SignIn'
 import CreateGroups from './components/Create/CreateGroups'
+import { Settings } from 'react-native'
 
 export default () => {
     const [logging, setLogging] = useState(true)
@@ -15,14 +16,14 @@ export default () => {
         <div>
             <div>
                 <LoginPage onLog={() => setLogging(false)} signin={''} />
-                <Router>
+                {/* <Router>
                     <Switch>
                         {' '}
                         <Route path="/signin">
                             <SignIn />
                         </Route>
                     </Switch>
-                </Router>
+                </Router> */}
             </div>
 
             <div
@@ -34,7 +35,7 @@ export default () => {
                     <Router>
                         <div className="flex flex-row mx-4">
                             <div className="flex flex-row w-1/2">
-                                <Link to="/home">
+                                <Link to="/">
                                     <img
                                         className="w-16 h-16 mt-1"
                                         src={home}
@@ -63,11 +64,11 @@ export default () => {
                         </div>
 
                         <Switch>
-                            <Route path="/home">
-                                <FrontPage />
-                            </Route>
                             <Route path="/create">
                                 <SettingsPage />
+                            </Route>
+                            <Route path="/">
+                                <FrontPage />
                             </Route>
                         </Switch>
                     </Router>
