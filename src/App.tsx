@@ -6,13 +6,23 @@ import home from './images/home.png'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import LoginPage from './components/LoginPage'
 import login from './images/login.png'
+import SignIn from './components/SignIn'
+import CreateGroups from './components/Create/CreateGroups'
 
 export default () => {
     const [logging, setLogging] = useState(true)
     return (
         <div>
             <div>
-                <LoginPage onLog={() => setLogging(false)} />
+                <LoginPage onLog={() => setLogging(false)} signin={''} />
+                <Router>
+                    <Switch>
+                        {' '}
+                        <Route path="/signin">
+                            <SignIn />
+                        </Route>
+                    </Switch>
+                </Router>
             </div>
 
             <div
