@@ -11,7 +11,7 @@ export default () => {
 
     return (
         <div className="w-full flex flex-col items-center">
-            <div className="w-8/12 bg-purple-800 h-8 rounded-t-full mt-6 font-studentName text-white text-center pt-1">
+            <div className="w-6/12 bg-purple-800 h-8 rounded-t-full mt-6 font-studentName text-white text-center pt-1">
                 ÉLÈVES
             </div>
             <div className="w-11/12 flex flex-row align-middle justify-between content-center rounded-t-lg h-32 bg-white">

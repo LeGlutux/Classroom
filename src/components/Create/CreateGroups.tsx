@@ -8,10 +8,10 @@ export default () => {
 
     return (
         <div className="w-full flex flex-col items-center">
-            <div className="w-8/12 bg-purple-800 h-8 rounded-t-full mt-6 font-studentName text-white text-center pt-1">
+            <div className="w-6/12 bg-purple-800 h-8 rounded-t-full mt-6 font-studentName text-white text-center pt-1">
                 GROUPES
             </div>
-            <div className="w-11/12 flex flex-row align-middle justify-between content-center border-gray-800 rounded-lg h-32 bg-white">
+            <div className="w-11/12 flex flex-row align-middle justify-between content-center rounded-lg h-32 bg-white">
                 <img
                     className="h-20 w-20 flex self-center ml-2"
                     src={group}

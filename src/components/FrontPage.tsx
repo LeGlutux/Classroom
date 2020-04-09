@@ -10,7 +10,7 @@ export default () => {
         setStudents(data.filter((student) => student.classe === group))
 
     return (
-        <div className="flex w-full h-screen flex-col p-2">
+        <div className="flex w-full h-screen flex-col px-2">
             <div className="w-full h-12 bg-gray-400 flex flex-row justify-between">
                 <div className="ml-3 my-2 font-bold text-xl flex justify-around">
                     Groupes{' '}
