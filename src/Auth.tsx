@@ -1,17 +1,25 @@
 import React, { useEffect, useState } from 'react'
-import Firebase, { app } from 'firebase'
+import Firebase from 'firebase'
 
-export const AuthContext = React.createContext()
+interface AuthContextType {
+    currentUser: null | Firebase.User
+}
+
+export const AuthContext = React.createContext<AuthContextType>({
+    currentUser: null,
+})
 
 interface AuthProviderProps {
     children: any
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-    const [currentUser, setCurrentUser] = useState(null)
+    const [currentUser, setCurrentUser] = useState<Firebase.User | null>(null)
 
     useEffect(() => {
-        app.auth().onAuthStateChanged(setCurrentUser)
+        Firebase.auth().onAuthStateChanged((User) => {
+            setCurrentUser(User)
+        })
     }, [])
     return (
         <AuthContext.Provider value={{ currentUser }}>

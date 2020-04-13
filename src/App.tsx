@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from 'react'
+import React, { useState, ChangeEvent, useContext } from 'react'
 import FrontPage from './components/FrontPage'
 import SettingsPage from './components/SettingsPage'
 import nut from './images/nut.png'
@@ -9,36 +9,26 @@ import login from './images/login.png'
 import Firebase from './firebase'
 import { AuthProvider } from './Auth'
 import PrivateRoute from './PrivateRoute'
+import Login from './components/Login'
+import SignUp from './components/SignUp'
+import signout from './images/signout.png'
+import { AuthContext } from './Auth'
 
 export default () => {
-    const [logging, setLogging] = useState(true)
     const firestore = Firebase.firestore()
-    const f = { leo: 'yo' }
+    const { currentUser } = useContext(AuthContext)
 
     return (
         <div>
-            <button onClick={() => Firebase.auth().signOut()}>Sign Out</button>
-            <div>
-                <LoginPage onLog={() => setLogging(false)} signin={''} />
-                {/* <Router>
-                    <Switch>
-                        {' '}
-                        <Route path="/signin">
-                            <SignIn />
-                        </Route>
-                    </Switch>
-                </Router> */}
-            </div>
-
-            <div
-                className={`flex w-full flex-col ${
-                    logging ? 'invisible h-0' : 'h-screen'
-                }`}
-            >
+            <div className={`flex w-full flex-col `}>
                 <AuthProvider>
-                    <div className="w-full">
+                    <div>
                         <Router>
-                            <div className="flex flex-row mx-4">
+                            <div
+                                className={`flex flex-row mx-4 ${
+                                    !!currentUser ? 'visible' : ''
+                                }`}
+                            >
                                 <div className="flex flex-row w-1/2">
                                     <Link to="/">
                                         <img
@@ -57,7 +47,7 @@ export default () => {
                                     </Link>
                                 </div>
                                 <div className="w-1/2 flex justify-end items-center">
-                                    <Link to="/login">
+                                    <Link to="/signup">
                                         {' '}
                                         <img
                                             className="w-12 h-12 mt-1"
@@ -66,11 +56,26 @@ export default () => {
                                         />
                                     </Link>
                                 </div>
+                                <button
+                                    onClick={() => Firebase.auth().signOut()}
+                                >
+                                    <img
+                                        src={signout}
+                                        className="w-16 h-16 mt-1"
+                                        alt=""
+                                    />
+                                </button>
                             </div>
 
                             <Switch>
                                 <Route path="/create">
                                     <SettingsPage />
+                                </Route>
+                                <Route path="/login">
+                                    <Login />
+                                </Route>
+                                <Route path="/signup">
+                                    <SignUp />
                                 </Route>
                                 <PrivateRoute path="/" component={FrontPage} />
                             </Switch>
