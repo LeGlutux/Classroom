@@ -30,7 +30,6 @@ export default () => {
                         ) {
                             setNameInputValue('')
                             setSurnameInputValue('')
-                            // firebase
                         }
                         e.preventDefault()
                         e.stopPropagation()

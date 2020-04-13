@@ -52,7 +52,7 @@ export default ({ onLog, signin }: LoginPageProps) => {
                             action=""
                         >
                             <div className="flex flex-col h-full justify-center w-full items-center">
-                                <div className="w-8/12 border-b-2 border-gray-400 flex flex-row items-center">
+                                <div className="w-8/12 border-b-2 border-gray-400 flex flex-row items-center hover:border-gray-600">
                                     <img
                                         className="w-8 h-8 mt-3"
                                         src={femaleUser}
@@ -68,7 +68,7 @@ export default ({ onLog, signin }: LoginPageProps) => {
                                         placeholder="Identifiant"
                                     />
                                 </div>
-                                <div className="w-8/12 border-b-2 border-gray-400 flex flex-row items-center">
+                                <div className="w-8/12 border-b-2 border-gray-400 flex flex-row items-center hover:border-gray-600">
                                     <img
                                         className="w-8 h-8 mt-3"
                                         src={lock}

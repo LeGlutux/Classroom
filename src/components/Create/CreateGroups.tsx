@@ -1,10 +1,12 @@
 import React, { useState, ChangeEvent } from 'react'
 import add from '../../images/add.png'
 import group from '../../images/group.png'
+import Firebase from '../../firebase'
 
 export default () => {
     const [groups, setGroups] = useState([{ name: 'Tous' }])
     const [inputValue, setInputValue] = useState('')
+    const firestore = Firebase.firestore()
 
     return (
         <div className="w-full flex flex-col items-center">
@@ -25,6 +27,9 @@ export default () => {
                             setGroups(groups.concat({ name: inputValue }))
                             setInputValue('')
                         }
+                        firestore
+                            .doc('lp.bendeks@gmail.com/idTest2')
+                            .set({ classe: inputValue })
                         e.preventDefault()
                         e.stopPropagation()
                     }}

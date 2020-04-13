@@ -6,14 +6,18 @@ import home from './images/home.png'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import LoginPage from './components/LoginPage'
 import login from './images/login.png'
-import SignIn from './components/SignIn'
-import CreateGroups from './components/Create/CreateGroups'
-import { Settings } from 'react-native'
+import Firebase from './firebase'
+import { AuthProvider } from './Auth'
+import PrivateRoute from './PrivateRoute'
 
 export default () => {
     const [logging, setLogging] = useState(true)
+    const firestore = Firebase.firestore()
+    const f = { leo: 'yo' }
+
     return (
         <div>
+            <button onClick={() => Firebase.auth().signOut()}>Sign Out</button>
             <div>
                 <LoginPage onLog={() => setLogging(false)} signin={''} />
                 {/* <Router>
@@ -31,48 +35,48 @@ export default () => {
                     logging ? 'invisible h-0' : 'h-screen'
                 }`}
             >
-                <div className="w-full">
-                    <Router>
-                        <div className="flex flex-row mx-4">
-                            <div className="flex flex-row w-1/2">
-                                <Link to="/">
-                                    <img
-                                        className="w-16 h-16 mt-1"
-                                        src={home}
-                                        alt=""
-                                    />
-                                </Link>
-                                <Link to="/create">
-                                    {' '}
-                                    <img
-                                        className="w-16 h-16 mt-1"
-                                        src={nut}
-                                        alt=""
-                                    />
-                                </Link>
+                <AuthProvider>
+                    <div className="w-full">
+                        <Router>
+                            <div className="flex flex-row mx-4">
+                                <div className="flex flex-row w-1/2">
+                                    <Link to="/">
+                                        <img
+                                            className="w-16 h-16 mt-1"
+                                            src={home}
+                                            alt=""
+                                        />
+                                    </Link>
+                                    <Link to="/create">
+                                        {' '}
+                                        <img
+                                            className="w-16 h-16 mt-1"
+                                            src={nut}
+                                            alt=""
+                                        />
+                                    </Link>
+                                </div>
+                                <div className="w-1/2 flex justify-end items-center">
+                                    <Link to="/login">
+                                        {' '}
+                                        <img
+                                            className="w-12 h-12 mt-1"
+                                            src={login}
+                                            alt=""
+                                        />
+                                    </Link>
+                                </div>
                             </div>
-                            <div className="w-1/2 flex justify-end items-center">
-                                <Link to="/login">
-                                    {' '}
-                                    <img
-                                        className="w-12 h-12 mt-1"
-                                        src={login}
-                                        alt=""
-                                    />
-                                </Link>
-                            </div>
-                        </div>
 
-                        <Switch>
-                            <Route path="/create">
-                                <SettingsPage />
-                            </Route>
-                            <Route path="/">
-                                <FrontPage />
-                            </Route>
-                        </Switch>
-                    </Router>
-                </div>
+                            <Switch>
+                                <Route path="/create">
+                                    <SettingsPage />
+                                </Route>
+                                <PrivateRoute path="/" component={FrontPage} />
+                            </Switch>
+                        </Router>
+                    </div>
+                </AuthProvider>
             </div>
         </div>
     )
