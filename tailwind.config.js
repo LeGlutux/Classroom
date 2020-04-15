@@ -2,7 +2,8 @@ module.exports = {
     theme: {
       extend: {
         fontFamily:{
-          studentName:["Open Sans","sans-serif"]
+          studentName:["Open Sans","sans-serif"],
+          title:["Leckerli One","cursive"]
         }
       }
     },

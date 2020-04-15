@@ -20,15 +20,13 @@ export default () => {
 
     return (
         <div>
-            <div className={`flex w-full flex-col `}>
+            <div className={`flex w-full flex-col`}>
                 <AuthProvider>
                     <div>
-                        
-                        {console.log(currentUser)}
                         <Router>
                             <div
                                 className={`flex flex-row mx-4 ${
-                                    user !== undefined
+                                    user === undefined
                                         ? 'invisible h-0'
                                         : 'visible'
                                 }`}
