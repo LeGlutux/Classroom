@@ -4,8 +4,9 @@ import Firebase from 'firebase'
 import { AuthContext } from '../Auth'
 import add from '../images/add.png'
 import femaleUser from '../images/femaleUser.png'
+import subscribe from '../images/subscribe.png'
 import lock from '../images/lock.png'
-import classroom from '../images/classroom.png'
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 
 interface LoginProps {
     history: any
@@ -15,7 +16,6 @@ const Login = ({ history }: LoginProps) => {
     const [logInputValue, setLogInputValue] = useState('')
     const [passwordInputValue, setPasswordInputValue] = useState('')
     const [logging, setLogging] = useState(true)
-    const [errorMessage, setErrorMessage] = useState('')
 
     const handleLogin = useCallback(
         async (event) => {
@@ -88,16 +88,23 @@ const Login = ({ history }: LoginProps) => {
                                     >
                                         Se Connecter
                                     </button>
-                                </div>
-                                <div className="h-8 flex text-center w-full justify-center text-red-600">
-                                    {errorMessage}
+                                    <div className="flex justify-end self-end mt-4 mr-4">
+                                        <div className="flex self-end text-xs">
+                                            <Link
+                                                to="/signup"
+                                                className="text-blue-700"
+                                            >
+                                                Créer un Compte
+                                            </Link>
+                                        </div>
+                                    </div>
                                 </div>
                             </form>
                         </div>
                     </div>{' '}
                     <img
                         className="bg-blue-200 lg:w-1/2 lg:h-1/2"
-                        src={classroom}
+                        src={subscribe}
                         alt=""
                     />
                 </div>

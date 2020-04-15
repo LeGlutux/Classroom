@@ -4,7 +4,6 @@ import SettingsPage from './components/SettingsPage'
 import nut from './images/nut.png'
 import home from './images/home.png'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
-import LoginPage from './components/LoginPage'
 import login from './images/login.png'
 import Firebase from './firebase'
 import { AuthProvider } from './Auth'
@@ -17,16 +16,21 @@ import { AuthContext } from './Auth'
 export default () => {
     const firestore = Firebase.firestore()
     const { currentUser } = useContext(AuthContext)
+    const user = Firebase.auth().currentUser?.uid
 
     return (
         <div>
             <div className={`flex w-full flex-col `}>
                 <AuthProvider>
                     <div>
+                        
+                        {console.log(currentUser)}
                         <Router>
                             <div
                                 className={`flex flex-row mx-4 ${
-                                    !!currentUser ? 'visible' : ''
+                                    user !== undefined
+                                        ? 'invisible h-0'
+                                        : 'visible'
                                 }`}
                             >
                                 <div className="flex flex-row w-1/2">
@@ -47,7 +51,7 @@ export default () => {
                                     </Link>
                                 </div>
                                 <div className="w-1/2 flex justify-end items-center">
-                                    <Link to="/signup">
+                                    <Link to="/login">
                                         {' '}
                                         <img
                                             className="w-12 h-12 mt-1"
@@ -68,9 +72,10 @@ export default () => {
                             </div>
 
                             <Switch>
-                                <Route path="/create">
-                                    <SettingsPage />
-                                </Route>
+                                <PrivateRoute
+                                    path="/create"
+                                    component={SettingsPage}
+                                />
                                 <Route path="/login">
                                     <Login />
                                 </Route>

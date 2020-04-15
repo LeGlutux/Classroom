@@ -21,14 +21,6 @@ export default (props: StudentProps) => {
     const [supply, setSupply] = useState(0)
     const [observation, setObservation] = useState(0)
     const [highlight, setHighlight] = useState(false)
-    const [update, setUpdate] = useState([false, false, false, false])
-    const [updateBehaviour, setUpdateBehaviour] = useState(false)
-    const [updateSupply, setUpdateSupply] = useState(false)
-    const [updateHomework, setUpdateHomework] = useState(false)
-    const [updateObservation, setUpdateObservation] = useState(false)
-    const handleUpdate = (a: number) => {
-        setUpdate(update.map((value) => !value)
-    }
 
     return (
         <div className="flex flex-col bg-gray-200 rounded my-2 pb-1 w-full h-screen">
@@ -144,17 +136,15 @@ export default (props: StudentProps) => {
             </div>
             {/* Dépliage de carte */}
             <div
-                className={`flex flex-row justify-between w-full flex-wrap ${
-                    update ? 'mt-4' : 'invisible h-0'
-                } `}
-            >
-                4
-            </div>
+                className={`flex flex-row justify-between w-full flex-wrap  `}
+            />
             <div className="flex justify-center">
-                <button onClick={() => setVisible(!visible)}>
+                <button onClick={() => 4}>
                     <img
-                        className="w-8 h-4 bg-gray-200"
-                        src={visible ? closeCard : openCard}
+                        className={`w-8 h-4 bg-gray-200 ${
+                            highlight ? 'visible' : 'invisible'
+                        }`}
+                        src={closeCard}
                         alt=""
                     />
                 </button>

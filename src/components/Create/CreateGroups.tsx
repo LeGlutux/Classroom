@@ -7,6 +7,7 @@ export default () => {
     const [groups, setGroups] = useState([{ name: 'Tous' }])
     const [inputValue, setInputValue] = useState('')
     const firestore = Firebase.firestore()
+    const userEmail = Firebase.auth().currentUser?.email
 
     return (
         <div className="w-full flex flex-col items-center">
@@ -24,11 +25,11 @@ export default () => {
                     action=""
                     onSubmit={(e) => {
                         if (inputValue !== '') {
-                            setGroups(groups.concat({ name: inputValue }))
                             setInputValue('')
                         }
                         firestore
-                            .doc('lp.bendeks@gmail.com/idTest2')
+                            .collection('Users')
+                            .doc('hello')
                             .set({ classe: inputValue })
                         e.preventDefault()
                         e.stopPropagation()

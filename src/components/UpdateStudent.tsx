@@ -1,16 +1,34 @@
 import React from 'react'
 
 interface UpdateStudentProps {
-    croix: React.Dispatch<React.SetStateAction<number>>
+    img: string
+    croix: number
+    setCroix: React.Dispatch<React.SetStateAction<number>>
 }
 
-export default (croix: UpdateStudentProps) => {
+export default ({ img, croix, setCroix }: UpdateStudentProps) => {
     return (
         <div>
             <div>
-                <button onClick={() => 0}>-</button>
-                <img src="" alt="" />
-                <button onClick={() => 0}>+</button>
+                <button
+                    onClick={() => {
+                        if (croix >= 1) {
+                            setCroix(croix - 1)
+                        }
+                    }}
+                    className="text-6xl"
+                >
+                    -
+                </button>
+                <img src={img} alt="" />
+                <button
+                    onClick={() => {
+                        setCroix(croix + 1)
+                    }}
+                    className="text-6xl"
+                >
+                    +
+                </button>
             </div>
         </div>
     )
