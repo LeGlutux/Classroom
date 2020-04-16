@@ -1,5 +1,4 @@
 import React, { useState, ChangeEvent } from 'react'
-import { Interface } from 'readline'
 
 interface NewStudentGroupsProps {
     name: string

@@ -1,13 +1,16 @@
-import React, { useState, ChangeEvent } from 'react'
+import React, { useState, ChangeEvent, useContext } from 'react'
 import add from '../../images/add.png'
 import group from '../../images/group.png'
 import Firebase from '../../firebase'
+import { AuthContext } from '../../Auth'
 
 export default () => {
     const [groups, setGroups] = useState([{ name: 'Tous' }])
     const [inputValue, setInputValue] = useState('')
     const firestore = Firebase.firestore()
     const userEmail = Firebase.auth().currentUser?.email
+    const { currentUser } = useContext(AuthContext)
+    if (currentUser === null) return <div />
 
     return (
         <div className="w-full flex flex-col items-center">
@@ -27,9 +30,12 @@ export default () => {
                         if (inputValue !== '') {
                             setInputValue('')
                         }
+                        console.log(currentUser.uid)
                         firestore
-                            .collection('Users')
-                            .doc('hello')
+                            .collection('users')
+                            .doc(currentUser.uid)
+                            .collection('classes')
+                            .doc(inputValue)
                             .set({ classe: inputValue })
                         e.preventDefault()
                         e.stopPropagation()

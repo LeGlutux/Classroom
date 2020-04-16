@@ -3,10 +3,7 @@ import alarm from '../images/behaviour.png'
 import bookPile from '../images/homework.png'
 import schoolBag from '../images/supply.png'
 import pen from '../images/observation.png'
-import openCard from '../images/openCard.png'
 import closeCard from '../images/closeCard.png'
-import moins from '../images/moins.png'
-import plus from '../images/plus.png'
 
 interface StudentProps {
     name: string

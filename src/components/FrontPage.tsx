@@ -2,7 +2,7 @@ import React, { useState, ChangeEvent } from 'react'
 import Student from '../components/Student'
 import data from '../data'
 import ClassListFilter from '../components/ClassListFilter'
-
+import NavBar from './NavBar'
 
 export default () => {
     //    const groups = ['5ème3', '5ème5', '3ème3', '3ème5']
@@ -12,6 +12,7 @@ export default () => {
 
     return (
         <div className="flex w-full h-screen flex-col px-2">
+            <NavBar />
             <div className="w-full h-12 bg-gray-400 flex flex-row justify-between">
                 <div className="ml-3 my-2 font-bold text-xl flex justify-around">
                     Groupes{' '}
