@@ -26,7 +26,7 @@ export default () => {
                         <Router>
                             <div
                                 className={`flex flex-row mx-4 ${
-                                    user === undefined
+                                    user !== undefined
                                         ? 'invisible h-0'
                                         : 'visible'
                                 }`}
