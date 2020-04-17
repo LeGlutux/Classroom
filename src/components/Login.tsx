@@ -41,9 +41,11 @@ const Login = ({ history }: LoginProps) => {
 
     return (
         <div>
-            <div className="bg-gray-300 w-full flex flex-col items-center h-full">
+            <div className="bg-gray-300 h-screen w-full flex flex-col items-center h-full">
                 <div className="flex flex-col w-full items-center">
-                    <div className="mt-6 text-6xl font-title flex text-base">Thot Note</div>
+                    <div className="mt-6 text-6xl font-title flex text-base">
+                        Thot Note
+                    </div>
                     <div className="h-100 w-8/12 flex justify-center">
                         {' '}
                         <img className="h-full" src={lucienEtMonstre} alt="" />

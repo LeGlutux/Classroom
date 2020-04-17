@@ -10,7 +10,7 @@ export default ({ user }: SettingsPageProps) => {
     return (
         <div className="w-full h-screen flex flex-col px-2">
             <NavBar />
-            <div className="h-full w-full p-2">
+            <div className="h-full w-full p-2 bg-gray-300">
                 <CreateGroups />
                 <CreateStudent />
             </div>
