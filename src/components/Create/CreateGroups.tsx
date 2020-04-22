@@ -3,8 +3,12 @@ import add from '../../images/add.png'
 import group from '../../images/group.png'
 import Firebase from '../../firebase'
 import { AuthContext } from '../../Auth'
+import { useGroups } from '../../hooks'
 
-export default () => {
+interface Props {
+    onAddGroup: () => void
+}
+export default (props: Props) => {
     const [groups, setGroups] = useState([{ name: 'Tous' }])
     const [inputValue, setInputValue] = useState('')
     const firestore = Firebase.firestore()
@@ -30,13 +34,13 @@ export default () => {
                         if (inputValue !== '') {
                             setInputValue('')
                         }
-                        console.log(currentUser.uid)
                         firestore
                             .collection('users')
                             .doc(currentUser.uid)
                             .collection('classes')
                             .doc(inputValue)
                             .set({ classe: inputValue })
+                        props.onAddGroup()
                         e.preventDefault()
                         e.stopPropagation()
                     }}

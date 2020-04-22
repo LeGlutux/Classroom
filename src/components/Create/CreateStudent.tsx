@@ -1,13 +1,21 @@
-import React, { useState, ChangeEvent } from 'react'
+import React, { useState, ChangeEvent, useContext, useEffect } from 'react'
 import add from '../../images/add.png'
 import solo from '../../images/solo.png'
+import { AuthContext } from '../../Auth'
+import Firebase from '../../firebase'
 import NewStudentGroups from '../NewStudentGroups'
+import { useGroups } from '../../hooks'
 
-export default () => {
-    const [groups, setGroups] = useState([{ name: 'Tous', isActive: false }])
+interface Props {
+    groups: string[]
+}
+
+export default ({ groups }: Props) => {
+    const db = Firebase.firestore()
+    const { currentUser } = useContext(AuthContext)
+    if (currentUser === null) return <div />
     const [nameInputValue, setNameInputValue] = useState('')
     const [surnameInputValue, setSurnameInputValue] = useState('')
-    const [studentGroups, setStudentGroups] = useState([])
 
     return (
         <div className="w-full flex flex-col items-center">
@@ -23,11 +31,7 @@ export default () => {
                 <form
                     className="flex flex-row w-3/4"
                     onSubmit={(e) => {
-                        if (
-                            nameInputValue !== '' &&
-                            surnameInputValue !== '' &&
-                            studentGroups !== []
-                        ) {
+                        if (nameInputValue !== '' && surnameInputValue !== '') {
                             setNameInputValue('')
                             setSurnameInputValue('')
                         }
@@ -63,14 +67,8 @@ export default () => {
             </div>
             <div className="w-11/12 flex flex-row align-middle justify-around content-center border-gray-800 rounded-b-lg pb-2 bg-white">
                 <div className="w-full flex flex-wrap flex-row justify-center mr-2">
-                    {groups.map(({ name, isActive }, index) => {
-                        return (
-                            <NewStudentGroups
-                                key={index}
-                                name={name}
-                                isActive={isActive}
-                            />
-                        )
+                    {groups.map((value, index) => {
+                        return <NewStudentGroups classe={value} key={index} />
                     })}
                 </div>
             </div>

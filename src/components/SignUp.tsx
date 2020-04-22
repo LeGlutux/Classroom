@@ -47,7 +47,7 @@ const SignUp = () => {
     )
 
     return (
-        <div className="h-screen bg-gray-300">
+        <div className="h-screen bg-white">
             <div className="w-full">
                 {' '}
                 <img src={bandeauCrayon} alt="" />{' '}

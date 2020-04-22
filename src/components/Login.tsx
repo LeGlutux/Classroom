@@ -41,7 +41,7 @@ const Login = ({ history }: LoginProps) => {
 
     return (
         <div>
-            <div className="bg-gray-300 h-screen w-full flex flex-col items-center h-full">
+            <div className="bg-white h-screen w-full flex flex-col items-center h-full">
                 <div className="flex flex-col w-full items-center">
                     <div className="mt-6 text-6xl font-title flex text-base">
                         Thot Note
