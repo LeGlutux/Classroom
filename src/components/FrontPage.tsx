@@ -1,16 +1,23 @@
-import React, { useState, ChangeEvent } from 'react'
+import React, { useState, ChangeEvent, useContext } from 'react'
 import Student from '../components/Student'
 import data from '../data'
 import ClassListFilter from '../components/ClassListFilter'
+import NavBar from './NavBar'
+import { useGroups } from '../hooks'
+import { AuthContext } from '../Auth'
 
 export default () => {
     //    const groups = ['5ème3', '5ème5', '3ème3', '3ème5']
     const [students, setStudents] = useState(data)
+    const { currentUser } = useContext(AuthContext)
+    if (currentUser === null) return <div />
+    const { groups } = useGroups(currentUser.uid)
     const handleFilter = (group: string) =>
         setStudents(data.filter((student) => student.classe === group))
 
     return (
         <div className="flex w-full h-screen flex-col px-2">
+            <NavBar />
             <div className="w-full h-12 bg-gray-400 flex flex-row justify-between">
                 <div className="ml-3 my-2 font-bold text-xl flex justify-around">
                     Groupes{' '}
@@ -20,9 +27,7 @@ export default () => {
                 </div>
                 <ClassListFilter
                     onFilter={(group) => handleFilter(group)}
-                    groups={Array.from(
-                        new Set(data.flatMap((student) => student.classe))
-                    )}
+                    groups={groups}
                 />
             </div>
             {students.map(({ name, surname, avatar, classe }, index) => {

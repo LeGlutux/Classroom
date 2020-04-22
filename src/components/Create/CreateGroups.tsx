@@ -1,10 +1,20 @@
-import React, { useState, ChangeEvent } from 'react'
+import React, { useState, ChangeEvent, useContext } from 'react'
 import add from '../../images/add.png'
 import group from '../../images/group.png'
+import Firebase from '../../firebase'
+import { AuthContext } from '../../Auth'
+import { useGroups } from '../../hooks'
 
-export default () => {
+interface Props {
+    onAddGroup: () => void
+}
+export default (props: Props) => {
     const [groups, setGroups] = useState([{ name: 'Tous' }])
     const [inputValue, setInputValue] = useState('')
+    const firestore = Firebase.firestore()
+    const userEmail = Firebase.auth().currentUser?.email
+    const { currentUser } = useContext(AuthContext)
+    if (currentUser === null) return <div />
 
     return (
         <div className="w-full flex flex-col items-center">
@@ -22,9 +32,15 @@ export default () => {
                     action=""
                     onSubmit={(e) => {
                         if (inputValue !== '') {
-                            setGroups(groups.concat({ name: inputValue }))
                             setInputValue('')
                         }
+                        firestore
+                            .collection('users')
+                            .doc(currentUser.uid)
+                            .collection('classes')
+                            .doc(inputValue)
+                            .set({ classe: inputValue })
+                        props.onAddGroup()
                         e.preventDefault()
                         e.stopPropagation()
                     }}

@@ -3,10 +3,7 @@ import alarm from '../images/behaviour.png'
 import bookPile from '../images/homework.png'
 import schoolBag from '../images/supply.png'
 import pen from '../images/observation.png'
-import openCard from '../images/openCard.png'
 import closeCard from '../images/closeCard.png'
-import moins from '../images/moins.png'
-import plus from '../images/plus.png'
 
 interface StudentProps {
     name: string
@@ -21,7 +18,6 @@ export default (props: StudentProps) => {
     const [supply, setSupply] = useState(0)
     const [observation, setObservation] = useState(0)
     const [highlight, setHighlight] = useState(false)
-    const [visible, setVisible] = useState(false)
 
     return (
         <div className="flex flex-col bg-gray-200 rounded my-2 pb-1 w-full h-screen">
@@ -137,88 +133,15 @@ export default (props: StudentProps) => {
             </div>
             {/* Dépliage de carte */}
             <div
-                className={`flex flex-row justify-between w-full flex-wrap ${
-                    visible ? 'mt-4' : 'invisible h-0'
-                } `}
-            >
-                <div className="flex flex-col">
-                    <div className="flex flex-row">
-                        <button
-                            className="mx-1 w-12 h-12 flex self-center"
-                            onClick={() => setBehaviour(behaviour - 1)}
-                        >
-                            <img src={moins} alt="" />
-                        </button>
-                        <img className="w-12 h-12" src={alarm} alt="" />
-                        <button
-                            className="mx-1 w-12 h-12 flex self-center"
-                            onClick={() => setBehaviour(behaviour + 1)}
-                        >
-                            <img src={plus} alt="" />
-                        </button>
-                    </div>
-                    <div className="flex justify-center">date</div>
-                </div>
-                <div className="flex flex-col">
-                    <div className="flex flex-row">
-                        <button
-                            className="mx-1 w-12 h-12 flex self-center"
-                            onClick={() => setHomework(homework - 1)}
-                        >
-                            <img src={moins} alt="" />
-                        </button>
-                        <img className="w-12 h-12" src={bookPile} alt="" />
-                        <button
-                            className="mx-1 w-12 h-12 flex self-center"
-                            onClick={() => setHomework(homework + 1)}
-                        >
-                            <img src={plus} alt="" />
-                        </button>
-                    </div>
-                    <div className="flex justify-center">date</div>
-                </div>
-                <div className="flex flex-col">
-                    <div className="flex flex-row">
-                        <button
-                            className="mx-1 w-12 h-12 flex self-center"
-                            onClick={() => setSupply(supply - 1)}
-                        >
-                            <img src={moins} alt="" />{' '}
-                        </button>
-                        <img className="w-12 h-12" src={schoolBag} alt="" />
-                        <button
-                            className="mx-1 w-12 h-12 flex self-center"
-                            onClick={() => setSupply(supply + 1)}
-                        >
-                            <img src={plus} alt="" />
-                        </button>
-                    </div>
-                    <div className="flex justify-center">date</div>
-                </div>
-                <div className="flex flex-col">
-                    <div className="flex flex-row">
-                        <button
-                            className="mx-1 w-12 h-12 flex self-center"
-                            onClick={() => setObservation(observation - 1)}
-                        >
-                            <img src={moins} alt="" />
-                        </button>
-                        <img className="w-12 h-12" src={pen} alt="" />
-                        <button
-                            className="mx-1 w-12 h-12 flex self-center"
-                            onClick={() => setObservation(observation + 1)}
-                        >
-                            <img src={plus} alt="" />
-                        </button>
-                    </div>
-                    <div className="flex justify-center">date</div>
-                </div>
-            </div>
+                className={`flex flex-row justify-between w-full flex-wrap  `}
+            />
             <div className="flex justify-center">
-                <button onClick={() => setVisible(!visible)}>
+                <button onClick={() => 4}>
                     <img
-                        className="w-8 h-4 bg-gray-200"
-                        src={visible ? closeCard : openCard}
+                        className={`w-8 h-4 bg-gray-200 ${
+                            highlight ? 'visible' : 'invisible'
+                        }`}
+                        src={closeCard}
                         alt=""
                     />
                 </button>
