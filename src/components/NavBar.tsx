@@ -5,10 +5,13 @@ import home from '../images/home.png'
 import login from '../images/login.png'
 import Firebase from '../firebase'
 import signout from '../images/signout.png'
-
+import bandeauCrayon2 from '../images/bandeauCrayon2.jpg'
 export default () => {
     return (
-        <div className={`flex flex-row mx-4 `}>
+        <div
+            className="flex flex-row px-4"
+            style={{ backgroundImage: `url(${bandeauCrayon2})` }}
+        >
             <div className={`flex flex-row w-1/2  `}>
                 <Link to="/">
                     <img className="w-16 h-16 mt-1" src={home} alt="" />
