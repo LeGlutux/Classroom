@@ -4,7 +4,7 @@ import Firebase from 'firebase'
 import { AuthContext } from '../Auth'
 import lock from '../images/lock.png'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
-import lucienEtMonstre from '../images/lucienEtMonstre.png'
+import lucienEtMonstreCouleurs from '../images/lucienEtMonstreCouleurs.png'
 import mail from '../images/mail.png'
 
 interface LoginProps {
@@ -48,7 +48,7 @@ const Login = ({ history }: LoginProps) => {
                     </div>
                     <div className="h-100 w-8/12 flex justify-center">
                         {' '}
-                        <img className="h-full" src={lucienEtMonstre} alt="" />
+                        <img className="h-full" src={lucienEtMonstreCouleurs} alt="" />
                     </div>
                     <div className="w-full flex flex justify-center">
                         <div className="w-10/12 flex flex-row align-middle justify-between content-center rounded-lg h-64">

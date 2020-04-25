@@ -9,15 +9,10 @@
   "hosting": {
     "public": "build",
     "ignore": [
+      "public",
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
     ]
   }
 }
