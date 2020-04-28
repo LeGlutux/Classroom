@@ -4,13 +4,14 @@ import solo from '../../images/solo.png'
 import { AuthContext } from '../../Auth'
 import Firebase from '../../firebase'
 import NewStudentGroups from '../NewStudentGroups'
-import { useGroups } from '../../hooks'
 
 interface Props {
     groups: string[]
 }
 
 export default ({ groups }: Props) => {
+    const firestore = Firebase.firestore()
+    const list = [] as string[]
     const db = Firebase.firestore()
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
@@ -31,10 +32,35 @@ export default ({ groups }: Props) => {
                 <form
                     className="flex flex-row w-3/4"
                     onSubmit={(e) => {
-                        if (nameInputValue !== '' && surnameInputValue !== '') {
+                        if (
+                            nameInputValue !== '' &&
+                            surnameInputValue !== '' &&
+                            list.length !== 0
+                        ) {
                             setNameInputValue('')
                             setSurnameInputValue('')
+                            firestore
+                                .collection('users')
+                                .doc(currentUser.uid)
+                                .collection('eleves')
+                                .doc(
+                                    surnameInputValue
+                                        .concat(' ')
+                                        .concat(nameInputValue)
+                                )
+                                .set({
+                                    classes: { list },
+                                    name: nameInputValue,
+                                    surname: surnameInputValue,
+                                    behaviour: [],
+                                    homework: [],
+                                    supply: [],
+                                    oservation: [],
+                                })
+                        } else {
+                            console.log("le formulaire n'est pas complet")
                         }
+
                         e.preventDefault()
                         e.stopPropagation()
                     }}
@@ -68,7 +94,13 @@ export default ({ groups }: Props) => {
             <div className="w-11/12 flex flex-row align-middle justify-around content-center border-gray-800 rounded-b-lg pb-2 bg-white">
                 <div className="w-full flex flex-wrap flex-row justify-center mr-2">
                     {groups.map((value, index) => {
-                        return <NewStudentGroups classe={value} key={index} />
+                        return (
+                            <NewStudentGroups
+                                list={list}
+                                classe={value}
+                                key={index}
+                            />
+                        )
                     })}
                 </div>
             </div>

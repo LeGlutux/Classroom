@@ -1,13 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import alarm from '../images/behaviour.png'
 import bookPile from '../images/homework.png'
 import schoolBag from '../images/supply.png'
 import pen from '../images/observation.png'
-import closeCard from '../images/closeCard.png'
-import signUpBackground from '../images/signUpBackground.jpg'
-import loginBackground3 from '../images/loginBackground3.jpg'
-import lucienEtMonstre from '../images/lucienEtMonstre.png'
-import { url } from 'inspector'
+import Firebase from '../firebase'
+import { AuthContext } from '../Auth'
+import firebase from 'firebase/app'
 
 interface StudentProps {
     name: string
@@ -22,6 +20,16 @@ export default (props: StudentProps) => {
     const [supply, setSupply] = useState(0)
     const [observation, setObservation] = useState(0)
     const [highlight, setHighlight] = useState(false)
+    const db = Firebase.firestore()
+    const { currentUser } = useContext(AuthContext)
+    if (currentUser === null) return <div />
+   
+    // { async () => await db.collection('users')
+    // .doc(currentUser.uid)
+    // .collection('eleves')
+    // .doc(props.surname.concat(' ').concat(props.name))
+    // .update(behaviour: firebase.firestore.FieldValue.arrayUnion(firebase.firestore.FieldValue.serverTimestamp))}
+
 
     return (
         <div className="rounded mt-5 pb-1 h-32 mx-6 bg-gray-100 shadow-custom">
@@ -50,7 +58,7 @@ export default (props: StudentProps) => {
                     </button>
                 </div>
                 <div className=" w-full h-24 flex flex-wrap p-2 content-center justify-between pr-6">
-                    <div className='flex flex-row'>
+                    <div className="flex flex-row">
                         <button
                             onClick={() => setBehaviour(behaviour + 1)}
                             className="w-12 h-12 rounded-full"
@@ -61,7 +69,7 @@ export default (props: StudentProps) => {
                             {behaviour}
                         </div>
                     </div>
-                    <div className='flex flex-row'>
+                    <div className="flex flex-row">
                         <button
                             onClick={() => setHomework(homework + 1)}
                             className="w-12 h-12 rounded-full"
@@ -72,7 +80,7 @@ export default (props: StudentProps) => {
                             {homework}
                         </div>
                     </div>
-                    <div className='flex flex-row'>
+                    <div className="flex flex-row">
                         <button
                             onClick={() => setSupply(supply + 1)}
                             className="w-12 h-12 rounded-full"
@@ -84,7 +92,7 @@ export default (props: StudentProps) => {
                             {supply}
                         </div>
                     </div>
-                    <div className='flex flex-row'>
+                    <div className="flex flex-row">
                         <button
                             onClick={() => setObservation(observation + 1)}
                             className="w-12 h-12 rounded-full"

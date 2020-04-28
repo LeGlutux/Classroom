@@ -48,7 +48,11 @@ const Login = ({ history }: LoginProps) => {
                     </div>
                     <div className="h-100 w-8/12 flex justify-center">
                         {' '}
-                        <img className="h-full" src={lucienEtMonstreCouleurs} alt="" />
+                        <img
+                            className="h-full"
+                            src={lucienEtMonstreCouleurs}
+                            alt=""
+                        />
                     </div>
                     <div className="w-full flex flex justify-center">
                         <div className="w-10/12 flex flex-row align-middle justify-between content-center rounded-lg h-64">

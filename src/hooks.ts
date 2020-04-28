@@ -10,6 +10,7 @@ export const useGroups = (currentUserId: string) => {
             setLoading(true)
             setGroups(await fetchGroups(currentUserId))
             setLoading(false)
+
         }
         fetch()
     }, [])

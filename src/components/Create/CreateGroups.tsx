@@ -2,6 +2,7 @@ import React, { useState, ChangeEvent, useContext } from 'react'
 import add from '../../images/add.png'
 import group from '../../images/group.png'
 import Firebase from '../../firebase'
+import firebase from 'firebase/app'
 import { AuthContext } from '../../Auth'
 import { useGroups } from '../../hooks'
 
@@ -9,10 +10,8 @@ interface Props {
     onAddGroup: () => void
 }
 export default (props: Props) => {
-    const [groups, setGroups] = useState([{ name: 'Tous' }])
     const [inputValue, setInputValue] = useState('')
-    const firestore = Firebase.firestore()
-    const userEmail = Firebase.auth().currentUser?.email
+    const db = Firebase.firestore()
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
 
@@ -34,12 +33,13 @@ export default (props: Props) => {
                         if (inputValue !== '') {
                             setInputValue('')
                         }
-                        firestore
-                            .collection('users')
+                        db.collection('users')
                             .doc(currentUser.uid)
-                            .collection('classes')
-                            .doc(inputValue)
-                            .set({ classe: inputValue })
+                            .update({
+                                classes: firebase.firestore.FieldValue.arrayUnion(
+                                    inputValue
+                                ),
+                            })
                         props.onAddGroup()
                         e.preventDefault()
                         e.stopPropagation()
