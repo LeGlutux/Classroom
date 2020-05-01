@@ -6,6 +6,7 @@ import pen from '../images/observation.png'
 import Firebase from '../firebase'
 import { AuthContext } from '../Auth'
 import firebase from 'firebase/app'
+import { useCross, useGroups } from '../hooks'
 
 interface StudentProps {
     name: string
@@ -15,21 +16,62 @@ interface StudentProps {
 }
 
 export default (props: StudentProps) => {
-    const [behaviour, setBehaviour] = useState(0)
-    const [homework, setHomework] = useState(0)
-    const [supply, setSupply] = useState(0)
-    const [observation, setObservation] = useState(0)
     const [highlight, setHighlight] = useState(false)
     const db = Firebase.firestore()
     const { currentUser } = useContext(AuthContext)
+    const currentStudent = props.surname.concat(' ').concat(props.name)
     if (currentUser === null) return <div />
-   
-    // { async () => await db.collection('users')
-    // .doc(currentUser.uid)
-    // .collection('eleves')
-    // .doc(props.surname.concat(' ').concat(props.name))
-    // .update(behaviour: firebase.firestore.FieldValue.arrayUnion(firebase.firestore.FieldValue.serverTimestamp))}
 
+    const { cross: behaviour, refreshCross: refreshBehaviour } = useCross(
+        currentUser.uid,
+        currentStudent,
+        'behaviour'
+    )
+
+    const { cross: homework, refreshCross: refreshHomework } = useCross(
+        currentUser.uid,
+        currentStudent,
+        'homework'
+    )
+
+    const { cross: supply, refreshCross: refreshSupply } = useCross(
+        currentUser.uid,
+        currentStudent,
+        'supply'
+    )
+
+    const { cross: observation, refreshCross: refreshObservation } = useCross(
+        currentUser.uid,
+        currentStudent,
+        'observation'
+    )
+
+    const timeStamp = firebase.firestore.FieldValue.serverTimestamp()
+    const handleAddCross = (
+        crossType: string,
+        refresh: () => Promise<void>
+    ) => {
+        db.collection('users')
+            .doc(currentUser.uid)
+            .collection('eleves')
+            .doc(currentStudent)
+            .collection('crosses')
+            .doc()
+            .set({
+                type: crossType,
+                time: timeStamp,
+            })
+        refresh()
+    }
+
+    if (
+        behaviour === undefined ||
+        homework === undefined ||
+        supply === undefined ||
+        observation === undefined
+    ) {
+        return <div />
+    }
 
     return (
         <div className="rounded mt-5 pb-1 h-32 mx-6 bg-gray-100 shadow-custom">
@@ -60,48 +102,59 @@ export default (props: StudentProps) => {
                 <div className=" w-full h-24 flex flex-wrap p-2 content-center justify-between pr-6">
                     <div className="flex flex-row">
                         <button
-                            onClick={() => setBehaviour(behaviour + 1)}
+                            onClick={() =>
+                                handleAddCross('behaviour', refreshBehaviour)
+                            }
                             className="w-12 h-12 rounded-full"
                         >
                             <img className="" src={alarm} alt="" />
                         </button>
                         <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-5xl ">
-                            {behaviour}
+                            {behaviour.length}
                         </div>
                     </div>
                     <div className="flex flex-row">
                         <button
-                            onClick={() => setHomework(homework + 1)}
+                            onClick={() =>
+                                handleAddCross('homework', refreshHomework)
+                            }
                             className="w-12 h-12 rounded-full"
                         >
                             <img className="" src={bookPile} alt="" />
                         </button>
                         <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-5xl ">
-                            {homework}
+                            {homework.length}
                         </div>
                     </div>
                     <div className="flex flex-row">
                         <button
-                            onClick={() => setSupply(supply + 1)}
+                            onClick={() =>
+                                handleAddCross('supply', refreshSupply)
+                            }
                             className="w-12 h-12 rounded-full"
                         >
-                            {' '}
                             <img className="" src={schoolBag} alt="" />
                         </button>
                         <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-5xl ">
-                            {supply}
+                            {supply.length}
                         </div>
                     </div>
                     <div className="flex flex-row">
                         <button
-                            onClick={() => setObservation(observation + 1)}
+                            onClick={() =>
+                                handleAddCross(
+                                    'observation',
+                                    refreshObservation
+                                )
+                            }
                             className="w-12 h-12 rounded-full"
                         >
                             <img className="" src={pen} alt="" />
                         </button>
                         <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-5xl ">
-                            {observation}
+                            {observation.length}
                         </div>
+                        <div>{observation.for}</div>
                     </div>
                 </div>
             </div>

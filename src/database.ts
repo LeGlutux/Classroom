@@ -7,6 +7,19 @@ export const fetchGroups = async (currentUserId: string) => {
     return querySnapshot.data()!.classes
 }
 
+export const fetchCross = async (currentUserId: string, currentStudentId: string, type: string) => {
+    const db = Firebase.firestore()
+    const querySnapshot = await db
+        .collection('users')
+        .doc(currentUserId)
+        .collection('eleves')
+        .doc(currentStudentId)
+        .collection('crosses')
+        .where('type', '==', type)
+        .get()
+
+    return querySnapshot.docs
+}
 
 // import React, { useState, ChangeEvent, useContext, useEffect } from 'react'
 // import Firebase from './firebase'

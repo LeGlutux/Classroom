@@ -59,8 +59,8 @@ const SignUp = () => {
             >
                 <div className="flex flex-col w-full">
                     <div className="w-full flex items-center flex-col">
-                        <div className=" font-title text-6xl mt-6">
-                            Thot Note
+                        <div className=" font-title text-7xl mt-6">
+                            Thòt Note
                         </div>
 
                         <div className="w-10/12 flex flex-row content-center rounded-lg h-64 bg-transparent">

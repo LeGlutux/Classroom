@@ -24,7 +24,7 @@ export default (props: NewStudentGroupsProps) => {
         <div className="flex flex-row">
             <input
                 type="checkbox"
-                className={`h-8 w-8 my-2`}
+                className={`h-4 w-4 my-2`}
                 checked={check}
                 onChange={(e) => handleCheck(check, props.list)}
             />

@@ -11,9 +11,9 @@ export default ({ user }: SettingsPageProps) => {
     const { groups, refreshGroups } = useGroups(user.uid)
 
     return (
-        <div className="w-full h-screen flex flex-col px-2">
+        <div className="w-full h-screen flex flex-col">
             <NavBar />
-            <div className="h-full w-full p-2 bg-gray-300">
+            <div className="h-full w-full bg-gray-100">
                 <CreateGroups onAddGroup={refreshGroups} />
                 <CreateStudent groups={groups} />
             </div>
