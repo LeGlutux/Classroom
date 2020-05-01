@@ -1,5 +1,5 @@
 import { useState, ChangeEvent, useContext, useEffect } from 'react'
-import { fetchGroups } from './database'
+import { fetchGroups, fetchCross } from './database'
 
 export const useGroups = (currentUserId: string) => {
     const [groups, setGroups] = useState<string[]>([])
@@ -21,4 +21,20 @@ export const useGroups = (currentUserId: string) => {
     }
 
     return { groups, loading, refreshGroups }
+}
+export const useCross = (currentUserId: string, currentStudentId: string, type: string) => {
+    const [cross, setCross] = useState<firebase.firestore.DocumentData>([])
+
+    useEffect(() => {
+        const fetch = async () => {
+            setCross(await fetchCross(currentUserId, currentStudentId, type))
+        }
+        fetch()
+    }, [])
+
+    const refreshCross = async () => {
+        setCross(await fetchCross(currentUserId, currentStudentId, type))
+    }
+
+    return { cross, refreshCross }
 }

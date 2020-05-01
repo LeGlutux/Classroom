@@ -8,21 +8,13 @@ import lucienPlongeon from '../images/lucienPlongeon.png'
 import bandeauCrayon from '../images/bandeauCrayon.png'
 import mail from '../images/mail.png'
 
-const func = () => {
-    const name = 'leo'
-    return { name, birthsdate: 'december', age: '21' }
-}
-const o = { name: 'leo', birthsdate: 'december', age: '21' }
-const { name: prenom, age } = o
-
 const SignUp = () => {
     const history = useHistory()
-    const [id, setId] = useState<string | null>('error')
     const db = Firebase.firestore()
     const handleSignUp = useCallback(
         async (event) => {
             event.preventDefault()
-            const { email, password } = event.target.elements
+            const { email, password, name } = event.target.elements
 
             try {
                 const {
@@ -36,7 +28,12 @@ const SignUp = () => {
                 await db
                     .collection('users')
                     .doc(user.uid)
-                    .set({ id: user.uid, email: user.email })
+                    .set({
+                        id: user.uid,
+                        email: user.email,
+                        userName: name.value,
+                        classes: [] as string[],
+                    })
 
                 history.push('/')
             } catch (error) {
@@ -62,8 +59,8 @@ const SignUp = () => {
             >
                 <div className="flex flex-col w-full">
                     <div className="w-full flex items-center flex-col">
-                        <div className=" font-title text-6xl mt-6">
-                            Thot Note
+                        <div className=" font-title text-7xl mt-6">
+                            Thòt Note
                         </div>
 
                         <div className="w-10/12 flex flex-row content-center rounded-lg h-64 bg-transparent">
@@ -80,8 +77,8 @@ const SignUp = () => {
                                             alt=""
                                         />
                                         <input
-                                            name="Prénom"
-                                            type="Prénom"
+                                            name="name"
+                                            type="name"
                                             placeholder="Prénom"
                                             className="h-10 mt-3 w-full placeholder-gray-900 ml-5 bg-transparent"
                                         />

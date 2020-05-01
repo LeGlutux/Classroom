@@ -3,7 +3,8 @@ module.exports = {
       extend: {
         fontFamily:{
           studentName:["Open Sans","sans-serif"],
-          title:["Leckerli One","cursive"]
+          title:['Cookie', 'cursive'],
+          title2:['Montez', 'cursive']
         }
       }
     },
