@@ -20,20 +20,3 @@ export const fetchCross = async (currentUserId: string, currentStudentId: string
 
     return querySnapshot.docs
 }
-
-// import React, { useState, ChangeEvent, useContext, useEffect } from 'react'
-// import Firebase from './firebase'
-
-// export const fetchGroups = async (currentUserId: string) => {
-//     const db = Firebase.firestore()
-//     const querySnapshot = await (
-//         await db
-//             .collection('users')
-//             .doc(currentUserId)
-//             .get())
-//         .data()
-
-
-
-//     return querySnapshot as string[]
-// }
