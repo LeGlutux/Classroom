@@ -50,7 +50,7 @@ const SignUp = () => {
                 <img src={bandeauCrayon} alt="" />{' '}
             </div>
             <img
-                className="flex self-center w-1/2 ml-12 mt-8"
+                className="flex self-center w-5/12 ml-20 mt-8"
                 src={lucienPlongeon}
                 alt=""
             />
@@ -59,11 +59,11 @@ const SignUp = () => {
             >
                 <div className="flex flex-col w-full">
                     <div className="w-full flex items-center flex-col">
-                        <div className=" font-title text-7xl mt-6">
+                        <div className=" font-title text-6xl">
                             Thòt Note
                         </div>
 
-                        <div className="w-10/12 flex flex-row content-center rounded-lg h-64 bg-transparent">
+                        <div className="w-10/12 flex flex-row content-center rounded-lg h-full bg-transparent">
                             <form
                                 className="flex flex-col w-full bg-transparent"
                                 onSubmit={handleSignUp}

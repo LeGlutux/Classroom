@@ -46,7 +46,3 @@ export default () => {
         </div>
     )
 }
-
-// Backup
-
-// test changement 1

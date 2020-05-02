@@ -7,7 +7,7 @@ export const fetchGroups = async (currentUserId: string) => {
     return querySnapshot.data()!.classes
 }
 
-export const fetchCross = async (currentUserId: string, currentStudentId: string, type: string) => {
+export const fetchCross = async (currentUserId: string, currentStudentId: string) => {
     const db = Firebase.firestore()
     const querySnapshot = await db
         .collection('users')
@@ -15,8 +15,27 @@ export const fetchCross = async (currentUserId: string, currentStudentId: string
         .collection('eleves')
         .doc(currentStudentId)
         .collection('crosses')
-        .where('type', '==', type)
         .get()
 
-    return querySnapshot.docs
+    const data = [] as firebase.firestore.DocumentData[]
+
+    querySnapshot.docs.forEach((doc) => data.push(doc.data()))
+
+    return data
+}
+
+export const fetchStudents = async (currentUserId: string) => {
+    const db = Firebase.firestore()
+    const querySnapshot = await db
+        .collection('users')
+        .doc(currentUserId)
+        .collection('eleves')
+        .orderBy('name')
+        .get()
+
+
+    const data = [] as firebase.firestore.DocumentData[]
+    querySnapshot.docs.forEach((doc) => data.push(doc.data()))
+
+    return data
 }

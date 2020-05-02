@@ -1,5 +1,5 @@
 import { useState, ChangeEvent, useContext, useEffect } from 'react'
-import { fetchGroups, fetchCross } from './database'
+import { fetchGroups, fetchCross, fetchStudents } from './database'
 
 export const useGroups = (currentUserId: string) => {
     const [groups, setGroups] = useState<string[]>([])
@@ -22,19 +22,40 @@ export const useGroups = (currentUserId: string) => {
 
     return { groups, loading, refreshGroups }
 }
-export const useCross = (currentUserId: string, currentStudentId: string, type: string) => {
-    const [cross, setCross] = useState<firebase.firestore.DocumentData>([])
+export const useCross = (currentUserId: string, currentStudentId: string) => {
+    const [cross, setCross] = useState<firebase.firestore.DocumentData[]>([])
 
     useEffect(() => {
         const fetch = async () => {
-            setCross(await fetchCross(currentUserId, currentStudentId, type))
+            setCross(await fetchCross(currentUserId, currentStudentId))
+        }
+        fetch()
+    }, [fetchStudents(currentUserId)])
+
+    const refreshCross = async () => {
+        setCross(await fetchCross(currentUserId, currentStudentId))
+    }
+
+    return { cross, refreshCross }
+}
+
+export const useStudents = (currentUserId: string) => {
+    const [students, setStudents] = useState<firebase.firestore.DocumentData[]>([])
+    useEffect(() => {
+        const fetch = async () => {
+            setStudents(await fetchStudents(currentUserId))
         }
         fetch()
     }, [])
 
-    const refreshCross = async () => {
-        setCross(await fetchCross(currentUserId, currentStudentId, type))
+    const filterStudents = async (group: string) => {
+        const filteredStudents = (await fetchStudents(currentUserId)).filter((student) => student.classes.includes(group))
+        setStudents(filteredStudents)
     }
 
-    return { cross, refreshCross }
+    const allStudents = async () => {
+        setStudents(await fetchStudents(currentUserId))
+    }
+
+    return { students, filterStudents, allStudents }
 }
