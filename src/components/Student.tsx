@@ -7,6 +7,7 @@ import Firebase from '../firebase'
 import { AuthContext } from '../Auth'
 import firebase from 'firebase/app'
 import { useCross, useGroups } from '../hooks'
+import DatePicker from 'react-datepicker'
 
 interface StudentProps {
     name: string
@@ -27,7 +28,7 @@ export default (props: StudentProps) => {
             (element: firebase.firestore.DocumentData) =>
                 element.type === crossType
         )
-    const timeStamp = firebase.firestore.FieldValue.serverTimestamp()
+    const timeStamp = new Date()
     const handleAddCross = (crossType: string) => {
         db.collection('users')
             .doc(currentUser.uid)

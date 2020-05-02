@@ -24,15 +24,6 @@ export default ({ groups }: Props) => {
 
     return (
         <div className="flex flex-col items-center rounded mt-5 h-auto justify-around mx-6 bg-gray-100 shadow-custom">
-            <button
-                onClick={() => {
-                    setNameInputValue(nameInputValue.toLowerCase())
-                    console.log(nameInputValue)
-                }}
-            >
-                {' '}
-                test
-            </button>
             <form
                 className="flex flex-col w-full h-full bg-transparent mt-5"
                 onSubmit={(e) => {

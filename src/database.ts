@@ -33,7 +33,6 @@ export const fetchStudents = async (currentUserId: string) => {
         .orderBy('name')
         .get()
 
-
     const data = [] as firebase.firestore.DocumentData[]
     querySnapshot.docs.forEach((doc) => data.push(doc.data()))
 
