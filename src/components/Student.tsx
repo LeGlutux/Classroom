@@ -6,9 +6,7 @@ import pen from '../images/observation.png'
 import Firebase from '../firebase'
 import { AuthContext } from '../Auth'
 import firebase from 'firebase/app'
-import { useCross, useGroups } from '../hooks'
-import DatePicker from 'react-datepicker'
-
+import { useCross, useGroups, useRunningPeriode, usePeriodes } from '../hooks'
 interface StudentProps {
     name: string
     surname: string
@@ -21,30 +19,64 @@ export default (props: StudentProps) => {
     const { currentUser } = useContext(AuthContext)
     const currentStudent = props.surname.concat(' ').concat(props.name)
     if (currentUser === null) return <div />
-
+    const { periodes, refreshPeriodes } = usePeriodes(currentUser.uid)
+    const { runningPeriode, refreshRunningPeriode } = useRunningPeriode(
+        currentUser.uid
+    )
     const { cross, refreshCross } = useCross(currentUser.uid, currentStudent)
-    const crossFilter = (crossType: string) =>
-        cross.filter(
-            (element: firebase.firestore.DocumentData) =>
-                element.type === crossType
-        )
-    const timeStamp = new Date()
+
+    const crossFilter = (crossType: string, runningP: number) => {
+        if (runningP === periodes.length) {
+            const filtered = cross
+                .filter(
+                    (element: firebase.firestore.DocumentData) =>
+                        element.type === crossType
+                )
+                .filter(
+                    (element: firebase.firestore.DocumentData) =>
+                        element.time > periodes[runningP - 1]
+                )
+            return filtered
+        } else {
+            const filtered = cross
+                .filter(
+                    (element: firebase.firestore.DocumentData) =>
+                        element.type === crossType
+                )
+                .filter(
+                    (element: firebase.firestore.DocumentData) =>
+                        element.time < periodes[runningP] &&
+                        element.time > periodes[runningP - 1]
+                )
+            return filtered
+        }
+    }
+    // const timeStamp = firebase.firestore.FieldValue.serverTimestamp()
     const handleAddCross = (crossType: string) => {
-        db.collection('users')
-            .doc(currentUser.uid)
-            .collection('eleves')
-            .doc(currentStudent)
-            .collection('crosses')
-            .doc()
-            .set({
-                type: crossType,
-                time: timeStamp,
-            })
-        refreshCross()
+        if (runningPeriode === 6) {
+            db.collection('users')
+                .doc(currentUser.uid)
+                .collection('eleves')
+                .doc(currentStudent)
+                .collection('crosses')
+                .doc()
+                .set({
+                    type: crossType,
+                    time: new Date(),
+                })
+            refreshCross()
+        }
     }
 
     return (
         <div className="rounded mt-5 pb-1 h-32 mx-6 bg-gray-100 shadow-custom">
+            <button
+                onClick={() => {
+                    console.log(periodes.length)
+                }}
+            >
+                log
+            </button>
             <div className="flex justify-between flex-col">
                 <div className="flex flex-row">
                     <button
@@ -78,7 +110,7 @@ export default (props: StudentProps) => {
                             <img className="" src={alarm} alt="" />
                         </button>
                         <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-5xl ">
-                            {crossFilter('behaviour').length}
+                            {crossFilter('behaviour', runningPeriode).length}
                         </div>
                     </div>
                     <div className="flex flex-row">
@@ -89,7 +121,7 @@ export default (props: StudentProps) => {
                             <img className="" src={bookPile} alt="" />
                         </button>
                         <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-5xl ">
-                            {crossFilter('homework').length}
+                            {crossFilter('homework', runningPeriode).length}
                         </div>
                     </div>
                     <div className="flex flex-row">
@@ -100,7 +132,7 @@ export default (props: StudentProps) => {
                             <img className="" src={schoolBag} alt="" />
                         </button>
                         <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-5xl ">
-                            {crossFilter('supply').length}
+                            {crossFilter('supply', runningPeriode).length}
                         </div>
                     </div>
                     <div className="flex flex-row">
@@ -111,11 +143,18 @@ export default (props: StudentProps) => {
                             <img className="" src={pen} alt="" />
                         </button>
                         <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-5xl ">
-                            {crossFilter('observation').length}
+                            {crossFilter('observation', runningPeriode).length}
                         </div>
                     </div>
                 </div>
             </div>
+            <button
+                onClick={() =>
+                    cross.forEach((cr) => console.log(cr.time < new Date()))
+                }
+            >
+                Log
+            </button>
         </div>
     )
 }

@@ -33,6 +33,8 @@ const SignUp = () => {
                         email: user.email,
                         userName: name.value,
                         classes: [] as string[],
+                        periodes: [new Date()],
+                        runningPeriode: 1 as number,
                     })
 
                 history.push('/')

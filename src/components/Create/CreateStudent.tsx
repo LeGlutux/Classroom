@@ -1,12 +1,9 @@
 import React, { useState, ChangeEvent, useContext, useEffect } from 'react'
-import add from '../../images/add.png'
 import solo from '../../images/solo.png'
 import { AuthContext } from '../../Auth'
 import Firebase from '../../firebase'
 import NewStudentGroups from '../NewStudentGroups'
-import { NONAME } from 'dns'
-import { Server } from 'tls'
-import { wait } from '@testing-library/react'
+
 
 interface Props {
     groups: string[]

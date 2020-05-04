@@ -1,5 +1,5 @@
 import { useState, ChangeEvent, useContext, useEffect } from 'react'
-import { fetchGroups, fetchCross, fetchStudents } from './database'
+import { fetchGroups, fetchCross, fetchStudents, fetchPeriodes, fetchRunningPeriode } from './database'
 
 export const useGroups = (currentUserId: string) => {
     const [groups, setGroups] = useState<string[]>([])
@@ -58,4 +58,39 @@ export const useStudents = (currentUserId: string) => {
     }
 
     return { students, filterStudents, allStudents }
+}
+
+export const usePeriodes = (currentUserId: string) => {
+    const [periodes, setPeriodes] = useState<Date[]>([])
+
+    useEffect(() => {
+        const fetch = async () => {
+            setPeriodes(await fetchPeriodes(currentUserId))
+        }
+        fetch()
+    }, [])
+
+    const refreshPeriodes = async () => {
+        setPeriodes(await fetchPeriodes(currentUserId))
+    }
+    return { periodes, refreshPeriodes }
+}
+
+export const useRunningPeriode = (currentUserId: string) => {
+    const [runningPeriode, setRunningPeriode] = useState<number>(1)
+
+    useEffect(() => {
+        const fetch = async () => {
+            setRunningPeriode(await fetchRunningPeriode(currentUserId))
+        }
+        fetch()
+    }, [])
+
+    // [runningPeriode] dans le tableau vide ???
+
+    const refreshRunningPeriode = async () => {
+        setRunningPeriode(await fetchRunningPeriode(currentUserId))
+    }
+
+    return { runningPeriode, refreshRunningPeriode }
 }

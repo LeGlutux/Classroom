@@ -1,15 +1,33 @@
-import React, { useState, ChangeEvent, Component, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import NavBar from './NavBar'
 import Firebase from 'firebase/app'
 import 'react-datepicker/dist/react-datepicker.css'
-import Dater from './Dater'
+import firebase from 'firebase'
+import { AuthContext } from '../Auth'
+import { usePeriodes, useRunningPeriode } from '../hooks'
+import PeriodeFilter from './PeriodeFilter'
 
 export default () => {
-    const [checkTrimestre, setCheckTrimestre] = useState(true)
+    const currentUser = { uid: 'qtszGKciseWlG60fuQ3W8we9Zvk2' }
+    // const { currentUser } = useContext(AuthContext)
+    if (currentUser === null) return <div />
+
+    const { runningPeriode, refreshRunningPeriode } = useRunningPeriode(
+        currentUser.uid
+    )
+    const { periodes, refreshPeriodes } = usePeriodes(currentUser.uid)
+    const db = firebase.firestore()
     const [checkDisplayTrimestre, setCheckDisplayTrimestre] = useState(false)
     const [checkDisplayGroups, setCheckDisplayGroups] = useState(true)
-    const periodesTrimestre = ['T1', 'T2', 'T3']
-    const periodesPeriodes = ['P1', 'P2', 'P3', 'P4', 'P5']
+    // const timeStamp = firebase.firestore.FieldValue.serverTimestamp()
+    const handleAddPeriode = () => {
+        db.collection('users')
+            .doc(currentUser.uid)
+            .update({
+                periodes: firebase.firestore.FieldValue.arrayUnion(new Date()),
+            })
+    }
+
     return (
         <div className="w-full h-screen flex flex-col">
             <NavBar />
@@ -18,35 +36,28 @@ export default () => {
                     <div className="font-bold text-orange-500 my-4">
                         CONFIGURER LES PÉRIODES
                     </div>
-                    <div className="flex flex-row items-center ">
-                        <input
-                            type="checkbox"
-                            className={`ml-8 mr-2 h-4 w-4`}
-                            checked={checkTrimestre}
-                            onChange={(e) => {
-                                setCheckTrimestre(!checkTrimestre)
-                            }}
-                        />
-                        <div>Trimestre</div>
-                        <input
-                            type="checkbox"
-                            className={`ml-8 mr-2 h-4 w-4`}
-                            checked={!checkTrimestre}
-                            onChange={(e) => setCheckTrimestre(!checkTrimestre)}
-                        />
-                        <div>Périodes</div>
-                    </div>
-                    <form action="">
-                        <div className="flex flex-col">
-                            {checkTrimestre
-                                ? periodesTrimestre.map((periode, index) => (
-                                      <Dater key={index} title={periode} />
-                                  ))
-                                : periodesPeriodes.map((periode, index) => (
-                                      <Dater key={index + 3} title={periode} />
-                                  ))}
-                        </div>
-                    </form>
+                    <div>En cours : Période {runningPeriode}</div>
+                    <button
+                        onClick={() => {
+                            handleAddPeriode()
+                            refreshPeriodes()
+                            refreshRunningPeriode()
+                            db.collection('users')
+                                .doc(currentUser.uid)
+                                .update({ runningPeriode: periodes.length + 1 })
+                            refreshRunningPeriode()
+                        }}
+                    >
+                        {' '}
+                        Ajouter une période
+                    </button>
+
+                    <PeriodeFilter
+                        periodes={periodes}
+                        currentUser={currentUser.uid}
+                        refresh={refreshRunningPeriode}
+                    />
+
                     <div className="font-bold text-orange-500 mt-12 mb-4">
                         CONFIGURER L'AFFICHAGE
                     </div>
