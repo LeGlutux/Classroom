@@ -30,7 +30,9 @@ export const useCross = (currentUserId: string, currentStudentId: string) => {
             setCross(await fetchCross(currentUserId, currentStudentId))
         }
         fetch()
-    }, [fetchStudents(currentUserId)])
+    }, [])
+
+    // fetchStudents(currentUserId) in []
 
     const refreshCross = async () => {
         setCross(await fetchCross(currentUserId, currentStudentId))
@@ -43,18 +45,18 @@ export const useStudents = (currentUserId: string) => {
     const [students, setStudents] = useState<firebase.firestore.DocumentData[]>([])
     useEffect(() => {
         const fetch = async () => {
-            setStudents(await fetchStudents(currentUserId))
+            setStudents((await fetchStudents(currentUserId)).students)
         }
         fetch()
     }, [])
 
     const filterStudents = async (group: string) => {
-        const filteredStudents = (await fetchStudents(currentUserId)).filter((student) => student.classes.includes(group))
+        const filteredStudents = (await fetchStudents(currentUserId)).students.filter((student) => student.classes.includes(group))
         setStudents(filteredStudents)
     }
 
     const allStudents = async () => {
-        setStudents(await fetchStudents(currentUserId))
+        setStudents((await fetchStudents(currentUserId)).students)
     }
 
     return { students, filterStudents, allStudents }

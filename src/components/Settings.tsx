@@ -8,8 +8,7 @@ import { usePeriodes, useRunningPeriode } from '../hooks'
 import PeriodeFilter from './PeriodeFilter'
 
 export default () => {
-    const currentUser = { uid: 'qtszGKciseWlG60fuQ3W8we9Zvk2' }
-    // const { currentUser } = useContext(AuthContext)
+    const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
 
     const { runningPeriode, refreshRunningPeriode } = useRunningPeriode(

@@ -35,10 +35,13 @@ export const fetchStudents = async (currentUserId: string) => {
         .orderBy('name')
         .get()
 
-    const data = [] as firebase.firestore.DocumentData[]
-    querySnapshot.docs.forEach((doc) => data.push(doc.data()))
+    const students = [] as firebase.firestore.DocumentData[]
+    querySnapshot.docs.forEach((doc) => students.push(doc.data()))
 
-    return data
+    const studentsId = [] as string[]
+    querySnapshot.docs.forEach((doc) => studentsId.push(doc.id))
+
+    return { students, studentsId }
 }
 
 export const fetchPeriodes = async (currentUserId: string) => {

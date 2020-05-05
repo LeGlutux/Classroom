@@ -3,6 +3,7 @@ import alarm from '../images/behaviour.png'
 import bookPile from '../images/homework.png'
 import schoolBag from '../images/supply.png'
 import pen from '../images/observation.png'
+import studentLock from '../images/studentLock.png'
 import Firebase from '../firebase'
 import { AuthContext } from '../Auth'
 import firebase from 'firebase/app'
@@ -51,9 +52,8 @@ export default (props: StudentProps) => {
             return filtered
         }
     }
-    // const timeStamp = firebase.firestore.FieldValue.serverTimestamp()
     const handleAddCross = (crossType: string) => {
-        if (runningPeriode === 6) {
+        if (runningPeriode === periodes.length) {
             db.collection('users')
                 .doc(currentUser.uid)
                 .collection('eleves')
@@ -69,14 +69,13 @@ export default (props: StudentProps) => {
     }
 
     return (
-        <div className="rounded mt-5 pb-1 h-32 mx-6 bg-gray-100 shadow-custom">
-            <button
-                onClick={() => {
-                    console.log(periodes.length)
-                }}
-            >
-                log
-            </button>
+        <div
+            className={`rounded mt-5 pb-1 h-32 mx-6 shadow-custom ${
+                runningPeriode === periodes.length
+                    ? 'bg-gray-100'
+                    : 'bg-gray-500'
+            }`}
+        >
             <div className="flex justify-between flex-col">
                 <div className="flex flex-row">
                     <button
@@ -100,6 +99,10 @@ export default (props: StudentProps) => {
                             {props.name}
                         </div>
                     </button>
+                    <div className="flex justify-end h-4 w-full">
+                        {' '}
+                        <img className='h-6 w-6 mr-3 mt-3' src={studentLock} alt="" />
+                    </div>
                 </div>
                 <div className=" w-full h-24 flex flex-wrap p-2 content-center justify-between pr-6">
                     <div className="flex flex-row">
@@ -148,13 +151,6 @@ export default (props: StudentProps) => {
                     </div>
                 </div>
             </div>
-            <button
-                onClick={() =>
-                    cross.forEach((cr) => console.log(cr.time < new Date()))
-                }
-            >
-                Log
-            </button>
         </div>
     )
 }

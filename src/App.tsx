@@ -8,7 +8,6 @@ import PrivateRoute from './PrivateRoute'
 import Login from './components/Login'
 import SignUp from './components/SignUp'
 import { AuthContext } from './Auth'
-import Settings from './components/Settings'
 
 export default () => {
     const firestore = Firebase.firestore()
@@ -31,12 +30,7 @@ export default () => {
                                 <Route path="/signup">
                                     <SignUp />
                                 </Route>
-                                <PrivateRoute
-                                    path="/settings"
-                                    component={Settings}
-                                >
-                                    <Settings />
-                                </PrivateRoute>
+
                                 <PrivateRoute path="/" component={FrontPage} />
                             </Switch>
                         </Router>
