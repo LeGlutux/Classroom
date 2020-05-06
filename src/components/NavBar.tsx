@@ -1,11 +1,7 @@
-import React, { useState, ChangeEvent } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import nut from '../images/nut.png'
-import home from '../images/home.png'
-import login from '../images/login.png'
 import addPage from '../images/addPage.png'
-import Firebase from '../firebase'
-import signout from '../images/signout.png'
 import bandeauCrayon2 from '../images/bandeauCrayon2.jpg'
 export default () => {
     return (

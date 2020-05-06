@@ -4,7 +4,6 @@ import { AuthContext } from '../../Auth'
 import Firebase from '../../firebase'
 import NewStudentGroups from '../NewStudentGroups'
 
-
 interface Props {
     groups: string[]
 }
@@ -28,6 +27,7 @@ export default ({ groups }: Props) => {
                         surnameInputValue !== '' &&
                         list.length !== 0
                     ) {
+                        const id = Date.now().toString()
                         const nameCased = nameInputValue.replace(/^\w/, (c) =>
                             c.toUpperCase()
                         )
@@ -39,15 +39,12 @@ export default ({ groups }: Props) => {
                             .collection('users')
                             .doc(currentUser.uid)
                             .collection('eleves')
-                            .doc(
-                                surnameInputValue
-                                    .concat(' ')
-                                    .concat(nameInputValue)
-                            )
+                            .doc(id)
                             .set({
                                 name: nameCased,
                                 surname: surnameCased,
                                 classes: list,
+                                id,
                             })
                         setNameInputValue('')
                         setSurnameInputValue('')
