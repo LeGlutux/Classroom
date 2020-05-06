@@ -28,7 +28,7 @@ export default (props: NewStudentGroupsProps) => {
                 checked={check}
                 onChange={(e) => handleCheck(check, props.list)}
             />
-            <div className="font-studentName flex text-center items-center text-lg mx-2">
+            <div className="font-studentName flex text-center items-center text-xl mx-2">
                 {props.classe}
             </div>
         </div>

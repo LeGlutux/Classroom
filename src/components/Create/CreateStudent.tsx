@@ -50,10 +50,9 @@ export default ({ groups }: Props) => {
                                 surname: surnameCased,
                                 classes: list,
                             })
+                        firestore.collection('paths').doc(id).set({ id })
                         setNameInputValue('')
                         setSurnameInputValue('')
-                        e.preventDefault()
-                    e.stopPropagation()
                     } else {
                         throw new Error("le formulaire n'est pas complet")
                     }
@@ -72,12 +71,12 @@ export default ({ groups }: Props) => {
                                 onChange={(e) =>
                                     setSurnameInputValue(e.target.value)
                                 }
-                                className="h-10 mt-3 placeholder-gray-700 ml-5 bg-transparent border-b-2 border-gray-600 text-lg"
+                                className="h-10 mt-3 placeholder-gray-700 ml-5 bg-transparent border-b-2 border-gray-600 text-xl"
                                 type="text"
                                 placeholder="Prénom de l'élève"
                             />
                             <input
-                                className="h-10 mt-3 placeholder-gray-700 text-lg ml-5 bg-transparent border-b-2 border-gray-600"
+                                className="h-10 mt-3 placeholder-gray-700 text-xl ml-5 bg-transparent border-b-2 border-gray-600"
                                 value={nameInputValue}
                                 onChange={(e) =>
                                     setNameInputValue(e.target.value)
@@ -101,7 +100,7 @@ export default ({ groups }: Props) => {
                     </div>
                     <button
                         type="submit"
-                        className="flex h-8 w-40 self-center mt-6 bg-orange-500 rounded text-white flex text-lg font-bold justify-center"
+                        className="flex h-10 w-48 self-center mt-6 bg-orange-500 rounded text-white flex text-xl font-bold justify-center"
                     >
                         Ajouter l'élève
                     </button>

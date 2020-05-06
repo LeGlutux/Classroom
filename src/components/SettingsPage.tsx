@@ -49,12 +49,12 @@ export default ({ user }: SettingsPageProps) => {
                     <CreateStudent groups={groups} />
                 </div>
                 <div className="flex flex-col mt-2 overflow-y-scroll">
-                    <div className="flex flex-col items-center rounded mt-5 h-auto justify-around mx-6 bg-gray-100 shadow-custom">
-                        <div className="text-gray-800 font-studentName text-lg">
-                            En cours : Période {runningPeriode}
+                    <div className="ml-4 flex flex-col">
+                        <div className="font-bold text-orange-500 my-4">
+                            CONFIGURER LES PÉRIODES
                         </div>
+                        <div>En cours : Période {runningPeriode}</div>
                         <button
-                            className="flex h-8 w-56 self-center bg-orange-500 rounded text-white flex text-lg font-bold justify-center mt-2"
                             onClick={() => {
                                 handleAddPeriode()
                                 refreshPeriodes()
@@ -77,7 +77,42 @@ export default ({ user }: SettingsPageProps) => {
                             refresh={refreshRunningPeriode}
                         />
 
+                        <div className="font-bold text-orange-500 mt-12 mb-4">
+                            CONFIGURER L'AFFICHAGE
+                        </div>
+                        <div className="flex flex-col items-center">
+                            <div className="flex flex-row items-center">
+                                <input
+                                    type="checkbox"
+                                    className={`ml-8 mr-2 h-4 w-4`}
+                                    checked={checkDisplayTrimestre}
+                                    onChange={(e) =>
+                                        setCheckDisplayTrimestre(
+                                            !checkDisplayTrimestre
+                                        )
+                                    }
+                                />
+                                <div>Afficher les périodes</div>
+                            </div>
+                            <div className="flex flex-row items-center">
+                                <input
+                                    type="checkbox"
+                                    className={`ml-8 mr-2 h-4 w-4`}
+                                    checked={checkDisplayGroups}
+                                    onChange={(e) =>
+                                        setCheckDisplayGroups(
+                                            !checkDisplayGroups
+                                        )
+                                    }
+                                />
+                                <div>Afficher les groupes</div>
+                            </div>
+                        </div>
                         <div>
+                            <button onClick={() => console.log(new Date())}>
+                                {' '}
+                                test{' '}
+                            </button>
                             <button
                                 className="bg-red-300"
                                 onClick={() => Firebase.auth().signOut()}
