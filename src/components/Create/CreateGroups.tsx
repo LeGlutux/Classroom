@@ -41,14 +41,14 @@ export default (props: Props) => {
                         <input
                             value={inputValue}
                             onChange={(e) => setInputValue(e.target.value)}
-                            className="h-10 mt-3 w-9/12 placeholder-gray-700 text-xl ml-5 bg-transparent border-b-2 border-gray-600"
+                            className="h-10 mt-3 w-9/12 placeholder-gray-700 text-lg ml-5 bg-transparent border-b-2 border-gray-600"
                             type="text"
                             placeholder="Nom du groupe"
                         />
                     </div>
                     <button
                         type="submit"
-                        className="flex h-10 w-48 self-center bg-orange-500 rounded text-white flex text-xl font-bold justify-center mt-5"
+                        className="flex h-8 w-40 self-center bg-orange-500 rounded text-white flex text-lg font-bold justify-center mt-2"
                     >
                         Ajouter le groupe
                     </button>
