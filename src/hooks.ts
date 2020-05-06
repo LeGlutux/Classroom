@@ -1,12 +1,5 @@
 import { useState, ChangeEvent, useContext, useEffect } from 'react'
-import {
-    fetchGroups,
-    fetchCross,
-    fetchStudents,
-    fetchPeriodes,
-    fetchRunningPeriode,
-    fetchPaths,
-} from './database'
+import { fetchGroups, fetchCross, fetchStudents, fetchPeriodes, fetchRunningPeriode } from './database'
 
 export const useGroups = (currentUserId: string) => {
     const [groups, setGroups] = useState<string[]>([])
@@ -19,7 +12,7 @@ export const useGroups = (currentUserId: string) => {
             setLoading(false)
         }
         fetch()
-    }, [groups])
+    }, [])
 
     const refreshGroups = async () => {
         setLoading(true)
@@ -49,25 +42,21 @@ export const useCross = (currentUserId: string, currentStudentId: string) => {
 }
 
 export const useStudents = (currentUserId: string) => {
-    const [students, setStudents] = useState<firebase.firestore.DocumentData[]>(
-        []
-    )
+    const [students, setStudents] = useState<firebase.firestore.DocumentData[]>([])
     useEffect(() => {
         const fetch = async () => {
-            setStudents(await fetchStudents(currentUserId))
+            setStudents((await fetchStudents(currentUserId)).students)
         }
         fetch()
     }, [])
 
     const filterStudents = async (group: string) => {
-        const filteredStudents = (
-            await fetchStudents(currentUserId)
-        ).filter((student) => student.classes.includes(group))
+        const filteredStudents = (await fetchStudents(currentUserId)).students.filter((student) => student.classes.includes(group))
         setStudents(filteredStudents)
     }
 
     const allStudents = async () => {
-        setStudents(await fetchStudents(currentUserId))
+        setStudents((await fetchStudents(currentUserId)).students)
     }
 
     return { students, filterStudents, allStudents }
@@ -106,23 +95,4 @@ export const useRunningPeriode = (currentUserId: string) => {
     }
 
     return { runningPeriode, refreshRunningPeriode }
-}
-
-export const usePaths = () => {
-    const [paths, setPaths] = useState<string[]>([])
-
-    useEffect(() => {
-        const fetch = async () => {
-            setPaths(await fetchPaths())
-        }
-        fetch()
-    }, [])
-
-    // [Paths] dans le tableau vide ???
-
-    const refreshPaths = async () => {
-        setPaths(await fetchPaths())
-    }
-
-    return { paths, refreshPaths }
 }

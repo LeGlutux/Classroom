@@ -9,10 +9,7 @@ export const fetchGroups = async (currentUserId: string) => {
     return data
 }
 
-export const fetchCross = async (
-    currentUserId: string,
-    currentStudentId: string
-) => {
+export const fetchCross = async (currentUserId: string, currentStudentId: string) => {
     const db = Firebase.firestore()
     const querySnapshot = await db
         .collection('users')
@@ -38,10 +35,13 @@ export const fetchStudents = async (currentUserId: string) => {
         .orderBy('name')
         .get()
 
-    const data = [] as firebase.firestore.DocumentData[]
-    querySnapshot.docs.forEach((doc) => data.push(doc.data()))
+    const students = [] as firebase.firestore.DocumentData[]
+    querySnapshot.docs.forEach((doc) => students.push(doc.data()))
 
-    return data
+    const studentsId = [] as string[]
+    querySnapshot.docs.forEach((doc) => studentsId.push(doc.id))
+
+    return { students, studentsId }
 }
 
 export const fetchPeriodes = async (currentUserId: string) => {
@@ -51,6 +51,8 @@ export const fetchPeriodes = async (currentUserId: string) => {
     const data = querySnapshot.data()!.periodes
 
     return data
+
+
 }
 
 export const fetchRunningPeriode = async (currentUserId: string) => {
@@ -60,15 +62,6 @@ export const fetchRunningPeriode = async (currentUserId: string) => {
     const data = querySnapshot.data()!.runningPeriode
 
     return data
-}
 
-export const fetchPaths = async () => {
-    const db = Firebase.firestore()
-    const querySnapshot = await db.collection('paths').get()
 
-    const data = [] as string[]
-
-    querySnapshot.docs.forEach((doc) => data.push(doc.id))
-
-    return data
 }
