@@ -10,9 +10,8 @@ interface PeriodeFilterProps {
 
 export default ({ periodes, currentUser, refresh }: PeriodeFilterProps) => {
     const db = firebase.firestore()
-    const { refreshRunningPeriode } = useRunningPeriode(currentUser)
     return (
-        <div className="flex overflow-auto ml-2">
+        <div className="flex ml-2">
             {periodes.map((periode, index) => {
                 return (
                     <button

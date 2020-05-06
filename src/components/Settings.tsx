@@ -87,10 +87,6 @@ export default () => {
                         </div>
                     </div>
                     <div>
-                        <button onClick={() => console.log(new Date())}>
-                            {' '}
-                            test{' '}
-                        </button>
                         <button
                             className="bg-red-300"
                             onClick={() => Firebase.auth().signOut()}
