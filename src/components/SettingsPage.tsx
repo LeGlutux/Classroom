@@ -15,6 +15,7 @@ import firebase from 'firebase'
 import { AuthContext } from '../Auth'
 import { usePeriodes, useRunningPeriode } from '../hooks'
 import PeriodeFilter from './PeriodeFilter'
+import calendar from '../images/calendar.png'
 
 interface SettingsPageProps {
     user: firebase.User
@@ -48,11 +49,15 @@ export default ({ user }: SettingsPageProps) => {
                     <CreateGroups onAddGroup={refreshGroups} />
                     <CreateStudent groups={groups} />
                 </div>
-                <div className="flex flex-col mt-2 overflow-y-scroll">
-                    <div className="flex flex-col items-center rounded mt-5 h-auto justify-around mx-6 bg-gray-100 shadow-custom">
-                        <div className="text-gray-800 font-studentName text-lg">
-                            En cours : Période {runningPeriode}
+                <div className="flex flex-col mt-5 overflow-y-scroll shadow-custom mx-6 bg-gray-100 pb-4 rounded">
+                    <div className="flex flex-col h-auto items-center justify-around">
+                        <div className="flex flex-row items-center mb-5">
+                            <img className="w-8 h-8" src={calendar} alt="" />
+                            <div className="text-gray-800 font-studentName text-lg ml-2 ">
+                                En cours : Période {runningPeriode}
+                            </div>
                         </div>
+
                         <button
                             className="flex h-8 w-56 self-center bg-orange-500 rounded text-white flex text-lg font-bold justify-center mt-2"
                             onClick={() => {
@@ -76,15 +81,21 @@ export default ({ user }: SettingsPageProps) => {
                             currentUser={currentUser.uid}
                             refresh={refreshRunningPeriode}
                         />
-
-                        <div>
-                            <button
-                                className="bg-red-300"
-                                onClick={() => Firebase.auth().signOut()}
-                            >
-                                Se déconnecter
-                            </button>
-                        </div>
+                    </div>
+                </div>
+                <div className='"w-full bg-gray-100"'>
+                    <div className="my-8 flex justify-center bg-white">
+                        <button
+                            className="text-lg text-gray-700 font-bold"
+                            onClick={() => Firebase.auth().signOut()}
+                        >
+                            Se déconnecter
+                        </button>
+                    </div>
+                </div>
+                <div className="w-full flex justify-end">
+                    <div className="font-title text-xs mr-5 mb-2">
+                        An app by Marie and Leo
                     </div>
                 </div>
             </div>

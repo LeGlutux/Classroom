@@ -17,7 +17,6 @@ export default ({ groups }: Props) => {
     if (currentUser === null) return <div />
     const [nameInputValue, setNameInputValue] = useState('')
     const [surnameInputValue, setSurnameInputValue] = useState('')
-    const padre = 'list'
 
     return (
         <div className="flex flex-col items-center rounded mt-5 h-auto justify-around mx-6 bg-gray-100 shadow-custom">
