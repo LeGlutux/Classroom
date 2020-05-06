@@ -34,13 +34,14 @@ export default () => {
             <NavBar />
 
             <div className="flex w-full h-full flex-col bg-white overflow-y-scroll">
-                {students.map(({ name, surname, classes }, index) => {
+                {students.map(({ name, surname, classes, id }) => {
                     return (
                         <Student
-                            key={index}
+                            key={id}
                             classes={classes}
                             name={name}
                             surname={surname}
+                            id={id}
                         />
                     )
                 })}
@@ -57,7 +58,6 @@ export default () => {
                         />
                     </div>
                     <div className="mt-2 ml-10 h-4">
-                        {/* bg-purple-500 md:bg-red-400 lg:bg-purple-800 xl:bg-black */}
                         <button
                             className="flex items-center"
                             onClick={() => {
@@ -97,7 +97,6 @@ export default () => {
                                 </option>
                             ))}
                         </select>
-                        <input type="submit"></input>
                     </form>
                 </div>
             </div>
