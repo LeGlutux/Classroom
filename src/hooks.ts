@@ -19,7 +19,7 @@ export const useGroups = (currentUserId: string) => {
             setLoading(false)
         }
         fetch()
-    }, [groups])
+    }, [])
 
     const refreshGroups = async () => {
         setLoading(true)

@@ -4,7 +4,7 @@ export const fetchGroups = async (currentUserId: string) => {
     const db = Firebase.firestore()
     const querySnapshot = await db.collection('users').doc(currentUserId).get()
 
-    const data = querySnapshot.data()!.classes
+    const data = querySnapshot.data()?.classes
 
     return data
 }

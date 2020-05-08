@@ -1,10 +1,4 @@
-import React, {
-    useState,
-    ChangeEvent,
-    Component,
-    useEffect,
-    useContext,
-} from 'react'
+import React, { useState, useContext } from 'react'
 import CreateGroups from './Create/CreateGroups'
 import CreateStudent from './Create/CreateStudent'
 import NavBar from './NavBar'
@@ -17,13 +11,10 @@ import { usePeriodes, useRunningPeriode } from '../hooks'
 import PeriodeFilter from './PeriodeFilter'
 import calendar from '../images/calendar.png'
 
-interface SettingsPageProps {
-    user: firebase.User
-}
-export default ({ user }: SettingsPageProps) => {
-    const { groups, refreshGroups } = useGroups(user.uid)
+export default () => {
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
+    const { groups, refreshGroups } = useGroups(currentUser.uid)
 
     const { runningPeriode, refreshRunningPeriode } = useRunningPeriode(
         currentUser.uid
@@ -49,6 +40,7 @@ export default ({ user }: SettingsPageProps) => {
                     <CreateGroups onAddGroup={refreshGroups} />
                     <CreateStudent groups={groups} />
                 </div>
+
                 <div className="flex flex-col mt-5 overflow-y-scroll shadow-custom mx-6 bg-gray-100 pb-4 rounded">
                     <div className="flex flex-col h-auto items-center justify-around">
                         <div className="flex flex-row items-center mb-5">

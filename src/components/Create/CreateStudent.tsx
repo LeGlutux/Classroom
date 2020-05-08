@@ -9,8 +9,8 @@ interface Props {
 }
 
 export default ({ groups }: Props) => {
-    const firestore = Firebase.firestore()
-    const list = [] as string[]
+    const [list, setList] = useState<string[]>([])
+    const refreshList = () => setList([])
     const db = Firebase.firestore()
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
@@ -35,8 +35,7 @@ export default ({ groups }: Props) => {
                             /^\w/,
                             (c) => c.toUpperCase()
                         )
-                        firestore
-                            .collection('users')
+                        db.collection('users')
                             .doc(currentUser.uid)
                             .collection('eleves')
                             .doc(id)
@@ -48,8 +47,7 @@ export default ({ groups }: Props) => {
                             })
                         setNameInputValue('')
                         setSurnameInputValue('')
-                        e.preventDefault()
-                    e.stopPropagation()
+                        setList(list)
                     } else {
                         throw new Error("le formulaire n'est pas complet")
                     }
@@ -103,7 +101,7 @@ export default ({ groups }: Props) => {
                     </button>
                 </div>
             </form>
+            <button onClick={() => console.log(list)}>test</button>
         </div>
     )
 }
-// pas de bug

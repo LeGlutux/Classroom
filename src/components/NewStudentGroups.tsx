@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 interface NewStudentGroupsProps {
     classe: string
     list: string[]
-    // setList: React.Dispatch<React.SetStateAction<string>>
 }
 
 export default (props: NewStudentGroupsProps) => {
@@ -13,7 +12,7 @@ export default (props: NewStudentGroupsProps) => {
 
     const handleCheck = (bool: boolean, array: string[]) => {
         if (bool) {
-            props.list.splice(index, 1)
+            props.list.splice(props.list.indexOf(props.classe), 1)
             setCheck(!bool)
         } else {
             props.list.push(props.classe)

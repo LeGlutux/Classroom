@@ -1,6 +1,5 @@
 import React, { useState, ChangeEvent } from 'react'
 import firebase from 'firebase'
-import { useRunningPeriode } from '../hooks'
 
 interface PeriodeFilterProps {
     periodes: Date[]

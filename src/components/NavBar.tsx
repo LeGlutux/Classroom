@@ -17,7 +17,7 @@ export default () => {
                     </div>
                 </Link>
             </div>
-            <div className="w-1/2 flex items-center justify-around">
+            <div className="w-1/2 flex items-center justify-end">
                 <div
                     style={{ backgroundColor: 'rgba(255,255,255,0.6)' }}
                     className="rounded-full h-16 w-16 flex justify-center items-center"
@@ -30,19 +30,7 @@ export default () => {
                         />
                     </Link>
                 </div>
-
-                <div
-                    style={{ backgroundColor: 'rgba(255,255,255,0.6)' }}
-                    className="bg-white rounded-full h-16 w-16 flex justify-center items-center"
-                >
-                    <Link to="/settings">
-                        <img
-                            className="w-12 h-12 opacity-100"
-                            src={nut}
-                            alt=""
-                        />
-                    </Link>
-                </div>
+                <Link to="/salut">test</Link>
             </div>
         </div>
     )
