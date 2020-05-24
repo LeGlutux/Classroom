@@ -101,7 +101,6 @@ export default ({ groups }: Props) => {
                     </button>
                 </div>
             </form>
-            <button onClick={() => console.log(list)}>test</button>
         </div>
     )
 }

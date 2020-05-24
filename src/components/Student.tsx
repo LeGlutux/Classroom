@@ -172,7 +172,7 @@ export default (props: StudentProps) => {
 
             <Link
                 className="flex items-center justify-end mr-6 mt-8"
-                to={props.id}
+                to={'/student/'.concat(props.id)}
             >
                 <img
                     className="w-4 flex items-center justify-end"

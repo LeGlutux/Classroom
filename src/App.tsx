@@ -28,6 +28,11 @@ export default () => {
                                 <Route path="/signup">
                                     <SignUp />
                                 </Route>
+                                <Route
+                                    exact
+                                    path="/student/:id"
+                                    component={StudentStats}
+                                />
 
                                 <PrivateRoute path="/" component={FrontPage} />
                             </Switch>
