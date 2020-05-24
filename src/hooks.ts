@@ -6,6 +6,7 @@ import {
     fetchPeriodes,
     fetchRunningPeriode,
     fetchPaths,
+    fetchStudentWithId,
 } from './database'
 
 export const useGroups = (currentUserId: string) => {
@@ -125,4 +126,17 @@ export const usePaths = () => {
     }
 
     return { paths, refreshPaths }
+}
+
+export const useStudent = (currentUserId: string, studentId: string) => {
+    const [student, setStudent] = useState<firebase.firestore.DocumentData>()
+
+    useEffect(() => {
+        const fetch = async () => {
+            setStudent(await fetchStudentWithId(currentUserId, studentId))
+        }
+        fetch()
+    }, [])
+
+    return student
 }

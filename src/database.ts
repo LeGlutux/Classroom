@@ -72,3 +72,20 @@ export const fetchPaths = async () => {
 
     return data
 }
+
+export const fetchStudentWithId = async (
+    currentUserId: string,
+    studentId: string
+) => {
+    const db = Firebase.firestore()
+    const querySnapshot = await db
+        .collection('users')
+        .doc(currentUserId)
+        .collection('eleves')
+        .doc(studentId)
+        .get()
+
+    const data = querySnapshot.data()
+
+    return data
+}

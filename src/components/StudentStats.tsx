@@ -1,29 +1,24 @@
 import React, { useState, ChangeEvent, useContext } from 'react'
-import firebase from 'firebase'
-import { useCross } from '../hooks'
+import { useCross, useStudent } from '../hooks'
 import { AuthContext } from '../Auth'
-import { LearnMoreLinks } from 'react-native/Libraries/NewAppScreen'
+import { useParams } from 'react-router-dom'
 
-interface StudentStatsProps {
-    id: string
-}
-
-export default (props: StudentStatsProps) => {
-    const stud = { surname: 'leo', name: 'ben', classes: ['5', '6'] }
-    // const db = firebase.firestore()
-    // const { currentUser } = useContext(AuthContext)
-    // if (currentUser === null) return <div />
-    // const groups = useCross(currentUser.uid, props.id)
+export default () => {
+    const { currentUser } = useContext(AuthContext)
+    const { id } = useParams()
+    if (currentUser === null) return <div />
+    if (id === undefined) return <div />
+    // const groups = useCross(currentUser.uid, id)
+    const student = useStudent(currentUser.uid, id)
+    if (student === undefined) return <div />
 
     return (
         <div className="flex flex-col my-4">
-            <div className="w-full text-3xl text-center my-4">
-                {stud.surname.concat(' ').concat(stud.name)}
+            <div className="w-full text-3xl text-center my-4 bg-red-400">
+                {student.name}
             </div>
-            <div>{props.id}</div>
-            <div className="w-full text-2xl my-4">
-                {stud.classes.join(', ')}
-            </div>
+            <div>{id}</div>
+            <div className="w-full text-2xl my-4">potu</div>
             <div className="mx-6 flex flex-col my-4">
                 <div className="w-full text-3xl">Croix</div>
             </div>

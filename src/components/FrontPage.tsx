@@ -12,7 +12,6 @@ import {
 import { AuthContext } from '../Auth'
 import firebase from 'firebase'
 
-
 export default () => {
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
