@@ -1,26 +1,85 @@
 import React, { useState, ChangeEvent, useContext } from 'react'
 import { useCross, useStudent } from '../hooks'
 import { AuthContext } from '../Auth'
-import { useParams } from 'react-router-dom'
+import { useParams, Link, Redirect, useHistory } from 'react-router-dom'
+import closeCard from '../images/closeCard.png'
+import firebase from 'firebase'
+import CrossTab from './CrossTab'
+import alarm from '../images/behaviour.png'
+import bookPile from '../images/homework.png'
+import schoolBag from '../images/supply.png'
+import pen from '../images/observation.png'
 
 export default () => {
+    const startDate = new Date('2019-09-02 00:00:01')
+    const currentWeek =
+        Math.floor(
+            (new Date().getTime() - startDate.getTime()) / (7 * 86400000)
+        ) + 1
+    const weeks = Array.from({ length: currentWeek }, (_, index) => index + 1)
+    const db = firebase.firestore()
     const { currentUser } = useContext(AuthContext)
     const { id } = useParams()
     if (currentUser === null) return <div />
     if (id === undefined) return <div />
-    // const groups = useCross(currentUser.uid, id)
     const student = useStudent(currentUser.uid, id)
     if (student === undefined) return <div />
 
+    const handleDeletion = () => {
+        db.collection('users')
+            .doc(currentUser.uid)
+            .collection('eleves')
+            .doc(id)
+            .delete()
+    }
     return (
-        <div className="flex flex-col my-4">
-            <div className="w-full text-3xl text-center my-4 bg-red-400">
-                {student.name}
+        <div className="flex flex-col">
+            <div className="w-full text-3xl text-center my-4 font-title text-5xl flex items-center">
+                <Link to="/">
+                    <img className="h-8 w-4 ml-2" src={closeCard} alt="" />
+                </Link>
+                <div className="w-full mr-4">
+                    {student.surname} {student.name}
+                </div>
             </div>
-            <div>{id}</div>
-            <div className="w-full text-2xl my-4">potu</div>
-            <div className="mx-6 flex flex-col my-4">
-                <div className="w-full text-3xl">Croix</div>
+            <div className="flex flex-row ml-4 mb-4">
+                <div className="w-6 text-sm font-bold h-4 my-2">Sem</div>
+                <div className="w-full h-4 flex flex-row justify-evenly my-2 text-xl">
+                    <div className="flex flex-row w-full mx-4 items-center justify-center">
+                        <img className='h-10 w-10' src={alarm} alt="" />
+                    </div>
+                    <div className="flex flex-row w-full mx-4 items-center justify-center">
+                        <img className='h-10 w-10' src={bookPile} alt="" />
+                    </div>
+                    <div className="flex flex-row w-full mx-4 items-center justify-center">
+                        <img className='h-10 w-10' src={schoolBag} alt="" />
+                    </div>
+                    <div className="flex flex-row w-full mx-4 items-center justify-center">
+                        <img className='h-10 w-10' src={pen} alt="" />
+                    </div>
+                </div>
+            </div>
+            <div className="flex flex-col text-2xl ml-4 h-82 overflow-y-scroll">
+                {weeks.map((elem, index) => {
+                    return (
+                        <CrossTab
+                            studentId={id}
+                            userId={currentUser.uid}
+                            week={startDate.getTime() + (weeks.length - index - 1) * 7 * 86400000}
+                            index={weeks.length - index}
+                            key={index}
+                        />
+                    )
+                })}
+            </div>
+
+            <div className="flex items-center justify-center">
+                <button
+                    onClick={() => handleDeletion()}
+                    className="flex h-8 w-40 self-center mt-6 bg-red-500 rounded text-white flex text-lg font-bold justify-center"
+                >
+                    Supprimer l'élève
+                </button>
             </div>
         </div>
     )
