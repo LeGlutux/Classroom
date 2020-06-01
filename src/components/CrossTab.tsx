@@ -1,6 +1,6 @@
-import React, { useState, useContext } from 'react'
+import React from 'react'
 import firebase from 'firebase/app'
-import { useCross, useRunningPeriode, usePeriodes } from '../hooks'
+import { useCross } from '../hooks'
 
 interface CrossTabProps {
     studentId: string
@@ -25,7 +25,10 @@ export default (props: CrossTabProps) => {
             )
         const dot = filtered.map((c) => {
             return (
-                <div className="bg-red-600 rounded-full overflow-hidden h-2 w-2 mx-1" />
+                <div
+                    key={c.index}
+                    className="bg-red-600 rounded-full overflow-hidden h-2 w-2 mx-1"
+                />
             )
         })
 

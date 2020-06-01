@@ -8,8 +8,6 @@ interface NewStudentGroupsProps {
 export default (props: NewStudentGroupsProps) => {
     const [check, setCheck] = useState(false)
 
-    const index = props.list.indexOf(props.classe)
-
     const handleCheck = (bool: boolean, array: string[]) => {
         if (bool) {
             props.list.splice(props.list.indexOf(props.classe), 1)

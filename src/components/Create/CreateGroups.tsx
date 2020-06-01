@@ -1,9 +1,8 @@
-import React, { useState, ChangeEvent, useContext } from 'react'
+import React, { useState, useContext } from 'react'
 import group from '../../images/group.png'
 import Firebase from '../../firebase'
 import firebase from 'firebase/app'
 import { AuthContext } from '../../Auth'
-import { useGroups } from '../../hooks'
 
 interface Props {
     onAddGroup: () => void

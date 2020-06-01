@@ -62,7 +62,6 @@ export default () => {
                             className="flex items-center"
                             onClick={() => {
                                 console.log(runningPeriode)
-                                console.log(periodes.length)
                             }}
                         >
                             <img className="w-4 h-4" src={eye} alt="" />
@@ -75,15 +74,14 @@ export default () => {
                                 db.collection('users')
                                     .doc(currentUser.uid)
                                     .update({
-                                        runningPeriode: e.target.value.slice(
-                                            -1
-                                        ),
+                                        runningPeriode: eval(e.target.value),
                                     })
                                 refreshRunningPeriode()
                                 refreshPeriodes()
+                                // window.location.reload()
                             }}
                         >
-                            <option defaultValue={periodes.length}>
+                            <option value={periodes.length.toString()}>
                                 {'P'.concat(periodes.length.toString())}
                             </option>
                             {pastPeriodes.reverse().map((index, key) => (

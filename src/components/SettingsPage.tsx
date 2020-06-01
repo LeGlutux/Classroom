@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useContext } from 'react'
 import CreateGroups from './Create/CreateGroups'
 import CreateStudent from './Create/CreateStudent'
 import NavBar from './NavBar'
@@ -21,9 +21,7 @@ export default () => {
     )
     const { periodes, refreshPeriodes } = usePeriodes(currentUser.uid)
     const db = firebase.firestore()
-    const [checkDisplayTrimestre, setCheckDisplayTrimestre] = useState(false)
-    const [checkDisplayGroups, setCheckDisplayGroups] = useState(true)
-    // const timeStamp = firebase.firestore.FieldValue.serverTimestamp()
+
     const handleAddPeriode = () => {
         db.collection('users')
             .doc(currentUser.uid)
@@ -51,7 +49,7 @@ export default () => {
                         </div>
 
                         <button
-                            className="flex h-8 w-56 self-center bg-orange-500 rounded text-white flex text-lg font-bold justify-center mt-2"
+                            className="flex h-8 w-56 self-center bg-orange-500 rounded text-white flex text-lg font-bold justify-center mt-2 mb-5"
                             onClick={() => {
                                 handleAddPeriode()
                                 refreshPeriodes()

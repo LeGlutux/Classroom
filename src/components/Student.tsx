@@ -23,10 +23,8 @@ export default (props: StudentProps) => {
     const db = Firebase.firestore()
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
-    const { periodes, refreshPeriodes } = usePeriodes(currentUser.uid)
-    const { runningPeriode, refreshRunningPeriode } = useRunningPeriode(
-        currentUser.uid
-    )
+    const { periodes } = usePeriodes(currentUser.uid)
+    const { runningPeriode } = useRunningPeriode(currentUser.uid)
     const { cross, refreshCross } = useCross(currentUser.uid, props.id)
 
     const crossFilter = (crossType: string, runningP: number) => {
@@ -49,8 +47,8 @@ export default (props: StudentProps) => {
                 )
                 .filter(
                     (element: firebase.firestore.DocumentData) =>
-                        element.time < periodes[runningP].getTime() &&
-                        element.time > periodes[runningP - 1].getTime()
+                        element.time < periodes[runningP] &&
+                        element.time > periodes[runningP - 1]
                 )
             return filtered
         }

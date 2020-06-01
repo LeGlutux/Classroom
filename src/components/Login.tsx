@@ -1,9 +1,9 @@
-import React, { useCallback, useContext, useState, ChangeEvent } from 'react'
+import React, { useCallback, useContext } from 'react'
 import { withRouter, Redirect } from 'react-router'
 import Firebase from 'firebase'
 import { AuthContext } from '../Auth'
 import lock from '../images/lock.png'
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import lucienEtMonstreCouleurs from '../images/lucienEtMonstreCouleurs.png'
 import mail from '../images/mail.png'
 
@@ -12,10 +12,6 @@ interface LoginProps {
 }
 
 const Login = ({ history }: LoginProps) => {
-    const [logInputValue, setLogInputValue] = useState('')
-    const [passwordInputValue, setPasswordInputValue] = useState('')
-    const [logging, setLogging] = useState(true)
-
     const handleLogin = useCallback(
         async (event) => {
             event.preventDefault()

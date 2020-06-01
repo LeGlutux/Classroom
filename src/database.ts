@@ -9,6 +9,22 @@ export const fetchGroups = async (currentUserId: string) => {
     return data
 }
 
+export const fetchCrosses = async (
+    currentUserId: string,
+    currentStudentId: string
+) => {
+    const db = Firebase.firestore()
+    const data = await db
+        .collection('users')
+        .doc(currentUserId)
+        .collection('eleves')
+        .doc(currentStudentId)
+        .collection('crosses')
+        .get()
+
+    return data
+}
+
 export const fetchCross = async (
     currentUserId: string,
     currentStudentId: string

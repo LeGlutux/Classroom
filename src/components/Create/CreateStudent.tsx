@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useContext, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 import solo from '../../images/solo.png'
 import { AuthContext } from '../../Auth'
 import Firebase from '../../firebase'
@@ -10,7 +10,6 @@ interface Props {
 
 export default ({ groups }: Props) => {
     const [list, setList] = useState<string[]>([])
-    const refreshList = () => setList([])
     const db = Firebase.firestore()
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />

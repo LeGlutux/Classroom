@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, useContext, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import {
     fetchGroups,
     fetchCross,
@@ -7,6 +7,7 @@ import {
     fetchRunningPeriode,
     fetchPaths,
     fetchStudentWithId,
+    fetchCrosses,
 } from './database'
 
 export const useGroups = (currentUserId: string) => {
@@ -30,6 +31,26 @@ export const useGroups = (currentUserId: string) => {
 
     return { groups, loading, refreshGroups }
 }
+
+export const useCrosses = (currentUserId: string, currentStudentId: string) => {
+    const [crosses, setCrosses] = useState<
+        firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
+    >()
+
+    useEffect(() => {
+        const fetch = async () => {
+            setCrosses(await fetchCrosses(currentUserId, currentStudentId))
+        }
+        fetch()
+    }, [])
+
+    const refreshCrosses = async () => {
+        setCrosses(await fetchCrosses(currentUserId, currentStudentId))
+    }
+
+    return { crosses, refreshCrosses }
+}
+
 export const useCross = (currentUserId: string, currentStudentId: string) => {
     const [cross, setCross] = useState<firebase.firestore.DocumentData[]>([])
 
@@ -39,8 +60,6 @@ export const useCross = (currentUserId: string, currentStudentId: string) => {
         }
         fetch()
     }, [])
-
-    // fetchStudents(currentUserId) in []
 
     const refreshCross = async () => {
         setCross(await fetchCross(currentUserId, currentStudentId))

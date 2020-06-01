@@ -1,7 +1,7 @@
-import React, { useState, ChangeEvent, useContext } from 'react'
-import { useCross, useStudent } from '../hooks'
+import React, { useContext } from 'react'
+import { useStudent } from '../hooks'
 import { AuthContext } from '../Auth'
-import { useParams, Link, Redirect, useHistory } from 'react-router-dom'
+import { useParams, Link, useHistory } from 'react-router-dom'
 import closeCard from '../images/closeCard.png'
 import firebase from 'firebase'
 import CrossTab from './CrossTab'
@@ -9,6 +9,7 @@ import alarm from '../images/behaviour.png'
 import bookPile from '../images/homework.png'
 import schoolBag from '../images/supply.png'
 import pen from '../images/observation.png'
+import backArrow from '../images/return.png'
 
 export default () => {
     const startDate = new Date('2019-09-02 00:00:01')
@@ -25,12 +26,18 @@ export default () => {
     const student = useStudent(currentUser.uid, id)
     if (student === undefined) return <div />
 
+    const history = useHistory()
+    const handleDeleteCross = (crossType: string) => {
+        // console.log(cross.filter((element) => element.type === crossType))
+    }
+
     const handleDeletion = () => {
         db.collection('users')
             .doc(currentUser.uid)
             .collection('eleves')
             .doc(id)
             .delete()
+        history.goBack()
     }
     return (
         <div className="flex flex-col">
@@ -46,16 +53,16 @@ export default () => {
                 <div className="w-6 text-sm font-bold h-4 my-2">Sem</div>
                 <div className="w-full h-4 flex flex-row justify-evenly my-2 text-xl">
                     <div className="flex flex-row w-full mx-4 items-center justify-center">
-                        <img className='h-10 w-10' src={alarm} alt="" />
+                        <img className="h-10 w-10" src={alarm} alt="" />
                     </div>
                     <div className="flex flex-row w-full mx-4 items-center justify-center">
-                        <img className='h-10 w-10' src={bookPile} alt="" />
+                        <img className="h-10 w-10" src={bookPile} alt="" />
                     </div>
                     <div className="flex flex-row w-full mx-4 items-center justify-center">
-                        <img className='h-10 w-10' src={schoolBag} alt="" />
+                        <img className="h-10 w-10" src={schoolBag} alt="" />
                     </div>
                     <div className="flex flex-row w-full mx-4 items-center justify-center">
-                        <img className='h-10 w-10' src={pen} alt="" />
+                        <img className="h-10 w-10" src={pen} alt="" />
                     </div>
                 </div>
             </div>
@@ -65,12 +72,42 @@ export default () => {
                         <CrossTab
                             studentId={id}
                             userId={currentUser.uid}
-                            week={startDate.getTime() + (weeks.length - index - 1) * 7 * 86400000}
+                            week={
+                                startDate.getTime() +
+                                (weeks.length - index - 1) * 7 * 86400000
+                            }
                             index={weeks.length - index}
                             key={index}
                         />
                     )
                 })}
+            </div>
+            <div className="flex flex-row ml-4 mb-4">
+                <div className="w-6 text-sm font-bold h-4 my-2" />
+                <div className="w-full h-4 flex flex-row justify-evenly my-2 text-xl">
+                    <div className="flex flex-row w-full mx-4 items-center justify-center">
+                        <button onClick={() => handleDeleteCross('behaviour')}>
+                            <img className="h-10 w-10" src={backArrow} alt="" />
+                        </button>
+                    </div>
+                    <div className="flex flex-row w-full mx-4 items-center justify-center">
+                        <button onClick={() => handleDeleteCross('homework')}>
+                            <img className="h-10 w-10" src={backArrow} alt="" />
+                        </button>
+                    </div>
+                    <div className="flex flex-row w-full mx-4 items-center justify-center">
+                        <button onClick={() => handleDeleteCross('supply')}>
+                            <img className="h-10 w-10" src={backArrow} alt="" />
+                        </button>
+                    </div>
+                    <div className="flex flex-row w-full mx-4 items-center justify-center">
+                        <button
+                            onClick={() => handleDeleteCross('observation')}
+                        >
+                            <img className="h-10 w-10" src={backArrow} alt="" />
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <div className="flex items-center justify-center">

@@ -1,6 +1,5 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import nut from '../images/nut.png'
 import addPage from '../images/addPage.png'
 import bandeauCrayon2 from '../images/bandeauCrayon2.jpg'
 export default () => {

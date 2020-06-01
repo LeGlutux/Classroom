@@ -37,6 +37,7 @@ export default () => {
                     </div>
                     <div>En cours : Période {runningPeriode}</div>
                     <button
+                        className="mb-20"
                         onClick={() => {
                             handleAddPeriode()
                             refreshPeriodes()
