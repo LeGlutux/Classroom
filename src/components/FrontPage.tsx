@@ -10,7 +10,8 @@ import {
     useRunningPeriode,
 } from '../hooks'
 import { AuthContext } from '../Auth'
-import firebase from 'firebase'
+import firebase from 'firebase/app'
+import 'firebase/firestore'
 
 export default () => {
     const { currentUser } = useContext(AuthContext)

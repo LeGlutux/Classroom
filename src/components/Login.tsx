@@ -1,6 +1,6 @@
 import React, { useCallback, useContext } from 'react'
 import { withRouter, Redirect } from 'react-router'
-import Firebase from 'firebase'
+import Firebase from 'firebase/app'
 import { AuthContext } from '../Auth'
 import lock from '../images/lock.png'
 import { Link } from 'react-router-dom'

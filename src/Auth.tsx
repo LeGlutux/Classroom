@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import Firebase from 'firebase'
+import Firebase from 'firebase/app'
 
 interface AuthContextType {
     currentUser: null | Firebase.User
