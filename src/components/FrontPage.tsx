@@ -14,7 +14,9 @@ export default () => {
 
     return (
         <div className="w-full h-screen flex flex-col">
-            <NavBar />
+            <div className="h-24">
+                <NavBar />
+            </div>
 
             <div className="flex w-full h-full flex-col bg-white overflow-y-scroll xl:flex-row xl:flex-wrap xl:content-start">
                 {students.map(({ name, surname, classes, id }) => {
@@ -29,8 +31,8 @@ export default () => {
                     )
                 })}
             </div>
-            <div className="w-full h-12 bg-gray-300 flex flex-row justify-between table-footer-group self-end">
-                <div className="ml-3 my-2 font-bold text-xl flex justify-between align-top">
+            <div className="w-full h-12 bg-gray-300 flex flex-row justify-between table-footer-group">
+                <div className="ml-3 pt-2 font-bold text-xl flex justify-between align-top">
                     <div className="overflow-x-scroll">
                         <ClassListFilter
                             onFilter={(group) => {
@@ -40,7 +42,7 @@ export default () => {
                         />
                     </div>
 
-                    <div className="block appearance-none bg-gray-200 border border-gray-200 mr-6 text-gray-700 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                    <div className="border border-gray-200 mr-6 text-gray-700 rounded">
                         {'P'.concat(runningPeriode.toString())}
                     </div>
 

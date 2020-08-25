@@ -5,7 +5,7 @@ import bandeauCrayon2 from '../images/bandeauCrayon2.jpg'
 export default () => {
     return (
         <div
-            className="flex flex-row px-4 h-28"
+            className="flex flex-row px-4 h-full xl:px-12"
             style={{ backgroundImage: `url(${bandeauCrayon2})` }}
         >
             <div className={`flex flex-row w-2/3 overflow-hidden`}>
@@ -22,11 +22,7 @@ export default () => {
                     className="rounded-full h-16 w-16 flex justify-center items-center"
                 >
                     <Link to="/create">
-                        <img
-                            className="w-12 h-12"
-                            src={addPage}
-                            alt=""
-                        />
+                        <img className="w-12 h-12" src={addPage} alt="" />
                     </Link>
                 </div>
             </div>

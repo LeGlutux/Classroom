@@ -46,13 +46,13 @@ const SignUp = () => {
     )
 
     return (
-        <div className="h-screen bg-white">
-            <div className="w-full">
+        <div className="h-screen bg-white flex flex-col xl:flex-row xl:items-center">
+            <div className="w-full xl:w-4 xl:invisible">
                 {' '}
                 <img src={bandeauCrayon} alt="" />{' '}
             </div>
             <img
-                className="flex self-center w-5/12 ml-20 mt-8"
+                className="flex w-5/12 ml-20 mt-8 xl:w-auto xl:big"
                 src={lucienPlongeon}
                 alt=""
             />
@@ -61,7 +61,7 @@ const SignUp = () => {
             >
                 <div className="flex flex-col w-full">
                     <div className="w-full flex items-center flex-col">
-                        <div className=" font-title text-6xl">Thòt Note</div>
+                        <div className=" font-title text-6xl xl:text-big">Thòt Note</div>
 
                         <div className="w-10/12 flex flex-row content-center rounded-lg h-full bg-transparent">
                             <form
@@ -72,7 +72,7 @@ const SignUp = () => {
                                 <div className="flex flex-col h-full justify-center w-full items-center">
                                     <div className="w-8/12 border-b-2 border-gray-600 flex flex-row items-center hover:border-gray-600">
                                         <img
-                                            className="w-8 h-8 mt-3"
+                                            className="w-8 h-8 xl:w-12 xl:h-12 mt-3"
                                             src={femaleUser}
                                             alt=""
                                         />
@@ -80,12 +80,12 @@ const SignUp = () => {
                                             name="name"
                                             type="name"
                                             placeholder="Prénom"
-                                            className="h-10 mt-3 w-full placeholder-gray-900 ml-5 bg-transparent"
+                                            className="h-10 mt-3 xl:mb-3 w-full placeholder-gray-900 xl:text-3xl xl:mt-10 ml-5 bg-transparent"
                                         />
                                     </div>
                                     <div className="w-8/12 border-b-2 border-gray-600 flex flex-row items-center hover:border-gray-600">
                                         <img
-                                            className="w-8 h-8 mt-3"
+                                            className="w-8 h-8 xl:w-12 xl:h-12 mt-3"
                                             src={mail}
                                             alt=""
                                         />
@@ -93,12 +93,12 @@ const SignUp = () => {
                                             name="email"
                                             type="email"
                                             placeholder="Email"
-                                            className="h-10 mt-3 w-full placeholder-gray-900 ml-5 bg-transparent"
+                                            className="h-10 mt-3 xl:mb-3 w-full placeholder-gray-900 xl:text-3xl xl:mt-10 ml-5 bg-transparent"
                                         />
                                     </div>
                                     <div className="w-8/12 border-b-2 border-gray-600 flex flex-row items-center hover:border-gray-600">
                                         <img
-                                            className="w-8 h-8 mt-3"
+                                            className="w-8 h-8 xl:w-12 xl:h-12 mt-3"
                                             src={lock}
                                             alt=""
                                         />
@@ -106,17 +106,17 @@ const SignUp = () => {
                                             name="password"
                                             type="password"
                                             placeholder="Mot de Passe"
-                                            className="h-10 mt-3 w-full placeholder-gray-900 ml-5 bg-transparent"
+                                            className="h-10 mt-3 xl:mb-3 w-full placeholder-gray-900 xl:text-3xl xl:mt-10 ml-5 bg-transparent"
                                         />
                                     </div>
                                     <button
                                         type="submit"
-                                        className="flex h-10 w-48 self-center mt-5 bg-orange-500 rounded text-white flex text-xl font-bold justify-center"
+                                        className="flex h-10 w-48 xl:h-12 xl:w-64 xl:text-3xl self-center mt-5 bg-orange-500 rounded text-white flex text-xl font-bold justify-center"
                                     >
                                         Créer un Compte
                                     </button>
                                     <div className="flex justify-end self-end mt-4 mr-4">
-                                        <div className="flex self-end text-xs">
+                                        <div className="flex self-end text-xs xl:text-xl">
                                             <Link
                                                 to="/login"
                                                 className="text-blue-700"

@@ -32,7 +32,9 @@ export default () => {
 
     return (
         <div className="w-full h-screen flex flex-col">
-            <NavBar />
+            <div className="h-24 w-full">
+                <NavBar />
+            </div>
 
             <div className="overflow-y-scroll">
                 <div className="w-full bg-gray-100 flex flex-col xl:flex-row xl:flex-wrap xl:justify-around">
@@ -83,7 +85,6 @@ export default () => {
                     </div>
                 </div>
             </div>
-            <div className="w-full h-12 bg-gray-300 flex flex-row justify-between table-footer-group self-end" />
         </div>
     )
 }
