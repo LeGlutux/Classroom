@@ -12,7 +12,7 @@ import pen from '../images/observation.png'
 import backArrow from '../images/return.png'
 
 export default () => {
-    const startDate = new Date('2019-09-02 00:00:01')
+    const startDate = new Date('2020-09-01 00:00:01')
     const currentWeek =
         Math.floor(
             (new Date().getTime() - startDate.getTime()) / (7 * 86400000)

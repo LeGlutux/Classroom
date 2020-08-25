@@ -10,7 +10,7 @@ interface PeriodeFilterProps {
 export default ({ periodes, currentUser, refresh }: PeriodeFilterProps) => {
     const db = firebase.firestore()
     return (
-        <div className="flex ml-2">
+        <div className="flex ml-2 w-full justify-center">
             {periodes.map((periode, index) => {
                 return (
                     <button
@@ -20,7 +20,7 @@ export default ({ periodes, currentUser, refresh }: PeriodeFilterProps) => {
                                 .update({ runningPeriode: index + 1 })
                             refresh()
                         }}
-                        className="font-studentName h-8 mx-2 bg-white w-16 text-center rounded-sm rounded-full"
+                        className="font-studentName h-8 xl:h-16 mx-2 bg-white w-16 text-center rounded-sm rounded-full xl:text-2xl"
                         key={index}
                     >
                         P{index + 1}

@@ -33,23 +33,23 @@ export default () => {
     return (
         <div className="w-full h-screen flex flex-col">
             <NavBar />
+
             <div className="overflow-y-scroll">
-                <div className="w-full bg-gray-100">
+                <div className="w-full bg-gray-100 flex flex-col xl:flex-row xl:flex-wrap xl:justify-around">
                     <CreateGroups onAddGroup={refreshGroups} />
                     <CreateStudent groups={groups} />
                 </div>
-
-                <div className="flex flex-col mt-5 overflow-y-scroll shadow-custom mx-6 bg-gray-100 pb-4 rounded">
+                <div className="flex flex-col mt-5 shadow-custom mx-6 bg-gray-100 pb-4 rounded xl:mt-12 xl:mx-64">
                     <div className="flex flex-col h-auto items-center justify-around">
                         <div className="flex flex-row items-center mb-5">
                             <img className="w-8 h-8" src={calendar} alt="" />
-                            <div className="text-gray-800 font-studentName text-lg ml-2 ">
+                            <div className="text-gray-800 font-studentName text-lg ml-2">
                                 En cours : Période {runningPeriode}
                             </div>
                         </div>
 
                         <button
-                            className="flex h-8 w-56 self-center bg-orange-500 rounded text-white flex text-lg font-bold justify-center mt-2 mb-5"
+                            className="flex h-16 w-56 self-center bg-red-700 rounded text-white flex text-lg font-bold justify-center pt-1 mb-5 flex-wrap"
                             onClick={() => {
                                 handleAddPeriode()
                                 refreshPeriodes()
@@ -63,9 +63,8 @@ export default () => {
                             }}
                         >
                             {' '}
-                            Ajouter une période
+                            Commencer une nouvelle période
                         </button>
-
                         <PeriodeFilter
                             periodes={periodes}
                             currentUser={currentUser.uid}
@@ -83,12 +82,8 @@ export default () => {
                         </button>
                     </div>
                 </div>
-                <div className="w-full flex justify-end">
-                    <div className="font-title text-xs mr-5 mb-2">
-                        An app by Marie and Leo
-                    </div>
-                </div>
             </div>
+            <div className="w-full h-12 bg-gray-300 flex flex-row justify-between table-footer-group self-end" />
         </div>
     )
 }

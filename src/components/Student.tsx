@@ -70,8 +70,8 @@ export default (props: StudentProps) => {
     }
 
     return (
-        <div className="flex flex-row w-full items-center">
-            <div className="flex h-full items-center mt-5 ml-2">
+        <div className="flex flex-row w-full xl:w-1/3 items-center">
+            <div className="flex h-full items-center mt-5 ml-2 xl:pt-6">
                 <img
                     className={`h-4 w-4 ${
                         runningPeriode === periodes.length
@@ -90,7 +90,7 @@ export default (props: StudentProps) => {
                 }`}
             >
                 <div className="flex justify-between flex-col">
-                    <div className="flex flex-row">
+                    <div className="flex flex-row overflow-hidden">
                         <button
                             onClick={() => {
                                 setHighlight(!highlight)
@@ -98,15 +98,27 @@ export default (props: StudentProps) => {
                             className={`flex flex-row lg:flex-row xl:flex:row mt-2 `}
                         >
                             <div
-                                className={`font-studentName ml-2 text-3xl text-gray-900 font-medium h-5 ${
+                                className={`font-studentName ml-2 text-gray-900 font-medium xl:text-4xl h-5 ${
                                     highlight ? 'text-red-600' : ''
+                                }
+                                ${
+                                    props.surname.length + props.name.length >
+                                    20
+                                        ? 'text-xl'
+                                        : 'text-3xl'
                                 }`}
                             >
                                 {props.surname}
                             </div>
                             <div
-                                className={`font-studentName ml-2 text-3xl text-2xl text-gray-900 font-medium font-bold overflow-hidden ${
+                                className={`font-studentName ml-2 text-gray-900 font-medium xl:text-4xl font-bold ${
                                     highlight ? 'text-red-600' : ''
+                                }
+                                ${
+                                    props.surname.length + props.name.length >
+                                    20
+                                        ? 'text-xl'
+                                        : 'text-3xl'
                                 }`}
                             >
                                 {props.name}
@@ -117,11 +129,11 @@ export default (props: StudentProps) => {
                         <div className="flex flex-row">
                             <button
                                 onClick={() => handleAddCross('behaviour')}
-                                className="w-10 h-10 rounded-full"
+                                className="w-10 h-10 xl:w-16 xl:h-16 rounded-full"
                             >
                                 <img className="" src={alarm} alt="" />
                             </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-5xl ">
+                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-5xl xl:pb-8 ">
                                 {
                                     crossFilter('behaviour', runningPeriode)
                                         .length
@@ -131,33 +143,33 @@ export default (props: StudentProps) => {
                         <div className="flex flex-row">
                             <button
                                 onClick={() => handleAddCross('homework')}
-                                className="w-10 h-10 rounded-full"
+                                className="w-10 h-10 xl:w-16 xl:h-16 rounded-full"
                             >
                                 <img className="" src={bookPile} alt="" />
                             </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-5xl ">
+                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-5xl xl:pb-8 ">
                                 {crossFilter('homework', runningPeriode).length}
                             </div>
                         </div>
                         <div className="flex flex-row">
                             <button
                                 onClick={() => handleAddCross('supply')}
-                                className="w-10 h-10 rounded-full"
+                                className="w-10 h-10 xl:w-16 xl:h-16 rounded-full"
                             >
                                 <img className="" src={schoolBag} alt="" />
                             </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-5xl ">
+                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-5xl xl:pb-8 ">
                                 {crossFilter('supply', runningPeriode).length}
                             </div>
                         </div>
                         <div className="flex flex-row">
                             <button
                                 onClick={() => handleAddCross('observation')}
-                                className="w-10 h-10 rounded-full"
+                                className="w-10 h-10 xl:w-16 xl:h-16 rounded-full"
                             >
                                 <img className="" src={pen} alt="" />
                             </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-5xl ">
+                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-5xl xl:pb-8 ">
                                 {
                                     crossFilter('observation', runningPeriode)
                                         .length

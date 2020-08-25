@@ -7,7 +7,7 @@ interface ClassListFilterProps {
 
 export default ({ groups, onFilter }: ClassListFilterProps) => {
     return (
-        <div className="flex overflow-auto ml-2">
+        <div className="flex overflow-auto ml-2 mr-6">
             {groups.map((group, index) => {
                 return (
                     <button
