@@ -11,6 +11,8 @@ export default () => {
     const { students, filterStudents } = useStudents(currentUser.uid)
     const { groups } = useGroups(currentUser.uid)
     const { runningPeriode } = useRunningPeriode(currentUser.uid)
+    const action = false
+    const confirm = false
 
     return (
         <div className="w-full h-screen flex flex-col">

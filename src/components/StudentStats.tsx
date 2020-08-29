@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { useStudent } from '../hooks'
 import { AuthContext } from '../Auth'
 import { useParams, Link, useHistory } from 'react-router-dom'
@@ -10,6 +10,7 @@ import bookPile from '../images/homework.png'
 import schoolBag from '../images/supply.png'
 import pen from '../images/observation.png'
 import backArrow from '../images/return.png'
+import ConfirmModal from './ConfirmModal'
 
 export default () => {
     const startDate = new Date('2020-08-31 00:00:01')
@@ -39,9 +40,15 @@ export default () => {
             .delete()
         history.goBack()
     }
+
+    const test = true
+    const [confirmation, setConfirm] = useState(false)
+    
     return (
         <div className="flex flex-col">
-            <div className="w-full text-3xl text-center my-4 font-title text-5xl flex items-center">
+            <ConfirmModal confirm={test} confirmAction={handleDeletion} />
+
+            <div className="w-full text-center my-4 font-title text-5xl flex items-center">
                 <Link to="/">
                     <img className="h-8 w-4 ml-2" src={closeCard} alt="" />
                 </Link>
@@ -112,8 +119,8 @@ export default () => {
 
             <div className="flex items-center justify-center">
                 <button
-                    onClick={() => handleDeletion()}
-                    className="flex h-8 w-40 self-center mt-6 bg-red-500 rounded text-white flex text-lg font-bold justify-center"
+                    onClick={() => {} }
+                    className="flex h-8 w-40 self-center mt-6 bg-red-500 rounded text-white text-lg font-bold justify-center"
                 >
                     Supprimer l'élève
                 </button>
