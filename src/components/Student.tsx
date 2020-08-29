@@ -133,7 +133,7 @@ export default (props: StudentProps) => {
                             >
                                 <img className="" src={alarm} alt="" />
                             </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl xl:pb-8 ">
+                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-5xl xl:pb-8 ">
                                 {
                                     crossFilter('behaviour', runningPeriode)
                                         .length
@@ -147,7 +147,7 @@ export default (props: StudentProps) => {
                             >
                                 <img className="" src={bookPile} alt="" />
                             </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl xl:pb-8 ">
+                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-5xl xl:pb-8 ">
                                 {crossFilter('homework', runningPeriode).length}
                             </div>
                         </div>
@@ -158,7 +158,7 @@ export default (props: StudentProps) => {
                             >
                                 <img className="" src={schoolBag} alt="" />
                             </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl xl:pb-8 ">
+                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-5xl xl:pb-8 ">
                                 {crossFilter('supply', runningPeriode).length}
                             </div>
                         </div>
@@ -169,7 +169,7 @@ export default (props: StudentProps) => {
                             >
                                 <img className="" src={pen} alt="" />
                             </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl xl:pb-8 ">
+                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-5xl xl:pb-8 ">
                                 {
                                     crossFilter('observation', runningPeriode)
                                         .length
