@@ -18,7 +18,7 @@ export default () => {
                 <NavBar />
             </div>
 
-            <div className="flex w-full h-full flex-col bg-white overflow-y-scroll xl:flex-row xl:flex-wrap xl:content-start">
+            <div className="flex w-full h-full flex-col bg-white overflow-y-auto scrolling-touch xl:flex-row xl:flex-wrap xl:content-start">
                 {students.map(({ name, surname, classes, id }) => {
                     return (
                         <Student

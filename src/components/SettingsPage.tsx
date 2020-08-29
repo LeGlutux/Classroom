@@ -35,7 +35,6 @@ export default () => {
             <div className="h-24 w-full">
                 <NavBar />
             </div>
-
             <div className="overflow-y-scroll">
                 <div className="w-full bg-gray-100 flex flex-col xl:flex-row xl:flex-wrap xl:justify-around">
                     <CreateGroups onAddGroup={refreshGroups} />
@@ -51,7 +50,7 @@ export default () => {
                         </div>
 
                         <button
-                            className="flex h-16 w-56 self-center bg-red-700 rounded text-white flex text-lg font-bold justify-center pt-1 mb-5 flex-wrap"
+                            className="flex h-16 w-56 self-center bg-red-700 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap"
                             onClick={() => {
                                 handleAddPeriode()
                                 refreshPeriodes()

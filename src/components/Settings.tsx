@@ -1,11 +1,9 @@
 import React, { useState, useContext } from 'react'
 import NavBar from './NavBar'
-import Firebase from 'firebase/app'
 import 'react-datepicker/dist/react-datepicker.css'
 import firebase from 'firebase/app'
 import { AuthContext } from '../Auth'
 import { usePeriodes, useRunningPeriode } from '../hooks'
-import PeriodeFilter from './PeriodeFilter'
 
 export default () => {
     const { currentUser } = useContext(AuthContext)
