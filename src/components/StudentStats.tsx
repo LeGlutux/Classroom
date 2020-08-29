@@ -27,6 +27,8 @@ export default () => {
     const student = useStudent(currentUser.uid, id)
     if (student === undefined) return <div />
 
+    const [confirmation, setConfirm] = useState(false)
+
     const history = useHistory()
     const handleDeleteCross = (crossType: string) => {
         // console.log(cross.filter((element) => element.type === crossType))
@@ -42,7 +44,6 @@ export default () => {
     }
 
     const test = true
-    const [confirmation, setConfirm] = useState(false)
     
     return (
         <div className="flex flex-col">
