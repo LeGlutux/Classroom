@@ -21,7 +21,7 @@ export const useGroups = (currentUserId: string) => {
             setLoading(false)
         }
         fetch()
-    })
+    }, [])
 
     const refreshGroups = async () => {
         setLoading(true)
@@ -42,7 +42,7 @@ export const useCrosses = (currentUserId: string, currentStudentId: string) => {
             setCrosses(await fetchCrosses(currentUserId, currentStudentId))
         }
         fetch()
-    })
+    }, [])
 
     const refreshCrosses = async () => {
         setCrosses(await fetchCrosses(currentUserId, currentStudentId))
@@ -59,7 +59,7 @@ export const useCross = (currentUserId: string, currentStudentId: string) => {
             setCross(await fetchCross(currentUserId, currentStudentId))
         }
         fetch()
-    })
+    }, [])
 
     const refreshCross = async () => {
         setCross(await fetchCross(currentUserId, currentStudentId))
@@ -77,7 +77,7 @@ export const useStudents = (currentUserId: string) => {
             setStudents(await fetchStudents(currentUserId))
         }
         fetch()
-    })
+    }, [])
 
     const filterStudents = async (group: string) => {
         const filteredStudents = (
@@ -101,7 +101,7 @@ export const usePeriodes = (currentUserId: string) => {
             setPeriodes(await fetchPeriodes(currentUserId))
         }
         fetch()
-    })
+    }, [])
 
     const refreshPeriodes = async () => {
         setPeriodes(await fetchPeriodes(currentUserId))
@@ -117,7 +117,7 @@ export const useRunningPeriode = (currentUserId: string) => {
             setRunningPeriode(await fetchRunningPeriode(currentUserId))
         }
         fetch()
-    })
+    }, [])
 
     // [runningPeriode] dans le tableau vide ???
 
@@ -136,7 +136,7 @@ export const usePaths = () => {
             setPaths(await fetchPaths())
         }
         fetch()
-    })
+    }, [])
 
     // [Paths] dans le tableau vide ???
 
@@ -155,7 +155,7 @@ export const useStudent = (currentUserId: string, studentId: string) => {
             setStudent(await fetchStudentWithId(currentUserId, studentId))
         }
         fetch()
-    })
+    }, [])
 
     return student
 }
