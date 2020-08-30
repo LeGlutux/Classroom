@@ -31,7 +31,7 @@ export default () => {
                     )
                 })}
             </div>
-            <div className="w-full h-12 bg-gray-300 flex flex-row justify-between table-footer-group">
+            <div className="w-full h-12 bg-gray-300 table-footer-group">
                 <div className="ml-3 pt-2 font-bold text-xl flex justify-between align-top">
                     <div className="overflow-x-scroll">
                         <ClassListFilter
@@ -42,7 +42,7 @@ export default () => {
                         />
                     </div>
 
-                    <div className="border border-gray-200 mr-6 text-gray-700 rounded">
+                    <div className="mr-6 text-gray-700 rounded">
                         {'P'.concat(runningPeriode.toString())}
                     </div>
 
