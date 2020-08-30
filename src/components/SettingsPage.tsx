@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import CreateGroups from './Create/CreateGroups'
 import CreateStudent from './Create/CreateStudent'
 import NavBar from './NavBar'
@@ -10,8 +10,10 @@ import { AuthContext } from '../Auth'
 import { usePeriodes, useRunningPeriode } from '../hooks'
 import PeriodeFilter from './PeriodeFilter'
 import calendar from '../images/calendar.png'
+import ConfirmModal from './ConfirmModal'
 
 export default () => {
+    const [confirm, setConfirm] = useState(false)
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
     const { groups, refreshGroups } = useGroups(currentUser.uid)
@@ -30,8 +32,31 @@ export default () => {
             })
     }
 
+    const handleNewPeriode = () => {
+        handleAddPeriode()
+        refreshPeriodes()
+        refreshRunningPeriode()
+        db.collection('users')
+            .doc(currentUser.uid)
+            .update({
+                runningPeriode: periodes.length + 1,
+            })
+        refreshRunningPeriode()
+    }
+
     return (
         <div className="w-full h-screen flex flex-col">
+            <ConfirmModal
+                confirm={confirm}
+                setConfirm={setConfirm}
+                confirmAction={handleNewPeriode}
+                textBox={
+                    'Êtes-vous sûr(e) de vouloir commencer une nouvelle période ?'
+                }
+                subTextBox={
+                    'En faisant cela, vous ne pourrez plus ajouter de croix pour les périodes précédentes'
+                }
+            />
             <div className="h-24 w-full">
                 <NavBar />
             </div>
@@ -51,17 +76,7 @@ export default () => {
 
                         <button
                             className="flex h-16 w-56 self-center bg-red-700 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap"
-                            onClick={() => {
-                                handleAddPeriode()
-                                refreshPeriodes()
-                                refreshRunningPeriode()
-                                db.collection('users')
-                                    .doc(currentUser.uid)
-                                    .update({
-                                        runningPeriode: periodes.length + 1,
-                                    })
-                                refreshRunningPeriode()
-                            }}
+                            onClick={() => setConfirm(true)}
                         >
                             {' '}
                             Commencer une nouvelle période
