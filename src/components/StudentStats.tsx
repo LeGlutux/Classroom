@@ -14,6 +14,7 @@ import ConfirmModal from './ConfirmModal'
 
 export default () => {
     const startDate = new Date('2020-08-31 00:00:01')
+    const [confirm, setConfirm] = useState(false)
     const currentWeek =
         Math.floor(
             (new Date().getTime() - startDate.getTime()) / (7 * 86400000)
@@ -26,8 +27,6 @@ export default () => {
     if (id === undefined) return <div />
     const student = useStudent(currentUser.uid, id)
     if (student === undefined) return <div />
-
-    const [confirmation, setConfirm] = useState(false)
 
     const history = useHistory()
     const handleDeleteCross = (crossType: string) => {
@@ -43,19 +42,26 @@ export default () => {
         history.goBack()
     }
 
-    const test = true
-    
     return (
         <div className="flex flex-col">
-            <ConfirmModal confirm={test} confirmAction={handleDeletion} />
+            <ConfirmModal
+                confirm={confirm}
+                setConfirm={setConfirm}
+                confirmAction={handleDeletion}
+                textBox={"Êtes-vous sûr(e) de vouloir supprimer l'élève ?"}
+                subTextBox={''}
+            />
 
-            <div className="w-full text-center my-4 font-title text-5xl flex items-center">
+            <div className="w-full text-center mt-4 font-title text-5xl flex items-center">
                 <Link to="/">
                     <img className="h-8 w-4 ml-2" src={closeCard} alt="" />
                 </Link>
                 <div className="w-full mr-4">
                     {student.surname} {student.name}
                 </div>
+            </div>
+            <div className="flex w-full mr-4 justify-center mb-4 font-title2 text-3xl items-center">
+                {student.classes}
             </div>
             <div className="flex flex-row ml-4 mb-4">
                 <div className="w-6 text-sm font-bold h-4 my-2">Sem</div>
@@ -120,7 +126,9 @@ export default () => {
 
             <div className="flex items-center justify-center">
                 <button
-                    onClick={() => {} }
+                    onClick={() => {
+                        setConfirm(true)
+                    }}
                     className="flex h-8 w-40 self-center mt-6 bg-red-500 rounded text-white text-lg font-bold justify-center"
                 >
                     Supprimer l'élève

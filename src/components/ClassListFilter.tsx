@@ -11,8 +11,10 @@ export default ({ groups, onFilter }: ClassListFilterProps) => {
             {groups.map((group, index) => {
                 return (
                     <button
-                        onClick={() => onFilter(group)}
-                        className="font-studentName h-8 mx-2 bg-gray-100 w-16 text-center rounded-lg px-1"
+                        onClick={() => {
+                            onFilter(group)
+                        }}
+                        className="font-studentName h-6 mx-2 bg-gray-100 w-auto text-center rounded-lg px-3 flex items-center"
                         key={index}
                     >
                         {group}
