@@ -11,10 +11,15 @@ import schoolBag from '../images/supply.png'
 import pen from '../images/observation.png'
 import backArrow from '../images/return.png'
 import ConfirmModal from './ConfirmModal'
+import edit from '../images/edit.png'
 
 export default () => {
     const startDate = new Date('2020-08-31 00:00:01')
     const [confirm, setConfirm] = useState(false)
+    const [editing, setEditing] = useState(false)
+    const [nameInputValue, setNameInputValue] = useState('')
+    const [surnameInputValue, setSurnameInputValue] = useState('')
+    const [classInputValue, setClassInputValue] = useState('')
     const currentWeek =
         Math.floor(
             (new Date().getTime() - startDate.getTime()) / (7 * 86400000)
@@ -42,6 +47,22 @@ export default () => {
         history.goBack()
     }
 
+    const handleEdition = () => {
+        db.collection('users')
+            .doc(currentUser.uid)
+            .collection('eleves')
+            .doc(id)
+            .set(
+                {
+                    name: nameInputValue,
+                    surname: surnameInputValue,
+                    classes: classInputValue,
+                },
+                { merge: true }
+            )
+        history.goBack()
+    }
+
     return (
         <div className="flex flex-col">
             <ConfirmModal
@@ -52,17 +73,101 @@ export default () => {
                 subTextBox={''}
             />
 
-            <div className="w-full text-center mt-4 font-title text-5xl flex items-center">
-                <Link to="/">
-                    <img className="h-8 w-4 ml-2" src={closeCard} alt="" />
-                </Link>
-                <div className="w-full mr-4">
-                    {student.surname} {student.name}
+            <div
+                className={`flex flex-col items-center z-50 absolute w-full ${
+                    editing ? 'visible' : 'invisible'
+                }`}
+            >
+                <div
+                    className={`w-full text-center mt-4 font-title text-5xl flex items-center`}
+                >
+                    <Link to="/">
+                        <img className="h-8 w-4 ml-2" src={closeCard} alt="" />
+                    </Link>
+                    <div className="w-full mr-4 flex flex-row items-baseline justify-center text-4xl">
+                        <input
+                            value={surnameInputValue}
+                            onChange={(e) =>
+                                setSurnameInputValue(e.target.value)
+                            }
+                            className="h-10 mt-3 placeholder-gray-700 ml-5 bg-transparent border-b-2 border-gray-600 text-lg text-center"
+                            type="text"
+                            placeholder={student.surname}
+                        />
+                        <input
+                            className="h-10 mt-3 placeholder-gray-700 text-lg ml-5 bg-transparent border-b-2 border-gray-600 text-center"
+                            value={nameInputValue}
+                            onChange={(e) => setNameInputValue(e.target.value)}
+                            type="text"
+                            placeholder={student.name}
+                        />
+                    </div>
+                </div>
+                <div
+                    className={`flex w-full mr-4 justify-center mb-4 font-title2 text-3xl items-center `}
+                >
+                    <input
+                        className="h-10 mt-3 placeholder-gray-700 text-lg ml-5 bg-transparent border-b-2 border-gray-600 text-center"
+                        value={classInputValue}
+                        onChange={(e) => setClassInputValue(e.target.value)}
+                        type="text"
+                        placeholder={student.classes[0]}
+                    />
+                </div>
+                <div className="h-6 w-full mr-4 mb-16 flex flex-row justify-around">
+                    <button
+                        className="bg-red-700 rounded-lg font-bold w-24 h-12 lg:w-32 lg:h-12 xl:w-40 xl:h-16 shadow-xl font-studentName sm:text-lg md:text-xl lg:text-2xl xl:text-3xl"
+                        onClick={() => {
+                            setEditing(false)
+                        }}
+                    >
+                        Annuler
+                    </button>
+                    <button
+                        className="bg-green-700 rounded-lg font-bold w-24 h-12 lg:w-32 lg:h-12 xl:w-40 xl:h-16 shadow-xl font-studentName sm:text-lg md:text-xl lg:text-2xl xl:text-3xl"
+                        onClick={() => {
+                            handleEdition()
+                            setEditing(false)
+                        }}
+                    >
+                        Confirmer
+                    </button>
                 </div>
             </div>
-            <div className="flex w-full mr-4 justify-center mb-4 font-title2 text-3xl items-center">
-                {student.classes}
+
+            <div
+                className={`flex flex-col items-center ${
+                    editing ? 'invisible' : 'visible'
+                }`}
+            >
+                <div
+                    className={`w-full text-center mt-4 font-title text-5xl flex items-center`}
+                >
+                    <Link to="/">
+                        <img className="h-8 w-4 ml-2" src={closeCard} alt="" />
+                    </Link>
+                    <div className="w-full mr-4 flex flex-row items-baseline justify-center text-4xl">
+                        {student.surname} {student.name}
+                    </div>
+                </div>
+                <div
+                    className={`flex w-full mr-4 justify-center mb-4 font-title2 text-3xl items-center `}
+                >
+                    {student.classes}
+                </div>
+                <button
+                    className="h-6 w-6 mr-4 mb-16"
+                    onClick={() => {
+                        setEditing(true)
+                        setNameInputValue(student.name.toString())
+                        setSurnameInputValue(student.surname.toString())
+                        setClassInputValue(student.classes.toString())
+                    }}
+                >
+                    <img src={edit} alt="modifier" />
+                </button>
             </div>
+
             <div className="flex flex-row ml-4 mb-4">
                 <div className="w-6 text-sm font-bold h-4 my-2">Sem</div>
                 <div className="w-full h-4 flex flex-row justify-evenly my-2 text-xl">
