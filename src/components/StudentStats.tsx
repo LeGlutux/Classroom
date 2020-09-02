@@ -49,7 +49,7 @@ export default () => {
     }
 
     const handleEdition = () => {
-        if ([''].includes(classInputValue)) {
+        if (groups.includes(classInputValue)) {
             db.collection('users')
                 .doc(currentUser.uid)
                 .collection('eleves')
@@ -63,7 +63,7 @@ export default () => {
                     { merge: true }
                 )
             history.goBack()
-        } else console.log('error')
+        } else console.log("cette classe n'est pas dans votre liste de classe")
     }
 
     return (
