@@ -62,7 +62,9 @@ const SignUp = () => {
             >
                 <div className="flex flex-col w-full">
                     <div className="w-full flex items-center flex-col">
-                        <div className=" font-title text-6xl xl:text-big">Thòt Note</div>
+                        <div className=" font-title text-6xl xl:text-big">
+                            Thòt Note
+                        </div>
 
                         <div className="w-10/12 flex flex-row content-center rounded-lg h-full bg-transparent">
                             <form
