@@ -48,7 +48,7 @@ export default (props: Props) => {
                     </div>
                     <button
                         type="submit"
-                        className="flex h-8 w-40 self-center bg-orange-500 rounded text-white flex text-lg font-bold justify-center mt-2"
+                        className="flex h-8 w-40 self-center bg-orange-500 rounded text-white text-lg font-bold justify-center mt-2"
                     >
                         Ajouter le groupe
                     </button>
