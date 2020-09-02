@@ -105,12 +105,12 @@ const View = ({
                             onChange={(e) =>
                                 setSurnameInputValue(e.target.value)
                             }
-                            className="h-10 mt-3 placeholder-gray-700 ml-5 bg-transparent border-b-2 border-gray-600 text-lg text-center"
+                            className="h-10 w-32 mt-3 placeholder-gray-700 ml-5 bg-transparent border-b-2 border-gray-600 text-2xl text-center"
                             type="text"
                             placeholder={student.surname}
                         />
                         <input
-                            className="h-10 mt-3 placeholder-gray-700 text-lg ml-5 bg-transparent border-b-2 border-gray-600 text-center"
+                            className="h-10 w-32 mt-3 placeholder-gray-700 text-2xl ml-5 bg-transparent border-b-2 border-gray-600 text-center"
                             value={nameInputValue}
                             onChange={(e) => setNameInputValue(e.target.value)}
                             type="text"
@@ -122,7 +122,7 @@ const View = ({
                     className={`flex w-full mr-4 justify-center mb-4 font-title2 text-3xl items-center `}
                 >
                     <input
-                        className="h-10 mt-3 placeholder-gray-700 text-lg ml-5 bg-transparent border-b-2 border-gray-600 text-center"
+                        className="h-10 w-20 mt-3 placeholder-gray-700 text-lg ml-5 bg-transparent border-b-2 border-gray-600 text-center"
                         value={classInputValue}
                         onChange={(e) => setClassInputValue(e.target.value)}
                         type="text"
@@ -131,7 +131,7 @@ const View = ({
                 </div>
                 <div className="h-6 w-full mr-4 mb-16 flex flex-row justify-around">
                     <button
-                        className="bg-red-700 rounded-lg font-bold w-24 h-12 lg:w-32 lg:h-12 xl:w-40 xl:h-16 shadow-xl font-studentName sm:text-lg md:text-xl lg:text-2xl xl:text-3xl"
+                        className="bg-red-700 rounded-lg font-bold w-24 h-8 text-sm lg:w-32 lg:h-12 xl:w-40 xl:h-16 shadow-xl font-studentName sm:text-lg md:text-xl lg:text-2xl xl:text-3xl"
                         onClick={() => {
                             setEditing(false)
                         }}
@@ -139,7 +139,7 @@ const View = ({
                         Annuler
                     </button>
                     <button
-                        className="bg-green-700 rounded-lg font-bold w-24 h-12 lg:w-32 lg:h-12 xl:w-40 xl:h-16 shadow-xl font-studentName sm:text-lg md:text-xl lg:text-2xl xl:text-3xl"
+                        className="bg-green-700 rounded-lg font-bold w-24 h-8 text-sm lg:w-32 lg:h-12 xl:w-40 xl:h-16 shadow-xl font-studentName sm:text-lg md:text-xl lg:text-2xl xl:text-3xl"
                         onClick={() => {
                             handleEdition()
                             setEditing(false)
@@ -171,7 +171,7 @@ const View = ({
                     {student.classes}
                 </div>
                 <button
-                    className="h-6 w-6 mr-4 mb-16"
+                    className="h-6 w-6 mr-4 mb-8"
                     onClick={() => {
                         setEditing(true)
                         setNameInputValue(student.name.toString())
