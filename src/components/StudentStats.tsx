@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { useStudent } from '../hooks'
+import { useStudent, useGroups } from '../hooks'
 import { AuthContext } from '../Auth'
 import { useParams, Link, useHistory } from 'react-router-dom'
 import closeCard from '../images/closeCard.png'
@@ -30,6 +30,7 @@ export default () => {
     const { id } = useParams()
     if (currentUser === null) return <div />
     if (id === undefined) return <div />
+    const { groups } = useGroups(currentUser.uid)
     const student = useStudent(currentUser.uid, id)
     if (student === undefined) return <div />
 
@@ -48,19 +49,21 @@ export default () => {
     }
 
     const handleEdition = () => {
-        db.collection('users')
-            .doc(currentUser.uid)
-            .collection('eleves')
-            .doc(id)
-            .set(
-                {
-                    name: nameInputValue,
-                    surname: surnameInputValue,
-                    classes: classInputValue,
-                },
-                { merge: true }
-            )
-        history.goBack()
+        if ([''].includes(classInputValue)) {
+            db.collection('users')
+                .doc(currentUser.uid)
+                .collection('eleves')
+                .doc(id)
+                .set(
+                    {
+                        name: nameInputValue,
+                        surname: surnameInputValue,
+                        classes: classInputValue,
+                    },
+                    { merge: true }
+                )
+            history.goBack()
+        } else console.log('error')
     }
 
     return (

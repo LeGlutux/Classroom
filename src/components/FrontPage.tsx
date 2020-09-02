@@ -107,36 +107,6 @@ export default () => {
                     <div className="mr-6 text-gray-700 rounded">
                         {'P'.concat(runningPeriode.toString())}
                     </div>
-
-                    {/* <form action="" name="form">
-                        <select
-                            className="block appearance-none bg-gray-200 border border-gray-200 mr-6 text-gray-700 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                            onChange={(e) => {
-                                db.collection('users')
-                                    .doc(currentUser.uid)
-                                    .update({
-                                        runningPeriode: eval(e.target.value),
-                                    })
-                                refreshRunningPeriode()
-                                refreshPeriodes()
-                                // window.location.reload()
-                            }}
-                        >
-                            <option value={periodes.length.toString()}>
-                                {'P'.concat(periodes.length.toString())}
-                            </option>
-                            {pastPeriodes.reverse().map((index, key) => (
-                                <option
-                                    key={periodes.length - key}
-                                    value={periodes.length - key - 1}
-                                >
-                                    {'P'.concat(
-                                        (periodes.indexOf(index) + 1).toString()
-                                    )}
-                                </option>
-                            ))}
-                        </select>
-                    </form> */}
                 </div>
             </div>
         </div>

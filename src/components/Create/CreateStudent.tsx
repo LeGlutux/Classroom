@@ -24,7 +24,7 @@ export default ({ groups }: Props) => {
                     if (
                         nameInputValue !== '' &&
                         surnameInputValue !== '' &&
-                        list.length !== 0
+                        list.length === 1
                     ) {
                         const id = Date.now().toString()
                         const nameCased = nameInputValue.replace(/^\w/, (c) =>
@@ -94,7 +94,7 @@ export default ({ groups }: Props) => {
                     </div>
                     <button
                         type="submit"
-                        className="flex h-8 w-40 self-center mt-6 bg-orange-500 rounded text-white flex text-lg font-bold justify-center"
+                        className="flex h-8 w-40 self-center mt-6 bg-orange-500 rounded text-white text-lg font-bold justify-center"
                     >
                         Ajouter l'élève
                     </button>
