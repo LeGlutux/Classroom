@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import Student from '../components/Student'
 import ClassListFilter from '../components/ClassListFilter'
 import NavBar from './NavBar'
-import { useGroups, useStudents, useRunningPeriode } from '../hooks'
+import { useGroups, useStudents, useRunningPeriode, useNewbie } from '../hooks'
 import { AuthContext } from '../Auth'
 import 'firebase/firestore'
 import addPage from '../images/addPage.png'
@@ -10,11 +10,12 @@ import addPage from '../images/addPage.png'
 export default () => {
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
+    const newbie = useNewbie(currentUser.uid)
     const { students, filterStudents } = useStudents(currentUser.uid)
     const { groups } = useGroups(currentUser.uid)
     const { runningPeriode } = useRunningPeriode(currentUser.uid)
 
-    if (students.length === 0) {
+    if (newbie === 0) {
         return (
             <div className="w-full h-screen flex flex-col">
                 <div className="h-24">
@@ -68,6 +69,31 @@ export default () => {
                         </div>
 
                         <div className="mr-6 text-gray-700 rounded">P3</div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    if (newbie === 1) {
+        return (
+            <div className="w-full h-screen flex flex-col">
+                <div className="h-24">
+                    <NavBar />
+                </div>
+                <div className="flex w-full h-full flex-col bg-white overflow-y-scroll">
+                    <div className="flex flex-row mt-8">
+                        <div className="font-studentName text-justify mx-4 flex flex-row flex-wrap">
+                            Tu dois maintenant ajouter des élèves à une de tes
+                            classes en allant dans le menu
+                            <img
+                                className="w-8 h-8 ml-4"
+                                src={addPage}
+                                alt=""
+                            />
+                            Pense à mettre un prénom, un nom et à cocher une (et
+                            une seule classe) pour ton élève.
+                        </div>
                     </div>
                 </div>
             </div>

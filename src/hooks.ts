@@ -8,6 +8,7 @@ import {
     fetchPaths,
     fetchStudentWithId,
     fetchCrosses,
+    fetchNewbie,
 } from './database'
 
 export const useGroups = (currentUserId: string) => {
@@ -21,7 +22,7 @@ export const useGroups = (currentUserId: string) => {
             setLoading(false)
         }
         fetch()
-    }, [])
+    }, [currentUserId])
 
     const refreshGroups = async () => {
         setLoading(true)
@@ -42,7 +43,7 @@ export const useCrosses = (currentUserId: string, currentStudentId: string) => {
             setCrosses(await fetchCrosses(currentUserId, currentStudentId))
         }
         fetch()
-    }, [])
+    }, [currentUserId, currentStudentId])
 
     const refreshCrosses = async () => {
         setCrosses(await fetchCrosses(currentUserId, currentStudentId))
@@ -59,7 +60,7 @@ export const useCross = (currentUserId: string, currentStudentId: string) => {
             setCross(await fetchCross(currentUserId, currentStudentId))
         }
         fetch()
-    }, [])
+    }, [currentUserId, currentStudentId])
 
     const refreshCross = async () => {
         setCross(await fetchCross(currentUserId, currentStudentId))
@@ -77,7 +78,7 @@ export const useStudents = (currentUserId: string) => {
             setStudents(await fetchStudents(currentUserId))
         }
         fetch()
-    }, [])
+    }, [currentUserId])
 
     const filterStudents = async (group: string) => {
         const filteredStudents = (
@@ -101,7 +102,7 @@ export const usePeriodes = (currentUserId: string) => {
             setPeriodes(await fetchPeriodes(currentUserId))
         }
         fetch()
-    }, [])
+    }, [currentUserId])
 
     const refreshPeriodes = async () => {
         setPeriodes(await fetchPeriodes(currentUserId))
@@ -117,7 +118,7 @@ export const useRunningPeriode = (currentUserId: string) => {
             setRunningPeriode(await fetchRunningPeriode(currentUserId))
         }
         fetch()
-    }, [])
+    }, [currentUserId])
 
     // [runningPeriode] dans le tableau vide ???
 
@@ -155,7 +156,20 @@ export const useStudent = (currentUserId: string, studentId: string) => {
             setStudent(await fetchStudentWithId(currentUserId, studentId))
         }
         fetch()
-    }, [])
+    }, [currentUserId, studentId])
 
     return student
+}
+
+export const useNewbie = (currentUserId: string) => {
+    const [newbie, setNewbie] = useState<number>(0)
+
+    useEffect(() => {
+        const fetch = async () => {
+            setNewbie(await fetchNewbie(currentUserId))
+        }
+        fetch()
+    }, [currentUserId])
+
+    return newbie
 }

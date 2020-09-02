@@ -105,3 +105,11 @@ export const fetchStudentWithId = async (
 
     return data
 }
+
+export const fetchNewbie = async (currentUserId: string) => {
+    const db = Firebase.firestore()
+    const querySnapshot = await db.collection('users').doc(currentUserId).get()
+
+    const data = querySnapshot.data()!.newbie
+    return data
+}

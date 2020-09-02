@@ -14,7 +14,7 @@ export default (props: Props) => {
     if (currentUser === null) return <div />
 
     return (
-        <div className="flex flex-col items-center rounded mt-5 h-40 mx-6 bg-gray-100 shadow-custom mt-8 xl:w-5/12 xl:h-64">
+        <div className="flex flex-col items-center rounded h-40 mx-6 bg-gray-100 shadow-custom mt-8 xl:w-5/12 xl:h-64">
             <form
                 className="flex flex-col w-full h-full bg-transparent"
                 onSubmit={(e) => {
@@ -27,6 +27,7 @@ export default (props: Props) => {
                             classes: firebase.firestore.FieldValue.arrayUnion(
                                 inputValue
                             ),
+                            newbie: 1,
                         })
                     props.onAddGroup()
                     e.preventDefault()

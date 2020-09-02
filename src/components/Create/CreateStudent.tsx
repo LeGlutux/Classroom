@@ -36,6 +36,9 @@ export default ({ groups }: Props) => {
                         )
                         db.collection('users')
                             .doc(currentUser.uid)
+                            .update({ newbie: 2 })
+                        db.collection('users')
+                            .doc(currentUser.uid)
                             .collection('eleves')
                             .doc(id)
                             .set({

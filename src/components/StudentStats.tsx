@@ -14,6 +14,26 @@ import ConfirmModal from './ConfirmModal'
 import edit from '../images/edit.png'
 
 export default () => {
+    const { currentUser } = useContext(AuthContext)
+    const { id } = useParams()
+    if (currentUser === null) return <div />
+    if (id === undefined) return <div />
+    const student = useStudent(currentUser.uid, id)
+    if (student === undefined) return <div />
+
+    return <View currentUser={currentUser} student={student} studentId={id} />
+}
+
+const View = ({
+    currentUser,
+    student,
+    studentId,
+}: {
+    currentUser: firebase.User
+    student: firebase.firestore.DocumentData
+    studentId: string
+}) => {
+    const { groups } = useGroups(currentUser.uid)
     const startDate = new Date('2020-08-31 00:00:01')
     const [confirm, setConfirm] = useState(false)
     const [editing, setEditing] = useState(false)
@@ -26,14 +46,6 @@ export default () => {
         ) + 1
     const weeks = Array.from({ length: currentWeek }, (_, index) => index + 1)
     const db = firebase.firestore()
-    const { currentUser } = useContext(AuthContext)
-    const { id } = useParams()
-    if (currentUser === null) return <div />
-    if (id === undefined) return <div />
-    const { groups } = useGroups(currentUser.uid)
-    const student = useStudent(currentUser.uid, id)
-    if (student === undefined) return <div />
-
     const history = useHistory()
     const handleDeleteCross = (crossType: string) => {
         // console.log(cross.filter((element) => element.type === crossType))
@@ -43,7 +55,7 @@ export default () => {
         db.collection('users')
             .doc(currentUser.uid)
             .collection('eleves')
-            .doc(id)
+            .doc(studentId)
             .delete()
         history.goBack()
     }
@@ -53,7 +65,7 @@ export default () => {
             db.collection('users')
                 .doc(currentUser.uid)
                 .collection('eleves')
-                .doc(id)
+                .doc(studentId)
                 .set(
                     {
                         name: nameInputValue,
@@ -114,7 +126,7 @@ export default () => {
                         value={classInputValue}
                         onChange={(e) => setClassInputValue(e.target.value)}
                         type="text"
-                        placeholder={student.classes[0]}
+                        placeholder={student.classes}
                     />
                 </div>
                 <div className="h-6 w-full mr-4 mb-16 flex flex-row justify-around">
@@ -192,7 +204,7 @@ export default () => {
                 {weeks.map((elem, index) => {
                     return (
                         <CrossTab
-                            studentId={id}
+                            studentId={studentId}
                             userId={currentUser.uid}
                             week={
                                 startDate.getTime() +
