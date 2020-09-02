@@ -70,7 +70,7 @@ export default (props: StudentProps) => {
     }
 
     return (
-        <div className="flex flex-row w-full xl:w-1/3 items-center">
+        <div className="flex flex-row w-full xl:w-1/3 items-center iphone-vertical">
             <div className="flex h-full items-center mt-5 ml-2 xl:pt-6">
                 <img
                     className={`h-4 w-4 ${

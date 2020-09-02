@@ -17,7 +17,7 @@ export default () => {
 
     if (newbie === 0) {
         return (
-            <div className="w-full h-screen flex flex-col">
+            <div className="w-full h-full flex flex-col">
                 <div className="h-24">
                     <NavBar />
                 </div>
