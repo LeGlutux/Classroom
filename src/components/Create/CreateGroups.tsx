@@ -3,11 +3,13 @@ import group from '../../images/group.png'
 import Firebase from '../../firebase'
 import firebase from 'firebase/app'
 import { AuthContext } from '../../Auth'
+import ok from '../../images/ok.png'
 
 interface Props {
     onAddGroup: () => void
 }
 export default (props: Props) => {
+    const [sent, setSent] = useState(false)
     const [inputValue, setInputValue] = useState('')
     const db = Firebase.firestore()
     const { currentUser } = useContext(AuthContext)
@@ -27,15 +29,25 @@ export default (props: Props) => {
                             classes: firebase.firestore.FieldValue.arrayUnion(
                                 inputValue
                             ),
-                            newbie: 1,
+                            newbie: 2,
                         })
                     props.onAddGroup()
+                    setSent(true)
+                    setTimeout(() => setSent(false), 1000)
+                    clearTimeout()
                     e.preventDefault()
                     e.stopPropagation()
                 }}
                 action=""
             >
-                <div className="flex flex-col h-full w-full items-center justify-around pb-4">
+                <div className="flex flex-col h-full w-full items-center justify-around pb-4 relative">
+                    <div
+                        className={`absolute right-0 top-25 w-10 h-10 ${
+                            sent ? 'fade-out' : 'invisible'
+                        }`}
+                    >
+                        <img src={ok} alt="ok" />
+                    </div>
                     <div className="w-6/10 flex flex-row items-center hover:border-gray-600 xl:w-9/12">
                         <img className="w-8 h-8 mt-3" src={group} alt="" />
                         <input

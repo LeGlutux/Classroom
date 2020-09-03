@@ -3,12 +3,14 @@ import solo from '../../images/solo.png'
 import { AuthContext } from '../../Auth'
 import Firebase from '../../firebase'
 import NewStudentGroups from '../NewStudentGroups'
+import ok from '../../images/ok.png'
 
 interface Props {
     groups: string[]
 }
 
 export default ({ groups }: Props) => {
+    const [sent, setSent] = useState(false)
     const [list, setList] = useState<string[]>([])
     const db = Firebase.firestore()
     const { currentUser } = useContext(AuthContext)
@@ -17,7 +19,16 @@ export default ({ groups }: Props) => {
     const [surnameInputValue, setSurnameInputValue] = useState('')
 
     return (
-        <div className="flex flex-col items-center rounded mt-5 h-auto justify-around mx-6 bg-gray-100 shadow-custom xl:w-5/12">
+        <div
+            className={`flex flex-col items-center rounded mt-5 h-auto justify-around mx-6 bg-gray-100 shadow-custom xl:w-5/12 relative`}
+        >
+            <div
+                className={`absolute right-0 top-25 w-10 h-10 ${
+                    sent ? 'fade-out' : 'invisible'
+                }`}
+            >
+                <img src={ok} alt="ok" />
+            </div>
             <form
                 className="flex flex-col w-full h-full bg-transparent mt-5"
                 onSubmit={(e) => {
@@ -50,6 +61,9 @@ export default ({ groups }: Props) => {
                         setNameInputValue('')
                         setSurnameInputValue('')
                         setList(list)
+                        setSent(true)
+                        setTimeout(() => setSent(false), 1000)
+                        clearTimeout()
                     } else {
                         throw new Error("le formulaire n'est pas complet")
                     }
