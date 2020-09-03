@@ -11,7 +11,7 @@ interface CrossTabProps {
 
 export default (props: CrossTabProps) => {
     const { cross } = useCross(props.userId, props.studentId)
-
+    const startDate = new Date('2020-08-31 00:00:01')
     const crossFilter = (type: string) => {
         const filtered = cross
             .filter(
@@ -20,13 +20,15 @@ export default (props: CrossTabProps) => {
             )
             .filter(
                 (element: firebase.firestore.DocumentData) =>
-                    element.time > props.week &&
-                    element.time < props.week + 7 * 86400000
+                    element.time.toDate() > new Date(props.week) &&
+                    element.time.toDate().getTime() <
+                        new Date(props.week + 7 * 86400000)
             )
+
         const dot = filtered.map((c) => {
             return (
                 <div
-                    key={c.index}
+                    key={c.time}
                     className="bg-red-600 rounded-full overflow-hidden h-2 w-2 mx-1"
                 />
             )

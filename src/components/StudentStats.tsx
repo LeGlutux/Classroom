@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { useStudent, useGroups } from '../hooks'
+import { useStudent, useGroups, useCross } from '../hooks'
 import { AuthContext } from '../Auth'
 import { useParams, Link, useHistory } from 'react-router-dom'
 import closeCard from '../images/closeCard.png'
@@ -12,26 +12,49 @@ import pen from '../images/observation.png'
 import backArrow from '../images/return.png'
 import ConfirmModal from './ConfirmModal'
 import edit from '../images/edit.png'
+import { time } from 'console'
 
 export default () => {
     const { currentUser } = useContext(AuthContext)
     const { id } = useParams()
     if (currentUser === null) return <div />
     if (id === undefined) return <div />
+    const { cross } = useCross(currentUser.uid, id)
     const student = useStudent(currentUser.uid, id)
     if (student === undefined) return <div />
 
-    return <View currentUser={currentUser} student={student} studentId={id} />
+    const crossFilter = (crossType: string) => {
+        const filtered = cross.filter(
+            (element: firebase.firestore.DocumentData) =>
+                element.type === crossType
+        )
+        const ordered = filtered.sort((a, b) => (a.time < b.time ? 1 : -1))
+        ordered.shift()
+        return ordered
+    }
+    return (
+        <View
+            currentUser={currentUser}
+            student={student}
+            studentId={id}
+            crossFilter={crossFilter}
+            id={id}
+        />
+    )
 }
 
 const View = ({
     currentUser,
     student,
     studentId,
+    crossFilter,
+    id,
 }: {
     currentUser: firebase.User
     student: firebase.firestore.DocumentData
     studentId: string
+    crossFilter: (crossType: string) => firebase.firestore.DocumentData[]
+    id: string
 }) => {
     const { groups } = useGroups(currentUser.uid)
     const startDate = new Date('2020-08-31 00:00:01')
@@ -48,7 +71,7 @@ const View = ({
     const db = firebase.firestore()
     const history = useHistory()
     const handleDeleteCross = (crossType: string) => {
-        // console.log(cross.filter((element) => element.type === crossType))
+        crossFilter(crossType)
     }
 
     const handleDeletion = () => {
@@ -220,7 +243,11 @@ const View = ({
                 <div className="w-6 text-sm font-bold h-4 my-2" />
                 <div className="w-full h-4 flex flex-row justify-evenly my-2 text-xl">
                     <div className="flex flex-row w-full mx-4 items-center justify-center">
-                        <button onClick={() => handleDeleteCross('behaviour')}>
+                        <button
+                            onClick={() => {
+                                handleDeleteCross('behaviour')
+                            }}
+                        >
                             <img className="h-10 w-10" src={backArrow} alt="" />
                         </button>
                     </div>
