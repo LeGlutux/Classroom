@@ -47,8 +47,11 @@ export default (props: StudentProps) => {
                 )
                 .filter(
                     (element: firebase.firestore.DocumentData) =>
-                        element.time < periodes[runningP] &&
                         element.time > periodes[runningP - 1]
+                )
+                .filter(
+                    (element: firebase.firestore.DocumentData) =>
+                        element.time < periodes[runningP]
                 )
             return filtered
         }
@@ -63,7 +66,7 @@ export default (props: StudentProps) => {
                 .doc()
                 .set({
                     type: crossType,
-                    time: new Date().getTime(),
+                    time: new Date(),
                 })
             refreshCross()
         }

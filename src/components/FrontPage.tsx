@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import Student from '../components/Student'
 import ClassListFilter from '../components/ClassListFilter'
 import NavBar from './NavBar'
@@ -6,8 +6,12 @@ import { useGroups, useStudents, useRunningPeriode, useNewbie } from '../hooks'
 import { AuthContext } from '../Auth'
 import 'firebase/firestore'
 import addPage from '../images/addPage.png'
+import MagicStick from './MagicStick'
+import magicStick from '../images/magicStick.png'
 
 export default () => {
+    const [displayedGroup, setDisplayedGroup] = useState('tous')
+    const [displayRandomStudent, setDisplayRandomStudent] = useState(false)
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
     const newbie = useNewbie(currentUser.uid)
@@ -17,7 +21,7 @@ export default () => {
 
     if (newbie === 0) {
         return (
-            <div className="w-full h-full flex flex-col">
+            <div className="w-full h-full flex flex-col z-10">
                 <div className="h-24">
                     <NavBar />
                 </div>
@@ -105,6 +109,19 @@ export default () => {
             <div className="h-24">
                 <NavBar />
             </div>
+            <div className="w-20 absolute flex justify-center self-center">
+                <div
+                    className="rounded-lg bg-white text-2xl mt-20 font-studentName font-bold px-6"
+                    style={{ backgroundColor: 'rgba(255,255,255,0.6)' }}
+                >
+                    {displayedGroup}
+                </div>
+            </div>
+            <MagicStick
+                students={students}
+                displayRandomStudent={displayRandomStudent}
+                setDisplayRandomStudent={setDisplayRandomStudent}
+            />
 
             <div className="flex w-full h-full flex-col bg-white overflow-y-scroll xl:flex-row xl:flex-wrap xl:content-start">
                 {students.map(({ name, surname, classes, id }) => {
@@ -119,17 +136,31 @@ export default () => {
                     )
                 })}
             </div>
+
             <div className="w-full h-12 bg-gray-300 table-footer-group">
                 <div className="ml-3 pt-2 font-bold text-xl flex justify-between align-top">
                     <div className="overflow-x-scroll">
                         <ClassListFilter
+                            displayedGroup={displayedGroup}
+                            setDisplayedGroup={setDisplayedGroup}
                             onFilter={(group) => {
                                 filterStudents(group)
                             }}
                             groups={groups}
                         />
                     </div>
-
+                    <button
+                        onClick={() => setDisplayRandomStudent(true)}
+                        className={`w-12 h-12 bg-gray-200 rounded-full absolute bottom-right-custom shadow-custom flex items-center justify-center ${
+                            displayRandomStudent ? 'invisible' : 'visible'
+                        }`}
+                    >
+                        <img
+                            className="w-6 h-6 pb-1"
+                            src={magicStick}
+                            alt="élève aléatoire"
+                        />
+                    </button>
                     <div className="mr-6 text-gray-700 rounded">
                         {'P'.concat(runningPeriode.toString())}
                     </div>

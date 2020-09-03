@@ -58,11 +58,13 @@ const SignUp = () => {
                 alt=""
             />
             <div
-                className={`w-full flex flex-col lg:(flex-row-reverse) xl:flex-row-reverse flex items-center `}
+                className={`w-full flex flex-col lg:(flex-row-reverse) xl:flex-row-reverse items-center `}
             >
                 <div className="flex flex-col w-full">
                     <div className="w-full flex items-center flex-col">
-                        <div className=" font-title text-6xl xl:text-big">Thòt Note</div>
+                        <div className=" font-title text-6xl xl:text-big">
+                            Thòt Note
+                        </div>
 
                         <div className="w-10/12 flex flex-row content-center rounded-lg h-full bg-transparent">
                             <form
@@ -112,7 +114,7 @@ const SignUp = () => {
                                     </div>
                                     <button
                                         type="submit"
-                                        className="flex h-10 w-48 xl:h-12 xl:w-64 xl:text-3xl self-center mt-5 bg-orange-500 rounded text-white flex text-xl font-bold justify-center"
+                                        className="flex h-10 w-48 xl:h-12 xl:w-64 xl:text-3xl self-center mt-5 bg-orange-500 rounded text-white text-xl font-bold justify-center"
                                     >
                                         Créer un Compte
                                     </button>

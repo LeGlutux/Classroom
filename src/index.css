@@ -24,6 +24,17 @@
   }  
 }
 
+.bottom-right-custom {
+position: absolute;
+bottom: 10%;
+right: 10%;
+
+}
+
+.top-50 {
+  position: absolute;
+  top: 10%
+}
 
 .h-28 {
   height: 7rem;

@@ -3,15 +3,25 @@ import React from 'react'
 interface ClassListFilterProps {
     groups: string[]
     onFilter: (group: string) => void
+    displayedGroup: string
+    setDisplayedGroup: React.Dispatch<React.SetStateAction<string>>
 }
 
-export default ({ groups, onFilter }: ClassListFilterProps) => {
+export default ({
+    groups,
+    onFilter,
+    displayedGroup,
+    setDisplayedGroup,
+}: ClassListFilterProps) => {
     return (
         <div className="flex overflow-auto ml-2 mr-6">
             {groups.map((group, index) => {
                 return (
                     <button
-                        onClick={() => onFilter(group)}
+                        onClick={() => {
+                            onFilter(group)
+                            setDisplayedGroup(group)
+                        }}
                         className="font-studentName h-8 mb-2 mx-2 bg-gray-100 w-auto text-center rounded-lg px-3 flex items-center"
                         key={index}
                     >

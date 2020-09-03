@@ -20,7 +20,7 @@ export default ({ periodes, currentUser, refresh }: PeriodeFilterProps) => {
                                 .update({ runningPeriode: index + 1 })
                             refresh()
                         }}
-                        className="font-studentName h-8 xl:h-16 mx-2 bg-white w-16 text-center rounded-sm rounded-full xl:text-2xl"
+                        className="font-studentName h-8 xl:h-16 mx-2 bg-white w-16 text-center rounded-sm xl:text-2xl"
                         key={index}
                     >
                         P{index + 1}
