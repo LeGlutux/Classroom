@@ -151,12 +151,12 @@ export default () => {
                     </div>
                     <button
                         onClick={() => setDisplayRandomStudent(true)}
-                        className={`w-12 h-12 bg-gray-200 rounded-full absolute bottom-right-custom shadow-custom flex items-center justify-center ${
+                        className={`w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 xl:w-32 xl:h-32 bg-gray-200 rounded-full absolute bottom-right-custom shadow-custom flex items-center justify-center ${
                             displayRandomStudent ? 'invisible' : 'visible'
                         }`}
                     >
                         <img
-                            className="w-6 h-6 pb-1"
+                            className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 xl:w-16 xl:h-16 pb-1"
                             src={magicStick}
                             alt="élève aléatoire"
                         />

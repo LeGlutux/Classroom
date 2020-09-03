@@ -128,7 +128,7 @@ export default (props: StudentProps) => {
                             </div>
                         </button>
                     </div>
-                    <div className=" w-full h-24 flex flex-wrap p-2 content-center justify-between pr-6">
+                    <div className=" w-full h-24 flex p-2 content-center justify-between pr-6">
                         <div className="flex flex-row">
                             <button
                                 onClick={() => handleAddCross('behaviour')}
