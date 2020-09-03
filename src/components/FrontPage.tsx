@@ -109,9 +109,13 @@ export default () => {
             <div className="h-24">
                 <NavBar />
             </div>
-            <div className="w-20 absolute flex justify-center self-center">
+            <div className="w-24 absolute flex justify-center self-center">
                 <div
-                    className="rounded-lg bg-white text-2xl mt-20 font-studentName font-bold px-6"
+                    className={`rounded-lg bg-white font-studentName font-bold px-6 ${
+                        displayedGroup.length > 8
+                            ? 'text-sm overflow-hidden mt-3 h-16'
+                            : 'text-2xl mt-20'
+                    }`}
                     style={{ backgroundColor: 'rgba(255,255,255,0.6)' }}
                 >
                     {displayedGroup}
@@ -151,7 +155,7 @@ export default () => {
                     </div>
                     <button
                         onClick={() => setDisplayRandomStudent(true)}
-                        className={`w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 xl:w-32 xl:h-32 bg-gray-200 rounded-full absolute bottom-right-custom shadow-custom flex items-center justify-center ${
+                        className={`w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 xl:w-32 xl:h-32 bg-gray-200 rounded-full bottom-right-custom shadow-custom flex items-center justify-center ${
                             displayRandomStudent ? 'invisible' : 'visible'
                         }`}
                     >

@@ -11,7 +11,6 @@ interface CrossTabProps {
 
 export default (props: CrossTabProps) => {
     const { cross } = useCross(props.userId, props.studentId)
-    const startDate = new Date('2020-08-31 00:00:01')
     const crossFilter = (type: string) => {
         const filtered = cross
             .filter(
