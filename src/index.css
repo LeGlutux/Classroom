@@ -1,100 +1,107 @@
+@tailwind base;
+
+@tailwind components;
+
+@tailwind utilities;
+
+@font-face {
+}
 
 .fade-out {
-  animation: fadeOut ease 1s;
-  -webkit-animation: fadeOut ease 1s;
-  -moz-animation: fadeOut ease 1s;
-  -o-animation: fadeOut ease 1s;
-  -ms-animation: fadeOut ease 1s;
+    animation: fadeOut ease 1s;
+    -webkit-animation: fadeOut ease 1s;
+    -moz-animation: fadeOut ease 1s;
+    -o-animation: fadeOut ease 1s;
+    -ms-animation: fadeOut ease 1s;
 }
 @keyframes fadeOut {
-  0% {
-    opacity:1;
-  }
-  100% {
-    opacity:0;
-  }
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
 }
 
 @-moz-keyframes fadeOut {
-  0% {
-    opacity:1;
-  }
-  100% {
-    opacity:0;
-  }
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
 }
 
 @-webkit-keyframes fadeOut {
-  0% {
-    opacity:1;
-  }
-  100% {
-    opacity:0;
-  }
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
 }
 
 @-o-keyframes fadeOut {
-  0% {
-    opacity:1;
-  }
-  100% {
-    opacity:0;
-  }
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
 }
 
 @-ms-keyframes fadeOut {
-  0% {
-    opacity:1;
-  }
-  100% {
-    opacity:0;
-}
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
 }
 
 @supports (-webkit-touch-callout: none) {
-  /* CSS specific to iOS devices */ 
-  .iphone-vertical {
-    margin-top: 4rem;
-    margin-bottom: 5rem;
-  }
+    /* CSS specific to iOS devices */
+    .iphone-vertical {
+        margin-top: 4rem;
+        margin-bottom: 5rem;
+    }
 
-  .iphone-bottom {
-    position: absolute;
-    bottom: 0;
-  }
+    .iphone-bottom {
+        position: absolute;
+        bottom: 0;
+    }
 
-  .iphone-mb-16 {
-    margin-bottom: 8rem;
-  }  
+    .iphone-mb-16 {
+        margin-bottom: 8rem;
+    }
 }
 
 .bottom-right-custom {
-position: absolute;
-bottom: 6%;
-right: 4%;
-
+    position: absolute;
+    bottom: 6%;
+    right: 4%;
 }
 
 .top-50 {
-  position: absolute;
-  top: 50%
+    position: absolute;
+    top: 50%;
 }
 
 .top-25 {
-  position: absolute;
-  top: 25%
+    position: absolute;
+    top: 25%;
 }
 
 .h-28 {
-  height: 7rem;
+    height: 7rem;
 }
 
 .h-70 {
-  height: 17rem;
+    height: 17rem;
 }
 
 .h-82 {
-  height: 18rem;
+    height: 18rem;
 }
 
 .h-100 {
@@ -102,11 +109,11 @@ right: 4%;
 }
 
 .h-140 {
-  height: 28rem;
+    height: 28rem;
 }
 
 .h-200 {
-  height: 40rem;
+    height: 40rem;
 }
 
 .shadow-custom {
@@ -115,31 +122,31 @@ right: 4%;
 }
 
 .text-7xl {
-  font-size: 5rem;
+    font-size: 5rem;
 }
 
 .text-8xl {
-  font-size: 6rem;
+    font-size: 6rem;
 }
 
 .text-9xl {
-  font-size: 7rem;
+    font-size: 7rem;
 }
 
 .text-big {
-  font-size: 8rem;
+    font-size: 8rem;
 }
 
 .h-28 {
-  height: 7rem;
+    height: 7rem;
 }
 
 @media (min-width: 1280px) {
-  .xl\:big {
-    height: 26rem;
-  }
+    .xl\:big {
+        height: 26rem;
+    }
 
-  .xl\:text-big {
-    font-size: 8rem;
-  }
+    .xl\:text-big {
+        font-size: 8rem;
+    }
 }
