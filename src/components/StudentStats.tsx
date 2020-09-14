@@ -97,7 +97,7 @@ const View = ({
                     { merge: true }
                 )
             history.goBack()
-        } else console.log("cette classe n'est pas dans votre liste de classe")
+        }
     }
 
     return (

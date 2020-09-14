@@ -25,8 +25,6 @@ export const fetchCrosses = async (
     return data
 }
 
-
-
 export const fetchCross = async (
     currentUserId: string,
     currentStudentId: string

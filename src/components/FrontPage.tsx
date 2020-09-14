@@ -25,6 +25,7 @@ export default () => {
                 <div className="h-24">
                     <NavBar />
                 </div>
+
                 <div className="flex w-full h-full flex-col bg-white overflow-y-scroll justify-around items-center">
                     <div className="font-studentName text-justify mx-4 font-bold">
                         Bienvenue sur Thòt Note, ton cahier de classe en ligne.
@@ -128,7 +129,7 @@ export default () => {
             />
 
             <div className="flex w-full h-full flex-col bg-white overflow-y-scroll xl:flex-row xl:flex-wrap xl:content-start">
-                {students.map(({ name, surname, classes, id }) => {
+                {students.map(({ name, surname, classes, id, highlight }) => {
                     return (
                         <Student
                             key={id}
@@ -136,6 +137,7 @@ export default () => {
                             name={name}
                             surname={surname}
                             id={id}
+                            highlight={highlight}
                         />
                     )
                 })}

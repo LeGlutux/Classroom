@@ -57,6 +57,7 @@ export default ({ groups }: Props) => {
                                 surname: surnameCased,
                                 classes: list,
                                 id,
+                                highlight: false,
                             })
                         setNameInputValue('')
                         setSurnameInputValue('')

@@ -41,9 +41,6 @@ export default (props: MagicStickProps) => {
                                     id={id}
                                 />
                             )
-                        else {
-                            return <div />
-                        }
                     })}
                 </div>
 
