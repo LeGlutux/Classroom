@@ -8,7 +8,7 @@ import openCard from '../images/openCard.png'
 import Firebase from '../firebase'
 import { AuthContext } from '../Auth'
 import firebase from 'firebase/app'
-import { useCross, useRunningPeriode, usePeriodes } from '../hooks'
+import { useCross, useRunningPeriode, usePeriodes, useStudent } from '../hooks'
 import { Link } from 'react-router-dom'
 
 interface StudentProps {
@@ -19,10 +19,16 @@ interface StudentProps {
 }
 
 export default (props: StudentProps) => {
-    const [highlight, setHighlight] = useState(false)
     const db = Firebase.firestore()
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
+    const student = useStudent(currentUser.uid, props.id)
+    const settingUpHighlight = () => {
+        if (student === undefined) return false
+        if (student.highlight === undefined) return false
+        else return student.highlight
+    }
+    const [highlight, setHighlight] = useState(settingUpHighlight())
     const { periodes } = usePeriodes(currentUser.uid)
     const { runningPeriode } = useRunningPeriode(currentUser.uid)
     const { cross, refreshCross } = useCross(currentUser.uid, props.id)
@@ -96,7 +102,16 @@ export default (props: StudentProps) => {
                     <div className="flex flex-row overflow-hidden">
                         <button
                             onClick={() => {
-                                setHighlight(!highlight)
+                                {
+                                    setHighlight(!highlight)
+                                    db.collection('users')
+                                        .doc(currentUser.uid)
+                                        .collection('eleves')
+                                        .doc(props.id)
+                                        .update({
+                                            highlight: highlight,
+                                        })
+                                }
                             }}
                             className={`flex flex-row lg:flex-row xl:flex:row mt-2 `}
                         >
