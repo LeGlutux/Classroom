@@ -78,7 +78,13 @@
 
 .bottom-right-custom {
     position: absolute;
-    bottom: 6%;
+    bottom: 5%;
+    right: 4%;
+}
+
+.bottom-right-custom2 {
+    position: absolute;
+    bottom: 20%;
     right: 4%;
 }
 

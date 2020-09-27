@@ -9,6 +9,9 @@ import {
     fetchStudentWithId,
     fetchCrosses,
     fetchNewbie,
+    fetchUpdated,
+    fetchNotYetSelectedStudents,
+    fetchSelectedStudents,
 } from './database'
 
 export const useGroups = (currentUserId: string) => {
@@ -172,4 +175,32 @@ export const useNewbie = (currentUserId: string) => {
     }, [currentUserId])
 
     return newbie
+}
+
+export const useUpdated = (currentUserId: string) => {
+    const [updated, setUpdated] = useState<boolean>(false)
+
+    useEffect(() => {
+        const fetch = async () => {
+            setUpdated(await fetchUpdated(currentUserId))
+        }
+        fetch()
+    }, [currentUserId])
+
+    return updated
+}
+
+export const useMemoryStudents = (currentUserId: string, classe: string) => {
+    const [selectedStudents, setSelectedStudents] = useState<firebase.firestore.DocumentData[]>([])
+    const [notYetSelectedStudents, setNotYetSelectedStudents] = useState<firebase.firestore.DocumentData[]>([])
+
+    useEffect(() => {
+        const fetch = async () => {
+            setSelectedStudents(await fetchSelectedStudents(currentUserId, classe))
+            setNotYetSelectedStudents(await fetchNotYetSelectedStudents(currentUserId, classe))
+        }
+        fetch()
+    }, [currentUserId])
+
+    return { selectedStudents, notYetSelectedStudents }
 }

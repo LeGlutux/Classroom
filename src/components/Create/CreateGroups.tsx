@@ -29,7 +29,6 @@ export default (props: Props) => {
                             classes: firebase.firestore.FieldValue.arrayUnion(
                                 inputValue
                             ),
-                            newbie: 2,
                         })
                     props.onAddGroup()
                     setSent(true)
