@@ -10,8 +10,6 @@ import {
     fetchCrosses,
     fetchNewbie,
     fetchUpdated,
-    fetchNotYetSelectedStudents,
-    fetchSelectedStudents,
 } from './database'
 
 export const useGroups = (currentUserId: string) => {
@@ -72,16 +70,20 @@ export const useCross = (currentUserId: string, currentStudentId: string) => {
     return { cross, refreshCross }
 }
 
-export const useStudents = (currentUserId: string) => {
+export const useStudents = (currentUserId: string, refresher: number) => {
     const [students, setStudents] = useState<firebase.firestore.DocumentData[]>(
         []
     )
+    const [loading, setLoading] = useState(false)
+
     useEffect(() => {
         const fetch = async () => {
+            setLoading(true)
             setStudents(await fetchStudents(currentUserId))
+            setLoading(false)
         }
         fetch()
-    }, [currentUserId])
+    }, [currentUserId, refresher])
 
     const filterStudents = async (group: string) => {
         const filteredStudents = (
@@ -94,7 +96,13 @@ export const useStudents = (currentUserId: string) => {
         setStudents(await fetchStudents(currentUserId))
     }
 
-    return { students, filterStudents, allStudents }
+    const refreshStudents = async () => {
+        setLoading(true)
+        setStudents(await fetchStudents(currentUserId))
+        setLoading(false)
+    }
+
+    return { students, filterStudents, allStudents, refreshStudents, loading }
 }
 
 export const usePeriodes = (currentUserId: string) => {
@@ -188,19 +196,4 @@ export const useUpdated = (currentUserId: string) => {
     }, [currentUserId])
 
     return updated
-}
-
-export const useMemoryStudents = (currentUserId: string, classe: string) => {
-    const [selectedStudents, setSelectedStudents] = useState<firebase.firestore.DocumentData[]>([])
-    const [notYetSelectedStudents, setNotYetSelectedStudents] = useState<firebase.firestore.DocumentData[]>([])
-
-    useEffect(() => {
-        const fetch = async () => {
-            setSelectedStudents(await fetchSelectedStudents(currentUserId, classe))
-            setNotYetSelectedStudents(await fetchNotYetSelectedStudents(currentUserId, classe))
-        }
-        fetch()
-    }, [currentUserId])
-
-    return { selectedStudents, notYetSelectedStudents }
 }

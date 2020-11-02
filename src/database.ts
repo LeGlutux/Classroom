@@ -122,28 +122,3 @@ export const fetchUpdated = async (currentUserId: string) => {
     return data
 }
 
-export const fetchNotYetSelectedStudents = async (currentUserId: string, classe: string) => {
-    const db = Firebase.firestore()
-    const querySnapshot = await db.collection('users').doc(currentUserId).get()
-
-    const data = querySnapshot
-        .data()!
-        .notYetSelectedStudents
-        .filter(
-            (l: { classe: string, listing: [] }) => (l.classe = classe)
-        )[0].listing
-    return data
-}
-
-export const fetchSelectedStudents = async (currentUserId: string, classe: string) => {
-    const db = Firebase.firestore()
-    const querySnapshot = await db.collection('users').doc(currentUserId).get()
-
-    const data = querySnapshot
-        .data()!
-        .selectedStudents.filter(
-            (l: { classe: string; listing: [] }) => (l.classe = classe)
-        )[0].listing
-    return data
-    return data
-}

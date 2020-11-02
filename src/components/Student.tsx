@@ -3,13 +3,13 @@ import alarm from '../images/behaviour.png'
 import bookPile from '../images/homework.png'
 import schoolBag from '../images/supply.png'
 import pen from '../images/observation.png'
-import studentLock from '../images/studentLock.png'
 import openCard from '../images/openCard.png'
 import Firebase from '../firebase'
 import { AuthContext } from '../Auth'
 import firebase from 'firebase/app'
 import { useCross, useRunningPeriode, usePeriodes } from '../hooks'
 import { Link } from 'react-router-dom'
+import brain from '../images/brain.png'
 
 interface StudentProps {
     name: string
@@ -17,6 +17,7 @@ interface StudentProps {
     classes: string
     id: string
     highlight: boolean
+    selected: boolean
 }
 
 export default (props: StudentProps) => {
@@ -75,19 +76,19 @@ export default (props: StudentProps) => {
 
     return (
         <div className="flex flex-row w-full xl:w-1/3 items-center iphone-vertical">
-            <div className="flex h-full items-center mt-5 ml-2 xl:pt-6">
+            <div className="flex h-full items-center mt-5 ml-2 xl:pt-6 absolute">
                 <img
-                    className={`h-4 w-4 ${
-                        runningPeriode === periodes.length
+                    className={`h-8 w-8 ${
+                        props.selected === false || props.selected === undefined
                             ? 'invisible'
                             : 'visible'
                     }`}
-                    src={studentLock}
+                    src={brain}
                     alt=""
                 />
             </div>
             <div
-                className={`rounded mt-5 pb-1 h-32 mx-2 bg-gray-100 w-full shadow-custom ${
+                className={`rounded ml-8 mt-5 pb-1 h-32 mx-2 bg-gray-100 w-full shadow-custom ${
                     runningPeriode === periodes.length
                         ? 'bg-gray-100'
                         : 'border-2 border-gray-500'
