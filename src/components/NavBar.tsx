@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import addPage from '../images/addPage.png'
+import list from '../images/list.png'
 import bandeauCrayon2 from '../images/bandeauCrayon2.jpg'
 export default () => {
     return (
@@ -25,6 +26,9 @@ export default () => {
                         <img className="w-12 h-12" src={addPage} alt="" />
                     </Link>
                 </div>
+                <Link to="/createlist">
+                    <img className="w-12 h-12" src={list} alt="" />
+                </Link>
             </div>
         </div>
     )

@@ -7,6 +7,7 @@ import { AuthProvider } from './Auth'
 import PrivateRoute from './PrivateRoute'
 import Login from './components/Login'
 import SignUp from './components/SignUp'
+import CreateList from './components/CreateList'
 
 export default () => {
     return (
@@ -19,6 +20,10 @@ export default () => {
                                 <PrivateRoute
                                     path="/create"
                                     component={SettingsPage}
+                                />
+                                <PrivateRoute
+                                    path="/createlist"
+                                    component={CreateList}
                                 />
 
                                 <Route path="/login">
