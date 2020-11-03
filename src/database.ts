@@ -122,3 +122,14 @@ export const fetchUpdated = async (currentUserId: string) => {
     return data
 }
 
+export const fetchLists = async (currentUserId: string) => {
+    const db = Firebase.firestore()
+    const querySnapshot = await db
+        .collection('users')
+        .doc(currentUserId)
+        .collection('lists')
+        .get()
+
+    const data = querySnapshot!
+    return data
+}

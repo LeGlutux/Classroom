@@ -10,6 +10,7 @@ import {
     fetchCrosses,
     fetchNewbie,
     fetchUpdated,
+    fetchLists,
 } from './database'
 
 export const useGroups = (currentUserId: string) => {
@@ -196,4 +197,17 @@ export const useUpdated = (currentUserId: string) => {
     }, [currentUserId])
 
     return updated
+}
+
+export const useLists = (currentUserId: string) => {
+    const [lists, setLists] = useState<firebase.firestore.DocumentData>()
+
+    useEffect(() => {
+        const fetch = async () => {
+            setLists(await fetchLists(currentUserId))
+        }
+        fetch()
+    }, [currentUserId])
+
+    return lists
 }

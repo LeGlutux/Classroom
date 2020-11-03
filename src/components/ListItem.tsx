@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 
 interface Props {
     n: number
+    items: string[]
+    setItems: React.Dispatch<React.SetStateAction<string[]>>
 }
 
 export default (props: Props) => {
@@ -10,8 +12,11 @@ export default (props: Props) => {
     return (
         <div className="w-9/12 flex flex-col hover:border-gray-800">
             <input
-                value={itemInputValue}
-                onChange={(e) => setItemInputValue(e.target.value)}
+                value={props.items[props.n+1]}
+                onChange={(e) => {
+                    props.items.splice(0, 1, e.target.value)
+                    props.setItems(props.items)
+                }}
                 className="h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center"
                 type="text"
                 placeholder={text}

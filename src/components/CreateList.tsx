@@ -1,28 +1,40 @@
 import React, { useContext, useState } from 'react'
 import { AuthContext } from '../Auth'
-import LightStudent from './LightStudent'
 import Firebase from '../firebase'
 import NavBar from './NavBar'
 import list from '../images/list.png'
 import add from '../images/add.png'
 import NewStudentGroups from './NewStudentGroups'
-import { useGroups } from '../hooks'
-import ListItem from './ListItem'
+import { useGroups, useLists } from '../hooks'
 
 export default () => {
     const db = Firebase.firestore()
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
+    const lists = useLists(currentUser.uid)
+
     const { groups } = useGroups(currentUser.uid)
     const [listNameInputValue, setListNameInputValue] = useState('')
     const [defaultList, setDefaultList] = useState<string[]>([])
-    const [items, setItems] = useState([0])
+    const [itemN, setItemN] = useState(1)
+    const [item1, setItem1] = useState('')
+    const [item2, setItem2] = useState('')
+    const [item3, setItem3] = useState('')
+    const [item4, setItem4] = useState('')
+
     const handleCreateList = () => {
         db.collection('users')
             .doc(currentUser.uid)
             .collection('lists')
-            .doc(listNameInputValue)
-            .set({})
+            .doc(listNameInputValue.concat(new Date().toString()))
+            .set({
+                name: listNameInputValue,
+                id: listNameInputValue,
+                item1: item1,
+                item2: item2,
+                item3: item3,
+                item4: item4,
+            })
     }
 
     return (
@@ -36,7 +48,14 @@ export default () => {
                 onSubmit={(e) => {
                     e.preventDefault()
                     e.stopPropagation()
-                    if (listNameInputValue !== '' && defaultList.length === 1) {
+                    setItemN(1)
+                    if (
+                        lists !== undefined &&
+                        listNameInputValue !== '' &&
+                        defaultList.length === 1 &&
+                        !(listNameInputValue in lists)
+                    ) {
+                        handleCreateList()
                     } else {
                         throw new Error("le formulaire n'est pas complet")
                     }
@@ -77,15 +96,62 @@ export default () => {
                             })}
                         </div>
                         <div className="w-9/12 flex flex-col hover:border-gray-800">
-                            {items.map((i, index) => {
-                                return <ListItem key={index} n={i} />
-                            })}
+                            <div className="w-9/12 flex flex-col hover:border-gray-800">
+                                <input
+                                    value={item1}
+                                    onChange={(e) => {
+                                        setItem1(e.target.value)
+                                    }}
+                                    className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center ${
+                                        itemN >= 1 ? 'visible' : 'invisible'
+                                    }`}
+                                    type="text"
+                                    placeholder={'item 1'}
+                                />
+                                <input
+                                    value={item2}
+                                    onChange={(e) => {
+                                        setItem2(e.target.value)
+                                    }}
+                                    className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center ${
+                                        itemN >= 2 ? 'visible' : 'invisible'
+                                    }`}
+                                    type="text"
+                                    placeholder={'item 2'}
+                                />
+                                <input
+                                    value={item3}
+                                    onChange={(e) => {
+                                        setItem3(e.target.value)
+                                    }}
+                                    className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center ${
+                                        itemN >= 3 ? 'visible' : 'invisible'
+                                    }`}
+                                    type="text"
+                                    placeholder={'item 3'}
+                                />
+                                <input
+                                    value={item4}
+                                    onChange={(e) => {
+                                        setItem4(e.target.value)
+                                    }}
+                                    className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center ${
+                                        itemN >= 4 ? 'visible' : 'invisible'
+                                    }`}
+                                    type="text"
+                                    placeholder={'item 4'}
+                                />
+                            </div>
                         </div>
-                        <div className="w-full flex flex-row">
+                        <div
+                            className={`w-full flex flex-row ${
+                                itemN >= 4 ? 'invisible' : ''
+                            }`}
+                        >
                             <button
                                 onClick={(e) => {
                                     e.preventDefault()
-                                    setItems(items.concat([items.length]))
+                                    if (itemN <= 4) setItemN(itemN + 1)
                                 }}
                             >
                                 <img
