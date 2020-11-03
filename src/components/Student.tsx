@@ -28,6 +28,15 @@ export default (props: StudentProps) => {
     const { periodes } = usePeriodes(currentUser.uid)
     const { runningPeriode } = useRunningPeriode(currentUser.uid)
     const { cross, refreshCross } = useCross(currentUser.uid, props.id)
+    const handleForget = () => {
+        db.collection('users')
+            .doc(currentUser.uid)
+            .collection('eleves')
+            .doc(props.id)
+            .update({
+                selected: false,
+            })
+    }
 
     const crossFilter = (crossType: string, runningP: number) => {
         if (runningP === periodes.length) {
@@ -76,19 +85,20 @@ export default (props: StudentProps) => {
 
     return (
         <div className="flex flex-row w-full xl:w-1/3 items-center iphone-vertical">
-            <div className="flex h-full items-center mt-5 ml-2 xl:pt-6 absolute">
-                <img
+            <div className="flex h-full items-center mt-5 ml-2 xl:pt-6 static">
+                <button
                     className={`h-8 w-8 ${
                         props.selected === false || props.selected === undefined
                             ? 'invisible'
                             : 'visible'
                     }`}
-                    src={brain}
-                    alt=""
-                />
+                    onClick={handleForget}
+                >
+                    <img className="h-8 w-8" src={brain} alt="" />
+                </button>
             </div>
             <div
-                className={`rounded ml-8 mt-5 pb-1 h-32 mx-2 bg-gray-100 w-full shadow-custom ${
+                className={`rounded ml-2 mt-5 pb-1 h-32 mx-2 bg-gray-100 w-full shadow-custom ${
                     runningPeriode === periodes.length
                         ? 'bg-gray-100'
                         : 'border-2 border-gray-500'
