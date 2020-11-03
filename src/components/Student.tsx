@@ -18,6 +18,8 @@ interface StudentProps {
     id: string
     highlight: boolean
     selected: boolean
+    refresher: (group: string) => void
+    displayedGroup: string
 }
 
 export default (props: StudentProps) => {
@@ -36,6 +38,7 @@ export default (props: StudentProps) => {
             .update({
                 selected: false,
             })
+        props.refresher(props.displayedGroup)
     }
 
     const crossFilter = (crossType: string, runningP: number) => {

@@ -9,7 +9,8 @@ interface MagicStickProps {
     displayRandomStudent: boolean
     setDisplayRandomStudent: React.Dispatch<React.SetStateAction<boolean>>
     withMemory: boolean
-    refresher: React.Dispatch<React.SetStateAction<number>>
+    onFilter: (group: string) => void
+    displayedGroup: string
 }
 
 export default (props: MagicStickProps) => {
@@ -29,7 +30,7 @@ export default (props: MagicStickProps) => {
             .update({
                 selected: true,
             })
-        props.refresher(10023)
+        props.onFilter(props.displayedGroup)
     }
 
     if (props.withMemory) {

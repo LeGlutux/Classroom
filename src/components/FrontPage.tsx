@@ -17,10 +17,9 @@ export default () => {
     const [menuOpened, setMenuOpened] = useState(false)
     const [displayedGroup, setDisplayedGroup] = useState('tous')
     const [displayRandomStudent, setDisplayRandomStudent] = useState(false)
-    const [refresher, setRefresher] = useState(0)
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
-    const { students, filterStudents } = useStudents(currentUser.uid, refresher)
+    const { students, filterStudents } = useStudents(currentUser.uid)
     const { groups } = useGroups(currentUser.uid)
     const { runningPeriode } = useRunningPeriode(currentUser.uid)
     const [magicStickStudentsList, setMagicStickStudentsList] = useState(
@@ -43,7 +42,6 @@ export default () => {
                     })
             })
         }
-        setRefresher(6)
     }
 
     return (
@@ -72,7 +70,8 @@ export default () => {
                 displayRandomStudent={displayRandomStudent}
                 setDisplayRandomStudent={setDisplayRandomStudent}
                 withMemory={withMemory}
-                refresher={setRefresher}
+                onFilter={(group: string) => filterStudents(group)}
+                displayedGroup={displayedGroup}
             />
 
             <div className="flex w-full h-full flex-col bg-white overflow-y-scroll xl:flex-row xl:flex-wrap xl:content-start">
@@ -87,7 +86,9 @@ export default () => {
                                 surname={surname}
                                 id={id}
                                 highlight={highlight}
-                            />
+                                refresher={(group) => filterStudents(group)}
+                                displayedGroup={displayedGroup}
+                                />
                         )
                     }
                 )}
@@ -102,6 +103,7 @@ export default () => {
                             onFilter={(group) => {
                                 filterStudents(group)
                             }}
+                            closeMenu={setMenuOpened}
                             groups={groups}
                         />
                     </div>
@@ -142,8 +144,8 @@ export default () => {
                     </button>
                     <button
                         onClick={() => {
-                            setRefresher(4)
                             setMenuOpened(!menuOpened)
+                            filterStudents(displayedGroup)
                         }}
                         className="mr-6 w-8 h-8 text-gray-700 rounded"
                     >

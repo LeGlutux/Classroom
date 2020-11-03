@@ -70,7 +70,7 @@ export const useCross = (currentUserId: string, currentStudentId: string) => {
     return { cross, refreshCross }
 }
 
-export const useStudents = (currentUserId: string, refresher: number) => {
+export const useStudents = (currentUserId: string) => {
     const [students, setStudents] = useState<firebase.firestore.DocumentData[]>(
         []
     )
@@ -83,13 +83,13 @@ export const useStudents = (currentUserId: string, refresher: number) => {
             setLoading(false)
         }
         fetch()
-    }, [currentUserId, refresher])
+    }, [currentUserId])
 
     const filterStudents = async (group: string) => {
         const filteredStudents = (
             await fetchStudents(currentUserId)
         ).filter((student) => student.classes.includes(group))
-        setStudents(filteredStudents)
+        if (group !== 'tous') setStudents(filteredStudents)
     }
 
     const allStudents = async () => {

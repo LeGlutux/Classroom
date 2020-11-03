@@ -5,6 +5,7 @@ interface ClassListFilterProps {
     onFilter: (group: string) => void
     displayedGroup: string
     setDisplayedGroup: React.Dispatch<React.SetStateAction<string>>
+    closeMenu: (value: React.SetStateAction<boolean>) => void
 }
 
 export default ({
@@ -12,6 +13,7 @@ export default ({
     onFilter,
     displayedGroup,
     setDisplayedGroup,
+    closeMenu,
 }: ClassListFilterProps) => {
     return (
         <div className="flex overflow-auto ml-2 mr-6">
@@ -21,6 +23,7 @@ export default ({
                         onClick={() => {
                             onFilter(group)
                             setDisplayedGroup(group)
+                            closeMenu(false)
                         }}
                         className="font-studentName h-8 mb-2 mx-2 bg-gray-100 w-auto text-center rounded-lg px-3 flex items-center"
                         key={index}
