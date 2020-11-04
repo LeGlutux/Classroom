@@ -55,7 +55,7 @@ export default () => {
                     if (
                         lists !== undefined &&
                         listNameInputValue !== '' &&
-                        defaultList.length === 1 &&
+                        defaultList.length >= 0 &&
                         !(listNameInputValue in lists)
                     ) {
                         handleCreateList()

@@ -4,10 +4,11 @@ import { useLists, useStudents } from '../hooks'
 import { AuthContext } from '../Auth'
 import NavBar from './NavBar'
 import add from '../images/add.png'
+import { Link } from 'react-router-dom'
+import ListPreview from './ListPreview'
 
-interface ListsProps {}
 
-export default (props: ListsProps) => {
+export default () => {
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
     const lists = useLists(currentUser.uid)
@@ -18,11 +19,27 @@ export default (props: ListsProps) => {
             <div className="h-24">
                 <NavBar />
             </div>
-            <div className="flex flex-row w-full h-12 border-t-4 border-b-4 border-gray-600 items-center">
-                <img className="mx-8" src={add} alt="" />
+            <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center">
+                <Link className="mx-6 w-6 h-6" to="/createlist">
+                    <img className="h-6 w-6" src={add} alt="" />
+                </Link>
                 <div className="font-studentName mx-4">
-                    Créer une nouvelle list
+                    Créer une nouvelle liste
                 </div>
+            </div>
+            <div className="flex flex-col w-full">
+                {lists.map(({ name, group, id, date, itemN }, index) => {
+                    return (
+                        <ListPreview
+                            key={id}
+                            id={id}
+                            name={name}
+                            classes={group}
+                            itemsN={itemN}
+                            date={date}
+                        />
+                    )
+                })}
             </div>
         </div>
     )

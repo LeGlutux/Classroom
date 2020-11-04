@@ -8,6 +8,8 @@ import PrivateRoute from './PrivateRoute'
 import Login from './components/Login'
 import SignUp from './components/SignUp'
 import Lists from './components/Lists'
+import CreateList from './components/CreateList'
+import List from './components/List'
 
 export default () => {
     return (
@@ -22,6 +24,14 @@ export default () => {
                                     component={SettingsPage}
                                 />
                                 <PrivateRoute path="/lists" component={Lists} />
+                                <PrivateRoute
+                                    path="/createlist"
+                                    component={CreateList}
+                                />
+                                <PrivateRoute
+                                    path="/list/:id"
+                                    component={List}
+                                />
 
                                 <Route path="/login">
                                     <Login />
