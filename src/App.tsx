@@ -7,6 +7,7 @@ import { AuthProvider } from './Auth'
 import PrivateRoute from './PrivateRoute'
 import Login from './components/Login'
 import SignUp from './components/SignUp'
+import Lists from './components/Lists'
 
 export default () => {
     return (
@@ -20,6 +21,7 @@ export default () => {
                                     path="/create"
                                     component={SettingsPage}
                                 />
+                                <PrivateRoute path="/lists" component={Lists} />
 
                                 <Route path="/login">
                                     <Login />
