@@ -23,7 +23,10 @@ export default (props: NewStudentGroupsProps) => {
                 type="checkbox"
                 className={`h-4 w-4 my-2`}
                 checked={check}
-                onChange={(e) => handleCheck(check, props.list)}
+                onChange={(e) => {
+                    handleCheck(check, props.list)
+                    console.log(props.list)
+                }}
             />
             <div className="font-studentName flex text-center items-center text-lg mx-2">
                 {props.classe}

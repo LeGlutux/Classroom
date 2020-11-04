@@ -30,10 +30,13 @@ export default () => {
             .set({
                 name: listNameInputValue,
                 id: listNameInputValue,
-                item1: item1,
-                item2: item2,
-                item3: item3,
-                item4: item4,
+                date: new Date(),
+                group: defaultList,
+                itemN,
+                item1,
+                item2,
+                item3,
+                item4,
             })
     }
 
