@@ -7,7 +7,7 @@ import list from '../images/list.png'
 export default () => {
     return (
         <div
-            className="flex flex-row px-4 h-full xl:px-12"
+            className="flex flex-row px-4 h-24 xl:px-12"
             style={{ backgroundImage: `url(${bandeauCrayon2})` }}
         >
             <div className={`flex flex-row w-2/3 overflow-hidden`}>

@@ -58,7 +58,8 @@ export default () => {
                         displayedGroup.length > 8
                             ? 'text-sm overflow-hidden mt-3 h-16'
                             : 'text-2xl mt-20'
-                    }`}
+                    }
+                    ${displayedGroup === 'tous' ? 'invisible' : 'visible'}`}
                     style={{ backgroundColor: 'rgba(255,255,255,0.6)' }}
                 >
                     {displayedGroup}
@@ -74,24 +75,33 @@ export default () => {
                 displayedGroup={displayedGroup}
             />
 
-            <div className="flex w-full h-full flex-col bg-white overflow-y-scroll xl:flex-row xl:flex-wrap xl:content-start">
-                {students.map(
-                    ({ name, surname, classes, id, selected, highlight }) => {
-                        return (
-                            <Student
-                                key={id}
-                                selected={selected}
-                                classes={classes}
-                                name={name}
-                                surname={surname}
-                                id={id}
-                                highlight={highlight}
-                                refresher={(group) => filterStudents(group)}
-                                displayedGroup={displayedGroup}
+            <div className="flex w-full h-full flex-col bg-white overflow-y-scroll md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start">
+                {students
+                    .sort((a) => (a.higlight ? -1 : 1))
+                    .map(
+                        ({
+                            name,
+                            surname,
+                            classes,
+                            id,
+                            selected,
+                            highlight,
+                        }) => {
+                            return (
+                                <Student
+                                    key={id}
+                                    selected={selected}
+                                    classes={classes}
+                                    name={name}
+                                    surname={surname}
+                                    id={id}
+                                    highlight={highlight}
+                                    refresher={(group) => filterStudents(group)}
+                                    displayedGroup={displayedGroup}
                                 />
-                        )
-                    }
-                )}
+                            )
+                        }
+                    )}
             </div>
 
             <div className="w-full h-12 bg-gray-300 table-footer-group">

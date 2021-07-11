@@ -14,6 +14,7 @@ import ConfirmModal from './ConfirmModal'
 
 export default () => {
     const [confirm, setConfirm] = useState(false)
+    const [confirm2, setConfirm2] = useState(false)
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
     const { groups, refreshGroups } = useGroups(currentUser.uid)
@@ -57,6 +58,17 @@ export default () => {
                     'En faisant cela, vous ne pourrez plus ajouter de croix pour les périodes précédentes'
                 }
             />
+            <ConfirmModal
+                confirm={confirm2}
+                setConfirm={setConfirm2}
+                confirmAction={handleNewPeriode}
+                textBox={
+                    'Êtes-vous sûr(e) de vouloir commencer une nouvelle période ?'
+                }
+                subTextBox={
+                    'En faisant cela, vous ne pourrez plus ajouter de croix pour les périodes précédentes'
+                }
+            />
             <div className="h-24 w-full">
                 <NavBar />
             </div>
@@ -75,7 +87,7 @@ export default () => {
                         </div>
 
                         <button
-                            className="flex h-16 w-56 self-center bg-red-700 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap"
+                            className="flex h-16 w-56 self-center bg-orange-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap"
                             onClick={() => setConfirm(true)}
                         >
                             {' '}
@@ -86,6 +98,17 @@ export default () => {
                             currentUser={currentUser.uid}
                             refresh={refreshRunningPeriode}
                         />
+                    </div>
+                </div>
+                <div className="flex flex-col mt-5 shadow-custom mx-6 bg-gray-100 pb-4 rounded xl:mt-12 xl:mx-64">
+                    <div className="flex flex-col h-auto items-center justify-around">
+                        <button
+                            className="flex h-16 w-56 mt-8 self-center bg-red-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap"
+                            onClick={() => setConfirm(true)}
+                        >
+                            {' '}
+                            Supprimer toutes les données
+                        </button>
                     </div>
                 </div>
                 <div className='"w-full bg-gray-100"'>

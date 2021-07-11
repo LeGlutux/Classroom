@@ -87,9 +87,10 @@ export const useStudents = (currentUserId: string) => {
     }, [currentUserId])
 
     const filterStudents = async (group: string) => {
-        const filteredStudents = (
-            await fetchStudents(currentUserId)
-        ).filter((student) => student.classes.includes(group))
+        const filteredStudents = (await fetchStudents(currentUserId))
+            .filter((student) => student.classes.includes(group))
+            .sort((a) => (a.highlight ? -1 : 1))
+
         if (group !== 'tous') setStudents(filteredStudents)
     }
 

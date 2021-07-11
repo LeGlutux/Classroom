@@ -12,6 +12,7 @@ import pen from '../images/observation.png'
 import backArrow from '../images/return.png'
 import ConfirmModal from './ConfirmModal'
 import edit from '../images/edit.png'
+import ok from '../images/ok.png'
 
 export default () => {
     const { currentUser } = useContext(AuthContext)
@@ -28,9 +29,9 @@ export default () => {
                 element.type === crossType
         )
         const ordered = filtered.sort((a, b) => (a.time < b.time ? 1 : -1))
-        ordered.shift()
         return ordered
     }
+
     return (
         <View
             currentUser={currentUser}
@@ -56,7 +57,7 @@ const View = ({
     id: string
 }) => {
     const { groups } = useGroups(currentUser.uid)
-    const startDate = new Date('2020-08-31 00:00:01')
+    const startDate = new Date('2021-06-31 00:00:01')
     const [confirm, setConfirm] = useState(false)
     const [editing, setEditing] = useState(false)
     const [nameInputValue, setNameInputValue] = useState('')
@@ -69,10 +70,20 @@ const View = ({
     const weeks = Array.from({ length: currentWeek }, (_, index) => index + 1)
     const db = firebase.firestore()
     const history = useHistory()
+    const [fader, setFader] = useState('')
     const handleDeleteCross = (crossType: string) => {
-        crossFilter(crossType)
+        if (crossFilter(crossType).length !== 0) {
+            const crossId = crossFilter(crossType)[0].id
+            db.collection('users')
+                .doc(currentUser.uid)
+                .collection('eleves')
+                .doc(studentId)
+                .collection('crosses')
+                .doc(crossId)
+                .delete()
+        }
+        setFader(fader.concat(crossType.charAt(0)))
     }
-
     const handleDeletion = () => {
         db.collection('users')
             .doc(currentUser.uid)
@@ -188,12 +199,12 @@ const View = ({
                     </div>
                 </div>
                 <div
-                    className={`flex w-full mr-4 justify-center mb-4 font-title2 text-3xl items-center `}
+                    className={`flex w-full mb-16 mr-4 justify-center font-title2 text-3xl items-center `}
                 >
                     {student.classes}
                 </div>
                 <button
-                    className="h-6 w-6 mr-4 mb-8"
+                    className="h-6 w-6 mr-4 absolute top-6 right-10"
                     onClick={() => {
                         setEditing(true)
                         setNameInputValue(student.name.toString())
@@ -242,6 +253,31 @@ const View = ({
                 <div className="w-6 text-sm font-bold h-4 my-2" />
                 <div className="w-full h-4 flex flex-row justify-evenly my-2 text-xl">
                     <div className="flex flex-row w-full mx-4 items-center justify-center">
+                        {crossFilter('behaviour').length -
+                            Number(fader.includes('b'))}
+                    </div>
+                    <div className="flex flex-row w-full mx-4 items-center justify-center">
+                        {crossFilter('homework').length -
+                            Number(fader.includes('h'))}
+                    </div>
+                    <div className="flex flex-row w-full mx-4 items-center justify-center">
+                        {crossFilter('supply').length -
+                            Number(fader.includes('s'))}
+                    </div>
+                    <div className="flex flex-row w-full mx-4 items-center justify-center">
+                        {crossFilter('observation').length -
+                            Number(fader.includes('o'))}
+                    </div>
+                </div>
+            </div>
+            <div className="flex flex-row ml-4 mb-4">
+                <div className="w-6 text-sm font-bold h-4 my-2" />
+                <div className="w-full h-4 flex flex-row justify-evenly my-2 text-xl">
+                    <div
+                        className={`flex flex-row w-full mx-4 items-center justify-center ${
+                            fader.includes('b') ? 'disappearing' : 'visible'
+                        }`}
+                    >
                         <button
                             onClick={() => {
                                 handleDeleteCross('behaviour')
@@ -250,17 +286,33 @@ const View = ({
                             <img className="h-10 w-10" src={backArrow} alt="" />
                         </button>
                     </div>
-                    <div className="flex flex-row w-full mx-4 items-center justify-center">
-                        <button onClick={() => handleDeleteCross('homework')}>
+                    <div
+                        className={`flex flex-row w-full mx-4 items-center justify-center ${
+                            fader.includes('h') ? 'disappearing' : 'visible'
+                        }`}
+                    >
+                        <button
+                            onClick={() => {
+                                handleDeleteCross('homework')
+                            }}
+                        >
                             <img className="h-10 w-10" src={backArrow} alt="" />
                         </button>
                     </div>
-                    <div className="flex flex-row w-full mx-4 items-center justify-center">
+                    <div
+                        className={`flex flex-row w-full mx-4 items-center justify-center ${
+                            fader.includes('s') ? 'disappearing' : 'visible'
+                        }`}
+                    >
                         <button onClick={() => handleDeleteCross('supply')}>
                             <img className="h-10 w-10" src={backArrow} alt="" />
                         </button>
                     </div>
-                    <div className="flex flex-row w-full mx-4 items-center justify-center">
+                    <div
+                        className={`flex flex-row w-full mx-4 items-center justify-center ${
+                            fader.includes('o') ? 'disappearing' : 'visible'
+                        }`}
+                    >
                         <button
                             onClick={() => handleDeleteCross('observation')}
                         >
@@ -275,7 +327,7 @@ const View = ({
                     onClick={() => {
                         setConfirm(true)
                     }}
-                    className="flex h-8 w-40 self-center mt-6 bg-red-500 rounded text-white text-lg font-bold justify-center"
+                    className="flex h-8 w-40 self-center mt-2 bg-red-500 rounded text-white text-lg font-bold justify-center"
                 >
                     Supprimer l'élève
                 </button>

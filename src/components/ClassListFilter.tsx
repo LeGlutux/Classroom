@@ -25,7 +25,7 @@ export default ({
                             setDisplayedGroup(group)
                             closeMenu(false)
                         }}
-                        className="font-studentName h-8 mb-2 mx-2 bg-gray-100 w-auto text-center rounded-lg px-3 flex items-center"
+                        className="font-studentName h-8 mb-2 mx-1 bg-gray-100 w-auto text-center rounded-lg px-3 flex items-center"
                         key={index}
                     >
                         {group}

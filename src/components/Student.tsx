@@ -40,7 +40,6 @@ export default (props: StudentProps) => {
             })
         props.refresher(props.displayedGroup)
     }
-
     const crossFilter = (crossType: string, runningP: number) => {
         if (runningP === periodes.length) {
             const filtered = cross
@@ -70,6 +69,7 @@ export default (props: StudentProps) => {
             return filtered
         }
     }
+    const newCrossId = 'c'.concat(Date.now().toString())
     const handleAddCross = (crossType: string) => {
         if (runningPeriode === periodes.length) {
             db.collection('users')
@@ -77,17 +77,28 @@ export default (props: StudentProps) => {
                 .collection('eleves')
                 .doc(props.id)
                 .collection('crosses')
-                .doc()
+                .doc(newCrossId)
                 .set({
                     type: crossType,
                     time: new Date(),
+                    id: newCrossId,
                 })
             refreshCross()
         }
     }
 
+    const shortName =
+        (props.name + props.surname).length > 16 && props.surname.length < 15
+            ? props.name.substring(0, 15 - props.surname.length).concat('.')
+            : props.name
+
+    const shortSurname =
+        (shortName + props.surname).length > 16 && props.surname.length > 12
+            ? props.surname.substring(0, 8).concat('.')
+            : props.surname
+
     return (
-        <div className="flex flex-row w-full xl:w-1/3 items-center iphone-vertical">
+        <div className="flex flex-row w-full md:w-1/2 lg:w-1/2 xl:w-1/3 items-center iphone-vertical">
             <div className="flex h-full items-center mt-5 ml-2 xl:pt-6 static">
                 <button
                     className={`h-8 w-8 ${
@@ -123,30 +134,19 @@ export default (props: StudentProps) => {
                             className={`flex flex-row lg:flex-row xl:flex:row mt-2 `}
                         >
                             <div
-                                className={`font-studentName ml-2 text-gray-900 font-medium xl:text-4xl h-5 ${
+                                className={`font-studentName ml-2 text-gray-900 font-medium h-5 sm:text-customsize md:text-3xl lg:text-3x xl:text-4xl ${
                                     highlight ? 'text-red-600' : ''
                                 }
-                                ${
-                                    props.surname.length + props.name.length >
-                                    20
-                                        ? 'text-xl'
-                                        : 'text-3xl'
-                                }`}
+                                `}
                             >
-                                {props.surname}
+                                {shortSurname}
                             </div>
                             <div
-                                className={`font-studentName ml-2 text-gray-900 xl:text-4xl font-bold ${
+                                className={`font-studentName ml-2 text-gray-900 font-bold sm:text-customsize md:text-3xl lg:text-3x xl:text-4xl ${
                                     highlight ? 'text-red-600' : ''
-                                }
-                                ${
-                                    props.surname.length + props.name.length >
-                                    20
-                                        ? 'text-xl'
-                                        : 'text-3xl'
                                 }`}
                             >
-                                {props.name}
+                                {shortName}
                             </div>
                         </button>
                     </div>

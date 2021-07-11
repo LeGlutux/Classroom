@@ -9,8 +9,9 @@ export default () => {
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
     const lists = useLists(currentUser.uid)
-        const list = [] as firebase.firestore.DocumentData[]
+    const list = [] as firebase.firestore.DocumentData[]
     lists.forEach((d) => {
+        // tslint:disable-next-line: no-conditional-assignment
         if ((d.id = id)) {
             list.push(d)
         }

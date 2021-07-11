@@ -7,7 +7,6 @@ import add from '../images/add.png'
 import { Link } from 'react-router-dom'
 import ListPreview from './ListPreview'
 
-
 export default () => {
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />

@@ -4,8 +4,6 @@
 
 @tailwind utilities;
 
-@font-face {
-}
 
 .fade-out {
     animation: fadeOut ease 1s;
@@ -76,6 +74,24 @@
     }
 }
 
+
+.appearing {
+    pointer-events: none;
+    visibility: visible;
+    opacity: 1;
+    transition: visibility 0s 1s, opacity 0s 1s;
+  }
+
+
+
+.disappearing {
+    pointer-events: none;
+    display: none;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s 1s, opacity 1s linear;
+  }
+
 .bottom-right-custom {
     position: absolute;
     bottom: 8%;
@@ -96,6 +112,26 @@
 .top-25 {
     position: absolute;
     top: 25%;
+}
+
+.right-5 {
+    position: absolute;
+    right: 5%;
+}
+
+.right-10 {
+    position: absolute;
+    right: 10%;
+}
+
+.top-6 {
+    position: absolute;
+    top: 6%;
+}
+
+.top-10 {
+    position: absolute;
+    top: 10%;
 }
 
 .h-28 {
@@ -127,6 +163,25 @@
         0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
+.text-customsize {
+    font-size: 1.75rem;
+}
+
+.sm\:text-customsize {
+    font-size: 1.75rem;
+}
+
+.md\:text-customsize {
+    font-size: 1.75rem;
+}
+
+.lg\:text-customsize {
+    font-size: 1.75rem;
+}
+
+.xl\:text-customsize {
+    font-size: 1.75rem;
+}
 .text-7xl {
     font-size: 5rem;
 }
@@ -146,6 +201,10 @@
 .h-28 {
     height: 7rem;
 }
+
+.min-h-2 {
+    min-height: 2px;
+  }
 
 @media (min-width: 1280px) {
     .xl\:big {
