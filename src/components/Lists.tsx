@@ -30,7 +30,7 @@ export default () => {
                 {lists.map(({ name, group, id, date, itemN }, index) => {
                     return (
                         <ListPreview
-                            key={id}
+                            key={id.concat(Math.random())}
                             id={id}
                             name={name}
                             classes={group}

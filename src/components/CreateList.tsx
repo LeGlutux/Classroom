@@ -6,13 +6,14 @@ import list from '../images/list.png'
 import add from '../images/add.png'
 import NewStudentGroups from './NewStudentGroups'
 import { useGroups, useLists } from '../hooks'
+import { useHistory } from 'react-router-dom'
 
 export default () => {
     const db = Firebase.firestore()
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
     const lists = useLists(currentUser.uid)
-
+    const history = useHistory()
     const { groups } = useGroups(currentUser.uid)
     const [listNameInputValue, setListNameInputValue] = useState('')
     const [defaultList, setDefaultList] = useState<string[]>([])
@@ -21,15 +22,15 @@ export default () => {
     const [item2, setItem2] = useState('')
     const [item3, setItem3] = useState('')
     const [item4, setItem4] = useState('')
-
+    const id = Date.now().toString()
     const handleCreateList = () => {
         db.collection('users')
             .doc(currentUser.uid)
             .collection('lists')
-            .doc(listNameInputValue.concat(new Date().toString()))
+            .doc(id)
             .set({
                 name: listNameInputValue,
-                id: listNameInputValue,
+                id: id,
                 date: new Date(),
                 group: defaultList,
                 itemN,
@@ -169,6 +170,7 @@ export default () => {
 
                     <button
                         type="submit"
+                        onClick={() => history.goBack()}
                         className="flex h-8 w-40 self-center mt-6 bg-orange-500 rounded text-white text-lg font-bold justify-center"
                     >
                         Créer la liste

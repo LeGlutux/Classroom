@@ -15,8 +15,8 @@ import edit from '../images/edit.png'
 
 export default () => {
     const { currentUser } = useContext(AuthContext)
-    const { id } = useParams()
     if (currentUser === null) return <div />
+    const { id } = useParams()
     if (id === undefined) return <div />
     const { cross } = useCross(currentUser.uid, id)
     const student = useStudent(currentUser.uid, id)
@@ -37,7 +37,6 @@ export default () => {
             student={student}
             studentId={id}
             crossFilter={crossFilter}
-            id={id}
         />
     )
 }
@@ -47,13 +46,11 @@ const View = ({
     student,
     studentId,
     crossFilter,
-    id,
 }: {
     currentUser: firebase.User
     student: firebase.firestore.DocumentData
     studentId: string
     crossFilter: (crossType: string) => firebase.firestore.DocumentData[]
-    id: string
 }) => {
     const { groups } = useGroups(currentUser.uid)
     const startDate = new Date('2021-06-31 00:00:01')

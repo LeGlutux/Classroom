@@ -7,12 +7,7 @@ import Firebase from 'firebase/app'
 import 'react-datepicker/dist/react-datepicker.css'
 import firebase from 'firebase/app'
 import { AuthContext } from '../Auth'
-import {
-    usePeriodes,
-    useRunningPeriode,
-    useStudents,
-    useCrosses,
-} from '../hooks'
+import { usePeriodes, useRunningPeriode, useStudents } from '../hooks'
 import PeriodeFilter from './PeriodeFilter'
 import calendar from '../images/calendar.png'
 import ConfirmModal from './ConfirmModal'
@@ -27,7 +22,8 @@ export default () => {
     const { runningPeriode, refreshRunningPeriode } = useRunningPeriode(
         currentUser.uid
     )
-
+    const history = useHistory()
+    const { students } = useStudents(currentUser.uid)
     const { periodes, refreshPeriodes } = usePeriodes(currentUser.uid)
     const db = firebase.firestore()
 
@@ -38,8 +34,6 @@ export default () => {
                 periodes: firebase.firestore.FieldValue.arrayUnion(new Date()),
             })
     }
-    const history = useHistory()
-    const { students } = useStudents(currentUser.uid)
     const handleDeleteAll = () => {
         students.forEach((student) => {
             db.collection('users')
