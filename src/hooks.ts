@@ -1,6 +1,8 @@
+import firebase, { firestore } from 'firebase'
 import { useState, useEffect } from 'react'
 import {
     fetchGroups,
+    fetchUser,
     fetchCross,
     fetchStudents,
     fetchPeriodes,
@@ -115,7 +117,7 @@ export const usePeriodes = (currentUserId: string) => {
             setPeriodes(await fetchPeriodes(currentUserId))
         }
         fetch()
-    }, [currentUserId])
+    }, [])
 
     const refreshPeriodes = async () => {
         setPeriodes(await fetchPeriodes(currentUserId))
@@ -172,6 +174,19 @@ export const useStudent = (currentUserId: string, studentId: string) => {
     }, [currentUserId, studentId])
 
     return student
+}
+
+export const useUser = (currentUserId: string) => {
+    const [user, setUser] = useState<firebase.firestore.DocumentData>()
+
+    useEffect(() => {
+        const fetch = async () => {
+            setUser(await fetchUser(currentUserId))
+        }
+        fetch()
+    }, [currentUserId])
+
+    return user
 }
 
 export const useNewbie = (currentUserId: string) => {

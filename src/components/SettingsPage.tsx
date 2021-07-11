@@ -7,10 +7,16 @@ import Firebase from 'firebase/app'
 import 'react-datepicker/dist/react-datepicker.css'
 import firebase from 'firebase/app'
 import { AuthContext } from '../Auth'
-import { usePeriodes, useRunningPeriode } from '../hooks'
+import {
+    usePeriodes,
+    useRunningPeriode,
+    useStudents,
+    useCrosses,
+} from '../hooks'
 import PeriodeFilter from './PeriodeFilter'
 import calendar from '../images/calendar.png'
 import ConfirmModal from './ConfirmModal'
+import { useHistory } from 'react-router-dom'
 
 export default () => {
     const [confirm, setConfirm] = useState(false)
@@ -18,10 +24,10 @@ export default () => {
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
     const { groups, refreshGroups } = useGroups(currentUser.uid)
-
     const { runningPeriode, refreshRunningPeriode } = useRunningPeriode(
         currentUser.uid
     )
+
     const { periodes, refreshPeriodes } = usePeriodes(currentUser.uid)
     const db = firebase.firestore()
 
@@ -31,6 +37,26 @@ export default () => {
             .update({
                 periodes: firebase.firestore.FieldValue.arrayUnion(new Date()),
             })
+    }
+    const history = useHistory()
+    const { students } = useStudents(currentUser.uid)
+    const handleDeleteAll = () => {
+        students.forEach((student) => {
+            db.collection('users')
+                .doc(currentUser.uid)
+                .collection('eleves')
+                .doc(student.id)
+                .delete()
+        })
+
+        db.collection('users')
+            .doc(currentUser.uid)
+            .update({
+                classes: [] as string[],
+                periodes: [new Date()],
+                runningPeriode: 1 as number,
+            })
+        history.goBack()
     }
 
     const handleNewPeriode = () => {
@@ -43,6 +69,7 @@ export default () => {
                 runningPeriode: periodes.length + 1,
             })
         refreshRunningPeriode()
+        history.goBack()
     }
 
     return (
@@ -61,12 +88,12 @@ export default () => {
             <ConfirmModal
                 confirm={confirm2}
                 setConfirm={setConfirm2}
-                confirmAction={handleNewPeriode}
+                confirmAction={handleDeleteAll}
                 textBox={
-                    'Êtes-vous sûr(e) de vouloir commencer une nouvelle période ?'
+                    'Êtes-vous sûr(e) de vouloir supprimer toutes les données ?'
                 }
                 subTextBox={
-                    'En faisant cela, vous ne pourrez plus ajouter de croix pour les périodes précédentes'
+                    'En faisant cela, vous supprimez définitivement vos élèves et vos classes'
                 }
             />
             <div className="h-24 w-full">
@@ -104,7 +131,7 @@ export default () => {
                     <div className="flex flex-col h-auto items-center justify-around">
                         <button
                             className="flex h-16 w-56 mt-8 self-center bg-red-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap"
-                            onClick={() => setConfirm(true)}
+                            onClick={() => setConfirm2(true)}
                         >
                             {' '}
                             Supprimer toutes les données

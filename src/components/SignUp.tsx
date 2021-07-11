@@ -35,7 +35,6 @@ const SignUp = () => {
                         classes: [] as string[],
                         periodes: [new Date()],
                         runningPeriode: 1 as number,
-                        newbie: 0,
                     })
 
                 history.push('/')
