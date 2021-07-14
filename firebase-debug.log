@@ -1,0 +1,102 @@
+[debug] [2021-07-09T07:44:36.734Z] ----------------------------------------------------------------------
+[debug] [2021-07-09T07:44:36.736Z] Command:       D:\Programmes\node.exe C:\Users\Léo-Paul\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js emulators:start
+[debug] [2021-07-09T07:44:36.736Z] CLI Version:   9.14.0
+[debug] [2021-07-09T07:44:36.736Z] Platform:      win32
+[debug] [2021-07-09T07:44:36.736Z] Node Version:  v12.16.1
+[debug] [2021-07-09T07:44:36.737Z] Time:          Fri Jul 09 2021 09:44:36 GMT+0200 (GMT+02:00)
+[debug] [2021-07-09T07:44:36.738Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2021-07-09T07:44:36.746Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-07-09T07:44:36.746Z] > authorizing via signed-in user (lp.bendeks@gmail.com)
+[info] i  emulators: Starting emulators: auth, firestore, database, hosting {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth, firestore, database, hosting"}}
+[debug] [2021-07-09T07:44:38.778Z] [hub] writing locator at C:\Users\LO-PAU~1\AppData\Local\Temp\hub-classroom-48838.json
+[debug] [2021-07-09T07:44:40.825Z] Ignoring unsupported arg: projectId {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: projectId"}}
+[debug] [2021-07-09T07:44:40.826Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2021-07-09T07:44:40.826Z] Starting Firestore Emulator with command {"binary":"java","args":["-Dgoogle.cloud_firestore.debug_log_level=FINE","-Duser.language=en","-jar","C:\\Users\\Léo-Paul\\.cache\\firebase\\emulators\\cloud-firestore-emulator-v1.13.0.jar","--host","localhost","--port",8080,"--rules","D:\\Users\\Léo-Paul\\Documents\\GitHub\\Classroom\\firestore.rules"],"optionalArgs":["port","webchannel_port","host","rules","functions_emulator","seed_from_export"],"joinArgs":false} {"metadata":{"emulator":{"name":"firestore"},"message":"Starting Firestore Emulator with command {\"binary\":\"java\",\"args\":[\"-Dgoogle.cloud_firestore.debug_log_level=FINE\",\"-Duser.language=en\",\"-jar\",\"C:\\\\Users\\\\Léo-Paul\\\\.cache\\\\firebase\\\\emulators\\\\cloud-firestore-emulator-v1.13.0.jar\",\"--host\",\"localhost\",\"--port\",8080,\"--rules\",\"D:\\\\Users\\\\Léo-Paul\\\\Documents\\\\GitHub\\\\Classroom\\\\firestore.rules\"],\"optionalArgs\":[\"port\",\"webchannel_port\",\"host\",\"rules\",\"functions_emulator\",\"seed_from_export\"],\"joinArgs\":false}"}}
+[info] i  firestore: Firestore Emulator logging to firestore-debug.log {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator logging to \u001b[1mfirestore-debug.log\u001b[22m"}}
+[debug] [2021-07-09T07:44:41.839Z] Jul 09, 2021 9:44:41 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start
+INFO: Started WebSocket server on ws://localhost:55451
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jul 09, 2021 9:44:41 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start\r\nINFO: Started WebSocket server on ws://localhost:55451\r\n"}}
+[debug] [2021-07-09T07:44:41.869Z] API endpoint: http:// {"metadata":{"emulator":{"name":"firestore"},"message":"API endpoint: http://"}}
+[debug] [2021-07-09T07:44:41.870Z] localhost:8080
+If you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:
+
+   export FIRESTORE_EMULATOR_HOST=localhost:8080
+
+Dev App Server is now running.
+
+ {"metadata":{"emulator":{"name":"firestore"},"message":"localhost:8080\nIf you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:\r\n\n   export FIRESTORE_EMULATOR_HOST=localhost:8080\n\nDev App Server is now running.\n\r\n"}}
+[debug] [2021-07-09T07:44:44.410Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/classroom-48838 [none]
+[debug] [2021-07-09T07:44:44.608Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/classroom-48838 200
+[debug] [2021-07-09T07:44:44.609Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/classroom-48838 {"projectId":"classroom-48838","projectNumber":"255308442151","displayName":"Thot Note","name":"projects/classroom-48838","resources":{"hostingSite":"classroom-48838","realtimeDatabaseInstance":"classroom-48838","storageBucket":"classroom-48838.appspot.com","locationId":"europe-west"},"state":"ACTIVE"}
+[debug] [2021-07-09T07:44:44.609Z] database rules config:  [{"instance":"classroom-48838","rules":"D:\\Users\\Léo-Paul\\Documents\\GitHub\\Classroom\\database.rules.json"}]
+[debug] [2021-07-09T07:44:44.610Z] Ignoring unsupported arg: projectId {"metadata":{"emulator":{"name":"database"},"message":"Ignoring unsupported arg: projectId"}}
+[debug] [2021-07-09T07:44:44.610Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"database"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2021-07-09T07:44:44.610Z] Ignoring unsupported arg: rules {"metadata":{"emulator":{"name":"database"},"message":"Ignoring unsupported arg: rules"}}
+[debug] [2021-07-09T07:44:44.611Z] Starting Database Emulator with command {"binary":"java","args":["-Duser.language=en","-jar","C:\\Users\\Léo-Paul\\.cache\\firebase\\emulators\\firebase-database-emulator-v4.7.2.jar","--host","localhost","--port",9000],"optionalArgs":["port","host","functions_emulator_port","functions_emulator_host"],"joinArgs":false} {"metadata":{"emulator":{"name":"database"},"message":"Starting Database Emulator with command {\"binary\":\"java\",\"args\":[\"-Duser.language=en\",\"-jar\",\"C:\\\\Users\\\\Léo-Paul\\\\.cache\\\\firebase\\\\emulators\\\\firebase-database-emulator-v4.7.2.jar\",\"--host\",\"localhost\",\"--port\",9000],\"optionalArgs\":[\"port\",\"host\",\"functions_emulator_port\",\"functions_emulator_host\"],\"joinArgs\":false}"}}
+[info] i  database: Database Emulator logging to database-debug.log {"metadata":{"emulator":{"name":"database"},"message":"Database Emulator logging to \u001b[1mdatabase-debug.log\u001b[22m"}}
+[debug] [2021-07-09T07:44:46.002Z] 09:44:46.001 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started
+ {"metadata":{"emulator":{"name":"database"},"message":"09:44:46.001 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started\r\n"}}
+[debug] [2021-07-09T07:44:46.131Z] 09:44:46.132 [main] INFO com.firebase.server.forge.App$ - Listening at localhost:9000
+ {"metadata":{"emulator":{"name":"database"},"message":"09:44:46.132 [main] INFO com.firebase.server.forge.App$ - Listening at localhost:9000\r\n"}}
+[debug] [2021-07-09T07:44:52.900Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/classroom-48838/sites 
+[debug] [2021-07-09T07:44:53.579Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/classroom-48838/sites 200
+[debug] [2021-07-09T07:44:53.579Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/classroom-48838/sites {"sites":[{"name":"projects/255308442151/sites/classroom-48838","defaultUrl":"https://classroom-48838.web.app","appId":"1:255308442151:web:8d1fa28ac2beab7d83bc02","type":"DEFAULT_SITE"}]}
+[debug] [2021-07-09T07:44:53.580Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/classroom-48838/webApps/1:255308442151:web:8d1fa28ac2beab7d83bc02/config [none]
+[debug] [2021-07-09T07:44:54.227Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/classroom-48838/webApps/1:255308442151:web:8d1fa28ac2beab7d83bc02/config 200
+[debug] [2021-07-09T07:44:54.227Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/classroom-48838/webApps/1:255308442151:web:8d1fa28ac2beab7d83bc02/config {"projectId":"classroom-48838","appId":"1:255308442151:web:8d1fa28ac2beab7d83bc02","databaseURL":"https://classroom-48838.firebaseio.com","storageBucket":"classroom-48838.appspot.com","locationId":"europe-west","apiKey":"AIzaSyAfwQcpuB_DhRWWcP0ZaB277Al1OccJ-OY","authDomain":"classroom-48838.firebaseapp.com","messagingSenderId":"255308442151","measurementId":"G-QMZXM5QL8Z"}
+[info] i  hosting: Serving hosting files from: build {"metadata":{"emulator":{"name":"hosting"},"message":"Serving hosting files from: \u001b[1mbuild\u001b[22m"}}
+[info] +  hosting: Local server: http://localhost:5000 {"metadata":{"emulator":{"name":"hosting"},"message":"Local server: \u001b[4m\u001b[1mhttp://localhost:5000\u001b[22m\u001b[24m"}}
+[debug] [2021-07-09T07:44:58.297Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2021-07-09T07:44:58.297Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2021-07-09T07:44:58.297Z] Starting Emulator UI with command {"binary":"node","args":["C:\\Users\\Léo-Paul\\.cache\\firebase\\emulators\\ui-v1.5.0\\server.bundle.js"],"optionalArgs":[],"joinArgs":false} {"metadata":{"emulator":{"name":"ui"},"message":"Starting Emulator UI with command {\"binary\":\"node\",\"args\":[\"C:\\\\Users\\\\Léo-Paul\\\\.cache\\\\firebase\\\\emulators\\\\ui-v1.5.0\\\\server.bundle.js\"],\"optionalArgs\":[],\"joinArgs\":false}"}}
+[info] i  ui: Emulator UI logging to ui-debug.log {"metadata":{"emulator":{"name":"ui"},"message":"Emulator UI logging to \u001b[1mui-debug.log\u001b[22m"}}
+[debug] [2021-07-09T07:44:58.395Z] Web / API server started at http://localhost:4000
+ {"metadata":{"emulator":{"name":"ui"},"message":"Web / API server started at http://localhost:4000\n"}}
+[debug] [2021-07-09T07:44:58.810Z] >>> HTTP REQUEST PUT http://localhost:9000/.settings/rules.json?ns=classroom-48838  
+ {
+  "rules": {
+    ".read": true,
+    ".write": true
+  }
+}
+
+[debug] [2021-07-09T07:44:59.179Z] <<< HTTP RESPONSE 200 {"content-length":"15","content-type":"application/json; charset=utf-8","access-control-allow-origin":"*","cache-control":"no-cache","x-firebase-project-id":"classroom-48838","x-firebase-project-number":"123456789","x-firebase-uuid":"7db8887c-2742-4407-9240-727fdd1d8026"}
+[info] 
+┌─────────────────────────────────────────────────────────────┐
+│ ✔  All emulators ready! It is now safe to connect your app. │
+│ i  View Emulator UI at http://localhost:4000                │
+└─────────────────────────────────────────────────────────────┘
+
+┌────────────────┬────────────────┬─────────────────────────────────┐
+│ Emulator       │ Host:Port      │ View in Emulator UI             │
+├────────────────┼────────────────┼─────────────────────────────────┤
+│ Authentication │ localhost:9099 │ http://localhost:4000/auth      │
+├────────────────┼────────────────┼─────────────────────────────────┤
+│ Firestore      │ localhost:8080 │ http://localhost:4000/firestore │
+├────────────────┼────────────────┼─────────────────────────────────┤
+│ Database       │ localhost:9000 │ http://localhost:4000/database  │
+├────────────────┼────────────────┼─────────────────────────────────┤
+│ Hosting        │ localhost:5000 │ n/a                             │
+└────────────────┴────────────────┴─────────────────────────────────┘
+  Emulator Hub running at localhost:4400
+  Other reserved ports: 4500
+
+Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
+ 
+[debug] [2021-07-09T07:45:31.782Z] Jul 09, 2021 9:45:31 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jul 09, 2021 9:45:31 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\r\nINFO: Detected non-HTTP/2 connection.\r\n"}}
+[debug] [2021-07-09T07:45:31.902Z] Jul 09, 2021 9:45:31 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jul 09, 2021 9:45:31 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\r\nINFO: Detected HTTP/2 connection.\r\n"}}
+[debug] [2021-07-09T07:57:46.529Z] Jul 09, 2021 9:57:46 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jul 09, 2021 9:57:46 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\r\nINFO: Detected non-HTTP/2 connection.\r\n"}}
+[debug] [2021-07-09T08:04:38.635Z] Jul 09, 2021 10:04:38 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jul 09, 2021 10:04:38 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\r\nINFO: Detected non-HTTP/2 connection.\r\n"}}
+[debug] [2021-07-09T08:19:33.088Z] Jul 09, 2021 10:19:33 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jul 09, 2021 10:19:33 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\r\nINFO: Detected non-HTTP/2 connection.\r\n"}}
+[debug] [2021-07-09T09:01:48.229Z] Received signal SIGHUP 1
