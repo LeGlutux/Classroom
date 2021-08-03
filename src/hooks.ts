@@ -13,6 +13,7 @@ import {
     fetchNewbie,
     fetchUpdated,
     fetchLists,
+    fetchListState,
 } from './database'
 
 export const useGroups = (currentUserId: string) => {
@@ -73,6 +74,33 @@ export const useCross = (currentUserId: string, currentStudentId: string) => {
     return { cross, refreshCross }
 }
 
+export const useListState = (currentUserId: string, currentStudentId: string, currentListId: string) => {
+    const [listState, setListState] = useState<number>(0)
+    const [loading, setLoading] = useState(false)
+
+    useEffect(() => {
+        const fetch = async () => {
+            setLoading(true)
+            setListState(await fetchListState(currentUserId, currentStudentId, currentListId))
+            setLoading(false)
+        }
+        fetch()
+    }, [currentUserId, currentStudentId, currentListId])
+
+    useEffect(() => {
+        const fetch = async () => {
+            setListState(await fetchListState(currentUserId, currentStudentId, currentListId))
+        }
+        fetch()
+    }, [currentUserId, currentStudentId, currentListId])
+
+    const refreshState = async () => {
+        setListState(await fetchListState(currentUserId, currentStudentId, currentListId))
+    }
+
+    return { listState, loading, refreshState }
+}
+
 export const useStudents = (currentUserId: string) => {
     const [students, setStudents] = useState<firebase.firestore.DocumentData[]>(
         []
@@ -115,7 +143,7 @@ export const usePeriodes = (currentUserId: string) => {
             setPeriodes(await fetchPeriodes(currentUserId))
         }
         fetch()
-    }, [])
+    }, [currentUserId])
 
     const refreshPeriodes = async () => {
         setPeriodes(await fetchPeriodes(currentUserId))

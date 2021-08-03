@@ -7,6 +7,7 @@ import ok from '../../images/ok.png'
 
 interface Props {
     onAddGroup: () => void
+
 }
 export default (props: Props) => {
     const [sent, setSent] = useState(false)
@@ -41,9 +42,8 @@ export default (props: Props) => {
             >
                 <div className="flex flex-col h-full w-full items-center justify-around pb-4 relative">
                     <div
-                        className={`absolute right-0 top-25 w-10 h-10 ${
-                            sent ? 'fade-out' : 'invisible'
-                        }`}
+                        className={`absolute right-0 top-25 w-10 h-10 ${sent ? 'fade-out' : 'invisible'
+                            }`}
                     >
                         <img src={ok} alt="ok" />
                     </div>

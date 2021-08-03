@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import firebase from 'firebase/app'
-
+import { useStudents } from '../hooks'
 import { Link } from 'react-router-dom'
 import { AuthContext } from '../Auth'
 
@@ -17,6 +17,7 @@ export default (props: ListPreviewProps) => {
     if (currentUser === null) return <div />
     const [disappear, setDisappear] = useState(false)
     const classesToString = props.classes.join(', ')
+    const { students } = useStudents(currentUser.uid)
     const db = firebase.firestore()
     const handleDeleteList = () => {
         db.collection('users')
@@ -24,23 +25,32 @@ export default (props: ListPreviewProps) => {
             .collection('lists')
             .doc(props.id)
             .delete()
+        students.filter(s => s.classes.includes(props.classes[0])).forEach((s) => {
+            db.collection('users')
+                .doc(currentUser.uid)
+                .collection('eleves')
+                .doc(s.id)
+                .collection('listes')
+                .doc(props.id.concat('s'))
+                .delete()
+        })
+
         setDisappear(true)
     }
     return (
         <div
-            className={`w-full flex flex-row border-t-1 border-b-1 border-gray-300 justify-between ${
-                disappear ? 'disappearing' : 'visible'
-            }`}
+            className={`w-full flex flex-row border-t-1 border-b-1 border-gray-300 justify-between ${disappear ? 'disappearing' : 'visible'
+                }`}
         >
             <Link
                 className="w-full flex flex-row border-t-1 border-b-1 border-gray-300 justify-between"
                 to={'/list/'.concat(props.id)}
             >
-                
-                <div className="font-studentName my-1 self-center w-5/12 ml-4">
+
+                <div className="font-studentName my-1 self-center w-7/12 ml-4">
                     {props.name}
                 </div>
-                <div className="font-studentName my-1 self-center w-5/12">
+                <div className="font-studentName my-1 self-center w-3/12">
                     {classesToString}
                 </div>
                 <div className="font-studentName my-1 self-center w-1/12">

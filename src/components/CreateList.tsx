@@ -5,7 +5,7 @@ import NavBar from './NavBar'
 import list from '../images/list.png'
 import add from '../images/add.png'
 import NewStudentGroups from './NewStudentGroups'
-import { useGroups, useLists } from '../hooks'
+import { useGroups, useLists, useStudents } from '../hooks'
 import { useHistory } from 'react-router-dom'
 
 export default () => {
@@ -15,6 +15,7 @@ export default () => {
     const lists = useLists(currentUser.uid)
     const history = useHistory()
     const { groups } = useGroups(currentUser.uid)
+    const { students } = useStudents(currentUser.uid)
     const [listNameInputValue, setListNameInputValue] = useState('')
     const [defaultList, setDefaultList] = useState<string[]>([])
     const [itemN, setItemN] = useState(1)
@@ -39,6 +40,17 @@ export default () => {
                 item3,
                 item4,
             })
+        students.filter((s) => s.classes.includes(defaultList[0])).forEach(s => {
+            db.collection('users')
+            .doc(currentUser.uid)
+            .collection('eleves')
+            .doc(s.id)
+            .collection('listes')
+            .doc(id.concat('s'))
+            .set({state: 0})
+        })
+
+        console.log(students.filter((s) => s.classes.includes(defaultList[0])))
     }
 
     return (

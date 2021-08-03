@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import CreateGroups from './Create/CreateGroups'
 import CreateStudent from './Create/CreateStudent'
 import NavBar from './NavBar'
-import { useGroups } from '../hooks'
+import { useGroups, useLists } from '../hooks'
 import Firebase from 'firebase/app'
 import 'react-datepicker/dist/react-datepicker.css'
 import firebase from 'firebase/app'
@@ -25,6 +25,7 @@ export default () => {
     const history = useHistory()
     const { students } = useStudents(currentUser.uid)
     const { periodes, refreshPeriodes } = usePeriodes(currentUser.uid)
+    const lists = useLists(currentUser.uid)
     const db = firebase.firestore()
 
     const handleAddPeriode = () => {
@@ -36,12 +37,30 @@ export default () => {
     }
     const handleDeleteAll = () => {
         students.forEach((student) => {
+
+            lists.forEach((l => {
+                db.collection('users')
+                    .doc(currentUser.uid)
+                    .collection('eleves')
+                    .doc(student.id)
+                    .collection('listes')
+                    .doc(l.id.concat('s'))
+                    .delete()
+            }))
             db.collection('users')
                 .doc(currentUser.uid)
                 .collection('eleves')
                 .doc(student.id)
                 .delete()
         })
+        lists.forEach((l) => {
+            db.collection('users')
+                .doc(currentUser.uid)
+                .collection('lists')
+                .doc(l.id)
+                .delete()
+        })
+
 
         db.collection('users')
             .doc(currentUser.uid)
@@ -96,7 +115,7 @@ export default () => {
             <div className="overflow-y-scroll">
                 <div className="w-full bg-gray-100 flex flex-col xl:flex-row xl:flex-wrap xl:justify-around">
                     <CreateGroups onAddGroup={refreshGroups} />
-                    <CreateStudent groups={groups} />
+                    <CreateStudent groups={groups} currentUserId={currentUser.uid} />
                 </div>
                 <div className="flex flex-col mt-5 shadow-custom mx-6 bg-gray-100 pb-4 rounded xl:mt-12 xl:mx-64">
                     <div className="flex flex-col h-auto items-center justify-around">

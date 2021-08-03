@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Student from '../components/Student'
 import ClassListFilter from '../components/ClassListFilter'
 import HomeClassListFilter from '../components/HomeClassListFilter'

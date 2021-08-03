@@ -27,6 +27,24 @@ export const fetchCrosses = async (
     return data
 }
 
+export const fetchListState = async (
+    currentUserId: string,
+    currentStudentId: string,
+    currentListId: string,
+) => {
+    const db = Firebase.firestore()
+    const querySnapshot = await db
+        .collection('users')
+        .doc(currentUserId)
+        .collection('eleves')
+        .doc(currentStudentId)
+        .collection('listes')
+        .doc(currentListId.concat('s'))
+        .get()
+const data = querySnapshot.data()?.state
+    return data
+}
+
 export const fetchCross = async (
     currentUserId: string,
     currentStudentId: string

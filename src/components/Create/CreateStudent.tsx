@@ -1,22 +1,22 @@
 import React, { useState, useContext } from 'react'
 import solo from '../../images/solo.png'
-import { AuthContext } from '../../Auth'
 import Firebase from '../../firebase'
 import NewStudentGroups from '../NewStudentGroups'
 import ok from '../../images/ok.png'
+import { useLists } from '../../hooks'
 
 interface Props {
     groups: string[]
+    currentUserId: string
 }
 
-export default ({ groups }: Props) => {
+export default (props: Props) => {
     const [sent, setSent] = useState(false)
     const [list, setList] = useState<string[]>([])
     const db = Firebase.firestore()
-    const { currentUser } = useContext(AuthContext)
-    if (currentUser === null) return <div />
     const [nameInputValue, setNameInputValue] = useState('')
     const [surnameInputValue, setSurnameInputValue] = useState('')
+    const lists = useLists(props.currentUserId)
 
     return (
         <div
@@ -46,7 +46,7 @@ export default ({ groups }: Props) => {
                             (c) => c.toUpperCase()
                         )
                         db.collection('users')
-                            .doc(currentUser.uid)
+                            .doc(props.currentUserId)
                             .collection('eleves')
                             .doc(id)
                             .set({
@@ -56,6 +56,20 @@ export default ({ groups }: Props) => {
                                 id,
                                 highlight: false,
                             })
+                            lists.forEach((l) => {console.log(l.group)
+                            console.log(list)
+                        console.log(l.group.includes(list[0]))})
+                         
+                         lists.forEach((l) => {
+                             if (l.group.includes(list[0])) {
+                             db.collection('users')
+                             .doc(props.currentUserId)
+                             .collection('eleves')
+                             .doc(id)
+                             .collection('listes')
+                             .doc(l.id.concat('s'))
+                             .set({state: 0})}
+                         })
                         setNameInputValue('')
                         setSurnameInputValue('')
                         setList(list)
@@ -97,7 +111,7 @@ export default ({ groups }: Props) => {
                     </div>
 
                     <div className="w-full flex flex-wrap flex-row justify-center mr-2 mt-6 px-2">
-                        {groups.map((value, index) => {
+                        {props.groups.map((value, index) => {
                             return (
                                 <NewStudentGroups
                                     list={list}

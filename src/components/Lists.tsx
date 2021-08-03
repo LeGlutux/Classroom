@@ -1,6 +1,5 @@
-import React, { useContext, useState } from 'react'
-import firebase from 'firebase/app'
-import { useLists, useStudents } from '../hooks'
+import React, { useContext } from 'react'
+import { useLists } from '../hooks'
 import { AuthContext } from '../Auth'
 import NavBar from './NavBar'
 import add from '../images/add.png'
@@ -11,8 +10,6 @@ export default () => {
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
     const lists = useLists(currentUser.uid)
-    const db = firebase.firestore()
-    const students = useStudents(currentUser.uid)
     return (
         <div className="h-screen w-full flex flex-col">
             <div className="h-24">
