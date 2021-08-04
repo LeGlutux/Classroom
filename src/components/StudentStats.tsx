@@ -118,9 +118,8 @@ const View = ({
             />
 
             <div
-                className={`flex flex-col items-center z-50 absolute w-full ${
-                    editing ? 'visible' : 'invisible'
-                }`}
+                className={`flex flex-col items-center z-50 absolute w-full ${editing ? 'visible' : 'invisible'
+                    }`}
             >
                 <div
                     className={`w-full text-center mt-4 font-title text-5xl flex items-center`}
@@ -180,9 +179,8 @@ const View = ({
             </div>
 
             <div
-                className={`flex flex-col items-center ${
-                    editing ? 'invisible' : 'visible'
-                }`}
+                className={`flex flex-col items-center ${editing ? 'invisible' : 'visible'
+                    }`}
             >
                 <div
                     className={`w-full text-center mt-4 font-title text-5xl flex items-center`}
@@ -200,7 +198,7 @@ const View = ({
                     {student.classes}
                 </div>
                 <button
-                    className="h-6 w-6 mr-4 absolute top-6 right-10"
+                    className="h-6 w-6 mr-4 absolute top-10 right-10"
                     onClick={() => {
                         setEditing(true)
                         setNameInputValue(student.name.toString())
@@ -270,11 +268,9 @@ const View = ({
                 <div className="w-6 text-sm font-bold h-4 my-2" />
                 <div className="w-full h-4 flex flex-row justify-evenly my-2 text-xl">
                     <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            fader.includes('b') ? 'disappearing' : 'visible'
-                        }`}
+                        className={`flex flex-row w-full mx-4 items-center justify-center `}
                     >
-                        <button
+                        <button className={`${fader.includes('b') ? 'disappearing' : 'visible'}`}
                             onClick={() => {
                                 handleDeleteCross('behaviour')
                             }}
@@ -283,11 +279,9 @@ const View = ({
                         </button>
                     </div>
                     <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            fader.includes('h') ? 'disappearing' : 'visible'
-                        }`}
+                        className={`flex flex-row w-full mx-4 items-center justify-center`}
                     >
-                        <button
+                        <button className={`${fader.includes('h') ? 'disappearing' : 'visible'}`}
                             onClick={() => {
                                 handleDeleteCross('homework')
                             }}
@@ -296,20 +290,18 @@ const View = ({
                         </button>
                     </div>
                     <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            fader.includes('s') ? 'disappearing' : 'visible'
-                        }`}
+                        className={`flex flex-row w-full mx-4 items-center justify-center `}
                     >
-                        <button onClick={() => handleDeleteCross('supply')}>
+                        <button
+                            className={`${fader.includes('s') ? 'disappearing' : 'visible'}`}
+                            onClick={() => handleDeleteCross('supply')}>
                             <img className="h-10 w-10" src={backArrow} alt="" />
                         </button>
                     </div>
                     <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            fader.includes('o') ? 'disappearing' : 'visible'
-                        }`}
+                        className={`flex flex-row w-full mx-4 items-center justify-center `}
                     >
-                        <button
+                        <button className={`${fader.includes('o') ? 'disappearing' : 'visible'}`}
                             onClick={() => handleDeleteCross('observation')}
                         >
                             <img className="h-10 w-10" src={backArrow} alt="" />

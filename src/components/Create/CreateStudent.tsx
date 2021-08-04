@@ -23,9 +23,8 @@ export default (props: Props) => {
             className={`flex flex-col items-center rounded mt-5 h-auto justify-around mx-6 bg-gray-100 shadow-custom xl:w-5/12 relative`}
         >
             <div
-                className={`absolute right-0 top-25 w-10 h-10 ${
-                    sent ? 'fade-out' : 'invisible'
-                }`}
+                className={`absolute right-0 top-25 w-10 h-10 ${sent ? 'fade-out' : 'invisible'
+                    }`}
             >
                 <img src={ok} alt="ok" />
             </div>
@@ -56,20 +55,21 @@ export default (props: Props) => {
                                 id,
                                 highlight: false,
                             })
-                            lists.forEach((l) => {console.log(l.group)
-                            console.log(list)
-                        console.log(l.group.includes(list[0]))})
-                         
-                         lists.forEach((l) => {
-                             if (l.group.includes(list[0])) {
-                             db.collection('users')
-                             .doc(props.currentUserId)
-                             .collection('eleves')
-                             .doc(id)
-                             .collection('listes')
-                             .doc(l.id.concat('s'))
-                             .set({state: 0})}
-                         })
+
+                        lists.forEach((l) => {
+                            if (l.group.includes(list[0])) {
+                                db.collection('users')
+                                    .doc(props.currentUserId)
+                                    .collection('eleves')
+                                    .doc(id)
+                                    .collection('listes')
+                                    .doc(l.id.concat('s'))
+                                    .set({
+                                        state: [0, 0, 0, 0],
+                                        id: l.id.concat('s')
+                                    })
+                            }
+                        })
                         setNameInputValue('')
                         setSurnameInputValue('')
                         setList(list)

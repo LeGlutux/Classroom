@@ -74,7 +74,6 @@
     }
 }
 
-
 .appearing {
     pointer-events: none;
     visibility: visible;
@@ -82,7 +81,9 @@
     transition: visibility 0s 1s, opacity 0s 1s;
   }
 
-
+.text-invisible {
+color: rgba(255, 255, 255, 0);
+}
 
 .disappearing {
     pointer-events: none;

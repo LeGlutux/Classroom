@@ -75,8 +75,8 @@ export const useCross = (currentUserId: string, currentStudentId: string) => {
 }
 
 export const useListState = (currentUserId: string, currentStudentId: string, currentListId: string) => {
-    const [listState, setListState] = useState<number>(0)
-    const [loading, setLoading] = useState(false)
+    const [listState, setListState] = useState<number[]>([0,0,0,0])
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         const fetch = async () => {
@@ -105,7 +105,7 @@ export const useStudents = (currentUserId: string) => {
     const [students, setStudents] = useState<firebase.firestore.DocumentData[]>(
         []
     )
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         const fetch = async () => {

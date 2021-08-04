@@ -41,7 +41,7 @@ export const fetchListState = async (
         .collection('listes')
         .doc(currentListId.concat('s'))
         .get()
-const data = querySnapshot.data()?.state
+    const data = querySnapshot.data()?.state
     return data
 }
 
@@ -121,9 +121,12 @@ export const fetchStudentWithId = async (
         .doc(studentId)
         .get()
 
-    const email = querySnapshot.data()!.email
-    const userName = querySnapshot.data()!.userName
-    const data = { email, userName }
+    const classes = querySnapshot.data()!.classes
+    const highlight = querySnapshot.data()!.highlight
+    const name = querySnapshot.data()!.name
+    const surname = querySnapshot.data()!.surname
+    const id = querySnapshot.data()!.id
+    const data = { classes, highlight, name, surname, id }
     return data
 }
 

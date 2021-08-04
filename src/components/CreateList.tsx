@@ -35,22 +35,21 @@ export default () => {
                 date: new Date(),
                 group: defaultList,
                 itemN,
-                item1,
-                item2,
-                item3,
-                item4,
+                items: [item1, item2, item3, item4],
             })
         students.filter((s) => s.classes.includes(defaultList[0])).forEach(s => {
             db.collection('users')
-            .doc(currentUser.uid)
-            .collection('eleves')
-            .doc(s.id)
-            .collection('listes')
-            .doc(id.concat('s'))
-            .set({state: 0})
+                .doc(currentUser.uid)
+                .collection('eleves')
+                .doc(s.id)
+                .collection('listes')
+                .doc(id.concat('s'))
+                .set({
+                    state: [0, 0, 0, 0],
+                    id: id.concat('s')
+                })
         })
 
-        console.log(students.filter((s) => s.classes.includes(defaultList[0])))
     }
 
     return (
@@ -118,9 +117,8 @@ export default () => {
                                     onChange={(e) => {
                                         setItem1(e.target.value)
                                     }}
-                                    className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center ${
-                                        itemN >= 1 ? 'visible' : 'invisible'
-                                    }`}
+                                    className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center ${itemN >= 1 ? 'visible' : 'invisible'
+                                        }`}
                                     type="text"
                                     placeholder={'item 1'}
                                 />
@@ -129,9 +127,8 @@ export default () => {
                                     onChange={(e) => {
                                         setItem2(e.target.value)
                                     }}
-                                    className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center ${
-                                        itemN >= 2 ? 'visible' : 'invisible'
-                                    }`}
+                                    className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center ${itemN >= 2 ? 'visible' : 'invisible'
+                                        }`}
                                     type="text"
                                     placeholder={'item 2'}
                                 />
@@ -140,9 +137,8 @@ export default () => {
                                     onChange={(e) => {
                                         setItem3(e.target.value)
                                     }}
-                                    className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center ${
-                                        itemN >= 3 ? 'visible' : 'invisible'
-                                    }`}
+                                    className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center ${itemN >= 3 ? 'visible' : 'invisible'
+                                        }`}
                                     type="text"
                                     placeholder={'item 3'}
                                 />
@@ -151,18 +147,16 @@ export default () => {
                                     onChange={(e) => {
                                         setItem4(e.target.value)
                                     }}
-                                    className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center ${
-                                        itemN >= 4 ? 'visible' : 'invisible'
-                                    }`}
+                                    className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center ${itemN >= 4 ? 'visible' : 'invisible'
+                                        }`}
                                     type="text"
                                     placeholder={'item 4'}
                                 />
                             </div>
                         </div>
                         <div
-                            className={`w-full flex flex-row ${
-                                itemN >= 4 ? 'invisible' : ''
-                            }`}
+                            className={`w-full flex flex-row ${itemN >= 4 ? 'invisible' : ''
+                                }`}
                         >
                             <button
                                 onClick={(e) => {
