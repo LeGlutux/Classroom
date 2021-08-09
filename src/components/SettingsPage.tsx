@@ -112,9 +112,6 @@ export default () => {
                     'En faisant cela, vous supprimez définitivement vos élèves et vos classes'
                 }
             />
-            <div className="h-24 w-full">
-                <NavBar />
-            </div>
             <div className="overflow-y-scroll">
                 <div className="w-full bg-gray-100 flex flex-col xl:flex-row xl:flex-wrap xl:justify-around">
                     <CreateGroups onAddGroup={refreshGroups} />
@@ -164,6 +161,9 @@ export default () => {
                         </button>
                     </div>
                 </div>
+            </div>
+            <div className={`w-full h-12 bg-gray-300 table-footer-group`}>
+                <NavBar />
             </div>
         </div>
     )
