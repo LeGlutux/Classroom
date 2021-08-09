@@ -72,7 +72,7 @@ export default () => {
                 periodes: [new Date()],
                 runningPeriode: 1 as number,
             })
-        history.goBack()
+            history.replace('/')
     }
 
     const handleNewPeriode = () => {
