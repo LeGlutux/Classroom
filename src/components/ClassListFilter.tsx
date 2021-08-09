@@ -14,7 +14,7 @@ export default ({
     closeMenu,
 }: ClassListFilterProps) => {
     return (
-        <div className="flex overflow-auto ml-2 mr-6">
+        <div className="flex overflow-x-scroll w-48 ml-2 mr-6 bg-tranparent">
             {groups.map((group, index) => {
                 return (
                     <button
@@ -23,7 +23,7 @@ export default ({
                             setDisplayedGroup(group)
                             closeMenu(false)
                         }}
-                        className="font-studentName h-8 mb-2 mx-1 bg-gray-100 w-auto text-center rounded-lg px-3 flex items-center"
+                        className="font-studentName h-8 mb-2 mx-1 bg-white w-auto text-center rounded-lg px-3 flex items-center"
                         key={index}
                     >
                         {group}
