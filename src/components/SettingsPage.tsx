@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useLayoutEffect, useRef, useState } from 'react'
 import CreateGroups from './Create/CreateGroups'
 import CreateStudent from './Create/CreateStudent'
 import NavBar from './NavBar'
@@ -12,6 +12,8 @@ import PeriodeFilter from './PeriodeFilter'
 import calendar from '../images/calendar.png'
 import ConfirmModal from './ConfirmModal'
 import { useHistory } from 'react-router-dom'
+import { cards } from '../classes'
+
 
 export default () => {
     const [confirm, setConfirm] = useState(false)
@@ -27,7 +29,6 @@ export default () => {
     const { periodes, refreshPeriodes } = usePeriodes(currentUser.uid)
     const lists = useLists(currentUser.uid)
     const db = firebase.firestore()
-    
 
     const handleAddPeriode = () => {
         db.collection('users')
@@ -49,7 +50,7 @@ export default () => {
                     .delete()
             }))
 
-           
+
             db.collection('users')
                 .doc(currentUser.uid)
                 .collection('eleves')
@@ -72,7 +73,7 @@ export default () => {
                 periodes: [new Date()],
                 runningPeriode: 1 as number,
             })
-            history.replace('/')
+        history.replace('/')
     }
 
     const handleNewPeriode = () => {
@@ -89,7 +90,8 @@ export default () => {
     }
 
     return (
-        <div className="w-full h-screen flex flex-col">
+        <div className={`w-full h-screen flex flex-col`}>
+             <div className='flex flex-row justify-center font-title2 pt-8 items-center text-4xl font-bold'>Paramétrez votre année</div>
             <ConfirmModal
                 confirm={confirm}
                 setConfirm={setConfirm}
@@ -112,54 +114,67 @@ export default () => {
                     'En faisant cela, vous supprimez définitivement vos élèves et vos classes'
                 }
             />
-            <div className="overflow-y-scroll">
-                <div className="w-full bg-gray-100 flex flex-col xl:flex-row xl:flex-wrap xl:justify-around">
-                    <CreateGroups onAddGroup={refreshGroups} />
-                    <CreateStudent groups={groups} currentUserId={currentUser.uid} />
-                </div>
-                <div className="flex flex-col mt-5 shadow-custom mx-6 bg-gray-100 pb-4 rounded xl:mt-12 xl:mx-64">
-                    <div className="flex flex-col h-auto items-center justify-around">
-                        <div className="flex flex-row items-center mb-5">
-                            <img className="w-8 h-8" src={calendar} alt="" />
-                            <div className="text-gray-800 font-studentName text-lg ml-2">
-                                En cours : Période {runningPeriode}
-                            </div>
-                        </div>
+            <div
+                className={`flex flex-row overflow-x-scroll h-full items-center mx-8`}
+            >
+                
+                <CreateGroups
+                    onAddGroup={refreshGroups} />
 
-                        <button
-                            className="flex h-16 w-56 self-center bg-orange-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap"
-                            onClick={() => setConfirm(true)}
-                        >
-                            {' '}
-                            Commencer une nouvelle période
-                        </button>
-                        <PeriodeFilter
-                            periodes={periodes}
-                            currentUser={currentUser.uid}
-                            refresh={refreshRunningPeriode}
-                        />
+                <CreateStudent groups={groups} currentUserId={currentUser.uid} />
+
+                <div className={`${cards}`}>
+                    <div className="flex flex-col h-full items-center pb-4">
+                        <div className='flex flex-col h-full justify-around items-center'>
+                            <div className='relative top-0 font-title text-3xl text-center'>Lancer une nouvelle période</div>
+                            <div className="flex flex-row items-center mb-5">
+                                <img className="w-8 h-8" src={calendar} alt="" />
+                                <div className="text-gray-800 font-studentName text-lg ml-2">
+                                    En cours : Période {runningPeriode}
+                                </div>
+                            </div>
+                            <button
+                                className="flex h-16 w-56 self-center bg-orange-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap"
+                                onClick={() => setConfirm(true)}
+                            >
+                                {' '}
+                                Commencer une nouvelle période
+                            </button>
+                            <PeriodeFilter
+                                periodes={periodes}
+                                currentUser={currentUser.uid}
+                                refresh={refreshRunningPeriode}
+                            />
+                        </div>
                     </div>
                 </div>
-                <div className="flex flex-col mt-5 shadow-custom mx-6 bg-gray-100 pb-4 rounded xl:mt-12 xl:mx-64">
-                    <div className="flex flex-col h-auto items-center justify-around">
-                        <button
-                            className="flex h-16 w-56 mt-8 self-center bg-red-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap"
-                            onClick={() => setConfirm2(true)}
-                        >
-                            {' '}
-                            Supprimer toutes les données
-                        </button>
+
+                <div className={cards}>
+                    <div className="flex flex-col h-full justify-around items-center">
+                        <div className='flex flex-col h-full justify-around items-center'>
+                            <div className='relative top-0 font-title text-3xl text-center'>L'année est finie ?'</div>
+                            <button
+                                className="flex h-16 w-56 mt-8 self-center bg-red-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap"
+                                onClick={() => setConfirm2(true)}
+                            >
+                                {' '}
+                                Supprimer toutes les données
+                            </button>
+                        </div>
                     </div>
+
                 </div>
-                <div className='"w-full bg-gray-100"'>
-                    <div className="my-8 flex justify-center bg-white">
-                        <button
-                            className="text-lg text-gray-700 font-bold"
-                            onClick={() => Firebase.auth().signOut()}
-                        >
-                            Se déconnecter
-                        </button>
-                    </div>
+
+
+            </div>
+            <div className='"w-full bg-gray-100"'>
+                <div className="my-8 flex justify-center bg-white">
+                    <button
+                        className="text-lg text-gray-700 font-bold"
+                        onClick={() => Firebase.auth().signOut()}
+                    >
+                        Se déconnecter
+                    </button>
                 </div>
             </div>
             <div className={`w-full h-12 bg-gray-300 table-footer-group`}>
