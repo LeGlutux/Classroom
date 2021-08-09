@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import { AuthContext } from '../Auth'
 import Firebase from '../firebase'
 import NavBar from './NavBar'
@@ -52,11 +52,31 @@ export default () => {
 
     }
 
+    const ref1 = useRef<HTMLInputElement>(null)
+    const ref2 = useRef<HTMLInputElement>(null)
+    const ref3 = useRef<HTMLInputElement>(null)
+    const ref4 = useRef<HTMLInputElement>(null)
+    const submitButtonRef = useRef<HTMLButtonElement>(null)
+
+    const currentItem = (itemN === 1) ? item1 : ((itemN === 2) ? item2 : ((itemN === 3) ? item3 : item4))
+    const nextInputRef = (itemN === 1) ? ref2 : ((itemN === 2) ? ref3 : ((itemN === 3) ? ref4 : submitButtonRef))
+
     return (
         <div className="h-screen w-full flex flex-col">
             <div className="h-24">
                 <NavBar />
             </div>
+
+            <span className="absolute-tr p-4">
+                <svg
+                    className="h-4 w-4 fill-current text-grey hover:text-grey-darkest"
+                    role="button"
+                    onClick={() => history.goBack()}
+                >
+                    <title>Close</title>
+                    <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
+                </svg>
+            </span>
 
             <form
                 className="flex flex-col w-full h-full bg-transparent mt-5"
@@ -68,7 +88,11 @@ export default () => {
                         lists !== undefined &&
                         listNameInputValue !== '' &&
                         defaultList.length >= 0 &&
-                        !(listNameInputValue in lists)
+                        !(listNameInputValue in lists) &&
+                        item1 !== '' &&
+                        !(itemN >= 2 && item2 === '') &&
+                        !(itemN >= 3 && item3 === '') &&
+                        !(itemN === 4 && item4 === '')
                     ) {
                         handleCreateList()
                     } else {
@@ -112,46 +136,101 @@ export default () => {
                         </div>
                         <div className="w-9/12 flex flex-col hover:border-gray-800">
                             <div className="w-9/12 flex flex-col hover:border-gray-800">
-                                <input
-                                    value={item1}
-                                    onChange={(e) => {
-                                        setItem1(e.target.value)
-                                    }}
-                                    className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center ${itemN >= 1 ? 'visible' : 'invisible'
-                                        }`}
-                                    type="text"
-                                    placeholder={'item 1'}
-                                />
-                                <input
-                                    value={item2}
-                                    onChange={(e) => {
-                                        setItem2(e.target.value)
-                                    }}
-                                    className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center ${itemN >= 2 ? 'visible' : 'invisible'
-                                        }`}
-                                    type="text"
-                                    placeholder={'item 2'}
-                                />
-                                <input
-                                    value={item3}
-                                    onChange={(e) => {
-                                        setItem3(e.target.value)
-                                    }}
-                                    className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center ${itemN >= 3 ? 'visible' : 'invisible'
-                                        }`}
-                                    type="text"
-                                    placeholder={'item 3'}
-                                />
-                                <input
-                                    value={item4}
-                                    onChange={(e) => {
-                                        setItem4(e.target.value)
-                                    }}
-                                    className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center ${itemN >= 4 ? 'visible' : 'invisible'
-                                        }`}
-                                    type="text"
-                                    placeholder={'item 4'}
-                                />
+                                <div className='flex flex-row'>
+                                    <input
+                                        value={item1}
+                                        ref={ref1}
+                                        onChange={(e) => {
+                                            setItem1(e.target.value)
+                                        }}
+                                        className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center ${itemN >= 1 ? 'visible' : 'invisible'
+                                            }`}
+                                        type="text"
+                                        placeholder={'item 1'}
+                                    />
+                                </div>
+                                <div className='flex flex-row'>
+                                    <input
+                                        value={item2}
+                                        ref={ref2}
+                                        onChange={(e) => {
+                                            setItem2(e.target.value)
+                                        }}
+                                        className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center ${itemN >= 2 ? 'visible' : 'invisible'
+                                            }`}
+                                        type="text"
+                                        placeholder={'item 2'}
+                                    />
+                                    <span className={`flex ml-4 h-4 w-4 self-center ${itemN === 2 ? 'visible' : 'invisible' }`}>
+                <svg
+                    className="h-4 w-4 fill-current text-grey hover:text-grey-darkest"
+                    role="button"
+                    onClick={() => {
+                        setItemN(itemN - 1)
+                        setItem2('')   
+                    }}
+                >
+                    <title>Close</title>
+                    <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
+                </svg>
+            </span>
+                                </div>
+                                <div className='flex flex-row'>
+                                    <input
+                                        value={item3}
+                                        ref={ref3}
+                                        onChange={(e) => {
+                                            setItem3(e.target.value)
+                                        }}
+                                        className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center ${itemN >= 3 ? 'visible' : 'invisible'
+                                            }`}
+                                        type="text"
+                                        placeholder={'item 3'}
+                                    />
+                                    <span className={`flex ml-4 h-4 w-4 self-center ${itemN === 3 ? 'visible' : 'invisible' }`}>
+                <svg
+                    className="h-4 w-4 fill-current text-grey hover:text-grey-darkest"
+                    role="button"
+                    onClick={() => {
+                        setItemN(itemN - 1)
+                        setItem3('')   
+                    }}
+                >
+                    <title>Close</title>
+                    <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
+                </svg>
+            </span>
+                                </div>
+                                <div className='flex flex-row'>
+                                    <input
+                                        value={item4}
+                                        ref={ref4}
+                                        onChange={(e) => {
+                                            setItem4(e.target.value)
+                                        }}
+                                        className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center ${itemN >= 4 ? 'visible' : 'invisible'
+                                            }`}
+                                        type="text"
+                                        placeholder={'item 4'}
+                                    />
+                                    <span className={`flex ml-4 h-4 w-4 self-center ${itemN === 4 ? 'visible' : 'invisible' }`}>
+                <svg
+                    className="h-4 w-4 fill-current text-grey hover:text-grey-darkest"
+                    role="button"
+                    onClick={() => {
+                        setItemN(itemN - 1)
+                        setItem4('')   
+                    }}
+                >
+                    <title>Close</title>
+                    <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
+                </svg>
+            </span>
+                                </div>
+
+
+
+
                             </div>
                         </div>
                         <div
@@ -159,23 +238,27 @@ export default () => {
                                 }`}
                         >
                             <button
+                            className='flex flex-row'
                                 onClick={(e) => {
                                     e.preventDefault()
-                                    if (itemN <= 4) setItemN(itemN + 1)
+                                    if (itemN <= 4 && currentItem !== '') setItemN(itemN + 1)
+                                    setTimeout(() => nextInputRef.current!.focus(), 10)
+
                                 }}
                             >
                                 <img
-                                    className="h-6 w-6"
+                                    className="h-6 w-6 mx-4"
                                     src={add}
                                     alt="ajouter"
                                 />
+                                Ajouter un item
                             </button>
-                            <div>Ajouter un item</div>
                         </div>
                     </div>
 
                     <button
                         type="submit"
+                        ref={submitButtonRef}
                         onClick={() => history.goBack()}
                         className="flex h-8 w-40 self-center mt-6 bg-orange-500 rounded text-white text-lg font-bold justify-center"
                     >

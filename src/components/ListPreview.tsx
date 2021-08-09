@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import firebase from 'firebase/app'
 import { useStudents } from '../hooks'
 import { Link } from 'react-router-dom'
@@ -10,12 +10,12 @@ interface ListPreviewProps {
     classes: string[]
     itemsN: number
     date: Date
+    refresher: React.Dispatch<React.SetStateAction<number>>
 }
 
 export default (props: ListPreviewProps) => {
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
-    const [disappear, setDisappear] = useState(false)
     const classesToString = props.classes.join(', ')
     const { students } = useStudents(currentUser.uid)
     const db = firebase.firestore()
@@ -35,12 +35,12 @@ export default (props: ListPreviewProps) => {
                 .delete()
         })
 
-        setDisappear(true)
+        props.refresher(Math.random())
     }
+
     return (
         <div
-            className={`w-full flex flex-row border-t-1 border-b-1 border-gray-300 justify-between ${disappear ? 'disappearing' : 'visible'
-                }`}
+            className={`w-full flex flex-row border-t-1 border-b-1 border-gray-300 justify-between`}
         >
             <Link
                 className="w-full flex flex-row border-t-1 border-b-1 border-gray-300 justify-between"

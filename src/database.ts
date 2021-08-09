@@ -1,3 +1,4 @@
+import firebase from 'firebase'
 import Firebase from './firebase'
 
 export const fetchGroups = async (currentUserId: string) => {
@@ -9,7 +10,25 @@ export const fetchGroups = async (currentUserId: string) => {
     return data
 }
 
+export const fetchCross = async (
+    currentUserId: string,
+    currentStudentId: string
+) => {
+    const db = Firebase.firestore()
+    const querySnapshot = await db
+        .collection('users')
+        .doc(currentUserId)
+        .collection('eleves')
+        .doc(currentStudentId)
+        .collection('crosses')
+        .get()
 
+    const data = [] as firebase.firestore.DocumentData[]
+
+    querySnapshot.docs.forEach((doc) => data.push(doc.data()))
+
+    return data
+}   
 
 export const fetchCrosses = async (
     currentUserId: string,
@@ -42,26 +61,6 @@ export const fetchListState = async (
         .doc(currentListId.concat('s'))
         .get()
     const data = querySnapshot.data()?.state
-    return data
-}
-
-export const fetchCross = async (
-    currentUserId: string,
-    currentStudentId: string
-) => {
-    const db = Firebase.firestore()
-    const querySnapshot = await db
-        .collection('users')
-        .doc(currentUserId)
-        .collection('eleves')
-        .doc(currentStudentId)
-        .collection('crosses')
-        .get()
-
-    const data = [] as firebase.firestore.DocumentData[]
-
-    querySnapshot.docs.forEach((doc) => data.push(doc.data()))
-
     return data
 }
 
@@ -130,21 +129,6 @@ export const fetchStudentWithId = async (
     return data
 }
 
-export const fetchNewbie = async (currentUserId: string) => {
-    const db = Firebase.firestore()
-    const querySnapshot = await db.collection('users').doc(currentUserId).get()
-
-    const data = querySnapshot.data()!.newbie
-    return data
-}
-
-export const fetchUpdated = async (currentUserId: string) => {
-    const db = Firebase.firestore()
-    const querySnapshot = await db.collection('users').doc(currentUserId).get()
-
-    const data = querySnapshot.data()!.updated
-    return data
-}
 export const fetchLists = async (currentUserId: string) => {
     const db = Firebase.firestore()
     const querySnapshot = await db

@@ -7,10 +7,11 @@ interface CrossTabProps {
     userId: string
     week: number
     index: number
+    crossRefresher: number
 }
 
 export default (props: CrossTabProps) => {
-    const { cross } = useCross(props.userId, props.studentId)
+    const { cross } = useCross(props.userId, props.studentId, props.crossRefresher)
     const crossFilter = (type: string) => {
         const filtered = cross
             .filter(

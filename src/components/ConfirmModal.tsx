@@ -22,7 +22,9 @@ export default ({
             }`}
             style={{ backgroundColor: 'rgba(255,255,255,0.6)' }}
         >
-            <div className="flex flex-col border-black bg-white shadow-lg justify-center items-center w-3/4 h-100 relative">
+            <div className={`flex flex-col border-black bg-white shadow-lg justify-center items-center w-3/4 h-100 relative ${
+                confirm ? 'entering-t' : 'invisible'
+            }`}>
                 <span className="absolute top-0 right-0 p-4">
                     <svg
                         className="h-4 w-4 fill-current text-grey hover:text-grey-darkest"

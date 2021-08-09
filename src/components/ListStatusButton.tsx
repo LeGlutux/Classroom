@@ -21,7 +21,6 @@ export default (props: ListStatusButtonProps) => {
         if (state === 3) setState(0)
         else setState(state + 1)
         newState.splice(props.indexOfItem, 1, newState[props.indexOfItem] >= 3 ? 0 : newState[props.indexOfItem] + 1)
-        console.log('nouvel état ', newState)
         db.collection('users').doc(props.userId).collection('eleves').doc(props.studentId).collection('listes').doc(props.listId.concat('s')).update({ state: newState })
 
 
@@ -36,7 +35,7 @@ export default (props: ListStatusButtonProps) => {
     }
 
     return (
-        <button className={`flex w-8 h-full justify-center text-2xl text-bold border-gray-300 border-r-2 ${stateColor(state)} ${(state !== 3) ? 'text-invisible' : ''}`}
+        <button className={`flex w-8 h-full justify-center items-center text-2xl text-bold border-gray-300 border-r-2 ${stateColor(state)} ${(state !== 3) ? 'text-invisible' : ''}`}
             onClick={() => handleClick()}>
             ?
         </button>

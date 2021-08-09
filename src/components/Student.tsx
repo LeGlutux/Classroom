@@ -29,7 +29,7 @@ export default (props: StudentProps) => {
     const [highlight, setHighlight] = useState(props.highlight)
     const { periodes } = usePeriodes(currentUser.uid)
     const { runningPeriode } = useRunningPeriode(currentUser.uid)
-    const { cross, refreshCross } = useCross(currentUser.uid, props.id)
+    const { cross, refreshCross, loading } = useCross(currentUser.uid, props.id)
     const handleForget = () => {
         db.collection('users')
             .doc(currentUser.uid)
@@ -97,6 +97,8 @@ export default (props: StudentProps) => {
             ? props.surname.substring(0, 8).concat('.')
             : props.surname
 
+while(loading === true) return <div />
+
     return (
         <div className="flex flex-row w-full md:w-1/2 lg:w-1/2 xl:w-1/3 items-center iphone-vertical">
             <div className="flex h-full items-center mt-5 ml-2 xl:pt-6 static">
@@ -130,6 +132,7 @@ export default (props: StudentProps) => {
                                         highlight: !highlight,
                                     })
                                 setHighlight(!highlight)
+                                    props.refresher(props.displayedGroup)
                             }}
                             className={`flex flex-row lg:flex-row xl:flex:row mt-2 `}
                         >

@@ -1,5 +1,5 @@
-import firebase, { firestore } from 'firebase'
-import { useState, useEffect } from 'react'
+import firebase from 'firebase'
+import { useState, useEffect, RefObject } from 'react'
 import {
     fetchGroups,
     fetchUser,
@@ -10,8 +10,6 @@ import {
     fetchPaths,
     fetchStudentWithId,
     fetchCrosses,
-    fetchNewbie,
-    fetchUpdated,
     fetchLists,
     fetchListState,
 } from './database'
@@ -57,8 +55,21 @@ export const useCrosses = (currentUserId: string, currentStudentId: string) => {
     return { crosses, refreshCrosses }
 }
 
-export const useCross = (currentUserId: string, currentStudentId: string) => {
+export const useCross = (currentUserId: string, currentStudentId: string, refresher?: number) => {
     const [cross, setCross] = useState<firebase.firestore.DocumentData[]>([])
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        const fetch = async () => {
+            setLoading(true)
+            setCross(await fetchCross(currentUserId, currentStudentId))
+            setLoading(false)
+        }
+        fetch()
+    },
+        [currentUserId, currentStudentId, refresher]
+
+    )
 
     useEffect(() => {
         const fetch = async () => {
@@ -71,11 +82,11 @@ export const useCross = (currentUserId: string, currentStudentId: string) => {
         setCross(await fetchCross(currentUserId, currentStudentId))
     }
 
-    return { cross, refreshCross }
+    return { loading, cross, refreshCross }
 }
 
 export const useListState = (currentUserId: string, currentStudentId: string, currentListId: string) => {
-    const [listState, setListState] = useState<number[]>([0,0,0,0])
+    const [listState, setListState] = useState<number[]>([0, 0, 0, 0])
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
@@ -120,10 +131,8 @@ export const useStudents = (currentUserId: string) => {
         const filteredStudents = (await fetchStudents(currentUserId))
             .filter((student) => student.classes.includes(group))
             .sort((a) => (a.highlight ? -1 : 1))
-        const filteredHighlighted = (await fetchStudents(currentUserId)).filter((student) => student.highlight === true)
 
-        if (group !== 'tous') setStudents(filteredStudents)
-        else setStudents(filteredHighlighted)
+        setStudents(filteredStudents)
     }
 
     const refreshStudents = async () => {
@@ -215,32 +224,7 @@ export const useUser = (currentUserId: string) => {
     return user
 }
 
-export const useNewbie = (currentUserId: string) => {
-    const [newbie, setNewbie] = useState<number>(0)
-
-    useEffect(() => {
-        const fetch = async () => {
-            setNewbie(await fetchNewbie(currentUserId))
-        }
-        fetch()
-    }, [currentUserId])
-
-    return newbie
-}
-
-export const useUpdated = (currentUserId: string) => {
-    const [updated, setUpdated] = useState<boolean>(false)
-
-    useEffect(() => {
-        const fetch = async () => {
-            setUpdated(await fetchUpdated(currentUserId))
-        }
-        fetch()
-    }, [currentUserId])
-
-    return updated
-}
-export const useLists = (currentUserId: string) => {
+export const useLists = (currentUserId: string, listsRefresher?: number) => {
     const [lists, setLists] = useState<firebase.firestore.DocumentData[]>([])
 
     useEffect(() => {
@@ -248,7 +232,42 @@ export const useLists = (currentUserId: string) => {
             setLists(await fetchLists(currentUserId))
         }
         fetch()
-    }, [currentUserId])
+    }, [currentUserId, listsRefresher])
 
     return lists
 }
+
+/////////////////////////////// Click outside component ////////////////////////////////////
+
+
+type AnyEvent = MouseEvent | TouchEvent
+
+function useOnClickOutside<T extends HTMLElement = HTMLElement>(
+  ref: RefObject<T>,
+  handler: (event: AnyEvent) => void,
+) {
+  useEffect(() => {
+    const listener = (event: AnyEvent) => {
+      const el = ref?.current
+
+      // Do nothing if clicking ref's element or descendent elements
+      if (!el || el.contains(event.target as Node)) {
+        return
+      }
+
+      handler(event)
+    }
+
+    document.addEventListener(`mousedown`, listener)
+    document.addEventListener(`touchstart`, listener)
+
+    return () => {
+      document.removeEventListener(`mousedown`, listener)
+      document.removeEventListener(`touchstart`, listener)
+    }
+
+    // Reload only if ref or handler changes
+  }, [ref, handler])
+}
+
+export default useOnClickOutside

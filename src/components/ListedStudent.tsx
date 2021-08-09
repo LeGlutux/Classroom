@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import ListStatusButton from "./ListStatusButton"
 import { useListState } from '../hooks'
 import firebase from 'firebase'
@@ -15,7 +15,6 @@ interface ListedStudentProps {
 export default (props: ListedStudentProps) => {
 
     const { listState, loading } = useListState(props.userId, props.studentId, props.currentList.id)
-    const items = props.currentList.items
 
     while (loading === true) return <div />
 

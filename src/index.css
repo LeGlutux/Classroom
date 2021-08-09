@@ -5,8 +5,299 @@
 @tailwind utilities;
 
 
+.get-out-r {
+
+    animation: translateOut ease 0.6s;
+    visibility: hidden;
+    -webkit-animation: translateOut ease 0.6s;
+    -moz-animation: translateOut ease 0.6s;
+    -o-animation: translateOut ease 0.6s;
+    -ms-animation: translateOut ease 0.6s;
+  
+  }
+  
+  @keyframes translateOut {
+    100% {
+      right: -20%;
+      opacity: 0.5;
+    }
+  
+    0% {
+      right: 4%;
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+  
+  @-moz-keyframes zoom {
+    100% {
+      right: -20%;
+      opacity: 0.5;
+    }
+  
+    0% {
+      right: 4%;
+      opacity: 1;
+      visibility: visible;
+    }
+}
+
+@-webkit-keyframes zoom {
+    100% {
+      right: -20%;
+      opacity: 0.5;
+    }
+  
+    0% {
+      right: 4%;
+      opacity: 1;
+      visibility: visible;
+    }
+}
+
+@-o-keyframes zoom {
+    100% {
+      right: -20%;
+      opacity: 0.5;
+    }
+  
+    0% {
+      right: 4%;
+      opacity: 1;
+      visibility: visible;
+    }
+}
+
+@-ms-keyframes zoom {
+    100% {
+      right: -20%;
+      opacity: 0.5;
+    }
+  
+    0% {
+      right: 4%;
+      opacity: 1;
+      visibility: visible;
+    }
+}
+
+    .zoom-in {
+        animation: zoom ease 0.6s;
+        position: relative;
+        -webkit-animation: zoom ease 0.6s;
+        -moz-animation: zoom ease 0.6s;
+        -o-animation: zoom ease 0.6s;
+        -ms-animation: zoom ease 0.6s;
+    }
+        @keyframes zoom {
+            0% {
+                width: 25%;
+                opacity: 0.5;
+            }
+    
+            100% {
+                width: 75%;
+                opacity: 1;
+            }
+        }
+    
+        @-moz-keyframes zoom {
+            0% {
+                width: 25%;
+                opacity: 0.5;
+            }
+    
+            100% {
+                width: 75%;
+                opacity: 1;
+            }
+        }
+        
+        @-webkit-keyframes zoom {
+            0% {
+                width: 25%;
+                opacity: 0.5;
+            }
+    
+            100% {
+                width: 75%;
+                opacity: 1;
+            }
+        }
+        
+        @-o-keyframes zoom {
+            0% {
+                width: 25%;
+                opacity: 0.5;
+            }
+    
+            100% {
+                width: 75%;
+                opacity: 1;
+            }
+        }
+        
+        @-ms-keyframes zoom {
+            0% {
+                width: 25%;
+                opacity: 0.5;
+            }
+    
+            100% {
+                width: 75%;
+                opacity: 1;
+            }
+        }
+
+.entering-t {
+    
+    animation: translate-down ease 0.6s;
+    -webkit-animation: translate-down ease 0.6s;
+    -moz-animation: translate-down ease 0.6s;
+    -o-animation: translate-down ease 0.6s;
+    -ms-animation: translate-down ease 0.6s;
+}
+    @keyframes translate-down {
+        0% {
+            top: -120px;
+            opacity: 0.5;
+
+        }
+
+        100% {
+            top:0px;
+            opacity: 1;
+        }
+    }
+
+    @-moz-keyframes translate-down {
+        0% {
+            top: -120px;
+            opacity: 0.5;
+
+        }
+
+        100% {
+            top:0px;
+            opacity: 1;
+        }
+    }
+    
+    @-webkit-keyframes translate-down {
+        0% {
+            top: -120px;
+            opacity: 0.5;
+
+        }
+
+        100% {
+            top:0px;
+            opacity: 1;
+        }
+    }
+    
+    @-o-keyframes translate-down {
+        0% {
+            top: -120px;
+            opacity: 0.5;
+
+        }
+
+        100% {
+            top:0px;
+            opacity: 1;
+        }
+    }
+    
+    @-ms-keyframes translate-down {
+        0% {
+            top: -120px;
+            opacity: 0.5;
+
+        }
+
+        100% {
+            top: 0px;
+            opacity: 1;
+        }
+}
+
+.entering-r {
+    animation: translate ease 0.6s;
+    -webkit-animation: translate ease 0.6s;
+    -moz-animation: translate ease 0.6s;
+    -o-animation: translate ease 0.6s;
+    -ms-animation: translate ease 0.6s;
+}
+    @keyframes translate {
+        0% {
+            right: -20%;
+            opacity: 0.5;
+
+        }
+
+        100% {
+            right: 4%;
+            opacity: 1;
+        }
+    }
+
+    @-moz-keyframes translate {
+        0% {
+            right: -20%;
+            opacity: 0.5;
+
+        }
+
+        100% {
+            right: 4%;
+            opacity: 1;
+        }
+    }
+    
+    @-webkit-keyframes translate {
+        0% {
+            right: -20%;
+            opacity: 0.5;
+
+        }
+
+        100% {
+            right: 4%;
+            opacity: 1;
+        }
+    }
+    
+    @-o-keyframes translate {
+        0% {
+            right: -20%;
+            opacity: 0.5;
+
+        }
+
+        100% {
+            right: 4%;
+            opacity: 1;
+        }
+    }
+    
+    @-ms-keyframes translate {
+        0% {
+            right: -20%;
+            opacity: 0.5;
+
+        }
+
+        100% {
+            right: 4%;
+            opacity: 1;
+        }
+    }
+
+
 .fade-out {
     animation: fadeOut ease 1s;
+    opacity: 0;
     -webkit-animation: fadeOut ease 1s;
     -moz-animation: fadeOut ease 1s;
     -o-animation: fadeOut ease 1s;
@@ -57,6 +348,61 @@
     }
 }
 
+.fade-in {
+    animation: fadeIn ease 1s;
+    opacity: 1;
+    -webkit-animation: fadeIn ease 1s;
+    -moz-animation: fadeIn ease 1s;
+    -o-animation: fadeIn ease 1s;
+    -ms-animation: fadeIn ease 1s;
+}
+@keyframes fadeIn {
+    100% {
+        opacity: 1;
+    }
+    0% {
+        opacity: 0;
+    }
+}
+
+@-moz-keyframes fadeIn {
+    100% {
+        opacity: 1;
+    }
+    0% {
+        opacity: 0;
+    }
+}
+
+@-webkit-keyframes fadeIn {
+    100% {
+        opacity: 1;
+    }
+    0% {
+        opacity: 0;
+    }
+}
+
+@-o-keyframes fadeIn {
+    100% {
+        opacity: 1;
+    }
+    0% {
+        opacity: 0;
+    }
+}
+
+@-ms-keyframes fadeIn {
+    100% {
+        opacity: 1;
+    }
+    0% {
+        opacity: 0;
+    }
+}
+
+
+
 @supports (-webkit-touch-callout: none) {
     /* CSS specific to iOS devices */
     .iphone-vertical {
@@ -75,11 +421,27 @@
 }
 
 .appearing {
-    pointer-events: none;
     visibility: visible;
     opacity: 1;
     transition: visibility 0s 1s, opacity 0s 1s;
   }
+.text-vertical-rotated {
+ writing-mode: tb-rl;
+ transform: rotate(-180deg);
+}
+
+.absolute-tr {
+    position: absolute;
+    top: 15%;
+    right: 3%;
+  }
+
+.firebase-emulator-warning { display: none; }
+
+.text-vertical {
+writing-mode: vertical-lr;
+text-orientation: upright;
+}
 
 .text-invisible {
 color: rgba(255, 255, 255, 0);
@@ -90,7 +452,7 @@ color: rgba(255, 255, 255, 0);
     display: none;
     visibility: hidden;
     opacity: 0;
-    transition: visibility 0s 1s, opacity 1s linear;
+    transition: visibility 0s 1s, opacity 0s 1s linear;
   }
 
 .bottom-right-custom {

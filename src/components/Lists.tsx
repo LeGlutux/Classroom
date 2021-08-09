@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { useLists } from '../hooks'
 import { AuthContext } from '../Auth'
 import NavBar from './NavBar'
@@ -9,7 +9,8 @@ import ListPreview from './ListPreview'
 export default () => {
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
-    const lists = useLists(currentUser.uid)
+    const [listsRefresher, setListsRefresher] = useState(0)
+    const lists = useLists(currentUser.uid, listsRefresher)
     return (
         <div className="h-screen w-full flex flex-col">
             <div className="h-24">
@@ -33,6 +34,7 @@ export default () => {
                             classes={group}
                             itemsN={itemN}
                             date={date}
+                            refresher={setListsRefresher}
                         />
                     )
                 })}

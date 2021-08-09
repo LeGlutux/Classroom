@@ -27,6 +27,7 @@ export default () => {
     const { periodes, refreshPeriodes } = usePeriodes(currentUser.uid)
     const lists = useLists(currentUser.uid)
     const db = firebase.firestore()
+    
 
     const handleAddPeriode = () => {
         db.collection('users')
@@ -47,6 +48,8 @@ export default () => {
                     .doc(l.id.concat('s'))
                     .delete()
             }))
+
+           
             db.collection('users')
                 .doc(currentUser.uid)
                 .collection('eleves')

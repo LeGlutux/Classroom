@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useRef } from 'react'
 import solo from '../../images/solo.png'
 import Firebase from '../../firebase'
 import NewStudentGroups from '../NewStudentGroups'
@@ -17,7 +17,8 @@ export default (props: Props) => {
     const [nameInputValue, setNameInputValue] = useState('')
     const [surnameInputValue, setSurnameInputValue] = useState('')
     const lists = useLists(props.currentUserId)
-
+    const firstInputRef = useRef<HTMLInputElement>(null)
+    
     return (
         <div
             className={`flex flex-col items-center rounded mt-5 h-auto justify-around mx-6 bg-gray-100 shadow-custom xl:w-5/12 relative`}
@@ -72,6 +73,8 @@ export default (props: Props) => {
                         })
                         setNameInputValue('')
                         setSurnameInputValue('')
+                        
+                        firstInputRef.current!.focus()
                         setList(list)
                         setSent(true)
                         setTimeout(() => setSent(false), 1000)
@@ -90,6 +93,7 @@ export default (props: Props) => {
                         <img className="w-8 h-8 mt-3" src={solo} alt="" />
                         <div className="w-9/12 flex flex-col hover:border-gray-600">
                             <input
+                                ref={firstInputRef}
                                 value={surnameInputValue}
                                 onChange={(e) =>
                                     setSurnameInputValue(e.target.value)

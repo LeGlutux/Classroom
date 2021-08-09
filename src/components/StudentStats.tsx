@@ -18,7 +18,8 @@ export default () => {
     if (currentUser === null) return <div />
     const { id } = useParams()
     if (id === undefined) return <div />
-    const { cross } = useCross(currentUser.uid, id)
+    const [crossRefresher, setCrossRefresher] = useState(0)
+    const { cross } = useCross(currentUser.uid, id, crossRefresher)
     const student = useStudent(currentUser.uid, id)
     if (student === undefined) return <div />
 
@@ -34,6 +35,8 @@ export default () => {
     return (
         <View
             currentUser={currentUser}
+            crossRefresher={crossRefresher}
+            setCrossRefresher={setCrossRefresher}
             student={student}
             studentId={id}
             crossFilter={crossFilter}
@@ -43,11 +46,15 @@ export default () => {
 
 const View = ({
     currentUser,
+    crossRefresher,
+    setCrossRefresher,
     student,
     studentId,
     crossFilter,
 }: {
     currentUser: firebase.User
+    crossRefresher: number,
+    setCrossRefresher: React.Dispatch<React.SetStateAction<number>>,
     student: firebase.firestore.DocumentData
     studentId: string
     crossFilter: (crossType: string) => firebase.firestore.DocumentData[]
@@ -66,7 +73,6 @@ const View = ({
     const weeks = Array.from({ length: currentWeek }, (_, index) => index + 1)
     const db = firebase.firestore()
     const history = useHistory()
-    const [fader, setFader] = useState('')
     const handleDeleteCross = (crossType: string) => {
         if (crossFilter(crossType).length !== 0) {
             const crossId = crossFilter(crossType)[0].id
@@ -77,8 +83,8 @@ const View = ({
                 .collection('crosses')
                 .doc(crossId)
                 .delete()
+            setCrossRefresher(crossRefresher + 1)
         }
-        setFader(fader.concat(crossType.charAt(0)))
     }
     const handleDeletion = () => {
         db.collection('users')
@@ -233,6 +239,7 @@ const View = ({
                         <CrossTab
                             studentId={studentId}
                             userId={currentUser.uid}
+                            crossRefresher={crossRefresher}
                             week={
                                 startDate.getTime() +
                                 (weeks.length - index - 1) * 7 * 86400000
@@ -247,20 +254,16 @@ const View = ({
                 <div className="w-6 text-sm font-bold h-4 my-2" />
                 <div className="w-full h-4 flex flex-row justify-evenly my-2 text-xl">
                     <div className="flex flex-row w-full mx-4 items-center justify-center">
-                        {crossFilter('behaviour').length -
-                            Number(fader.includes('b'))}
+                        {crossFilter('behaviour').length}
                     </div>
                     <div className="flex flex-row w-full mx-4 items-center justify-center">
-                        {crossFilter('homework').length -
-                            Number(fader.includes('h'))}
+                        {crossFilter('homework').length}
                     </div>
                     <div className="flex flex-row w-full mx-4 items-center justify-center">
-                        {crossFilter('supply').length -
-                            Number(fader.includes('s'))}
+                        {crossFilter('supply').length}
                     </div>
                     <div className="flex flex-row w-full mx-4 items-center justify-center">
-                        {crossFilter('observation').length -
-                            Number(fader.includes('o'))}
+                        {crossFilter('observation').length}
                     </div>
                 </div>
             </div>
@@ -270,7 +273,7 @@ const View = ({
                     <div
                         className={`flex flex-row w-full mx-4 items-center justify-center `}
                     >
-                        <button className={`${fader.includes('b') ? 'disappearing' : 'visible'}`}
+                        <button
                             onClick={() => {
                                 handleDeleteCross('behaviour')
                             }}
@@ -281,7 +284,7 @@ const View = ({
                     <div
                         className={`flex flex-row w-full mx-4 items-center justify-center`}
                     >
-                        <button className={`${fader.includes('h') ? 'disappearing' : 'visible'}`}
+                        <button
                             onClick={() => {
                                 handleDeleteCross('homework')
                             }}
@@ -293,7 +296,7 @@ const View = ({
                         className={`flex flex-row w-full mx-4 items-center justify-center `}
                     >
                         <button
-                            className={`${fader.includes('s') ? 'disappearing' : 'visible'}`}
+
                             onClick={() => handleDeleteCross('supply')}>
                             <img className="h-10 w-10" src={backArrow} alt="" />
                         </button>
@@ -301,7 +304,7 @@ const View = ({
                     <div
                         className={`flex flex-row w-full mx-4 items-center justify-center `}
                     >
-                        <button className={`${fader.includes('o') ? 'disappearing' : 'visible'}`}
+                        <button
                             onClick={() => handleDeleteCross('observation')}
                         >
                             <img className="h-10 w-10" src={backArrow} alt="" />
