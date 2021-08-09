@@ -12,6 +12,7 @@ import pen from '../images/observation.png'
 import backArrow from '../images/return.png'
 import ConfirmModal from './ConfirmModal'
 import edit from '../images/edit.png'
+import NavBar from './NavBar'
 
 export default () => {
     const { currentUser } = useContext(AuthContext)
@@ -233,7 +234,7 @@ const View = ({
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col text-2xl ml-4 h-82 overflow-y-scroll">
+            <div className="flex flex-col text-2xl ml-4 h-full overflow-y-scroll">
                 {weeks.map((elem, index) => {
                     return (
                         <CrossTab

@@ -10,6 +10,7 @@ import SignUp from './components/SignUp'
 import Lists from './components/Lists'
 import CreateList from './components/CreateList'
 import List from './components/List'
+import NavBar from './components/NavBar'
 
 export default () => {
     return (
@@ -44,12 +45,15 @@ export default () => {
                                     path="/student/:id"
                                     component={StudentStats}
                                 />
-                                <PrivateRoute path="/" component={FrontPage} />
+                                <PrivateRoute path="/" component={FrontPage} /> 
+                                
                             </Switch>
+                            
                         </Router>
                     </div>
                 </AuthProvider>
             </div>
+            
         </div>
     )
 }

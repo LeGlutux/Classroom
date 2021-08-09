@@ -63,10 +63,6 @@ export default () => {
 
     return (
         <div className="h-screen w-full flex flex-col">
-            <div className="h-24">
-                <NavBar />
-            </div>
-
             <span className="absolute-tr p-4">
                 <svg
                     className="h-4 w-4 fill-current text-grey hover:text-grey-darkest"
@@ -266,6 +262,9 @@ export default () => {
                     </button>
                 </div>
             </form>
+            <div className={`w-full h-12 bg-gray-300 table-footer-group hello`}>
+                <NavBar />
+            </div>
         </div>
     )
 }

@@ -56,24 +56,6 @@ export default () => {
 
     return (
         <div className="w-full h-screen flex flex-col">
-            <div className="h-24">
-                <NavBar />
-            </div>
-            <div className="absolute flex justify-center self-center text-3xl mt-4 text-gray-900 rounded">
-                {'P'.concat(runningPeriode.toString())}
-            </div>
-            <div className="w-24 absolute flex justify-center self-center">
-                <div
-                    className={`rounded-lg bg-white font-studentName font-bold px-6 ${displayedGroup.length > 8
-                            ? 'text-sm overflow-hidden mt-3 h-16'
-                            : 'text-2xl mt-20'
-                        }
-                    ${displayedGroup === 'tous' ? 'invisible' : 'visible'}`}
-                    style={{ backgroundColor: 'rgba(255,255,255,0.6)' }}
-                >
-                    {displayedGroup}
-                </div>
-            </div>
             <MagicStick
                 allStudents={students}
                 students={magicStickStudentsList}
@@ -127,8 +109,14 @@ export default () => {
                     }
                 </div>}
 
-            <div className={`w-full h-12 bg-gray-300 table-footer-group ${(displayedGroup === 'tous') ? 'invisible' : 'visible'}`}>
-                <div className="ml-3 pt-2 font-bold text-xl flex justify-between align-top">
+            <div className={`w-full h-12 bg-gray-300 table-footer-group`}>
+                <NavBar />
+            </div>
+        </div>
+    )
+}
+
+{/* <div className="ml-3 pt-2 font-bold text-xl flex justify-between align-top">
                     <div className="overflow-x-scroll">
                         <ClassListFilter
                             setDisplayedGroup={setDisplayedGroup}
@@ -189,8 +177,4 @@ export default () => {
                         <img src={burgerMenu} alt="" />
                     </button>
                     </div>
-                </div>
-            </div>
-        </div>
-    )
-}
+                </div> */}

@@ -17,9 +17,6 @@ export default () => {
 
     return (
         <div className="w-full h-screen flex flex-col">
-            <div className="h-24">
-                <NavBar />
-            </div>
             <div className='flex self-center my-4 text-2xl'>{currentList.name}</div>
             <div className='flex flex-row h-32 border-2 border-gray-300'>
                 <div className='flex items-center justify-center w-4/12 text-xl border-r-2 border-gray-300'>Nom</div>
@@ -50,6 +47,9 @@ export default () => {
                             currentList={currentList} />
                     )
                 })}
+            </div>
+            <div className={`w-full h-12 bg-gray-300 table-footer-group hello`}>
+                <NavBar />
             </div>
         </div>
     )
