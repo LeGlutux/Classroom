@@ -7,7 +7,7 @@ import home from '../images/home.png'
 export default () => {
     return (
         <div
-            className="flex flex-row px-4 h-full justify-around py-2"
+            className="flex flex-row bg-gray-300 border-5 border-orange-300 px-4 h-full justify-around py-2"
         >
             
                 <div
