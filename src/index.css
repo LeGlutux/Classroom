@@ -29,7 +29,7 @@
     }
   }
   
-  @-moz-keyframes zoom {
+  @-moz-keyframes translateOut {
     100% {
       right: -20%;
       opacity: 0.5;
@@ -42,7 +42,7 @@
     }
 }
 
-@-webkit-keyframes zoom {
+@-webkit-keyframes translateOut {
     100% {
       right: -20%;
       opacity: 0.5;
@@ -55,7 +55,7 @@
     }
 }
 
-@-o-keyframes zoom {
+@-o-keyframes translateOut {
     100% {
       right: -20%;
       opacity: 0.5;
@@ -68,7 +68,7 @@
     }
 }
 
-@-ms-keyframes zoom {
+@-ms-keyframes translateOut {
     100% {
       right: -20%;
       opacity: 0.5;
@@ -457,14 +457,46 @@ color: rgba(255, 255, 255, 0);
 
 .bottom-right-custom {
     position: absolute;
-    bottom: 8%;
+    bottom: 24%;
     right: 4%;
 }
 
 .bottom-right-custom2 {
     position: absolute;
-    bottom: 20%;
+    bottom: 10%;
     right: 4%;
+}
+
+.bottom-center-custom {
+    position: absolute;
+    bottom: 7%;
+}
+
+.curve {
+    height: 225px;
+    width: 100%;
+}
+
+.curve::before {
+    content: '';
+    display: block;
+    border-radius: 100% 50%;
+    width: 55%;
+    height: 100%;
+    background-color: red;
+    transform: translate(85%, 60%);
+}
+
+.curve::after {
+    content: '';
+    display: block;
+    border-radius: 100% 50%;
+    width: 55%;
+    height: 100%;
+    background-color: yellow;
+    transform: translate(-4%, 40%);
+    z-index: -1;
+
 }
 
 .top-50 {
@@ -520,6 +552,7 @@ color: rgba(255, 255, 255, 0);
 .h-200 {
     height: 40rem;
 }
+
 
 .shadow-custom {
     box-shadow: -10px 15px 15px -3px rgba(0, 0, 0, 0.1),

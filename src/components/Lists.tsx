@@ -13,18 +13,10 @@ export default () => {
     const lists = useLists(currentUser.uid, listsRefresher)
     return (
         <div className="h-screen w-full flex flex-col">
-            <div className="h-24">
-                <NavBar />
+            <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full">
+                Mes listes
             </div>
-            <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center">
-                <Link className="mx-6 w-6 h-6" to="/createlist">
-                    <img className="h-6 w-6" src={add} alt="" />
-                </Link>
-                <div className="font-studentName mx-4">
-                    Créer une nouvelle liste
-                </div>
-            </div>
-            <div className="flex flex-col w-full">
+            <div className="flex flex-col w-full mt-8">
                 {lists.map(({ name, group, id, date, itemN }, index) => {
                     return (
                         <ListPreview
@@ -38,6 +30,13 @@ export default () => {
                         />
                     )
                 })}
+            </div>
+            <div className='h-screen'></div>
+            <Link className="flex flex-col w-16 h-16 bg-gray-200 rounded-full bottom-right-custom2 shadow-custom items-center justify-center" to="/createlist">
+                <img className="h-6 w-6" src={add} alt="" />
+            </Link>
+            <div className={`w-full h-12 bg-gray-300 table-footer-group hello`}>
+                <NavBar />
             </div>
         </div>
     )

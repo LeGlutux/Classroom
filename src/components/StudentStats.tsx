@@ -233,7 +233,7 @@ const View = ({
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col text-2xl ml-4 h-82 overflow-y-scroll">
+            <div className="flex flex-col text-2xl ml-4 h-full overflow-y-scroll">
                 {weeks.map((elem, index) => {
                     return (
                         <CrossTab

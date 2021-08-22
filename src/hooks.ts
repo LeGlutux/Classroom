@@ -25,6 +25,8 @@ export const useGroups = (currentUserId: string) => {
             setLoading(false)
         }
         fetch()
+                return () => {}
+
     }, [currentUserId])
 
     const refreshGroups = async () => {
@@ -46,6 +48,8 @@ export const useCrosses = (currentUserId: string, currentStudentId: string) => {
             setCrosses(await fetchCrosses(currentUserId, currentStudentId))
         }
         fetch()
+                return () => {}
+
     }, [currentUserId, currentStudentId])
 
     const refreshCrosses = async () => {
@@ -66,6 +70,8 @@ export const useCross = (currentUserId: string, currentStudentId: string, refres
             setLoading(false)
         }
         fetch()
+                return () => {}
+
     },
         [currentUserId, currentStudentId, refresher]
 
@@ -76,6 +82,8 @@ export const useCross = (currentUserId: string, currentStudentId: string, refres
             setCross(await fetchCross(currentUserId, currentStudentId))
         }
         fetch()
+                return () => {}
+
     }, [currentUserId, currentStudentId])
 
     const refreshCross = async () => {
@@ -96,6 +104,8 @@ export const useListState = (currentUserId: string, currentStudentId: string, cu
             setLoading(false)
         }
         fetch()
+                return () => {}
+
     }, [currentUserId, currentStudentId, currentListId])
 
     useEffect(() => {
@@ -103,6 +113,8 @@ export const useListState = (currentUserId: string, currentStudentId: string, cu
             setListState(await fetchListState(currentUserId, currentStudentId, currentListId))
         }
         fetch()
+                return () => {}
+
     }, [currentUserId, currentStudentId, currentListId])
 
     const refreshState = async () => {
@@ -125,6 +137,8 @@ export const useStudents = (currentUserId: string) => {
             setLoading(false)
         }
         fetch()
+                return () => {}
+
     }, [currentUserId])
 
     const filterStudents = async (group: string) => {
@@ -152,6 +166,8 @@ export const usePeriodes = (currentUserId: string) => {
             setPeriodes(await fetchPeriodes(currentUserId))
         }
         fetch()
+                return () => {}
+
     }, [currentUserId])
 
     const refreshPeriodes = async () => {
@@ -168,9 +184,10 @@ export const useRunningPeriode = (currentUserId: string) => {
             setRunningPeriode(await fetchRunningPeriode(currentUserId))
         }
         fetch()
+                return () => {}
+
     }, [currentUserId])
 
-    // [runningPeriode] dans le tableau vide ???
 
     const refreshRunningPeriode = async () => {
         setRunningPeriode(await fetchRunningPeriode(currentUserId))
@@ -187,6 +204,8 @@ export const usePaths = () => {
             setPaths(await fetchPaths())
         }
         fetch()
+                return () => {}
+
     }, [])
 
     // [Paths] dans le tableau vide ???
@@ -206,6 +225,8 @@ export const useStudent = (currentUserId: string, studentId: string) => {
             setStudent(await fetchStudentWithId(currentUserId, studentId))
         }
         fetch()
+        return () => {}
+
     }, [currentUserId, studentId])
 
     return student
@@ -219,6 +240,8 @@ export const useUser = (currentUserId: string) => {
             setUser(await fetchUser(currentUserId))
         }
         fetch()
+        return () => {}
+
     }, [currentUserId])
 
     return user
@@ -232,6 +255,8 @@ export const useLists = (currentUserId: string, listsRefresher?: number) => {
             setLists(await fetchLists(currentUserId))
         }
         fetch()
+        return () => {}
+
     }, [currentUserId, listsRefresher])
 
     return lists

@@ -44,12 +44,15 @@ export default () => {
                                     path="/student/:id"
                                     component={StudentStats}
                                 />
-                                <PrivateRoute path="/" component={FrontPage} />
+                                <PrivateRoute path="/" component={FrontPage} /> 
+                                
                             </Switch>
+                            
                         </Router>
                     </div>
                 </AuthProvider>
             </div>
+            
         </div>
     )
 }
