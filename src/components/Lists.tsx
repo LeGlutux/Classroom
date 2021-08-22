@@ -13,12 +13,10 @@ export default () => {
     const lists = useLists(currentUser.uid, listsRefresher)
     return (
         <div className="h-screen w-full flex flex-col">
-            <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl
-">            Mes listes
-
-
+            <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full">
+                Mes listes
             </div>
-            <div className="flex flex-col w-full">
+            <div className="flex flex-col w-full mt-8">
                 {lists.map(({ name, group, id, date, itemN }, index) => {
                     return (
                         <ListPreview

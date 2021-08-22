@@ -12,7 +12,6 @@ import pen from '../images/observation.png'
 import backArrow from '../images/return.png'
 import ConfirmModal from './ConfirmModal'
 import edit from '../images/edit.png'
-import NavBar from './NavBar'
 
 export default () => {
     const { currentUser } = useContext(AuthContext)

@@ -10,7 +10,6 @@ import SignUp from './components/SignUp'
 import Lists from './components/Lists'
 import CreateList from './components/CreateList'
 import List from './components/List'
-import NavBar from './components/NavBar'
 
 export default () => {
     return (

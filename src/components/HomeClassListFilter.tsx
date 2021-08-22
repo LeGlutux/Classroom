@@ -23,7 +23,7 @@ export default ({
                             setDisplayedGroup(group)
                             closeMenu(false)
                         }}
-                        className="flex font-studentName h-16 my-4 bg-gray-400 w-32 justify-center rounded-lg pt-1 self-center text-4xl"
+                        className="flex font-studentName h-16 my-4 bg-gray-300 w-32 justify-center shadow-custom rounded-lg pt-1 self-center text-4xl"
                         key={index}
                     >
                         {group}

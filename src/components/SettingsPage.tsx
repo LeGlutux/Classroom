@@ -1,4 +1,4 @@
-import React, { useContext, useLayoutEffect, useRef, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import CreateGroups from './Create/CreateGroups'
 import CreateStudent from './Create/CreateStudent'
 import NavBar from './NavBar'
@@ -91,7 +91,9 @@ export default () => {
 
     return (
         <div className={`w-full h-screen flex flex-col`}>
-             <div className='flex flex-row justify-center font-title2 pt-8 items-center text-4xl font-bold'>Paramétrez votre année</div>
+             <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full">
+                Paramétrez votre année
+            </div>
             <ConfirmModal
                 confirm={confirm}
                 setConfirm={setConfirm}

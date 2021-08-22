@@ -472,6 +472,33 @@ color: rgba(255, 255, 255, 0);
     bottom: 7%;
 }
 
+.curve {
+    height: 225px;
+    width: 100%;
+}
+
+.curve::before {
+    content: '';
+    display: block;
+    border-radius: 100% 50%;
+    width: 55%;
+    height: 100%;
+    background-color: red;
+    transform: translate(85%, 60%);
+}
+
+.curve::after {
+    content: '';
+    display: block;
+    border-radius: 100% 50%;
+    width: 55%;
+    height: 100%;
+    background-color: yellow;
+    transform: translate(-4%, 40%);
+    z-index: -1;
+
+}
+
 .top-50 {
     position: absolute;
     top: 50%;

@@ -41,7 +41,7 @@ export default (props: ListPreviewProps) => {
 
     return (
         <div
-            className={`w-full flex flex-row border-t-1 border-b-2 border-gray-300 justify-between`}
+            className={`w-full flex flex-row border-t-2 border-b-2 border-gray-300 justify-between`}
         >
             <span className="flex ml-4 mr-4 self-center pb-1">
                 <svg
