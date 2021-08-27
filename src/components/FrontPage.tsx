@@ -54,7 +54,6 @@ export default () => {
             })
         }
     }
-
     return (
         <div className="w-full h-screen flex flex-col">
             <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full">
@@ -70,7 +69,7 @@ export default () => {
                 displayedGroup={displayedGroup}
             />
             {displayedGroup !== 'tous' &&
-                <div className="flex w-full h-full flex-col bg-white overflow-y-scroll md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start">
+                <div className="flex w-full h-full flex-col pb-24 bg-white overflow-y-scroll md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start">
                     {
                         students
                             .map(
@@ -177,7 +176,7 @@ export default () => {
                         groups={groups}
                     />
                 </div>}
-            <div className={`w-full h-12 bg-gray-300 table-footer-group`}>
+            <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
                 <NavBar />
             </div>
         </div>

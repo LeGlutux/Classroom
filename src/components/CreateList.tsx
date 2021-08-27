@@ -262,7 +262,7 @@ export default () => {
                     </button>
                 </div>
             </form>
-            <div className={`w-full h-12 bg-gray-300 table-footer-group hello`}>
+            <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
                 <NavBar />
             </div>
         </div>

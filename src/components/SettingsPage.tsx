@@ -117,7 +117,7 @@ export default () => {
                 }
             />
             <div
-                className={`flex flex-row overflow-x-scroll h-full items-center mx-8`}
+                className={`flex flex-row h-full overflow-x-scroll py-8 items-center mx-8`}
             >
                 
                 <CreateGroups
@@ -136,7 +136,7 @@ export default () => {
                                 </div>
                             </div>
                             <button
-                                className="flex h-16 w-56 self-center bg-orange-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap"
+                                className="flex h-16 w-56 self-center bg-orange-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 pb-2 flex-wrap"
                                 onClick={() => setConfirm(true)}
                             >
                                 {' '}
@@ -154,7 +154,7 @@ export default () => {
                 <div className={cards}>
                     <div className="flex flex-col h-full justify-around items-center">
                         <div className='flex flex-col h-full justify-around items-center'>
-                            <div className='relative top-0 font-title text-3xl text-center'>L'année est finie ?'</div>
+                            <div className='relative top-0 font-title text-3xl text-center'>L'année est finie ?</div>
                             <button
                                 className="flex h-16 w-56 mt-8 self-center bg-red-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap"
                                 onClick={() => setConfirm2(true)}
@@ -169,7 +169,7 @@ export default () => {
 
 
             </div>
-            <div className='"w-full bg-gray-100"'>
+            <div className='"w-full h-40 bg-gray-100"'>
                 <div className="my-8 flex justify-center bg-white">
                     <button
                         className="text-lg text-gray-700 font-bold"
@@ -179,7 +179,7 @@ export default () => {
                     </button>
                 </div>
             </div>
-            <div className={`w-full h-12 bg-gray-300 table-footer-group`}>
+            <div className={`w-full h-12 bg-gray-300 sticky table-footer-group bottom-0`}>
                 <NavBar />
             </div>
         </div>

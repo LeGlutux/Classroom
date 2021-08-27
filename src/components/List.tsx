@@ -30,7 +30,7 @@ export default () => {
                     <div className='flex justify-center w-8 text-xl text-vertical-rotated border-l-2 border-gray-300 py-3'>{currentList.items[3]}</div>}
 
             </div>
-            <div className="flex w-full flex-col overflow-y-scroll h-full">
+            <div className="flex w-full flex-col overflow-y-scroll h-full pb-16">
                 {students.filter((s) => s.classes.includes(currentList.group[0])).map(({ name,
                     surname,
                     classes,
@@ -48,7 +48,7 @@ export default () => {
                     )
                 })}
             </div>
-            <div className={`w-full h-12 bg-gray-300 table-footer-group hello`}>
+            <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
                 <NavBar />
             </div>
         </div>

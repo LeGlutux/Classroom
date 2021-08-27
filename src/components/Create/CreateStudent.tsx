@@ -130,7 +130,7 @@ export default (props: Props) => {
                         </div>
                         <button
                             type="submit"
-                            className="flex h-8 w-40 self-center mt-6 bg-orange-500 rounded text-white text-lg font-bold justify-center"
+                            className="flex h-12 w-40 self-center pt-2 mt-6 bg-orange-500 rounded text-white text-lg font-bold justify-center"
                         >
                             Ajouter l'élève
                         </button>

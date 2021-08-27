@@ -60,7 +60,7 @@ const View = ({
     crossFilter: (crossType: string) => firebase.firestore.DocumentData[]
 }) => {
     const { groups } = useGroups(currentUser.uid)
-    const startDate = new Date('2021-06-31 00:00:01')
+    const startDate = new Date('2021-08-30 00:00:01')
     const [confirm, setConfirm] = useState(false)
     const [editing, setEditing] = useState(false)
     const [nameInputValue, setNameInputValue] = useState('')
@@ -199,7 +199,7 @@ const View = ({
                     </div>
                 </div>
                 <div
-                    className={`flex w-full mb-16 mr-4 justify-center font-title2 text-3xl items-center `}
+                    className={`flex w-full mb-8 mr-4 justify-center font-title2 text-3xl items-center `}
                 >
                     {student.classes}
                 </div>
@@ -233,7 +233,7 @@ const View = ({
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col text-2xl ml-4 h-full overflow-y-scroll">
+            <div className="flex flex-col text-2xl h-82 ml-4 overflow-y-scroll">
                 {weeks.map((elem, index) => {
                     return (
                         <CrossTab

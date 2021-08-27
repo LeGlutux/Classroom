@@ -35,7 +35,7 @@ export default () => {
             <Link className="flex flex-col w-16 h-16 bg-gray-200 rounded-full bottom-right-custom2 shadow-custom items-center justify-center" to="/createlist">
                 <img className="h-6 w-6" src={add} alt="" />
             </Link>
-            <div className={`w-full h-12 bg-gray-300 table-footer-group hello`}>
+            <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
                 <NavBar />
             </div>
         </div>
