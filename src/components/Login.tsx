@@ -39,7 +39,7 @@ const Login = ({ history }: LoginProps) => {
         <div>
             <div className="bg-white h-screen w-full flex flex-col items-center">
                 <div className="flex flex-col w-full items-center">
-                    <div className="text-8xl font-title pt-6">Thòt Note</div>
+                    <div className="text-8xl font-title pt-2">Thòt Note</div>
                     <div className="h-70 w-8/12 flex justify-center xl:big">
                         {' '}
                         <img

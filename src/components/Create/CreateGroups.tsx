@@ -1,10 +1,9 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useRef } from 'react'
 import group from '../../images/group.png'
 import Firebase from '../../firebase'
 import firebase from 'firebase/app'
 import { AuthContext } from '../../Auth'
 import ok from '../../images/ok.png'
-import { cards } from '../../classes'
 
 interface Props {
     onAddGroup: () => void
@@ -16,9 +15,11 @@ export default (props: Props) => {
     const db = Firebase.firestore()
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
+    const inputRef= useRef<HTMLInputElement>(null)
+    const focus = () => inputRef.current?.focus()
 
     return (
-        <div className={cards}>
+        <div className='flex flex-col h-full'>
             <form
                 className="flex flex-col w-full h-full bg-transparent"
                 onSubmit={(e) => {
@@ -45,13 +46,16 @@ export default (props: Props) => {
                 <div className="flex flex-col h-full items-center pb-4 justify-center">
                     <div className='flex flex-col h-full justify-around items-center'>
                         <div className='relative top-0 font-title text-3xl'>Ajoutez vos classes</div>
-                        <div className="flex flex-row items-center justify-center hover:border-gray-600 xl:w-full">
+                        <div className="flex flex-row items-center justify-center hover:border-gray-600 xl:w-full"
+                            >
                             <img className="w-8 h-8 mt-3" src={group} alt="" />
                             <div className="w-9/12 flex flex-col hover:border-gray-600">
                                 <input
+                                    ref={inputRef}
                                     value={inputValue}
+                                    onClick={() => console.log("clicked")}
                                     onChange={(e) => setInputValue(e.target.value)}
-                                    className="h-10 my-3 placeholder-gray-700 ml-5 bg-transparent border-b-2 border-gray-600 text-lg xl:text-center"
+                                    className="h-10 z-50 placeholder-gray-700 ml-5 bg-transparent border-b-2 border-gray-600 text-lg xl:text-center"
                                     type="text"
                                     placeholder="Nom du groupe"
                                 />
@@ -65,7 +69,7 @@ export default (props: Props) => {
                         </button>
 
                         <div
-                            className={`absolute right-0 top-25 w-10 h-10 ${sent ? 'fade-out' : 'invisible'
+                            className={`absolute ok-position1 w-10 h-10 ${sent ? 'fade-out' : 'invisible'
                                 }`}
                         >
                             <img src={ok} alt="ok" />

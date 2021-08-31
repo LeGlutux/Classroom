@@ -10,10 +10,9 @@ const PrivateRoute = ({component: RouteComponent, ...rest}) => {
         render={routeProps => 
             !!currentUser ? (
             <RouteComponent user = {currentUser} {...routeProps} />
-            ) : 
+            ) :
             (
-                console.log('redirection off')
-                // <Redirect to={"/"} />
+                <Redirect to={"/login"} />
             )
         }
         />

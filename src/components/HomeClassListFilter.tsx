@@ -14,7 +14,7 @@ export default ({
     closeMenu,
 }: HomeClassListFilterProps) => {
     return (
-        <div className="flex flex-col ml-2 mr-6 justify-evenly">
+        <div className="flex flex-col ml-2 mr-6 justify-evenly pt-10">
             {groups.map((group, index) => {
                 return (
                     <button

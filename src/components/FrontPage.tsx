@@ -54,8 +54,10 @@ export default () => {
             })
         }
     }
+
     return (
         <div className="w-full h-screen flex flex-col">
+
             <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full">
                 {title}
             </div>
@@ -112,6 +114,7 @@ export default () => {
                     }
                 </div>
             }
+
             {displayedGroup !== 'tous' &&
                 <button
                     onClick={() => {
@@ -176,7 +179,9 @@ export default () => {
                         groups={groups}
                     />
                 </div>}
+
             <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
+
                 <NavBar />
             </div>
         </div>

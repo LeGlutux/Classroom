@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import CreateGroups from './Create/CreateGroups'
 import CreateStudent from './Create/CreateStudent'
 import NavBar from './NavBar'
@@ -13,6 +13,9 @@ import calendar from '../images/calendar.png'
 import ConfirmModal from './ConfirmModal'
 import { useHistory } from 'react-router-dom'
 import { cards } from '../classes'
+import openCard from '../images/openCard.png'
+import closeCard from '../images/closeCard.png'
+
 
 
 export default () => {
@@ -29,6 +32,18 @@ export default () => {
     const { periodes, refreshPeriodes } = usePeriodes(currentUser.uid)
     const lists = useLists(currentUser.uid)
     const db = firebase.firestore()
+
+    const xScroller = useRef<HTMLDivElement>(null)
+    const ref0 = useRef<HTMLDivElement>(null)
+    const ref1 = useRef<HTMLDivElement>(null)
+    const ref2 = useRef<HTMLDivElement>(null)
+    const ref3 = useRef<HTMLDivElement>(null)
+
+    const refs = [ref0, ref1, ref2, ref3]
+
+    const scrollTo = (refN: number) => refs[refN].current?.scrollIntoView({ behavior: "smooth", block: "end", inline: "center" })
+    const [hide, setHide] = useState(false)
+    const [actualRef, setActualRef] = useState<number>(0)
 
     const handleAddPeriode = () => {
         db.collection('users')
@@ -91,7 +106,7 @@ export default () => {
 
     return (
         <div className={`w-full h-screen flex flex-col`}>
-             <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full">
+            <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full">
                 Paramétrez votre année
             </div>
             <ConfirmModal
@@ -116,16 +131,52 @@ export default () => {
                     'En faisant cela, vous supprimez définitivement vos élèves et vos classes'
                 }
             />
+            <div className={`flex w-full justify-between px-6 settings-page-arrows z-1`}>
+
+                <button
+                    className={`${actualRef === 0 || hide ? 'invisible' : 'visible'}`}
+                    onClick={() => {
+
+                        scrollTo(actualRef - 1)
+                        setActualRef(actualRef - 1)
+                        setHide(true)
+                        setTimeout(() => setHide(false), 400)
+                    }}
+                >
+                    <img className="w-4" src={closeCard} alt="" />
+                </button>
+                <button
+                    className={`${actualRef === 3 || hide ? 'invisible' : 'visible'}`}
+                    onClick={() => {
+                        scrollTo(actualRef + 1)
+                        setActualRef(actualRef + 1)
+                        setHide(true)
+                        setTimeout(() => setHide(false), 400)
+                    }
+                    }>
+                    <img className="w-4" src={openCard} alt="" />
+                </button>
+            </div>
+
             <div
-                className={`flex flex-row h-full overflow-x-scroll py-8 items-center mx-8`}
+                className={`flex flex-row h-full overflow-x-hidden py-8 items-center px-8`}
+                ref={xScroller}
             >
-                
-                <CreateGroups
-                    onAddGroup={refreshGroups} />
 
-                <CreateStudent groups={groups} currentUserId={currentUser.uid} />
+                <div className={cards} ref={ref0}>
+                    <CreateGroups
+                        onAddGroup={refreshGroups} />
+                </div>
 
-                <div className={`${cards}`}>
+                <div className={cards} ref={ref1}> 
+                    <CreateStudent 
+                        groups={groups} 
+                        currentUserId={currentUser.uid} />
+                </div>
+
+
+                <div className={`${cards}`}
+                    ref={ref2}>
                     <div className="flex flex-col h-full items-center pb-4">
                         <div className='flex flex-col h-full justify-around items-center'>
                             <div className='relative top-0 font-title text-3xl text-center'>Lancer une nouvelle période</div>
@@ -151,7 +202,9 @@ export default () => {
                     </div>
                 </div>
 
-                <div className={cards}>
+                <div className={cards}
+
+                    ref={ref3}>
                     <div className="flex flex-col h-full justify-around items-center">
                         <div className='flex flex-col h-full justify-around items-center'>
                             <div className='relative top-0 font-title text-3xl text-center'>L'année est finie ?</div>
@@ -169,7 +222,7 @@ export default () => {
 
 
             </div>
-            <div className='"w-full h-40 bg-gray-100"'>
+            <div className='w-full mb-6 h-16 bg-white'>
                 <div className="my-8 flex justify-center bg-white">
                     <button
                         className="text-lg text-gray-700 font-bold"
@@ -179,7 +232,8 @@ export default () => {
                     </button>
                 </div>
             </div>
-            <div className={`w-full h-12 bg-gray-300 sticky table-footer-group bottom-0`}>
+
+            <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
                 <NavBar />
             </div>
         </div>

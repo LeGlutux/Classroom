@@ -296,3 +296,23 @@ function useOnClickOutside<T extends HTMLElement = HTMLElement>(
 }
 
 export default useOnClickOutside
+
+/////////////////////////////// Get if element is on viewport ////////////////////////////////////
+
+
+export const useOnScreen = (ref: React.RefObject<HTMLDivElement>) => {
+
+    const [isIntersecting, setIntersecting] = useState(false)
+  
+    const observer = new IntersectionObserver(
+      ([entry]) => setIntersecting(entry.isIntersecting)
+    )
+  
+    useEffect(() => {
+      observer.observe(ref.current!)
+      // Remove the observer as soon as the component is unmounted
+      return () => { observer.disconnect() }
+    }, [ref, observer])
+  
+    return isIntersecting
+  }

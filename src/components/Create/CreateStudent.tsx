@@ -4,7 +4,6 @@ import Firebase from '../../firebase'
 import NewStudentGroups from '../NewStudentGroups'
 import ok from '../../images/ok.png'
 import { useLists } from '../../hooks'
-import { cards } from '../../classes'
 
 interface Props {
     groups: string[]
@@ -21,11 +20,9 @@ export default (props: Props) => {
     const firstInputRef = useRef<HTMLInputElement>(null)
 
     return (
-        <div
-            className={cards}
-        >
+        <div className="flex flex-col">
             <div
-                className={`absolute right-0 top-25 w-10 h-10 ${sent ? 'fade-out' : 'invisible'
+                className={`absolute ok-position2 w-10 h-10 ${sent ? 'fade-out' : 'invisible'
                     }`}
             >
                 <img src={ok} alt="ok" />
@@ -117,7 +114,7 @@ export default (props: Props) => {
                             </div>
                         </div>
 
-                        <div className="w-full flex flex-wrap flex-row justify-center mr-2 mt-6 px-2">
+                        <div className="w-full flex flex-wrap flex-row justify-evenly mx-1 mt-6 px-2">
                             {props.groups.map((value, index) => {
                                 return (
                                     <NewStudentGroups
