@@ -53,7 +53,6 @@ export default (props: Props) => {
                                 <input
                                     ref={inputRef}
                                     value={inputValue}
-                                    onClick={() => console.log("clicked")}
                                     onChange={(e) => setInputValue(e.target.value)}
                                     className="h-10 z-50 placeholder-gray-700 ml-5 bg-transparent border-b-2 border-gray-600 text-lg xl:text-center"
                                     type="text"

@@ -12,6 +12,7 @@ import {
     fetchCrosses,
     fetchLists,
     fetchListState,
+    fetchComment,
 } from './database'
 
 export const useGroups = (currentUserId: string) => {
@@ -25,7 +26,6 @@ export const useGroups = (currentUserId: string) => {
             setLoading(false)
         }
         fetch()
-                return () => {}
 
     }, [currentUserId])
 
@@ -48,7 +48,6 @@ export const useCrosses = (currentUserId: string, currentStudentId: string) => {
             setCrosses(await fetchCrosses(currentUserId, currentStudentId))
         }
         fetch()
-                return () => {}
 
     }, [currentUserId, currentStudentId])
 
@@ -70,7 +69,6 @@ export const useCross = (currentUserId: string, currentStudentId: string, refres
             setLoading(false)
         }
         fetch()
-                return () => {}
 
     },
         [currentUserId, currentStudentId, refresher]
@@ -82,7 +80,6 @@ export const useCross = (currentUserId: string, currentStudentId: string, refres
             setCross(await fetchCross(currentUserId, currentStudentId))
         }
         fetch()
-                return () => {}
 
     }, [currentUserId, currentStudentId])
 
@@ -104,7 +101,6 @@ export const useListState = (currentUserId: string, currentStudentId: string, cu
             setLoading(false)
         }
         fetch()
-                return () => {}
 
     }, [currentUserId, currentStudentId, currentListId])
 
@@ -113,7 +109,6 @@ export const useListState = (currentUserId: string, currentStudentId: string, cu
             setListState(await fetchListState(currentUserId, currentStudentId, currentListId))
         }
         fetch()
-                return () => {}
 
     }, [currentUserId, currentStudentId, currentListId])
 
@@ -137,7 +132,6 @@ export const useStudents = (currentUserId: string) => {
             setLoading(false)
         }
         fetch()
-                return () => {}
 
     }, [currentUserId])
 
@@ -166,7 +160,6 @@ export const usePeriodes = (currentUserId: string) => {
             setPeriodes(await fetchPeriodes(currentUserId))
         }
         fetch()
-                return () => {}
 
     }, [currentUserId])
 
@@ -184,7 +177,6 @@ export const useRunningPeriode = (currentUserId: string) => {
             setRunningPeriode(await fetchRunningPeriode(currentUserId))
         }
         fetch()
-                return () => {}
 
     }, [currentUserId])
 
@@ -204,11 +196,8 @@ export const usePaths = () => {
             setPaths(await fetchPaths())
         }
         fetch()
-                return () => {}
 
     }, [])
-
-    // [Paths] dans le tableau vide ???
 
     const refreshPaths = async () => {
         setPaths(await fetchPaths())
@@ -225,7 +214,6 @@ export const useStudent = (currentUserId: string, studentId: string) => {
             setStudent(await fetchStudentWithId(currentUserId, studentId))
         }
         fetch()
-        return () => {}
 
     }, [currentUserId, studentId])
 
@@ -240,7 +228,6 @@ export const useUser = (currentUserId: string) => {
             setUser(await fetchUser(currentUserId))
         }
         fetch()
-        return () => {}
 
     }, [currentUserId])
 
@@ -255,11 +242,25 @@ export const useLists = (currentUserId: string, listsRefresher?: number) => {
             setLists(await fetchLists(currentUserId))
         }
         fetch()
-        return () => {}
 
     }, [currentUserId, listsRefresher])
 
     return lists
+}
+
+export const useComment = (currentUserId: string, currentStudentId: string) => {
+    const [comment, setComment] = useState('')
+
+    useEffect(() => {
+        const fetch = async () => {
+            setComment(await fetchComment(currentUserId, currentStudentId))
+        }
+        fetch()
+    }, [currentUserId, currentStudentId])
+
+    const refreshComment = async () => setComment(await fetchComment(currentUserId, currentStudentId))
+
+    return {comment, refreshComment}
 }
 
 /////////////////////////////// Click outside component ////////////////////////////////////
