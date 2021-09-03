@@ -10,6 +10,7 @@ import firebase from 'firebase/app'
 import { useCross, useRunningPeriode, usePeriodes } from '../hooks'
 import { Link } from 'react-router-dom'
 import brain from '../images/brain.png'
+import StudentComment from './StudentComment'
 
 interface StudentProps {
     name: string
@@ -117,7 +118,7 @@ export default (props: StudentProps) => {
                 </button>
             </div>
             <div
-                className={`rounded ml-2 mt-5 pb-1 h-32 mx-2 bg-gray-100 w-full shadow-custom ${runningPeriode === periodes.length
+                className={`rounded ml-2 mt-5 pb-1 mx-2 bg-gray-100 w-full shadow-custom ${runningPeriode === periodes.length
                     ? 'bg-gray-100'
                     : 'border-2 border-gray-500'
                     }`}
@@ -204,6 +205,12 @@ export default (props: StudentProps) => {
                                 }
                             </div>
                         </div>
+                    </div>
+                    <div>
+                        <StudentComment
+                        currentUserId={currentUser.uid}
+                        currentStudentId={props.id}
+                        />
                     </div>
                 </div>
             </div>

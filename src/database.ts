@@ -151,3 +151,12 @@ export const fetchUser = async (currentUserId: string) => {
 
     return data
 }
+
+export const fetchComment = async (currentUserId: string, currentStudentId: string) => {
+    const db =Firebase.firestore()
+    const querySnapshot = await db.collection('users').doc(currentUserId).collection('eleves').doc(currentStudentId).get()
+
+    const data = querySnapshot.data()?.comment
+
+    return data
+}

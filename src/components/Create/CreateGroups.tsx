@@ -16,7 +16,6 @@ export default (props: Props) => {
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
     const inputRef= useRef<HTMLInputElement>(null)
-    const focus = () => inputRef.current?.focus()
 
     return (
         <div className='flex flex-col h-full'>
@@ -53,7 +52,6 @@ export default (props: Props) => {
                                 <input
                                     ref={inputRef}
                                     value={inputValue}
-                                    onClick={() => console.log("clicked")}
                                     onChange={(e) => setInputValue(e.target.value)}
                                     className="h-10 z-50 placeholder-gray-700 ml-5 bg-transparent border-b-2 border-gray-600 text-lg xl:text-center"
                                     type="text"
