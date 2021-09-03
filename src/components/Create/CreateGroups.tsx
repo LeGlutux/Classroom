@@ -16,7 +16,6 @@ export default (props: Props) => {
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
     const inputRef= useRef<HTMLInputElement>(null)
-    const focus = () => inputRef.current?.focus()
 
     return (
         <div className='flex flex-col h-full'>
