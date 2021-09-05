@@ -1,9 +1,10 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import firebase from 'firebase/app'
 import { useStudents } from '../hooks'
 import { Link } from 'react-router-dom'
 import { AuthContext } from '../Auth'
 import openCard from '../images/openCard.png'
+import ConfirmModal from './ConfirmModal'
 
 interface ListPreviewProps {
     id: string
@@ -19,6 +20,7 @@ export default (props: ListPreviewProps) => {
     if (currentUser === null) return <div />
     const classesToString = props.classes.join(', ')
     const { students } = useStudents(currentUser.uid)
+    const [confirm, setConfirm] = useState(false)
     const db = firebase.firestore()
     const handleDeleteList = () => {
         db.collection('users')
@@ -43,11 +45,21 @@ export default (props: ListPreviewProps) => {
         <div
             className={`w-full flex flex-row border-t-2 border-b-2 border-gray-300 justify-between`}
         >
+
+            <ConfirmModal
+                confirm={confirm}
+                setConfirm={setConfirm}
+                confirmAction={handleDeleteList}
+                textBox={
+                    'Êtes-vous sûr(e) de vouloir supprimer la liste "'.concat(props.name).concat('" des ').concat(props.classes.toString())
+                }
+            />
+
             <span className="flex ml-4 mr-4 self-center pb-1">
                 <svg
                     className="h-4 w-4 fill-current text-grey hover:text-grey-darkest"
                     role="button"
-                    onClick={() => handleDeleteList()}
+                    onClick={() => setConfirm(true)}
                 >
                     <title>Close</title>
                     <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
@@ -72,7 +84,7 @@ export default (props: ListPreviewProps) => {
                     src={openCard}
                     alt=""
                 />            </Link>
-            
+
         </div>
     )
 }

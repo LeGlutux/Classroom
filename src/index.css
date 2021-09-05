@@ -489,6 +489,11 @@ color: rgba(255, 255, 255, 0);
     bottom: 45px;
   }
 
+  .modal-positon {
+      position: absolute;
+      bottom: 8vh;
+  }
+
 .curve {
     height: 225px;
     width: 100%;

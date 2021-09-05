@@ -5,7 +5,7 @@ interface ConfirmModalProps {
     confirmAction: () => void
     setConfirm: React.Dispatch<React.SetStateAction<boolean>>
     textBox: string
-    subTextBox: string
+    subTextBox?: string
 }
 
 export default ({
@@ -17,7 +17,7 @@ export default ({
 }: ConfirmModalProps) => {
     return (
         <div
-            className={`flex flex-col z-50 fixed w-full h-full items-center justify-center self-center ${
+            className={`flex flex-col z-50 w-full h-full items-center justify-center self-center modal-positon ${
                 confirm ? 'visible' : 'invisible'
             }`}
             style={{ backgroundColor: 'rgba(255,255,255,0.6)' }}
@@ -35,9 +35,9 @@ export default ({
                         <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
                     </svg>
                 </span>
-                <div className="sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-center font-bold">
+                <div className="sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-center font-bold mx-2">
                     {textBox}
-                    <div className="sm:text-md md:text-lg lg:text-xl xl:text-2xl text-center">
+                    <div className="sm:text-md md:text-lg lg:text-xl xl:text-2xl text-center mx-2">
                         {subTextBox}
                     </div>
                 </div>

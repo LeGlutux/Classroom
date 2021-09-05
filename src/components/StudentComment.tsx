@@ -39,6 +39,18 @@ export default (props: Props) => {
         refreshComment()
     }
 
+    const handleDeletion = () => {
+        db
+            .collection('users')
+            .doc(props.currentUserId)
+            .collection('eleves')
+            .doc(props.currentStudentId)
+            .update({ comment: '' })
+
+        setEdit(false)
+        refreshComment()
+    }
+
 
     useOnClickOutside(cardRef, handleValidation)
 
@@ -72,7 +84,7 @@ export default (props: Props) => {
                 className={`${edit ? 'visible' : 'hidden'}`}
             >
                 <form
-                    className={`flex flex-row`}
+                    className={`flex flex-row items-center`}
                     onSubmit={(e) => {
                         handleValidation()
                         e.preventDefault()
@@ -80,11 +92,21 @@ export default (props: Props) => {
 
                     }}
                     action="">
+                    <span className="h-6 w-6 mx-2">
+                        <svg
+                            className="h-6 w-6 fill-current text-grey hover:text-grey-darkest"
+                            role="button"
+                            onClick={() => handleDeletion()}
+                        >
+                            <title>Close</title>
+                            <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
+                        </svg>
+                    </span>
                     <input
                         ref={inputRef}
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
-                        className="w-10/12 mx-2 mb-2 h-8 z-50 placeholder-gray-700 ml-5 bg-transparent border-b-2 border-gray-600 text-lg xl:text-center"
+                        className="w-10/12 mr-2 mb-2 h-8 z-50 placeholder-gray-700 bg-transparent border-b-2 border-gray-600 text-lg xl:text-center"
                         type="text"
                         placeholder={comment}
                     />

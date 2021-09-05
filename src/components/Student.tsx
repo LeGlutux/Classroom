@@ -89,10 +89,10 @@ export default (props: StudentProps) => {
     }
 
     const shortName =
-        (props.name + props.surname).length > 16 && props.surname.length >= 15 ?
+        (props.name + props.surname).length > 18 && props.surname.length >= 15 ?
             props.name.substring(0, 3).concat('.')
-            : (props.name + props.surname).length > 16 && props.surname.length < 15
-                ? props.name.substring(0, 15 - props.surname.length).concat('.')
+            : (props.name + props.surname).length > 18 && props.surname.length < 15
+                ? props.name.substring(0, 17 - props.surname.length).concat('.')
                 : props.name
 
 
@@ -105,7 +105,7 @@ export default (props: StudentProps) => {
     while (loading === true) return <div />
 
     return (
-        <div className="flex flex-row w-full md:w-1/2 lg:w-1/2 xl:w-1/3 items-center iphone-vertical">
+        <div className="flex flex-row w-full md:w-1/2 lg:w-1/2 xl:w-1/3 items-center">
             <div className="flex h-full items-center mt-5 ml-2 xl:pt-6 static">
                 <button
                     className={`h-8 w-8 ${props.selected === false || props.selected === undefined
@@ -118,13 +118,13 @@ export default (props: StudentProps) => {
                 </button>
             </div>
             <div
-                className={`rounded ml-2 mt-5 pb-1 mx-2 bg-gray-100 w-full shadow-custom ${runningPeriode === periodes.length
+                className={`rounded w-11/12 overflow-hidden ml-2 mt-5 pb-1 mx-2 bg-gray-100 w-full shadow-custom ${runningPeriode === periodes.length
                     ? 'bg-gray-100'
                     : 'border-2 border-gray-500'
                     }`}
             >
                 <div className="flex justify-between flex-col">
-                    <div className="flex flex-row overflow-hidden">
+                    <div className="flex flex-row">
                         <button
                             onClick={() => {
                                 db.collection('users')
@@ -137,17 +137,17 @@ export default (props: StudentProps) => {
                                 setHighlight(!highlight)
                                 props.refresher(props.displayedGroup)
                             }}
-                            className={`flex flex-row lg:flex-row xl:flex:row mt-2 `}
+                            className={`flex flex-row mt-2`}
                         >
                             <div
-                                className={`font-studentName ml-2 text-gray-900 font-medium h-5 sm:text-customsize md:text-3xl lg:text-3x xl:text-4xl ${highlight ? 'text-red-600' : ''
+                                className={`font-studentName ml-2 text-gray-900 font-medium h-5 text-2xl md:text-3xl lg:text-3x xl:text-4xl ${highlight ? 'text-red-600' : ''
                                     }
                                 `}
                             >
                                 {shortSurname}
                             </div>
                             <div
-                                className={`font-studentName ml-2 text-gray-900 font-bold sm:text-customsize md:text-3xl lg:text-3x xl:text-4xl ${highlight ? 'text-red-600' : ''
+                                className={`font-studentName ml-2 text-gray-900 font-bold text-2xl md:text-3xl lg:text-3x xl:text-4xl ${highlight ? 'text-red-600' : ''
                                     }`}
                             >
                                 {shortName}
