@@ -22,7 +22,7 @@ export default (props: Props) => {
     return (
         <div className="flex flex-col">
             <div
-                className={`absolute ok-position2 w-10 h-10 ${sent ? 'fade-out' : 'invisible'
+                className={`absolute sm:ok-position2 w-10 h-10 ${sent ? 'fade-out' : 'invisible'
                     }`}
             >
                 <img src={ok} alt="ok" />
@@ -36,13 +36,9 @@ export default (props: Props) => {
                         list.length === 1
                     ) {
                         const id = Date.now().toString()
-                        const nameCased = nameInputValue.replace(/^\w/, (c) =>
-                            c.toUpperCase()
-                        )
-                        const surnameCased = surnameInputValue.replace(
-                            /^\w/,
-                            (c) => c.toUpperCase()
-                        )
+                        const nameCased = nameInputValue.replace(/\b\w/g, c => c.toUpperCase())
+                        
+                        const surnameCased = surnameInputValue.replace(/\b\w/g, c => c.toUpperCase())
                         db.collection('users')
                             .doc(props.currentUserId)
                             .collection('eleves')

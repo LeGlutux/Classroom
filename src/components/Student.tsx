@@ -154,11 +154,11 @@ export default (props: StudentProps) => {
                             </div>
                         </button>
                     </div>
-                    <div className=" w-full h-16 pt-3 flex p-2 content-center justify-between pr-6">
+                    <div className=" w-full h-12 flex p-2 content-center justify-between pr-6">
                         <div className="flex flex-row">
                             <button
                                 onClick={() => handleAddCross('behaviour')}
-                                className="w-10 h-10 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full"
+                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full"
                             >
                                 <img className="" src={alarm} alt="" />
                             </button>
@@ -172,7 +172,7 @@ export default (props: StudentProps) => {
                         <div className="flex flex-row">
                             <button
                                 onClick={() => handleAddCross('homework')}
-                                className="w-10 h-10 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full"
+                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full"
                             >
                                 <img className="" src={bookPile} alt="" />
                             </button>
@@ -183,7 +183,7 @@ export default (props: StudentProps) => {
                         <div className="flex flex-row">
                             <button
                                 onClick={() => handleAddCross('supply')}
-                                className="w-10 h-10 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full"
+                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full"
                             >
                                 <img className="" src={schoolBag} alt="" />
                             </button>
@@ -194,7 +194,7 @@ export default (props: StudentProps) => {
                         <div className="flex flex-row">
                             <button
                                 onClick={() => handleAddCross('observation')}
-                                className="w-10 h-10 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full"
+                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full"
                             >
                                 <img className="" src={pen} alt="" />
                             </button>

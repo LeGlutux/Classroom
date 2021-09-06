@@ -461,12 +461,12 @@ color: rgba(255, 255, 255, 0);
     background-color: transparent;
 }
 
-.ok-position1 {
+.sm\:ok-position1 {
     position: absolute;
     top: 45%;
 }
 
-.ok-position2 {
+.sm\:ok-position2 {
     position: absolute;
     top: 31%;
     right: 10%;

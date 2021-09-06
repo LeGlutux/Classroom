@@ -67,7 +67,7 @@ export default (props: Props) => {
                         </button>
 
                         <div
-                            className={`absolute ok-position1 w-10 h-10 ${sent ? 'fade-out' : 'invisible'
+                            className={`absolute sm:ok-position1 w-10 h-10 ${sent ? 'fade-out' : 'invisible'
                                 }`}
                         >
                             <img src={ok} alt="ok" />

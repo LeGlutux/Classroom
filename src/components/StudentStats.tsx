@@ -153,17 +153,8 @@ const View = ({
                     </div>
                 </div>
                 <div
-                    className={`flex w-full mr-4 justify-center mb-4 font-title2 text-3xl items-center `}
+                    className={`flex w-full px-8 justify-between mb-4 font-title2 text-3xl items-center `}
                 >
-                    <input
-                        className="h-10 w-20 mt-3 placeholder-gray-700 text-lg ml-5 bg-transparent border-b-2 border-gray-600 text-center"
-                        value={classInputValue}
-                        onChange={(e) => setClassInputValue(e.target.value)}
-                        type="text"
-                        placeholder={student.classes}
-                    />
-                </div>
-                <div className="h-6 w-full mr-4 mb-16 flex flex-row justify-around">
                     <button
                         className="bg-red-700 rounded-lg font-bold w-24 h-8 text-sm lg:w-32 lg:h-12 xl:w-40 xl:h-16 shadow-xl font-studentName sm:text-lg md:text-xl lg:text-2xl xl:text-3xl"
                         onClick={() => {
@@ -172,6 +163,13 @@ const View = ({
                     >
                         Annuler
                     </button>
+                    <input
+                        className="h-10 w-20 mt-3 placeholder-gray-700 text-lg bg-transparent border-b-2 border-gray-600 text-center"
+                        value={classInputValue}
+                        onChange={(e) => setClassInputValue(e.target.value)}
+                        type="text"
+                        placeholder={student.classes}
+                    />
                     <button
                         className="bg-green-700 rounded-lg font-bold w-24 h-8 text-sm lg:w-32 lg:h-12 xl:w-40 xl:h-16 shadow-xl font-studentName sm:text-lg md:text-xl lg:text-2xl xl:text-3xl"
                         onClick={() => {
@@ -182,6 +180,7 @@ const View = ({
                         Confirmer
                     </button>
                 </div>
+              
             </div>
 
             <div
@@ -250,7 +249,7 @@ const View = ({
                     )
                 })}
             </div>
-            <div className="flex flex-row ml-4 mb-4">
+            <div className="flex flex-row ml-4 mb-2">
                 <div className="w-6 text-sm font-bold h-4 my-2" />
                 <div className="w-full h-4 flex flex-row justify-evenly my-2 text-xl">
                     <div className="flex flex-row w-full mx-4 items-center justify-center">
@@ -267,7 +266,7 @@ const View = ({
                     </div>
                 </div>
             </div>
-            <div className="flex flex-row ml-4 mb-4">
+            <div className="flex flex-row ml-4 mb-2">
                 <div className="w-6 text-sm font-bold h-4 my-2" />
                 <div className="w-full h-4 flex flex-row justify-evenly my-2 text-xl">
                     <div

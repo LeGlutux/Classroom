@@ -28,15 +28,21 @@ export default (props: Props) => {
     }
 
     const handleValidation = () => {
-        db
-            .collection('users')
-            .doc(props.currentUserId)
-            .collection('eleves')
-            .doc(props.currentStudentId)
-            .update({ comment: inputValue })
 
-        setEdit(false)
-        refreshComment()
+        if (edit === true) {
+            
+            const commentCased = inputValue.replace(/^\w/, (c) => c.toUpperCase())
+
+            db
+                .collection('users')
+                .doc(props.currentUserId)
+                .collection('eleves')
+                .doc(props.currentStudentId)
+                .update({ comment: commentCased })
+
+            setEdit(false)
+            refreshComment()
+        }
     }
 
     const handleDeletion = () => {
