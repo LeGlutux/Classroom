@@ -19,6 +19,7 @@ interface StudentProps {
     id: string
     highlight: boolean
     selected: boolean
+    comment?: string
     refresher: (group: string) => void
     displayedGroup: string
 }
@@ -210,6 +211,7 @@ export default (props: StudentProps) => {
                         <StudentComment
                         currentUserId={currentUser.uid}
                         currentStudentId={props.id}
+                        comment={props.comment ? props.comment : ""}
                         />
                     </div>
                 </div>

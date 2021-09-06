@@ -1,29 +1,30 @@
 import React, { useRef, useState } from 'react'
 import Firebase from '../firebase'
-import useOnClickOutside, { useComment, useStudent } from '../hooks'
+import useOnClickOutside, { useComment } from '../hooks'
 import check from '../images/check.png'
 import pen from '../images/edit.png'
 
 interface Props {
     currentUserId: string;
     currentStudentId: string;
+    comment: string;
 }
 
 export default (props: Props) => {
 
     const db = Firebase.firestore()
-    const { comment, refreshComment } = useComment(props.currentUserId, props.currentStudentId)
+    const { refreshComment } = useComment(props.currentUserId, props.currentStudentId)
 
     const inputRef = useRef<HTMLInputElement>(null)
     const cardRef = useRef<HTMLDivElement>(null)
 
-    const [inputValue, setInputValue] = useState(comment)
+    const [inputValue, setInputValue] = useState(props.comment)
     const [edit, setEdit] = useState(false)
-    const wrap = comment !== undefined && comment.length >= 20 ? true : false
+    const wrap = props.comment !== undefined && props.comment.length >= 20 ? true : false
 
     const handleEdition = () => {
         setEdit(true)
-        setInputValue(comment)
+        setInputValue(props.comment)
         setTimeout(() => inputRef.current!.focus(), 100)
     }
 
@@ -71,12 +72,12 @@ export default (props: Props) => {
                     <div className='flex flex-col text-sm font-student mx-1 font-bold'> Commentaire:
                         {wrap &&
                             <div className='flex w-full justify-start'>
-                                <div className='text-sm w-auto font-student font-normal'>{comment}</div>
+                                <div className='text-sm w-auto font-student font-normal'>{props.comment}</div>
                             </div>}
                     </div>
                     {!wrap &&
                         <div className='flex w-full justify-start'>
-                            <div className='text-sm w-auto font-student font-normal'>{comment}</div>
+                            <div className='text-sm w-auto font-student font-normal'>{props.comment}</div>
                         </div>}
 
 
@@ -114,7 +115,7 @@ export default (props: Props) => {
                         onChange={(e) => setInputValue(e.target.value)}
                         className="w-10/12 mr-2 mb-2 h-8 z-50 placeholder-gray-700 bg-transparent border-b-2 border-gray-600 text-lg xl:text-center"
                         type="text"
-                        placeholder={comment}
+                        placeholder={props.comment}
                     />
                     <button
                         className='w-2/12 mx-2'

@@ -82,6 +82,7 @@ export default () => {
                                     id,
                                     selected,
                                     highlight,
+                                    comment,
                                 }) => {
                                     return (
                                         <Student
@@ -90,6 +91,7 @@ export default () => {
                                             classes={classes}
                                             name={name}
                                             surname={surname}
+                                            comment={comment ? comment : ""}
                                             id={id}
                                             highlight={highlight}
                                             refresher={(group) => filterStudents(group)}

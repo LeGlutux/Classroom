@@ -45,11 +45,31 @@ export default () => {
                 .collection('listes')
                 .doc(id.concat('s'))
                 .set({
-                    state: [0, 0, 0, 0],
+                    state: defaultValue,
                     id: id.concat('s')
                 })
         })
 
+    }
+    const [refresh, setRefresh] = useState(0)
+
+    const color = (itemN: number) => {
+        if (itemN === 0) return 'bg-white'
+        if (itemN === 1) return 'bg-green-600'
+        if (itemN === 2) return 'bg-red-600'
+        if (itemN === 3) return 'bg-white'
+        else return ''
+    }
+
+    const [defaultValue, setDefaultValue] = useState([0, 0, 0, 0])
+
+    const incrementArray = (itemN: number) => {
+        const incrementValue = (previousValue: number) => {
+            if (previousValue === 3) return 0
+            else return previousValue + 1
+        }
+        defaultValue.splice(itemN, 1, incrementValue(defaultValue[itemN]))
+        setDefaultValue(defaultValue)
     }
 
     const ref1 = useRef<HTMLInputElement>(null)
@@ -58,7 +78,6 @@ export default () => {
     const ref4 = useRef<HTMLInputElement>(null)
     const submitButtonRef = useRef<HTMLButtonElement>(null)
 
-    const currentItem = (itemN === 1) ? item1 : ((itemN === 2) ? item2 : ((itemN === 3) ? item3 : item4))
     const nextInputRef = (itemN === 1) ? ref2 : ((itemN === 2) ? ref3 : ((itemN === 3) ? ref4 : submitButtonRef))
 
     return (
@@ -130,98 +149,158 @@ export default () => {
                                 )
                             })}
                         </div>
+                        <div className="flex flex-row w-full justify-end">
+                            <div className='font-student'>
+                                Par défaut
+                            </div>
+                        </div>
                         <div className="w-9/12 flex flex-col hover:border-gray-800">
                             <div className="w-9/12 flex flex-col hover:border-gray-800">
-                                <div className='flex flex-row'>
+                                <div className={`flex flex-row items-end ml-10 ${itemN >= 1 ? 'visible' : 'invisible'}`}>
                                     <input
                                         value={item1}
                                         ref={ref1}
                                         onChange={(e) => {
                                             setItem1(e.target.value)
                                         }}
-                                        className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center ${itemN >= 1 ? 'visible' : 'invisible'
-                                            }`}
+                                        className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center`}
                                         type="text"
                                         placeholder={'item 1'}
                                     />
+                                    <div className={`flex justify-center items-center w-6 h-6 ml-10 border-black border-2 mb-1 ${color(defaultValue[0])}`}>
+
+                                        <button
+                                            className={`w-6 h-6 text-bold ${defaultValue[0] !== 3 ? 'text-invisible' : 'text-base'}`}
+                                            onClick={(e) => {
+                                                incrementArray(0)
+                                                setRefresh(refresh + 1)
+                                                e.preventDefault()
+                                                e.stopPropagation()
+                                            }}
+                                        >
+                                            ?
+                                        </button>
+                                    </div>
                                 </div>
-                                <div className='flex flex-row'>
+                                <div className={`flex flex-row items-end ${itemN >= 2 ? 'visible' : 'invisible'}`}>
+                                    <span className={`flex mx-3 h-4 w-4 mb-3 ${itemN === 2 ? 'visible' : 'invisible'}`}>
+                                        <svg
+                                            className="h-4 w-4 fill-current text-grey hover:text-grey-darkest"
+                                            role="button"
+                                            onClick={() => {
+                                                setItemN(itemN - 1)
+                                                setItem2('')
+                                            }}
+                                        >
+                                            <title>Close</title>
+                                            <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
+                                        </svg>
+                                    </span>
                                     <input
                                         value={item2}
                                         ref={ref2}
                                         onChange={(e) => {
                                             setItem2(e.target.value)
                                         }}
-                                        className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center ${itemN >= 2 ? 'visible' : 'invisible'
-                                            }`}
+                                        className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center`}
                                         type="text"
                                         placeholder={'item 2'}
                                     />
-                                    <span className={`flex ml-4 h-4 w-4 self-center ${itemN === 2 ? 'visible' : 'invisible' }`}>
-                <svg
-                    className="h-4 w-4 fill-current text-grey hover:text-grey-darkest"
-                    role="button"
-                    onClick={() => {
-                        setItemN(itemN - 1)
-                        setItem2('')   
-                    }}
-                >
-                    <title>Close</title>
-                    <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
-                </svg>
-            </span>
+                                    <div className={`flex justify-center items-center w-6 h-6 ml-10 border-black border-2 mb-1 ${color(defaultValue[1])}`}>
+
+                                        <button
+                                            className={`w-6 h-6 text-bold ${defaultValue[1] !== 3 ? 'text-invisible' : 'text-base'}`}
+                                            onClick={(e) => {
+                                                incrementArray(1)
+                                                setRefresh(refresh + 1)
+                                                e.preventDefault()
+                                                e.stopPropagation()
+                                            }}
+                                        >
+                                            ?
+                                        </button>
+                                    </div>
+
                                 </div>
-                                <div className='flex flex-row'>
+                                <div className={`flex flex-row items-end ${itemN >= 3 ? 'visible' : 'invisible'}`}>
+                                    <span className={`flex mx-3 h-4 w-4 mb-3 ${itemN === 3 ? 'visible' : 'invisible'}`}>
+                                        <svg
+                                            className="h-4 w-4 fill-current text-grey hover:text-grey-darkest"
+                                            role="button"
+                                            onClick={() => {
+                                                setItemN(itemN - 1)
+                                                setItem3('')
+                                            }}
+                                        >
+                                            <title>Close</title>
+                                            <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
+                                        </svg>
+                                    </span>
                                     <input
                                         value={item3}
                                         ref={ref3}
                                         onChange={(e) => {
                                             setItem3(e.target.value)
                                         }}
-                                        className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center ${itemN >= 3 ? 'visible' : 'invisible'
-                                            }`}
+                                        className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center`}
                                         type="text"
                                         placeholder={'item 3'}
                                     />
-                                    <span className={`flex ml-4 h-4 w-4 self-center ${itemN === 3 ? 'visible' : 'invisible' }`}>
-                <svg
-                    className="h-4 w-4 fill-current text-grey hover:text-grey-darkest"
-                    role="button"
-                    onClick={() => {
-                        setItemN(itemN - 1)
-                        setItem3('')   
-                    }}
-                >
-                    <title>Close</title>
-                    <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
-                </svg>
-            </span>
+                                    <div className={`flex justify-center items-center w-6 h-6 ml-10 border-black border-2 mb-1 ${color(defaultValue[2])}`}>
+
+                                        <button
+                                            className={`w-6 h-6 text-bold ${defaultValue[2] !== 3 ? 'text-invisible' : 'text-base'}`}
+                                            onClick={(e) => {
+                                                incrementArray(2)
+                                                setRefresh(refresh + 1)
+                                                e.preventDefault()
+                                                e.stopPropagation()
+                                            }}
+                                        >
+                                            ?
+                                        </button>
+                                    </div>
+
                                 </div>
-                                <div className='flex flex-row'>
+                                <div className={`flex flex-row items-end ${itemN === 4 ? 'visible' : 'invisible'}`}>
+                                    <span className={`flex mx-3 h-4 w-4 mb-3 ${itemN === 4 ? 'visible' : 'invisible'}`}>
+                                        <svg
+                                            className="h-4 w-4 fill-current text-grey hover:text-grey-darkest"
+                                            role="button"
+                                            onClick={() => {
+                                                setItemN(itemN - 1)
+                                                setItem4('')
+                                            }}
+                                        >
+                                            <title>Close</title>
+                                            <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
+                                        </svg>
+                                    </span>
                                     <input
                                         value={item4}
                                         ref={ref4}
                                         onChange={(e) => {
                                             setItem4(e.target.value)
                                         }}
-                                        className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center ${itemN >= 4 ? 'visible' : 'invisible'
-                                            }`}
+                                        className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center`}
                                         type="text"
                                         placeholder={'item 4'}
                                     />
-                                    <span className={`flex ml-4 h-4 w-4 self-center ${itemN === 4 ? 'visible' : 'invisible' }`}>
-                <svg
-                    className="h-4 w-4 fill-current text-grey hover:text-grey-darkest"
-                    role="button"
-                    onClick={() => {
-                        setItemN(itemN - 1)
-                        setItem4('')   
-                    }}
-                >
-                    <title>Close</title>
-                    <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
-                </svg>
-            </span>
+                                    <div className={`flex justify-center items-center w-6 h-6 ml-10 border-black border-2 mb-1 ${color(defaultValue[3])}`}>
+
+                                        <button
+                                            className={`w-6 h-6 text-bold ${defaultValue[3] !== 3 ? 'text-invisible' : 'text-base'}`}
+                                            onClick={(e) => {
+                                                incrementArray(3)
+                                                setRefresh(refresh + 1)
+                                                e.preventDefault()
+                                                e.stopPropagation()
+                                            }}
+                                        >
+                                            ?
+                                        </button>
+                                    </div>
+
                                 </div>
 
 
@@ -234,10 +313,11 @@ export default () => {
                                 }`}
                         >
                             <button
-                            className='flex flex-row'
+                                type="submit"
+                                className='flex flex-row'
                                 onClick={(e) => {
                                     e.preventDefault()
-                                    if (itemN <= 4 && currentItem !== '') setItemN(itemN + 1)
+                                    if (itemN <= 4) setItemN(itemN + 1)
                                     setTimeout(() => nextInputRef.current!.focus(), 10)
 
                                 }}
