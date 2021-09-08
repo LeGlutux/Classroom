@@ -4,7 +4,6 @@ import LightStudent from './LightStudent'
 import Firebase from '../firebase'
 import useOnClickOutside from '../hooks'
 
-
 interface MagicStickProps {
     toggleSelected: (studentId: string) => void
     allStudents: firebase.firestore.DocumentData[]
@@ -45,27 +44,29 @@ export default (props: MagicStickProps) => {
             })
         props.toggleSelected(id)
         props.onFilter(props.displayedGroup)
-
     }
 
     //////////////////////////////// Tous les élèves ont étés choisis ////////////////////////////////
     if (randomStudent === undefined) {
         return (
             <div
-                className={`flex flex-col z-50 absolute w-full h-full items-center justify-center self-center ${props.displayRandomStudent ? 'visible' : 'invisible'
-                    }`}
+                className={`flex flex-col z-50 absolute w-full h-full items-center justify-center self-center ${
+                    props.displayRandomStudent ? 'visible' : 'invisible'
+                }`}
                 style={{ backgroundColor: 'rgba(255,255,255,0.6)' }}
             >
                 <div
                     ref={ref1}
-                    className={`flex flex-col border-black bg-white shadow-lg justify-center items-center w-3/4 h-40 relative ${props.displayRandomStudent ? 'fade-in' : 'invisible'} `}>
+                    className={`flex flex-col border-black bg-white shadow-lg justify-center items-center w-3/4 h-40 relative ${
+                        props.displayRandomStudent ? 'fade-in' : 'invisible'
+                    } `}
+                >
                     <div className="w-3/4 h-full flex flex-col justify-center">
                         <div className="h-24 pt-8 sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-center font-bold">
                             Tous les élèves ont été choisis, l'ensemble a été
                             réinitialisé.
                         </div>
                     </div>
-
                 </div>
             </div>
         )
@@ -73,19 +74,20 @@ export default (props: MagicStickProps) => {
 
     //////////////////////////////// Aléatoire avec mémoire ////////////////////////////////
 
-
     if (props.withMemory) {
         return (
             <div
-                className={`flex flex-col z-50 absolute w-full h-full items-center justify-center self-center ${props.displayRandomStudent ? 'visible' : 'invisible'
-                    }`}
+                className={`flex flex-col z-50 absolute w-full h-full items-center justify-center self-center ${
+                    props.displayRandomStudent ? 'visible' : 'invisible'
+                }`}
                 style={{ backgroundColor: 'rgba(255,255,255,0.6)' }}
             >
                 <div
                     ref={ref2}
-                    className={`flex flex-col border-black bg-white shadow-lg justify-center items-center w-3/4 h-82 relative ${props.displayRandomStudent ? 'fade-in' : 'invisible'
-                        }`}>
-
+                    className={`flex flex-col border-black bg-white shadow-lg justify-center items-center w-3/4 h-82 relative ${
+                        props.displayRandomStudent ? 'fade-in' : 'invisible'
+                    }`}
+                >
                     <div className="w-3/4 h-full flex justify-center sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-center font-bold">
                         <LightStudent
                             classes={randomStudent.classes[0]}
@@ -123,15 +125,17 @@ export default (props: MagicStickProps) => {
 
     return (
         <div
-            className={`flex flex-col absolute w-full h-full items-center justify-center self-center ${props.displayRandomStudent ? 'visible' : 'invisible'
-                }`}
+            className={`flex flex-col absolute w-full h-full items-center justify-center self-center ${
+                props.displayRandomStudent ? 'visible' : 'invisible'
+            }`}
             style={{ backgroundColor: 'rgba(255,255,255,0.6)' }}
         >
             <div
                 ref={ref3}
-
-                className={`flex flex-col border-black bg-white shadow-lg justify-center items-center w-3/4 h-56 ${props.displayRandomStudent ? 'fade-in' : 'invisible'
-                    }`}>
+                className={`flex flex-col border-black bg-white shadow-lg justify-center items-center w-3/4 h-56 ${
+                    props.displayRandomStudent ? 'fade-in' : 'invisible'
+                }`}
+            >
                 <div className="w-3/4 h-full flex justify-center sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-center font-bold">
                     <LightStudent
                         name={randomStudent.name}

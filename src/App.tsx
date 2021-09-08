@@ -45,14 +45,11 @@ export default () => {
                                     component={StudentStats}
                                 />
                                 <PrivateRoute path="/" component={FrontPage} />
-
                             </Switch>
-
                         </Router>
                     </div>
                 </AuthProvider>
             </div>
-
         </div>
     )
 }

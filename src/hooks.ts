@@ -40,7 +40,7 @@ export const useGroups = (currentUserId: string) => {
 }
 
 export const useCrosses = (currentUserId: string, allStudentsIds: string[]) => {
-    const [crosses, setCrosses] = useState<{id: string, docs: firebase.firestore.DocumentData[]}[]>()
+    const [crosses, setCrosses] = useState<{ id: string, docs: firebase.firestore.DocumentData[] }[]>()
 
     useEffect(() => {
         const fetch = async () => {
@@ -245,7 +245,7 @@ export const useLists = (currentUserId: string, listsRefresher?: number) => {
 
     }, [currentUserId, listsRefresher])
 
-    return {lists, loading}
+    return { lists, loading }
 }
 
 export const useComment = (currentUserId: string, currentStudentId: string) => {

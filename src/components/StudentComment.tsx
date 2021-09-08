@@ -5,13 +5,12 @@ import check from '../images/check.png'
 import pen from '../images/edit.png'
 
 interface Props {
-    currentUserId: string;
-    currentStudentId: string;
-    comment: string;
+    currentUserId: string
+    currentStudentId: string
+    comment: string
 }
 
 export default (props: Props) => {
-
     const db = Firebase.firestore()
     const [comment, setComment] = useState(props.comment)
 
@@ -24,7 +23,8 @@ export default (props: Props) => {
 
     const [inputValue, setInputValue] = useState(props.comment)
     const [edit, setEdit] = useState(false)
-    const wrap = props.comment !== undefined && props.comment.length >= 20 ? true : false
+    const wrap =
+        props.comment !== undefined && props.comment.length >= 20 ? true : false
 
     const handleEdition = () => {
         setEdit(true)
@@ -33,13 +33,12 @@ export default (props: Props) => {
     }
 
     const handleValidation = () => {
-
         if (edit === true) {
-            
-            const commentCased = inputValue.replace(/^\w/, (c) => c.toUpperCase())
+            const commentCased = inputValue.replace(/^\w/, (c) =>
+                c.toUpperCase()
+            )
 
-            db
-                .collection('users')
+            db.collection('users')
                 .doc(props.currentUserId)
                 .collection('eleves')
                 .doc(props.currentStudentId)
@@ -51,8 +50,7 @@ export default (props: Props) => {
     }
 
     const handleDeletion = () => {
-        db
-            .collection('users')
+        db.collection('users')
             .doc(props.currentUserId)
             .collection('eleves')
             .doc(props.currentStudentId)
@@ -62,47 +60,50 @@ export default (props: Props) => {
         setComment('')
     }
 
-
     useOnClickOutside(cardRef, handleValidation)
 
     return (
-        <div
-            ref={cardRef}
-            className='flex flex-row w-full'>
+        <div ref={cardRef} className="flex flex-row w-full">
             <div
-                className={`flew flex-row w-full ml-2 ${edit ? 'hidden' : 'visible'}`}
+                className={`flew flex-row w-full ml-2 ${
+                    edit ? 'hidden' : 'visible'
+                }`}
             >
                 <div className={`flex w-11/12 justify-between`}>
-                    <div className='flex flex-col text-sm font-student mx-1 font-bold'> Commentaire:
-                        {wrap &&
-                            <div className='flex w-full justify-start'>
-                                <div className='text-sm w-auto font-student font-normal'>{comment}</div>
-                            </div>}
+                    <div className="flex flex-col text-sm font-student mx-1 font-bold">
+                        {' '}
+                        Commentaire:
+                        {wrap && (
+                            <div className="flex w-full justify-start">
+                                <div className="text-sm w-auto font-student font-normal">
+                                    {comment}
+                                </div>
+                            </div>
+                        )}
                     </div>
-                    {!wrap &&
-                        <div className='flex w-full justify-start'>
-                            <div className='text-sm w-auto font-student font-normal'>{comment}</div>
-                        </div>}
+                    {!wrap && (
+                        <div className="flex w-full justify-start">
+                            <div className="text-sm w-auto font-student font-normal">
+                                {comment}
+                            </div>
+                        </div>
+                    )}
 
-
-                    <button
-                        onClick={() => handleEdition()}>
+                    <button onClick={() => handleEdition()}>
                         <img className="h-4 w-6 mr-2" src={pen} alt="" />
                     </button>
                 </div>
             </div>
-            <div
-                className={`${edit ? 'visible' : 'hidden'}`}
-            >
+            <div className={`${edit ? 'visible' : 'hidden'}`}>
                 <form
                     className={`flex flex-row items-center`}
                     onSubmit={(e) => {
                         handleValidation()
                         e.preventDefault()
                         e.stopPropagation()
-
                     }}
-                    action="">
+                    action=""
+                >
                     <span className="h-6 w-6 mx-2">
                         <svg
                             className="h-6 w-6 fill-current text-grey hover:text-grey-darkest"
@@ -121,12 +122,8 @@ export default (props: Props) => {
                         type="text"
                         placeholder={comment}
                     />
-                    <button
-                        className='w-2/12 mx-2'
-                        type='submit'>
-                        <img
-                            className='w-6 h-6'
-                            src={check} alt="" />
+                    <button className="w-2/12 mx-2" type="submit">
+                        <img className="w-6 h-6" src={check} alt="" />
                     </button>
                 </form>
             </div>

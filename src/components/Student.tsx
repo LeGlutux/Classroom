@@ -39,10 +39,13 @@ export default (props: StudentProps) => {
         setSelected(props.selected)
     }, [props.selected])
 
-
     useEffect(() => {
-        const thisStudentCrossesWithId = props.crosses ? props.crosses.filter((obj) => obj.id === props.id) : []
-        const thisStudentCrosses = thisStudentCrossesWithId.map((s) => s.docs)[0]
+        const thisStudentCrossesWithId = props.crosses
+            ? props.crosses.filter((obj) => obj.id === props.id)
+            : []
+        const thisStudentCrosses = thisStudentCrossesWithId.map(
+            (s) => s.docs
+        )[0]
         setCross(thisStudentCrosses)
     }, [props.crosses, props.id])
 
@@ -105,28 +108,31 @@ export default (props: StudentProps) => {
                     student_id: props.id,
                     student_name: props.name,
                     student_surname: props.surname,
-                    student_classes: props.classes
-
+                    student_classes: props.classes,
                 })
             db.collection('users')
                 .doc(props.currentUser)
                 .collection('eleves')
                 .doc(props.id)
-                .update({ crosses: firebase.firestore.FieldValue.arrayUnion(newCrossId) })
+                .update({
+                    crosses:
+                        firebase.firestore.FieldValue.arrayUnion(newCrossId),
+                })
 
-            const newCross = cross.concat([{ type: crossType, id: newCrossId, time: newDate}])
+            const newCross = cross.concat([
+                { type: crossType, id: newCrossId, time: newDate },
+            ])
             setCross(newCross)
         }
     }
 
     const shortName =
-        (props.name + props.surname).length > 18 && props.surname.length >= 15 ?
-            props.name.substring(0, 3).concat('.')
-            : (props.name + props.surname).length > 18 && props.surname.length < 15
-                ? props.name.substring(0, 17 - props.surname.length).concat('.')
-                : props.name
-
-
+        (props.name + props.surname).length > 18 && props.surname.length >= 15
+            ? props.name.substring(0, 3).concat('.')
+            : (props.name + props.surname).length > 18 &&
+              props.surname.length < 15
+            ? props.name.substring(0, 17 - props.surname.length).concat('.')
+            : props.name
 
     const shortSurname =
         (shortName + props.surname).length > 16 && props.surname.length > 12
@@ -137,20 +143,22 @@ export default (props: StudentProps) => {
         <div className="flex flex-row w-full md:w-1/2 lg:w-1/2 xl:w-1/3 items-center">
             <div className="flex h-full items-center mt-5 ml-2 xl:pt-6 static">
                 <button
-                    className={`h-8 w-8 ${selected === false || selected === undefined
-                        ? 'invisible'
-                        : 'visible'
-                        }`}
+                    className={`h-8 w-8 ${
+                        selected === false || selected === undefined
+                            ? 'invisible'
+                            : 'visible'
+                    }`}
                     onClick={handleForget}
                 >
                     <img className="h-8 w-8" src={brain} alt="" />
                 </button>
             </div>
             <div
-                className={`rounded w-11/12 overflow-hidden ml-2 mt-5 pb-1 mx-2 bg-gray-100 w-full shadow-custom ${props.runningPeriode === props.periodes.length
-                    ? 'bg-gray-100'
-                    : 'border-2 border-gray-500'
-                    }`}
+                className={`rounded w-11/12 overflow-hidden ml-2 mt-5 pb-1 mx-2 bg-gray-100 w-full shadow-custom ${
+                    props.runningPeriode === props.periodes.length
+                        ? 'bg-gray-100'
+                        : 'border-2 border-gray-500'
+                }`}
             >
                 <div className="flex justify-between flex-col">
                     <div className="flex flex-row">
@@ -169,15 +177,17 @@ export default (props: StudentProps) => {
                             className={`flex flex-row mt-2`}
                         >
                             <div
-                                className={`font-studentName ml-2 text-gray-900 font-medium h-5 text-2xl md:text-3xl lg:text-3x xl:text-4xl ${highlight ? 'text-red-600' : ''
-                                    }
+                                className={`font-studentName ml-2 text-gray-900 font-medium h-5 text-2xl md:text-3xl lg:text-3x xl:text-4xl ${
+                                    highlight ? 'text-red-600' : ''
+                                }
                                 `}
                             >
                                 {shortSurname}
                             </div>
                             <div
-                                className={`font-studentName ml-2 text-gray-900 font-bold text-2xl md:text-3xl lg:text-3x xl:text-4xl ${highlight ? 'text-red-600' : ''
-                                    }`}
+                                className={`font-studentName ml-2 text-gray-900 font-bold text-2xl md:text-3xl lg:text-3x xl:text-4xl ${
+                                    highlight ? 'text-red-600' : ''
+                                }`}
                             >
                                 {shortName}
                             </div>
@@ -193,8 +203,10 @@ export default (props: StudentProps) => {
                             </button>
                             <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-4xl xl:ml-3 xl:pb-8 ">
                                 {
-                                    crossFilter('behaviour', props.runningPeriode)
-                                        .length
+                                    crossFilter(
+                                        'behaviour',
+                                        props.runningPeriode
+                                    ).length
                                 }
                             </div>
                         </div>
@@ -207,8 +219,10 @@ export default (props: StudentProps) => {
                             </button>
                             <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-4xl xl:ml-3 xl:pb-8 ">
                                 {
-                                    crossFilter('homework', props.runningPeriode)
-                                        .length
+                                    crossFilter(
+                                        'homework',
+                                        props.runningPeriode
+                                    ).length
                                 }
                             </div>
                         </div>
@@ -222,7 +236,8 @@ export default (props: StudentProps) => {
                             <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-4xl xl:ml-3 xl:pb-8 ">
                                 {
                                     crossFilter('supply', props.runningPeriode)
-                                        .length}
+                                        .length
+                                }
                             </div>
                         </div>
                         <div className="flex flex-row">
@@ -234,8 +249,10 @@ export default (props: StudentProps) => {
                             </button>
                             <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-4xl xl:ml-3 xl:pb-8 ">
                                 {
-                                    crossFilter('observation', props.runningPeriode)
-                                        .length
+                                    crossFilter(
+                                        'observation',
+                                        props.runningPeriode
+                                    ).length
                                 }
                             </div>
                         </div>
@@ -244,7 +261,7 @@ export default (props: StudentProps) => {
                         <StudentComment
                             currentUserId={props.currentUser}
                             currentStudentId={props.id}
-                            comment={props.comment ? props.comment : ""}
+                            comment={props.comment ? props.comment : ''}
                         />
                     </div>
                 </div>

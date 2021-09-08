@@ -17,12 +17,11 @@ const SignUp = () => {
             const { email, password, name } = event.target.elements
 
             try {
-                const {
-                    user,
-                } = await Firebase.auth().createUserWithEmailAndPassword(
-                    email.value,
-                    password.value
-                )
+                const { user } =
+                    await Firebase.auth().createUserWithEmailAndPassword(
+                        email.value,
+                        password.value
+                    )
                 if (user === null)
                     throw new Error('User is undefined after signup')
                 await db

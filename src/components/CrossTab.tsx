@@ -11,7 +11,11 @@ interface CrossTabProps {
 }
 
 export default (props: CrossTabProps) => {
-    const { cross } = useCross(props.userId, props.studentId, props.crossRefresher)
+    const { cross } = useCross(
+        props.userId,
+        props.studentId,
+        props.crossRefresher
+    )
     const crossFilter = (type: string) => {
         const filtered = cross
             .filter(

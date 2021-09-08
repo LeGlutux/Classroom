@@ -53,8 +53,8 @@ const View = ({
     crossFilter,
 }: {
     currentUser: firebase.User
-    crossRefresher: number,
-    setCrossRefresher: React.Dispatch<React.SetStateAction<number>>,
+    crossRefresher: number
+    setCrossRefresher: React.Dispatch<React.SetStateAction<number>>
     student: firebase.firestore.DocumentData
     studentId: string
     crossFilter: (crossType: string) => firebase.firestore.DocumentData[]
@@ -124,8 +124,9 @@ const View = ({
             />
 
             <div
-                className={`flex flex-col items-center z-50 absolute w-full ${editing ? 'visible' : 'invisible'
-                    }`}
+                className={`flex flex-col items-center z-50 absolute w-full ${
+                    editing ? 'visible' : 'invisible'
+                }`}
             >
                 <div
                     className={`w-full text-center mt-4 font-title text-5xl flex items-center`}
@@ -180,12 +181,12 @@ const View = ({
                         Confirmer
                     </button>
                 </div>
-              
             </div>
 
             <div
-                className={`flex flex-col items-center ${editing ? 'invisible' : 'visible'
-                    }`}
+                className={`flex flex-col items-center ${
+                    editing ? 'invisible' : 'visible'
+                }`}
             >
                 <div
                     className={`w-full text-center mt-4 font-title text-5xl flex items-center`}
@@ -294,9 +295,7 @@ const View = ({
                     <div
                         className={`flex flex-row w-full mx-4 items-center justify-center `}
                     >
-                        <button
-
-                            onClick={() => handleDeleteCross('supply')}>
+                        <button onClick={() => handleDeleteCross('supply')}>
                             <img className="h-10 w-10" src={backArrow} alt="" />
                         </button>
                     </div>

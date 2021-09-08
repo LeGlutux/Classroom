@@ -12,7 +12,6 @@ export default (props: StudentProps) => {
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
 
-
     return (
         <div className="flex flex-col w-full xl:w-1/3 items-center justify-around h-40">
             <div className={`rounded mt-5 pb-1 mx-2 bg-white w-full h-full`}>
@@ -39,7 +38,6 @@ export default (props: StudentProps) => {
                     >
                         {props.name}
                     </div>
-
                 </div>
             </div>
         </div>

@@ -27,15 +27,17 @@ export default (props: ListPreviewProps) => {
             .collection('lists')
             .doc(props.id)
             .delete()
-        students.filter(s => s.classes.includes(props.classes[0])).forEach((s) => {
-            db.collection('users')
-                .doc(props.currentUserId)
-                .collection('eleves')
-                .doc(s.id)
-                .collection('listes')
-                .doc(props.id.concat('s'))
-                .delete()
-        })
+        students
+            .filter((s) => s.classes.includes(props.classes[0]))
+            .forEach((s) => {
+                db.collection('users')
+                    .doc(props.currentUserId)
+                    .collection('eleves')
+                    .doc(s.id)
+                    .collection('listes')
+                    .doc(props.id.concat('s'))
+                    .delete()
+            })
 
         props.refresher(Math.random())
     }
@@ -44,14 +46,14 @@ export default (props: ListPreviewProps) => {
         <div
             className={`w-full flex flex-row border-b-2 border-gray-300 justify-between`}
         >
-
             <ConfirmModal
                 confirm={confirm}
                 setConfirm={setConfirm}
                 confirmAction={handleDeleteList}
-                textBox={
-                    'Êtes-vous sûr(e) de vouloir supprimer la liste "'.concat(props.name).concat('" des ').concat(props.classes.join(', '))
-                }
+                textBox={'Êtes-vous sûr(e) de vouloir supprimer la liste "'
+                    .concat(props.name)
+                    .concat('" des ')
+                    .concat(props.classes.join(', '))}
             />
 
             <span className="flex ml-4 mr-4 self-center pb-1">
@@ -68,7 +70,6 @@ export default (props: ListPreviewProps) => {
                 className="w-full flex flex-row border-gray-300 justify-between"
                 to={'/list/'.concat(props.id)}
             >
-
                 <div className="font-studentName my-1 self-center w-5/12 ml-4 text-xl">
                     {props.name}
                 </div>
@@ -82,8 +83,8 @@ export default (props: ListPreviewProps) => {
                     className="w-2 h-4 flex self-center mr-1 justify-end"
                     src={openCard}
                     alt=""
-                />            </Link>
-
+                />{' '}
+            </Link>
         </div>
     )
 }

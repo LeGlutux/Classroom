@@ -37,19 +37,20 @@ export default () => {
                 itemN,
                 items: [item1, item2, item3, item4],
             })
-        students.filter((s) => s.classes.includes(defaultList[0])).forEach(s => {
-            db.collection('users')
-                .doc(currentUser.uid)
-                .collection('eleves')
-                .doc(s.id)
-                .collection('listes')
-                .doc(id.concat('s'))
-                .set({
-                    state: defaultValue,
-                    id: id.concat('s')
-                })
-        })
-
+        students
+            .filter((s) => s.classes.includes(defaultList[0]))
+            .forEach((s) => {
+                db.collection('users')
+                    .doc(currentUser.uid)
+                    .collection('eleves')
+                    .doc(s.id)
+                    .collection('listes')
+                    .doc(id.concat('s'))
+                    .set({
+                        state: defaultValue,
+                        id: id.concat('s'),
+                    })
+            })
     }
     const [refresh, setRefresh] = useState(0)
 
@@ -78,7 +79,14 @@ export default () => {
     const ref4 = useRef<HTMLInputElement>(null)
     const submitButtonRef = useRef<HTMLButtonElement>(null)
 
-    const nextInputRef = (itemN === 1) ? ref2 : ((itemN === 2) ? ref3 : ((itemN === 3) ? ref4 : submitButtonRef))
+    const nextInputRef =
+        itemN === 1
+            ? ref2
+            : itemN === 2
+            ? ref3
+            : itemN === 3
+            ? ref4
+            : submitButtonRef
 
     return (
         <div className="h-screen w-full flex flex-col">
@@ -150,14 +158,16 @@ export default () => {
                             })}
                         </div>
                         <div className="flex flex-row w-full pl-10 mt-5">
-                            <div className='ml-5 w-40'></div>
-                            <div className='font-student ml-3'>
-                                Par défaut
-                            </div>
+                            <div className="ml-5 w-40"></div>
+                            <div className="font-student ml-3">Par défaut</div>
                         </div>
                         <div className="w-9/12 flex flex-col hover:border-gray-800">
                             <div className="w-9/12 flex flex-col hover:border-gray-800">
-                                <div className={`flex flex-row items-end ml-10 ${itemN >= 1 ? 'visible' : 'invisible'}`}>
+                                <div
+                                    className={`flex flex-row items-end ml-10 ${
+                                        itemN >= 1 ? 'visible' : 'invisible'
+                                    }`}
+                                >
                                     <input
                                         value={item1}
                                         ref={ref1}
@@ -168,10 +178,17 @@ export default () => {
                                         type="text"
                                         placeholder={'item 1'}
                                     />
-                                    <div className={`flex justify-center items-center w-6 h-6 ml-10 border-black border-2 mb-1 ${color(defaultValue[0])}`}>
-
+                                    <div
+                                        className={`flex justify-center items-center w-6 h-6 ml-10 border-black border-2 mb-1 ${color(
+                                            defaultValue[0]
+                                        )}`}
+                                    >
                                         <button
-                                            className={`w-6 h-6 text-bold ${defaultValue[0] !== 3 ? 'text-invisible' : 'text-base'}`}
+                                            className={`w-6 h-6 text-bold ${
+                                                defaultValue[0] !== 3
+                                                    ? 'text-invisible'
+                                                    : 'text-base'
+                                            }`}
                                             onClick={(e) => {
                                                 incrementArray(0)
                                                 setRefresh(refresh + 1)
@@ -183,8 +200,18 @@ export default () => {
                                         </button>
                                     </div>
                                 </div>
-                                <div className={`flex flex-row items-end ${itemN >= 2 ? 'visible' : 'invisible'}`}>
-                                    <span className={`flex mx-3 h-4 w-4 mb-3 ${itemN === 2 ? 'visible' : 'invisible'}`}>
+                                <div
+                                    className={`flex flex-row items-end ${
+                                        itemN >= 2 ? 'visible' : 'invisible'
+                                    }`}
+                                >
+                                    <span
+                                        className={`flex mx-3 h-4 w-4 mb-3 ${
+                                            itemN === 2
+                                                ? 'visible'
+                                                : 'invisible'
+                                        }`}
+                                    >
                                         <svg
                                             className="h-4 w-4 fill-current text-grey hover:text-grey-darkest"
                                             role="button"
@@ -207,10 +234,17 @@ export default () => {
                                         type="text"
                                         placeholder={'item 2'}
                                     />
-                                    <div className={`flex justify-center items-center w-6 h-6 ml-10 border-black border-2 mb-1 ${color(defaultValue[1])}`}>
-
+                                    <div
+                                        className={`flex justify-center items-center w-6 h-6 ml-10 border-black border-2 mb-1 ${color(
+                                            defaultValue[1]
+                                        )}`}
+                                    >
                                         <button
-                                            className={`w-6 h-6 text-bold ${defaultValue[1] !== 3 ? 'text-invisible' : 'text-base'}`}
+                                            className={`w-6 h-6 text-bold ${
+                                                defaultValue[1] !== 3
+                                                    ? 'text-invisible'
+                                                    : 'text-base'
+                                            }`}
                                             onClick={(e) => {
                                                 incrementArray(1)
                                                 setRefresh(refresh + 1)
@@ -221,10 +255,19 @@ export default () => {
                                             ?
                                         </button>
                                     </div>
-
                                 </div>
-                                <div className={`flex flex-row items-end ${itemN >= 3 ? 'visible' : 'invisible'}`}>
-                                    <span className={`flex mx-3 h-4 w-4 mb-3 ${itemN === 3 ? 'visible' : 'invisible'}`}>
+                                <div
+                                    className={`flex flex-row items-end ${
+                                        itemN >= 3 ? 'visible' : 'invisible'
+                                    }`}
+                                >
+                                    <span
+                                        className={`flex mx-3 h-4 w-4 mb-3 ${
+                                            itemN === 3
+                                                ? 'visible'
+                                                : 'invisible'
+                                        }`}
+                                    >
                                         <svg
                                             className="h-4 w-4 fill-current text-grey hover:text-grey-darkest"
                                             role="button"
@@ -247,10 +290,17 @@ export default () => {
                                         type="text"
                                         placeholder={'item 3'}
                                     />
-                                    <div className={`flex justify-center items-center w-6 h-6 ml-10 border-black border-2 mb-1 ${color(defaultValue[2])}`}>
-
+                                    <div
+                                        className={`flex justify-center items-center w-6 h-6 ml-10 border-black border-2 mb-1 ${color(
+                                            defaultValue[2]
+                                        )}`}
+                                    >
                                         <button
-                                            className={`w-6 h-6 text-bold ${defaultValue[2] !== 3 ? 'text-invisible' : 'text-base'}`}
+                                            className={`w-6 h-6 text-bold ${
+                                                defaultValue[2] !== 3
+                                                    ? 'text-invisible'
+                                                    : 'text-base'
+                                            }`}
                                             onClick={(e) => {
                                                 incrementArray(2)
                                                 setRefresh(refresh + 1)
@@ -261,10 +311,19 @@ export default () => {
                                             ?
                                         </button>
                                     </div>
-
                                 </div>
-                                <div className={`flex flex-row items-end ${itemN === 4 ? 'visible' : 'invisible'}`}>
-                                    <span className={`flex mx-3 h-4 w-4 mb-3 ${itemN === 4 ? 'visible' : 'invisible'}`}>
+                                <div
+                                    className={`flex flex-row items-end ${
+                                        itemN === 4 ? 'visible' : 'invisible'
+                                    }`}
+                                >
+                                    <span
+                                        className={`flex mx-3 h-4 w-4 mb-3 ${
+                                            itemN === 4
+                                                ? 'visible'
+                                                : 'invisible'
+                                        }`}
+                                    >
                                         <svg
                                             className="h-4 w-4 fill-current text-grey hover:text-grey-darkest"
                                             role="button"
@@ -287,10 +346,17 @@ export default () => {
                                         type="text"
                                         placeholder={'item 4'}
                                     />
-                                    <div className={`flex justify-center items-center w-6 h-6 ml-10 border-black border-2 mb-1 ${color(defaultValue[3])}`}>
-
+                                    <div
+                                        className={`flex justify-center items-center w-6 h-6 ml-10 border-black border-2 mb-1 ${color(
+                                            defaultValue[3]
+                                        )}`}
+                                    >
                                         <button
-                                            className={`w-6 h-6 text-bold ${defaultValue[3] !== 3 ? 'text-invisible' : 'text-base'}`}
+                                            className={`w-6 h-6 text-bold ${
+                                                defaultValue[3] !== 3
+                                                    ? 'text-invisible'
+                                                    : 'text-base'
+                                            }`}
                                             onClick={(e) => {
                                                 incrementArray(3)
                                                 setRefresh(refresh + 1)
@@ -301,26 +367,24 @@ export default () => {
                                             ?
                                         </button>
                                     </div>
-
                                 </div>
-
-
-
-
                             </div>
                         </div>
                         <div
-                            className={`w-full flex flex-row ${itemN >= 4 ? 'invisible' : ''
-                                }`}
+                            className={`w-full flex flex-row ${
+                                itemN >= 4 ? 'invisible' : ''
+                            }`}
                         >
                             <button
                                 type="submit"
-                                className='flex flex-row'
+                                className="flex flex-row"
                                 onClick={(e) => {
                                     e.preventDefault()
                                     if (itemN <= 4) setItemN(itemN + 1)
-                                    setTimeout(() => nextInputRef.current!.focus(), 10)
-
+                                    setTimeout(
+                                        () => nextInputRef.current!.focus(),
+                                        10
+                                    )
                                 }}
                             >
                                 <img

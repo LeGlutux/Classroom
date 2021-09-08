@@ -45,7 +45,7 @@ export const fetchCrosses = async (
                 .doc(id)
                 .collection('crosses')
                 .get()
-                
+
         const docs = [] as firebase.firestore.DocumentData[]
         querySnapshot.docs.forEach((doc) => docs.push(doc.data()))
         data.push({ id: id, docs: docs })
@@ -98,7 +98,7 @@ export const fetchStudents = async (currentUserId: string) => {
 
     const data = [] as firebase.firestore.DocumentData[]
     querySnapshot.docs.forEach((doc) => data.push(doc.data()))
-   
+
     return data
 }
 

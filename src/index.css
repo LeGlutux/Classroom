@@ -4,222 +4,213 @@
 
 @tailwind utilities;
 
-
 .get-out-r {
-
     animation: translateOut ease 0.6s;
     visibility: hidden;
     -webkit-animation: translateOut ease 0.6s;
     -moz-animation: translateOut ease 0.6s;
     -o-animation: translateOut ease 0.6s;
     -ms-animation: translateOut ease 0.6s;
-  
-  }
-  
-  @keyframes translateOut {
+}
+
+@keyframes translateOut {
     100% {
-      right: -20%;
-      opacity: 0.5;
+        right: -20%;
+        opacity: 0.5;
     }
-  
+
     0% {
-      right: 4%;
-      opacity: 1;
-      visibility: visible;
+        right: 4%;
+        opacity: 1;
+        visibility: visible;
     }
-  }
-  
-  @-moz-keyframes translateOut {
+}
+
+@-moz-keyframes translateOut {
     100% {
-      right: -20%;
-      opacity: 0.5;
+        right: -20%;
+        opacity: 0.5;
     }
-  
+
     0% {
-      right: 4%;
-      opacity: 1;
-      visibility: visible;
+        right: 4%;
+        opacity: 1;
+        visibility: visible;
     }
 }
 
 @-webkit-keyframes translateOut {
     100% {
-      right: -20%;
-      opacity: 0.5;
+        right: -20%;
+        opacity: 0.5;
     }
-  
+
     0% {
-      right: 4%;
-      opacity: 1;
-      visibility: visible;
+        right: 4%;
+        opacity: 1;
+        visibility: visible;
     }
 }
 
 @-o-keyframes translateOut {
     100% {
-      right: -20%;
-      opacity: 0.5;
+        right: -20%;
+        opacity: 0.5;
     }
-  
+
     0% {
-      right: 4%;
-      opacity: 1;
-      visibility: visible;
+        right: 4%;
+        opacity: 1;
+        visibility: visible;
     }
 }
 
 @-ms-keyframes translateOut {
     100% {
-      right: -20%;
-      opacity: 0.5;
+        right: -20%;
+        opacity: 0.5;
     }
-  
+
     0% {
-      right: 4%;
-      opacity: 1;
-      visibility: visible;
+        right: 4%;
+        opacity: 1;
+        visibility: visible;
     }
 }
 
-    .zoom-in {
-        animation: zoom ease 0.6s;
-        position: relative;
-        -webkit-animation: zoom ease 0.6s;
-        -moz-animation: zoom ease 0.6s;
-        -o-animation: zoom ease 0.6s;
-        -ms-animation: zoom ease 0.6s;
+.zoom-in {
+    animation: zoom ease 0.6s;
+    position: relative;
+    -webkit-animation: zoom ease 0.6s;
+    -moz-animation: zoom ease 0.6s;
+    -o-animation: zoom ease 0.6s;
+    -ms-animation: zoom ease 0.6s;
+}
+@keyframes zoom {
+    0% {
+        width: 25%;
+        opacity: 0.5;
     }
-        @keyframes zoom {
-            0% {
-                width: 25%;
-                opacity: 0.5;
-            }
-    
-            100% {
-                width: 75%;
-                opacity: 1;
-            }
-        }
-    
-        @-moz-keyframes zoom {
-            0% {
-                width: 25%;
-                opacity: 0.5;
-            }
-    
-            100% {
-                width: 75%;
-                opacity: 1;
-            }
-        }
-        
-        @-webkit-keyframes zoom {
-            0% {
-                width: 25%;
-                opacity: 0.5;
-            }
-    
-            100% {
-                width: 75%;
-                opacity: 1;
-            }
-        }
-        
-        @-o-keyframes zoom {
-            0% {
-                width: 25%;
-                opacity: 0.5;
-            }
-    
-            100% {
-                width: 75%;
-                opacity: 1;
-            }
-        }
-        
-        @-ms-keyframes zoom {
-            0% {
-                width: 25%;
-                opacity: 0.5;
-            }
-    
-            100% {
-                width: 75%;
-                opacity: 1;
-            }
-        }
+
+    100% {
+        width: 75%;
+        opacity: 1;
+    }
+}
+
+@-moz-keyframes zoom {
+    0% {
+        width: 25%;
+        opacity: 0.5;
+    }
+
+    100% {
+        width: 75%;
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes zoom {
+    0% {
+        width: 25%;
+        opacity: 0.5;
+    }
+
+    100% {
+        width: 75%;
+        opacity: 1;
+    }
+}
+
+@-o-keyframes zoom {
+    0% {
+        width: 25%;
+        opacity: 0.5;
+    }
+
+    100% {
+        width: 75%;
+        opacity: 1;
+    }
+}
+
+@-ms-keyframes zoom {
+    0% {
+        width: 25%;
+        opacity: 0.5;
+    }
+
+    100% {
+        width: 75%;
+        opacity: 1;
+    }
+}
 
 .entering-t {
-    
     animation: translate-down ease 0.6s;
     -webkit-animation: translate-down ease 0.6s;
     -moz-animation: translate-down ease 0.6s;
     -o-animation: translate-down ease 0.6s;
     -ms-animation: translate-down ease 0.6s;
 }
-    @keyframes translate-down {
-        0% {
-            top: -120px;
-            opacity: 0.5;
-
-        }
-
-        100% {
-            top:0px;
-            opacity: 1;
-        }
+@keyframes translate-down {
+    0% {
+        top: -120px;
+        opacity: 0.5;
     }
 
-    @-moz-keyframes translate-down {
-        0% {
-            top: -120px;
-            opacity: 0.5;
-
-        }
-
-        100% {
-            top:0px;
-            opacity: 1;
-        }
+    100% {
+        top: 0px;
+        opacity: 1;
     }
-    
-    @-webkit-keyframes translate-down {
-        0% {
-            top: -120px;
-            opacity: 0.5;
+}
 
-        }
-
-        100% {
-            top:0px;
-            opacity: 1;
-        }
+@-moz-keyframes translate-down {
+    0% {
+        top: -120px;
+        opacity: 0.5;
     }
-    
-    @-o-keyframes translate-down {
-        0% {
-            top: -120px;
-            opacity: 0.5;
 
-        }
-
-        100% {
-            top:0px;
-            opacity: 1;
-        }
+    100% {
+        top: 0px;
+        opacity: 1;
     }
-    
-    @-ms-keyframes translate-down {
-        0% {
-            top: -120px;
-            opacity: 0.5;
+}
 
-        }
+@-webkit-keyframes translate-down {
+    0% {
+        top: -120px;
+        opacity: 0.5;
+    }
 
-        100% {
-            top: 0px;
-            opacity: 1;
-        }
+    100% {
+        top: 0px;
+        opacity: 1;
+    }
+}
+
+@-o-keyframes translate-down {
+    0% {
+        top: -120px;
+        opacity: 0.5;
+    }
+
+    100% {
+        top: 0px;
+        opacity: 1;
+    }
+}
+
+@-ms-keyframes translate-down {
+    0% {
+        top: -120px;
+        opacity: 0.5;
+    }
+
+    100% {
+        top: 0px;
+        opacity: 1;
+    }
 }
 
 .entering-r {
@@ -229,71 +220,65 @@
     -o-animation: translate ease 0.4s;
     -ms-animation: translate ease 0.4s;
 }
-    @keyframes translate {
-        0% {
-            right: -20%;
-            opacity: 0.5;
-
-        }
-
-        100% {
-            right: 4%;
-            opacity: 1;
-        }
+@keyframes translate {
+    0% {
+        right: -20%;
+        opacity: 0.5;
     }
 
-    @-moz-keyframes translate {
-        0% {
-            right: -20%;
-            opacity: 0.5;
-
-        }
-
-        100% {
-            right: 4%;
-            opacity: 1;
-        }
+    100% {
+        right: 4%;
+        opacity: 1;
     }
-    
-    @-webkit-keyframes translate {
-        0% {
-            right: -20%;
-            opacity: 0.5;
+}
 
-        }
-
-        100% {
-            right: 4%;
-            opacity: 1;
-        }
-    }
-    
-    @-o-keyframes translate {
-        0% {
-            right: -20%;
-            opacity: 0.5;
-
-        }
-
-        100% {
-            right: 4%;
-            opacity: 1;
-        }
-    }
-    
-    @-ms-keyframes translate {
-        0% {
-            right: -20%;
-            opacity: 0.5;
-
-        }
-
-        100% {
-            right: 4%;
-            opacity: 1;
-        }
+@-moz-keyframes translate {
+    0% {
+        right: -20%;
+        opacity: 0.5;
     }
 
+    100% {
+        right: 4%;
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes translate {
+    0% {
+        right: -20%;
+        opacity: 0.5;
+    }
+
+    100% {
+        right: 4%;
+        opacity: 1;
+    }
+}
+
+@-o-keyframes translate {
+    0% {
+        right: -20%;
+        opacity: 0.5;
+    }
+
+    100% {
+        right: 4%;
+        opacity: 1;
+    }
+}
+
+@-ms-keyframes translate {
+    0% {
+        right: -20%;
+        opacity: 0.5;
+    }
+
+    100% {
+        right: 4%;
+        opacity: 1;
+    }
+}
 
 .fade-out {
     animation: fadeOut ease 1s;
@@ -401,8 +386,6 @@
     }
 }
 
-
-
 @supports (-webkit-touch-callout: none) {
     /* CSS specific to iOS devices */
     .iphone-vertical {
@@ -424,27 +407,29 @@
     visibility: visible;
     opacity: 1;
     transition: visibility 0s 1s, opacity 0s 1s;
-  }
+}
 .text-vertical-rotated {
- writing-mode: tb-rl;
- transform: rotate(-180deg);
+    writing-mode: tb-rl;
+    transform: rotate(-180deg);
 }
 
 .absolute-tr {
     position: absolute;
     top: 1%;
     right: 3%;
-  }
+}
 
-.firebase-emulator-warning { display: none; }
+.firebase-emulator-warning {
+    display: none;
+}
 
 .text-vertical {
-writing-mode: vertical-lr;
-text-orientation: upright;
+    writing-mode: vertical-lr;
+    text-orientation: upright;
 }
 
 .text-invisible {
-color: rgba(255, 255, 255, 0);
+    color: rgba(255, 255, 255, 0);
 }
 
 .disappearing {
@@ -453,9 +438,9 @@ color: rgba(255, 255, 255, 0);
     visibility: hidden;
     opacity: 0;
     transition: visibility 0s 1s, opacity 0s 1s linear;
-  }
+}
 
-  .settings-page-arrows {
+.settings-page-arrows {
     position: absolute;
     top: 40%;
     background-color: transparent;
@@ -476,23 +461,23 @@ color: rgba(255, 255, 255, 0);
     position: fixed;
     bottom: 140px;
     right: 4%;
-  }
-  
-  .bottom-right-custom2 {
+}
+
+.bottom-right-custom2 {
     position: fixed;
     bottom: 65px;
     right: 4%;
-  }
-  
-  .bottom-center-custom {
+}
+
+.bottom-center-custom {
     position: fixed;
     bottom: 45px;
-  }
+}
 
-  .modal-positon {
-      position: absolute;
-      bottom: 8vh;
-  }
+.modal-positon {
+    position: absolute;
+    bottom: 8vh;
+}
 
 .curve {
     height: 225px;
@@ -518,7 +503,6 @@ color: rgba(255, 255, 255, 0);
     background-color: yellow;
     transform: translate(-4%, 40%);
     z-index: -1;
-
 }
 
 .top-50 {
@@ -575,7 +559,6 @@ color: rgba(255, 255, 255, 0);
     height: 40rem;
 }
 
-
 .shadow-custom {
     box-shadow: -10px 15px 15px -3px rgba(0, 0, 0, 0.1),
         0 4px 6px -2px rgba(0, 0, 0, 0.05);
@@ -622,7 +605,7 @@ color: rgba(255, 255, 255, 0);
 
 .min-h-2 {
     min-height: 2px;
-  }
+}
 
 @media (min-width: 1280px) {
     .xl\:big {
