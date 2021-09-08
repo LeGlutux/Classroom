@@ -128,7 +128,7 @@ export default () => {
                                 onChange={(e) =>
                                     setListNameInputValue(e.target.value)
                                 }
-                                className="h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center"
+                                className="h-10 mt-3 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center"
                                 type="text"
                                 placeholder="Nom de la liste"
                             />
@@ -149,8 +149,9 @@ export default () => {
                                 )
                             })}
                         </div>
-                        <div className="flex flex-row w-full justify-end">
-                            <div className='font-student'>
+                        <div className="flex flex-row w-full pl-10 mt-5">
+                            <div className='ml-5 w-40'></div>
+                            <div className='font-student ml-3'>
                                 Par défaut
                             </div>
                         </div>
@@ -163,7 +164,7 @@ export default () => {
                                         onChange={(e) => {
                                             setItem1(e.target.value)
                                         }}
-                                        className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center`}
+                                        className={`h-10 mt-3 ml-5 bg-transparent w-40 border-b-2 border-gray-800 text-lg xl:text-center`}
                                         type="text"
                                         placeholder={'item 1'}
                                     />
@@ -202,7 +203,7 @@ export default () => {
                                         onChange={(e) => {
                                             setItem2(e.target.value)
                                         }}
-                                        className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center`}
+                                        className={`h-10 mt-3 ml-5 bg-transparent w-40 border-b-2 border-gray-800 text-lg xl:text-center`}
                                         type="text"
                                         placeholder={'item 2'}
                                     />
@@ -242,7 +243,7 @@ export default () => {
                                         onChange={(e) => {
                                             setItem3(e.target.value)
                                         }}
-                                        className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center`}
+                                        className={`h-10 mt-3 ml-5 bg-transparent w-40 border-b-2 border-gray-800 text-lg xl:text-center`}
                                         type="text"
                                         placeholder={'item 3'}
                                     />
@@ -282,7 +283,7 @@ export default () => {
                                         onChange={(e) => {
                                             setItem4(e.target.value)
                                         }}
-                                        className={`h-10 mt-3 placeholder-graborder-gray-800 ml-5 bg-transparent border-b-2 border-gray-800 text-lg xl:text-center`}
+                                        className={`h-10 mt-3 ml-5 bg-transparent w-40 border-b-2 border-gray-800 text-lg xl:text-center`}
                                         type="text"
                                         placeholder={'item 4'}
                                     />

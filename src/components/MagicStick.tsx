@@ -6,6 +6,7 @@ import useOnClickOutside from '../hooks'
 
 
 interface MagicStickProps {
+    toggleSelected: (studentId: string) => void
     allStudents: firebase.firestore.DocumentData[]
     students: firebase.firestore.DocumentData[]
     displayRandomStudent: boolean
@@ -27,8 +28,8 @@ export default (props: MagicStickProps) => {
     const ref3 = useRef(null)
 
     const handleClickOutside = () => {
-    props.setDisplayRandomStudent(false)
-    props.onFilter(props.displayedGroup)
+        props.setDisplayRandomStudent(false)
+        props.onFilter(props.displayedGroup)
     }
     useOnClickOutside(ref1, handleClickOutside)
     useOnClickOutside(ref2, handleClickOutside)
@@ -42,11 +43,13 @@ export default (props: MagicStickProps) => {
             .update({
                 selected: true,
             })
+        props.toggleSelected(id)
         props.onFilter(props.displayedGroup)
+
     }
 
-//////////////////////////////// Tous les élèves ont étés choisis ////////////////////////////////
-    if (randomStudent === undefined){
+    //////////////////////////////// Tous les élèves ont étés choisis ////////////////////////////////
+    if (randomStudent === undefined) {
         return (
             <div
                 className={`flex flex-col z-50 absolute w-full h-full items-center justify-center self-center ${props.displayRandomStudent ? 'visible' : 'invisible'
@@ -65,9 +68,10 @@ export default (props: MagicStickProps) => {
 
                 </div>
             </div>
-        )}
+        )
+    }
 
-//////////////////////////////// Aléatoire avec mémoire ////////////////////////////////
+    //////////////////////////////// Aléatoire avec mémoire ////////////////////////////////
 
 
     if (props.withMemory) {
@@ -81,7 +85,7 @@ export default (props: MagicStickProps) => {
                     ref={ref2}
                     className={`flex flex-col border-black bg-white shadow-lg justify-center items-center w-3/4 h-82 relative ${props.displayRandomStudent ? 'fade-in' : 'invisible'
                         }`}>
-                    
+
                     <div className="w-3/4 h-full flex justify-center sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-center font-bold">
                         <LightStudent
                             classes={randomStudent.classes[0]}

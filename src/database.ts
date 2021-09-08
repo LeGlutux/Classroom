@@ -28,20 +28,28 @@ export const fetchCross = async (
     querySnapshot.docs.forEach((doc) => data.push(doc.data()))
 
     return data
-}   
+}
 
 export const fetchCrosses = async (
     currentUserId: string,
-    currentStudentId: string
+    allStudentIds: string[]
 ) => {
     const db = Firebase.firestore()
-    const data = await db
-        .collection('users')
-        .doc(currentUserId)
-        .collection('eleves')
-        .doc(currentStudentId)
-        .collection('crosses')
-        .get()
+    const data: { id: string, docs: firebase.firestore.DocumentData[] }[] = []
+    allStudentIds.forEach(async (id) => {
+        const querySnapshot =
+            await db
+                .collection('users')
+                .doc(currentUserId)
+                .collection('eleves')
+                .doc(id)
+                .collection('crosses')
+                .get()
+                
+        const docs = [] as firebase.firestore.DocumentData[]
+        querySnapshot.docs.forEach((doc) => docs.push(doc.data()))
+        data.push({ id: id, docs: docs })
+    })
 
     return data
 }
@@ -64,6 +72,21 @@ export const fetchListState = async (
     return data
 }
 
+export const fetchStudentsIds = async (currentUserId: string) => {
+    const db = Firebase.firestore()
+    const querySnapshot = await db
+        .collection('users')
+        .doc(currentUserId)
+        .collection('eleves')
+        .orderBy('name')
+        .get()
+
+    const data = [] as string[]
+    querySnapshot.docs.forEach((doc) => data.push(doc.data().id))
+
+    return data
+}
+
 export const fetchStudents = async (currentUserId: string) => {
     const db = Firebase.firestore()
     const querySnapshot = await db
@@ -75,7 +98,7 @@ export const fetchStudents = async (currentUserId: string) => {
 
     const data = [] as firebase.firestore.DocumentData[]
     querySnapshot.docs.forEach((doc) => data.push(doc.data()))
-
+   
     return data
 }
 

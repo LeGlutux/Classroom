@@ -7,6 +7,7 @@ import openCard from '../images/openCard.png'
 import ConfirmModal from './ConfirmModal'
 
 interface ListPreviewProps {
+    currentUserId: string
     id: string
     name: string
     classes: string[]
@@ -16,21 +17,19 @@ interface ListPreviewProps {
 }
 
 export default (props: ListPreviewProps) => {
-    const { currentUser } = useContext(AuthContext)
-    if (currentUser === null) return <div />
     const classesToString = props.classes.join(', ')
-    const { students } = useStudents(currentUser.uid)
+    const { students } = useStudents(props.currentUserId)
     const [confirm, setConfirm] = useState(false)
     const db = firebase.firestore()
     const handleDeleteList = () => {
         db.collection('users')
-            .doc(currentUser.uid)
+            .doc(props.currentUserId)
             .collection('lists')
             .doc(props.id)
             .delete()
         students.filter(s => s.classes.includes(props.classes[0])).forEach((s) => {
             db.collection('users')
-                .doc(currentUser.uid)
+                .doc(props.currentUserId)
                 .collection('eleves')
                 .doc(s.id)
                 .collection('listes')
@@ -43,7 +42,7 @@ export default (props: ListPreviewProps) => {
 
     return (
         <div
-            className={`w-full flex flex-row border-t-2 border-b-2 border-gray-300 justify-between`}
+            className={`w-full flex flex-row border-b-2 border-gray-300 justify-between`}
         >
 
             <ConfirmModal
@@ -51,7 +50,7 @@ export default (props: ListPreviewProps) => {
                 setConfirm={setConfirm}
                 confirmAction={handleDeleteList}
                 textBox={
-                    'Êtes-vous sûr(e) de vouloir supprimer la liste "'.concat(props.name).concat('" des ').concat(props.classes.toString())
+                    'Êtes-vous sûr(e) de vouloir supprimer la liste "'.concat(props.name).concat('" des ').concat(props.classes.join(', '))
                 }
             />
 
@@ -66,7 +65,7 @@ export default (props: ListPreviewProps) => {
                 </svg>
             </span>
             <Link
-                className="w-full flex flex-row border-t-1 border-b-1 border-gray-300 justify-between"
+                className="w-full flex flex-row border-gray-300 justify-between"
                 to={'/list/'.concat(props.id)}
             >
 

@@ -1,13 +1,11 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import alarm from '../images/behaviour.png'
 import bookPile from '../images/homework.png'
 import schoolBag from '../images/supply.png'
 import pen from '../images/observation.png'
 import openCard from '../images/openCard.png'
 import Firebase from '../firebase'
-import { AuthContext } from '../Auth'
 import firebase from 'firebase/app'
-import { useCross, useRunningPeriode, usePeriodes } from '../hooks'
 import { Link } from 'react-router-dom'
 import brain from '../images/brain.png'
 import StudentComment from './StudentComment'
@@ -17,33 +15,51 @@ interface StudentProps {
     surname: string
     classes: string
     id: string
+    crosses?: { id: string; docs: firebase.firestore.DocumentData[] }[]
+    loading: boolean
     highlight: boolean
+    toggleSelected: (studentId: string) => void
+    toggleHighlight: (studentId: string) => void
     selected: boolean
     comment?: string
     refresher: (group: string) => void
     displayedGroup: string
+    currentUser: string
+    periodes: Date[]
+    runningPeriode: number
 }
 
 export default (props: StudentProps) => {
     const db = Firebase.firestore()
-    const { currentUser } = useContext(AuthContext)
-    if (currentUser === null) return <div />
     const [highlight, setHighlight] = useState(props.highlight)
-    const { periodes } = usePeriodes(currentUser.uid)
-    const { runningPeriode } = useRunningPeriode(currentUser.uid)
-    const { cross, refreshCross, loading } = useCross(currentUser.uid, props.id)
+    const [selected, setSelected] = useState(props.selected)
+    const [cross, setCross] = useState<firebase.firestore.DocumentData[]>([])
+
+    useEffect(() => {
+        setSelected(props.selected)
+    }, [props.selected])
+
+
+    useEffect(() => {
+        const thisStudentCrossesWithId = props.crosses ? props.crosses.filter((obj) => obj.id === props.id) : []
+        const thisStudentCrosses = thisStudentCrossesWithId.map((s) => s.docs)[0]
+        setCross(thisStudentCrosses)
+    }, [props.crosses, props.id])
+
     const handleForget = () => {
         db.collection('users')
-            .doc(currentUser.uid)
+            .doc(props.currentUser)
             .collection('eleves')
             .doc(props.id)
             .update({
                 selected: false,
             })
         props.refresher(props.displayedGroup)
+        props.toggleSelected(props.id)
     }
+
     const crossFilter = (crossType: string, runningP: number) => {
-        if (runningP === periodes.length) {
+        if (runningP === props.periodes.length) {
             const filtered = cross
                 .filter(
                     (element: firebase.firestore.DocumentData) =>
@@ -51,7 +67,7 @@ export default (props: StudentProps) => {
                 )
                 .filter(
                     (element: firebase.firestore.DocumentData) =>
-                        element.time > periodes[runningP - 1]
+                        element.time > props.periodes[runningP - 1]
                 )
             return filtered
         } else {
@@ -62,30 +78,44 @@ export default (props: StudentProps) => {
                 )
                 .filter(
                     (element: firebase.firestore.DocumentData) =>
-                        element.time > periodes[runningP - 1]
+                        element.time > props.periodes[runningP - 1]
                 )
                 .filter(
                     (element: firebase.firestore.DocumentData) =>
-                        element.time < periodes[runningP]
+                        element.time < props.periodes[runningP]
                 )
             return filtered
         }
     }
+
     const newCrossId = 'c'.concat(Date.now().toString())
     const handleAddCross = (crossType: string) => {
-        if (runningPeriode === periodes.length) {
+        if (props.runningPeriode === props.periodes.length) {
+            const newDate = new Date()
             db.collection('users')
-                .doc(currentUser.uid)
+                .doc(props.currentUser)
                 .collection('eleves')
                 .doc(props.id)
                 .collection('crosses')
                 .doc(newCrossId)
                 .set({
                     type: crossType,
-                    time: new Date(),
+                    time: newDate,
                     id: newCrossId,
+                    student_id: props.id,
+                    student_name: props.name,
+                    student_surname: props.surname,
+                    student_classes: props.classes
+
                 })
-            refreshCross()
+            db.collection('users')
+                .doc(props.currentUser)
+                .collection('eleves')
+                .doc(props.id)
+                .update({ crosses: firebase.firestore.FieldValue.arrayUnion(newCrossId) })
+
+            const newCross = cross.concat([{ type: crossType, id: newCrossId, time: newDate}])
+            setCross(newCross)
         }
     }
 
@@ -103,13 +133,11 @@ export default (props: StudentProps) => {
             ? props.surname.substring(0, 8).concat('.')
             : props.surname
 
-    while (loading === true) return <div />
-
     return (
         <div className="flex flex-row w-full md:w-1/2 lg:w-1/2 xl:w-1/3 items-center">
             <div className="flex h-full items-center mt-5 ml-2 xl:pt-6 static">
                 <button
-                    className={`h-8 w-8 ${props.selected === false || props.selected === undefined
+                    className={`h-8 w-8 ${selected === false || selected === undefined
                         ? 'invisible'
                         : 'visible'
                         }`}
@@ -119,7 +147,7 @@ export default (props: StudentProps) => {
                 </button>
             </div>
             <div
-                className={`rounded w-11/12 overflow-hidden ml-2 mt-5 pb-1 mx-2 bg-gray-100 w-full shadow-custom ${runningPeriode === periodes.length
+                className={`rounded w-11/12 overflow-hidden ml-2 mt-5 pb-1 mx-2 bg-gray-100 w-full shadow-custom ${props.runningPeriode === props.periodes.length
                     ? 'bg-gray-100'
                     : 'border-2 border-gray-500'
                     }`}
@@ -129,14 +157,14 @@ export default (props: StudentProps) => {
                         <button
                             onClick={() => {
                                 db.collection('users')
-                                    .doc(currentUser.uid)
+                                    .doc(props.currentUser)
                                     .collection('eleves')
                                     .doc(props.id)
                                     .update({
                                         highlight: !highlight,
                                     })
                                 setHighlight(!highlight)
-                                props.refresher(props.displayedGroup)
+                                props.toggleHighlight(props.id)
                             }}
                             className={`flex flex-row mt-2`}
                         >
@@ -165,7 +193,7 @@ export default (props: StudentProps) => {
                             </button>
                             <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-4xl xl:ml-3 xl:pb-8 ">
                                 {
-                                    crossFilter('behaviour', runningPeriode)
+                                    crossFilter('behaviour', props.runningPeriode)
                                         .length
                                 }
                             </div>
@@ -178,7 +206,10 @@ export default (props: StudentProps) => {
                                 <img className="" src={bookPile} alt="" />
                             </button>
                             <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-4xl xl:ml-3 xl:pb-8 ">
-                                {crossFilter('homework', runningPeriode).length}
+                                {
+                                    crossFilter('homework', props.runningPeriode)
+                                        .length
+                                }
                             </div>
                         </div>
                         <div className="flex flex-row">
@@ -189,7 +220,9 @@ export default (props: StudentProps) => {
                                 <img className="" src={schoolBag} alt="" />
                             </button>
                             <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-4xl xl:ml-3 xl:pb-8 ">
-                                {crossFilter('supply', runningPeriode).length}
+                                {
+                                    crossFilter('supply', props.runningPeriode)
+                                        .length}
                             </div>
                         </div>
                         <div className="flex flex-row">
@@ -201,7 +234,7 @@ export default (props: StudentProps) => {
                             </button>
                             <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-4xl xl:ml-3 xl:pb-8 ">
                                 {
-                                    crossFilter('observation', runningPeriode)
+                                    crossFilter('observation', props.runningPeriode)
                                         .length
                                 }
                             </div>
@@ -209,9 +242,9 @@ export default (props: StudentProps) => {
                     </div>
                     <div>
                         <StudentComment
-                        currentUserId={currentUser.uid}
-                        currentStudentId={props.id}
-                        comment={props.comment ? props.comment : ""}
+                            currentUserId={props.currentUser}
+                            currentStudentId={props.id}
+                            comment={props.comment ? props.comment : ""}
                         />
                     </div>
                 </div>

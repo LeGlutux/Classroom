@@ -10,7 +10,7 @@ export default () => {
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
     const { students } = useStudents(currentUser.uid)
-    const lists = useLists(currentUser.uid)
+    const {lists} = useLists(currentUser.uid)
     if (lists === undefined) return <div />
     const currentList = lists.filter(l => l.id === id)[0]
     if (currentList === undefined) return <div />

@@ -7,7 +7,7 @@ import Firebase from 'firebase/app'
 import 'react-datepicker/dist/react-datepicker.css'
 import firebase from 'firebase/app'
 import { AuthContext } from '../Auth'
-import { usePeriodes, useRunningPeriode, useStudents } from '../hooks'
+import { usePeriodes, useStudents } from '../hooks'
 import PeriodeFilter from './PeriodeFilter'
 import calendar from '../images/calendar.png'
 import ConfirmModal from './ConfirmModal'
@@ -24,13 +24,10 @@ export default () => {
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
     const { groups, refreshGroups } = useGroups(currentUser.uid)
-    const { runningPeriode, refreshRunningPeriode } = useRunningPeriode(
-        currentUser.uid
-    )
     const history = useHistory()
     const { students } = useStudents(currentUser.uid)
-    const { periodes, refreshPeriodes } = usePeriodes(currentUser.uid)
-    const lists = useLists(currentUser.uid)
+    const { periodes, refreshPeriodes, runningPeriode, refreshRunningPeriode } = usePeriodes(currentUser.uid)
+    const { lists } = useLists(currentUser.uid)
     const db = firebase.firestore()
 
     const xScroller = useRef<HTMLDivElement>(null)
@@ -168,9 +165,9 @@ export default () => {
                         onAddGroup={refreshGroups} />
                 </div>
 
-                <div className={cards} ref={ref1}> 
-                    <CreateStudent 
-                        groups={groups} 
+                <div className={cards} ref={ref1}>
+                    <CreateStudent
+                        groups={groups}
                         currentUserId={currentUser.uid} />
                 </div>
 

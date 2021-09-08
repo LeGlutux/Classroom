@@ -16,7 +16,7 @@ export default (props: Props) => {
     const db = Firebase.firestore()
     const [nameInputValue, setNameInputValue] = useState('')
     const [surnameInputValue, setSurnameInputValue] = useState('')
-    const lists = useLists(props.currentUserId)
+    const { lists } = useLists(props.currentUserId)
     const firstInputRef = useRef<HTMLInputElement>(null)
 
     return (
@@ -49,6 +49,8 @@ export default (props: Props) => {
                                 classes: list,
                                 id,
                                 highlight: false,
+                                selected: false,
+                                crosses: [] as string[],
                             })
 
                         lists.forEach((l) => {
