@@ -9,13 +9,15 @@ import firebase from 'firebase/app'
 import { Link } from 'react-router-dom'
 import brain from '../images/brain.png'
 import StudentComment from './StudentComment'
+import { useCross } from '../hooks'
 
 interface StudentProps {
+    displayedStudents: firebase.firestore.DocumentData[]
     name: string
     surname: string
     classes: string
     id: string
-    crosses?: { id: string; docs: firebase.firestore.DocumentData[] }[]
+    currentUserId: string
     loading: boolean
     highlight: boolean
     toggleSelected: (studentId: string) => void
@@ -30,24 +32,28 @@ interface StudentProps {
 }
 
 export default (props: StudentProps) => {
+    const {cross, loading} = useCross(props.currentUser, props.id)
     const db = Firebase.firestore()
     const [highlight, setHighlight] = useState(props.highlight)
     const [selected, setSelected] = useState(props.selected)
-    const [cross, setCross] = useState<firebase.firestore.DocumentData[]>([])
+    const [crosses, setCrosses] = useState<firebase.firestore.DocumentData[]>(cross)
+    const [hidden, setHidden] = useState(false)
 
     useEffect(() => {
         setSelected(props.selected)
     }, [props.selected])
 
     useEffect(() => {
-        const thisStudentCrossesWithId = props.crosses
-            ? props.crosses.filter((obj) => obj.id === props.id)
-            : []
-        const thisStudentCrosses = thisStudentCrossesWithId.map(
-            (s) => s.docs
-        )[0]
-        setCross(thisStudentCrosses)
-    }, [props.crosses, props.id])
+        if (!props.displayedStudents.map((s) => s.id).includes(props.id)) setHidden(true)
+        else setHidden(false)
+
+    }, [props.displayedStudents, props.id])
+
+    useEffect(() => {
+        
+        setCrosses(cross)
+    }, [cross, loading])
+
 
     const handleForget = () => {
         db.collection('users')
@@ -61,9 +67,10 @@ export default (props: StudentProps) => {
         props.toggleSelected(props.id)
     }
 
+
     const crossFilter = (crossType: string, runningP: number) => {
         if (runningP === props.periodes.length) {
-            const filtered = cross
+            const filtered = crosses
                 .filter(
                     (element: firebase.firestore.DocumentData) =>
                         element.type === crossType
@@ -74,7 +81,7 @@ export default (props: StudentProps) => {
                 )
             return filtered
         } else {
-            const filtered = cross
+            const filtered = crosses
                 .filter(
                     (element: firebase.firestore.DocumentData) =>
                         element.type === crossType
@@ -119,10 +126,10 @@ export default (props: StudentProps) => {
                         firebase.firestore.FieldValue.arrayUnion(newCrossId),
                 })
 
-            const newCross = cross.concat([
+            const newCross = crosses.concat([
                 { type: crossType, id: newCrossId, time: newDate },
             ])
-            setCross(newCross)
+            setCrosses(newCross)
         }
     }
 
@@ -139,8 +146,11 @@ export default (props: StudentProps) => {
             ? props.surname.substring(0, 8).concat('.')
             : props.surname
 
+            while (loading) return <div />
+
+
     return (
-        <div className="flex flex-row w-full md:w-1/2 lg:w-1/2 xl:w-1/3 items-center">
+        <div className={`flex flex-row w-full md:w-1/2 lg:w-1/2 xl:w-1/3 items-center ${hidden ? 'hidden' : 'visible'}`}>
             <div className="flex h-full items-center mt-5 ml-2 xl:pt-6 static">
                 <button
                     className={`h-8 w-8 ${
@@ -154,7 +164,7 @@ export default (props: StudentProps) => {
                 </button>
             </div>
             <div
-                className={`rounded w-11/12 overflow-hidden ml-2 mt-5 pb-1 mx-2 bg-gray-100 w-full shadow-custom ${
+                className={`rounded overflow-hidden ml-2 mt-5 pb-1 mx-2 bg-gray-100 w-full shadow-custom ${
                     props.runningPeriode === props.periodes.length
                         ? 'bg-gray-100'
                         : 'border-2 border-gray-500'
