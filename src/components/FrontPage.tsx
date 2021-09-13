@@ -138,7 +138,9 @@ export default () => {
             />
             {displayedGroup !== 'tous' && (
                 <div className="flex w-full h-full flex-col pb-24 bg-white overflow-y-scroll md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start">
-                    {students.map(
+                    {students
+                    .sort((a) => a.highlight ? -1 : 1)
+                    .map(
                         ({
                             name,
                             surname,
