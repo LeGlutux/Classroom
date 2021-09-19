@@ -119,7 +119,7 @@ export default () => {
                     ) {
                         handleCreateList()
                     } else {
-                        throw new Error("le formulaire n'est pas complet")
+                        alert("le formulaire n'est pas complet")
                     }
 
                     e.preventDefault()

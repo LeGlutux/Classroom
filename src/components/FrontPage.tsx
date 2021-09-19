@@ -15,8 +15,10 @@ import magicStick from '../images/magicStick.png'
 import brain from '../images/brain.png'
 import questionMark from '../images/questionMark.png'
 import loader_image from '../images/loader.gif'
+import addPage from '../images/addPage.png'
 import Firebase from '../firebase'
 import firebase from 'firebase'
+import { Link } from 'react-router-dom'
 
 export default () => {
     const db = Firebase.firestore()
@@ -121,6 +123,62 @@ export default () => {
             </div>
         )
     }
+
+    if (groups.length === 0) {
+        return (
+            <div className="w-full h-screen flex flex-col justify-center items-center">
+                <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full">
+                    {"Accueil"}
+                </div>
+                <div className="h-full flex flex-col justify-center items-center">
+                    <div className="font-title text-4xl mb-8 text-bold">
+                        Bienvenue sur Thòt Note
+                    </div>
+                    <div className="flex w-11/12 justify-center text-center font-title text-3xl mb-8 text-bold">
+                        Pour commencer à ajouter des classes et des élèves
+                        rendez-vous sur :
+                    </div>
+                    <div className="font-title text-4xl mb-8 text-bold">
+                        <Link to="/create">
+                            <img className="self-center" src={addPage} alt="" />
+                        </Link>{' '}
+                    </div>
+                </div>
+
+                <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
+                    <NavBar />
+                </div>
+            </div>
+        )
+    }
+
+    if (groups.length !== 0 && students.length === 0) {
+        return (
+            <div className="w-full h-screen flex flex-col justify-center items-center">
+                <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full">
+                    {title}
+                </div>
+                <div className="h-full flex flex-col justify-center items-center">
+                    <div className="flex w-11/12 text-center font-title text-4xl mb-8 text-bold">
+                        Les premières classes sont créées, il manque les élèves
+                    </div>
+                    <div className="flex w-11/12 justify-center font-title text-3xl mb-8 text-bold">
+                        rendez-vous sur :
+                    </div>
+                    <div className="font-title text-4xl mb-8 text-bold">
+                        <Link to="/create">
+                            <img className="self-center" src={addPage} alt="" />
+                        </Link>{' '}
+                    </div>
+                </div>
+
+                <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
+                    <NavBar />
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div className="w-full h-screen flex flex-col">
             <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full">
@@ -139,41 +197,43 @@ export default () => {
             {displayedGroup !== 'tous' && (
                 <div className="flex w-full h-full flex-col pb-24 bg-white overflow-y-scroll md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start">
                     {students
-                    .sort((a) => a.highlight ? -1 : 1)
-                    .map(
-                        ({
-                            name,
-                            surname,
-                            classes,
-                            id,
-                            selected,
-                            highlight,
-                            comment,
-                        }) => {
-                            return (
-                                <Student
-                                    displayedStudents={hardStudents}
-                                    periodes={periodes}
-                                    runningPeriode={runningPeriode}
-                                    currentUser={currentUser.uid}
-                                    key={id}
-                                    loading={loading}
-                                    currentUserId={currentUser.uid}
-                                    selected={selected}
-                                    classes={classes}
-                                    name={name}
-                                    surname={surname}
-                                    comment={comment ? comment : ''}
-                                    id={id}
-                                    highlight={highlight}
-                                    toggleSelected={toggleSelected}
-                                    toggleHighlight={toggleHighlight}
-                                    refresher={(group) => filterStudents(group)}
-                                    displayedGroup={displayedGroup}
-                                />
-                            )
-                        }
-                    )}
+                        .sort((a) => (a.highlight ? -1 : 1))
+                        .map(
+                            ({
+                                name,
+                                surname,
+                                classes,
+                                id,
+                                selected,
+                                highlight,
+                                comment,
+                            }) => {
+                                return (
+                                    <Student
+                                        displayedStudents={hardStudents}
+                                        periodes={periodes}
+                                        runningPeriode={runningPeriode}
+                                        currentUser={currentUser.uid}
+                                        key={id}
+                                        loading={loading}
+                                        currentUserId={currentUser.uid}
+                                        selected={selected}
+                                        classes={classes}
+                                        name={name}
+                                        surname={surname}
+                                        comment={comment ? comment : ''}
+                                        id={id}
+                                        highlight={highlight}
+                                        toggleSelected={toggleSelected}
+                                        toggleHighlight={toggleHighlight}
+                                        refresher={(group) =>
+                                            filterStudents(group)
+                                        }
+                                        displayedGroup={displayedGroup}
+                                    />
+                                )
+                            }
+                        )}
                 </div>
             )}
 

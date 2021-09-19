@@ -4,6 +4,7 @@ import Firebase from '../../firebase'
 import NewStudentGroups from '../NewStudentGroups'
 import ok from '../../images/ok.png'
 import { useLists } from '../../hooks'
+import { groupCollapsed } from 'console'
 
 interface Props {
     groups: string[]
@@ -22,8 +23,9 @@ export default (props: Props) => {
     return (
         <div className="flex flex-col">
             <div
-                className={`absolute sm:ok-position2 w-10 h-10 ${sent ? 'fade-out' : 'invisible'
-                    }`}
+                className={`absolute sm:ok-position2 w-10 h-10 ${
+                    sent ? 'fade-out' : 'invisible'
+                }`}
             >
                 <img src={ok} alt="ok" />
             </div>
@@ -36,9 +38,14 @@ export default (props: Props) => {
                         list.length === 1
                     ) {
                         const id = Date.now().toString()
-                        const nameCased = nameInputValue.replace(/\b\w/g, c => c.toUpperCase())
-                        
-                        const surnameCased = surnameInputValue.replace(/\b\w/g, c => c.toUpperCase())
+                        const nameCased = nameInputValue.replace(/\b\w/g, (c) =>
+                            c.toUpperCase()
+                        )
+
+                        const surnameCased = surnameInputValue.replace(
+                            /\b\w/g,
+                            (c) => c.toUpperCase()
+                        )
                         db.collection('users')
                             .doc(props.currentUserId)
                             .collection('eleves')
@@ -51,6 +58,7 @@ export default (props: Props) => {
                                 highlight: false,
                                 selected: false,
                                 crosses: [] as string[],
+                                notes: '',
                             })
 
                         lists.forEach((l) => {
@@ -63,7 +71,7 @@ export default (props: Props) => {
                                     .doc(l.id.concat('s'))
                                     .set({
                                         state: [0, 0, 0, 0],
-                                        id: l.id.concat('s')
+                                        id: l.id.concat('s'),
                                     })
                             }
                         })
@@ -76,7 +84,8 @@ export default (props: Props) => {
                         setTimeout(() => setSent(false), 1000)
                         clearTimeout()
                     } else {
-                        throw new Error("le formulaire n'est pas complet")
+                        if (list.length !== 1) alert("Il faut selectionner une classe !")
+                        else alert("Le formulaire n'est pas complet !")
                     }
 
                     e.preventDefault()
@@ -85,8 +94,10 @@ export default (props: Props) => {
                 action=""
             >
                 <div className="flex flex-col h-full items-center pb-4">
-                    <div className='flex flex-col h-full justify-around items-center'>
-                        <div className='relative top-0 font-title text-3xl'>Ajoutez vos élèves</div>
+                    <div className="flex flex-col h-full justify-around items-center">
+                        <div className="relative top-0 font-title text-3xl">
+                            Ajoutez vos élèves
+                        </div>
                         <div className="flex flex-row items-center justify-center hover:border-gray-600 xl:w-full">
                             <img className="w-8 h-8 mt-3" src={solo} alt="" />
                             <div className="w-9/12 flex flex-col hover:border-gray-600">

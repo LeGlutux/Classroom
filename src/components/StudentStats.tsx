@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react'
-import { useStudent, useGroups, useCross } from '../hooks'
+import React, { useContext, useEffect, useState } from 'react'
+import { useStudent, useGroups, useCross, useStudents } from '../hooks'
 import { AuthContext } from '../Auth'
 import { useParams, Link, useHistory } from 'react-router-dom'
 import closeCard from '../images/closeCard.png'
@@ -22,7 +22,6 @@ export default () => {
     const { cross } = useCross(currentUser.uid, id, crossRefresher)
     const student = useStudent(currentUser.uid, id)
     if (student === undefined) return <div />
-
     const crossFilter = (crossType: string) => {
         const filtered = cross.filter(
             (element: firebase.firestore.DocumentData) =>
@@ -73,6 +72,28 @@ const View = ({
     const weeks = Array.from({ length: currentWeek }, (_, index) => index + 1)
     const db = firebase.firestore()
     const history = useHistory()
+
+    /////////////////// Notes //////////////////////
+    const [editNotes, setEditNotes] = useState(false)
+    const [notes, setNotes] = useState(student.notes)
+    const [notesInputValue, setNotesInputValue] = useState(notes)
+    const shortedNotes = (notes: string) => {
+        const shortedNotes =
+            notes.length >= 60 ? notes.substring(0, 56).concat('...') : notes
+        return shortedNotes
+    }
+
+    const confirmAction = () => {
+        db.collection('users')
+            .doc(currentUser.uid)
+            .collection('eleves')
+            .doc(studentId)
+            .update({notes: notesInputValue})
+        setNotes(notesInputValue)
+    }
+
+    /////////////////////////////////////////////////
+
     const handleDeleteCross = (crossType: string) => {
         if (crossFilter(crossType).length !== 0) {
             const crossId = crossFilter(crossType)[0].id
@@ -110,11 +131,61 @@ const View = ({
                     { merge: true }
                 )
             history.goBack()
-        }
+        } else alert("Cette classe n'existe pas")
     }
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col h-screen">
+            <div
+                className={`flex flex-col z-50 w-full h-full items-center justify-center self-center modal-positon ${
+                    editNotes ? 'visible' : 'invisible'
+                }`}
+                style={{ backgroundColor: 'rgba(255,255,255,0.6)' }}
+            >
+                <div
+                    className={`flex flex-col border-black bg-white shadow-lg justify-center items-center w-3/4 h-100 relative ${
+                        editNotes ? 'entering-t' : 'invisible'
+                    }`}
+                >
+                    <span className="absolute top-0 right-0 p-4">
+                        <svg
+                            className="h-4 w-4 fill-current text-grey hover:text-grey-darkest"
+                            role="button"
+                            onClick={() => setEditNotes(false)}
+                        >
+                            <title>Close</title>
+                            <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
+                        </svg>
+                    </span>
+                    <textarea
+                        value={notesInputValue}
+                        onChange={(e) => setNotesInputValue(e.target.value)}
+                        className="flex w-10/12 mr-2 mt-10 h-64 z-50 placeholder-gray-700 bg-transparent border-2 border-gray-200 text-lg align-text-top"
+                        placeholder={notes}
+                    />
+
+                    <div className="flex flex-row w-full justify-around mt-6">
+                        <button
+                            className="bg-red-700 rounded-lg font-bold w-24 h-12 lg:w-32 lg:h-12 xl:w-40 xl:h-16 shadow-xl font-studentName sm:text-lg md:text-xl lg:text-2xl xl:text-3xl"
+                            onClick={() => {
+                                setEditNotes(false)
+                            }}
+                        >
+                            Annuler
+                        </button>
+                        <button
+                            className="bg-green-700 rounded-lg font-bold w-24 h-12 lg:w-32 lg:h-12 xl:w-40 xl:h-16 shadow-xl font-studentName sm:text-lg md:text-xl lg:text-2xl xl:text-3xl"
+                            onClick={() => {
+                                confirmAction()
+                                setEditNotes(false)
+                            }}
+                        >
+                            Confirmer
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <ConfirmModal
                 confirm={confirm}
                 setConfirm={setConfirm}
@@ -310,13 +381,27 @@ const View = ({
                     </div>
                 </div>
             </div>
-
+            <div className="flex flex-row justify-start h-10 mx-3">
+                <div className="flex flex-col items-center">
+                    <div className="font-bold">Notes:</div>
+                    <button
+                        className="flex h-8 w-8 justify-center items-center"
+                        onClick={() => {
+                            setEditNotes(true)
+                            console.log('clicked')
+                        }}
+                    >
+                        <img className="h-6 w-6" src={edit} alt="" />
+                    </button>
+                </div>
+                <div className="mx-2">{shortedNotes(notes)}</div>
+            </div>
             <div className="flex items-center justify-center">
                 <button
                     onClick={() => {
                         setConfirm(true)
                     }}
-                    className="flex h-8 w-40 self-center mt-2 bg-red-500 rounded text-white text-lg font-bold justify-center"
+                    className="flex h-4 w-32 self-center mt-2 text-red-500 text-sm justify-center"
                 >
                     Supprimer l'élève
                 </button>

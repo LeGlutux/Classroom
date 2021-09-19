@@ -35,6 +35,35 @@ export default () => {
         )
     }
 
+    if (lists.length === 0) {
+        return (
+            <div className="w-full h-screen flex flex-col justify-center items-center">
+                <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full">
+                    Mes listes
+                </div>
+                <div className="h-full flex flex-col justify-center items-center">
+                    <div className="flex w-11/12 text-center font-title text-4xl mb-8 text-bold">
+                        C'est ici pour créer des listes
+                    </div>
+                    <div className="flex w-11/12 justify-center font-title text-3xl mb-8 text-bold">
+                        Pour essayer, ça se passe ici :
+                    </div>
+                    <div className="font-title text-4xl mb-8 text-bold">
+                        <Link 
+                        className="flex flex-col w-20 h-20 bg-gray-200 rounded-full shadow-custom items-center justify-center p-2"
+                        to="/createlist">
+                            <img src={add} alt="" />
+                        </Link>
+                    </div>
+                </div>
+
+                <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
+                    <NavBar />
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div className="h-screen w-full flex flex-col">
             <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full">

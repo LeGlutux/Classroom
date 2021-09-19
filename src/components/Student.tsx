@@ -144,7 +144,6 @@ export default (props: StudentProps) => {
             ? props.surname.substring(0, 8).concat('.')
             : props.surname
 
-            console.log(props.currentUserId)
     while (loading) return <div />
 
     return (

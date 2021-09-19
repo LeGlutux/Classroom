@@ -135,7 +135,9 @@ export default () => {
                 <button
                     className={`${
                         actualRef === 0 || hide ? 'invisible' : 'visible'
-                    }`}
+                    }
+                    ${groups.length === 0 ? 'invisible' : 'visible'}
+                    `}
                     onClick={() => {
                         scrollTo(actualRef - 1)
                         setActualRef(actualRef - 1)
@@ -148,7 +150,8 @@ export default () => {
                 <button
                     className={`${
                         actualRef === 3 || hide ? 'invisible' : 'visible'
-                    }`}
+                    }
+                    ${groups.length === 0 ? 'invisible' : 'visible'}`}
                     onClick={() => {
                         scrollTo(actualRef + 1)
                         setActualRef(actualRef + 1)

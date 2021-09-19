@@ -7,7 +7,6 @@ import ok from '../../images/ok.png'
 
 interface Props {
     onAddGroup: () => void
-
 }
 export default (props: Props) => {
     const [sent, setSent] = useState(false)
@@ -15,22 +14,23 @@ export default (props: Props) => {
     const db = Firebase.firestore()
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
-    const inputRef= useRef<HTMLInputElement>(null)
+    const inputRef = useRef<HTMLInputElement>(null)
 
     return (
-        <div className='flex flex-col h-full'>
+        <div className="flex flex-col h-full">
             <form
                 className="flex flex-col w-full h-full bg-transparent"
                 onSubmit={(e) => {
-                    if (inputValue !== '' && inputValue.length << 9) {
+                    if (inputValue !== '' && inputValue.length <= 9) {
                         setInputValue('')
 
                         db.collection('users')
                             .doc(currentUser.uid)
                             .update({
-                                classes: firebase.firestore.FieldValue.arrayUnion(
-                                    inputValue
-                                ),
+                                classes:
+                                    firebase.firestore.FieldValue.arrayUnion(
+                                        inputValue
+                                    ),
                             })
                         props.onAddGroup()
                         setSent(true)
@@ -39,23 +39,36 @@ export default (props: Props) => {
                         e.preventDefault()
                         e.stopPropagation()
                     }
+                    if (inputValue === '') {
+                        alert('Eh ! tu ferais mieux de nommer cette classe.')
+                        e.preventDefault()
+                        e.stopPropagation()
+                    }
+                    if (inputValue.length >= 10) {
+                        alert("Désolé, ce nom est trop long. Essaye d'abréger.")
+                        e.preventDefault()
+                        e.stopPropagation()
+                    }
                 }}
                 action=""
             >
                 <div className="flex flex-col h-full items-center pb-4 justify-center">
-                    <div className='flex flex-col h-full justify-around items-center'>
-                        <div className='relative top-0 font-title text-3xl'>Ajoutez vos classes</div>
-                        <div className="flex flex-row items-center justify-center hover:border-gray-600 xl:w-full"
-                            >
+                    <div className="flex flex-col h-full justify-around items-center">
+                        <div className="relative top-0 font-title text-3xl">
+                            Ajoutez vos classes
+                        </div>
+                        <div className="flex flex-row items-center justify-center hover:border-gray-600 xl:w-full">
                             <img className="w-8 h-8 mt-3" src={group} alt="" />
                             <div className="w-9/12 flex flex-col hover:border-gray-600">
                                 <input
                                     ref={inputRef}
                                     value={inputValue}
-                                    onChange={(e) => setInputValue(e.target.value)}
+                                    onChange={(e) =>
+                                        setInputValue(e.target.value)
+                                    }
                                     className="h-10 z-50 placeholder-gray-700 ml-5 bg-transparent border-b-2 border-gray-600 text-lg xl:text-center"
                                     type="text"
-                                    placeholder="Nom du groupe"
+                                    placeholder="Nom de la classe"
                                 />
                             </div>
                         </div>
@@ -67,8 +80,9 @@ export default (props: Props) => {
                         </button>
 
                         <div
-                            className={`absolute sm:ok-position1 w-10 h-10 ${sent ? 'fade-out' : 'invisible'
-                                }`}
+                            className={`absolute sm:ok-position1 w-10 h-10 ${
+                                sent ? 'fade-out' : 'invisible'
+                            }`}
                         >
                             <img src={ok} alt="ok" />
                         </div>

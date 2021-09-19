@@ -148,7 +148,8 @@ export const fetchStudentWithId = async (
     const name = querySnapshot.data()!.name
     const surname = querySnapshot.data()!.surname
     const id = querySnapshot.data()!.id
-    const data = { classes, highlight, name, surname, id }
+    const notes = querySnapshot.data()!.notes
+    const data = { classes, highlight, name, surname, id, notes }
     return data
 }
 
