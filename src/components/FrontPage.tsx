@@ -30,6 +30,17 @@ export default () => {
     if (currentUser === null) return <div />
     const { students, loading } = useStudents(currentUser.uid)
 
+     //////////////////////////// UPDATE ////////////////////////
+
+     const updateNotes = () => {
+        students.forEach((s) =>{
+        db.collection('users').doc(currentUser.uid).collection('eleves').doc(s.id).update({notes: ""})
+    })}
+
+    updateNotes()
+
+    //////////////////////////// UPDATE ////////////////////////
+
     const { groups } = useGroups(currentUser.uid)
     const { periodes, runningPeriode } = usePeriodes(currentUser.uid)
     const [displayedGroup, setDisplayedGroup] = useState('tous')
@@ -87,6 +98,10 @@ export default () => {
         (student) =>
             student.selected === false || student.selected === undefined
     )
+
+   
+
+
     const checkEmpty = () => {
         if (notYetSelectedStudents.length === 0) {
             hardStudents.forEach((student) => {
@@ -128,7 +143,7 @@ export default () => {
         return (
             <div className="w-full h-screen flex flex-col justify-center items-center">
                 <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full">
-                    {"Accueil"}
+                    {'Accueil'}
                 </div>
                 <div className="h-full flex flex-col justify-center items-center">
                     <div className="font-title text-4xl mb-8 text-bold">

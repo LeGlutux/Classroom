@@ -176,6 +176,16 @@ export const fetchUser = async (currentUserId: string) => {
     return data
 }
 
+export const fetchAllUsers = async () => { 
+    const db = Firebase.firestore()
+    const querySnapshot = await db.collection('users').get()
+
+    const data = [] as firebase.firestore.DocumentData[]
+    querySnapshot.docs.forEach((doc) => data.push(doc.data()))
+
+    return data
+}
+
 export const fetchComment = async (currentUserId: string, currentStudentId: string) => {
     const db = Firebase.firestore()
     const querySnapshot = await db.collection('users').doc(currentUserId).collection('eleves').doc(currentStudentId).get()
