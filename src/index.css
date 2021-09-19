@@ -607,6 +607,11 @@
     min-height: 2px;
 }
 
+.no-break {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 @media (min-width: 1280px) {
     .xl\:big {
         height: 26rem;

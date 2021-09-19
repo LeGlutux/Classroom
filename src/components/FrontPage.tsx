@@ -178,7 +178,7 @@ export default () => {
             )}
 
             {displayedGroup === 'tous' && (
-                <div className="flex w-full h-full flex-col bg-white overflow-y-scroll justify-around">
+                <div className="flex w-full h-full flex-col bg-white overflow-y-scroll justify-around py-2">
                     {
                         <HomeClassListFilter
                             setDisplayedGroup={setDisplayedGroup}
@@ -256,7 +256,7 @@ export default () => {
                 </button>
             </div>
             {groups.length !== 1 && displayedGroup !== 'tous' && (
-                <div className="flex flex-row justify-center bg-transparent w-full bottom-center-custom">
+                <div className="flex flex-row justify-start bg-transparent w-full bottom-center-custom">
                     <ClassListFilter
                         setDisplayedGroup={setDisplayedGroup}
                         onFilter={(group) => {

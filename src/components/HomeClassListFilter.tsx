@@ -20,7 +20,7 @@ export default ({
     const longestGroupLength = longestGroupString.length
 
     return (
-        <div className="flex flex-col ml-2 mr-6 justify-evenly pt-10 overflow-y-scroll">
+        <div className="flex flex-col ml-2 mr-6 justify-start overflow-y-scroll">
             {groups.map((group, index) => {
                 return (
                     <button

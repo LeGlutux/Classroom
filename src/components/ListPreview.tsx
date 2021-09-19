@@ -1,8 +1,7 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import firebase from 'firebase/app'
 import { useStudents } from '../hooks'
 import { Link } from 'react-router-dom'
-import { AuthContext } from '../Auth'
 import openCard from '../images/openCard.png'
 import ConfirmModal from './ConfirmModal'
 

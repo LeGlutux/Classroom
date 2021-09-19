@@ -22,7 +22,7 @@ export default (props: Props) => {
             <form
                 className="flex flex-col w-full h-full bg-transparent"
                 onSubmit={(e) => {
-                    if (inputValue !== '') {
+                    if (inputValue !== '' && inputValue.length << 9) {
                         setInputValue('')
 
                         db.collection('users')
