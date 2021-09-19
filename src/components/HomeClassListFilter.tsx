@@ -13,8 +13,14 @@ export default ({
     setDisplayedGroup,
     closeMenu,
 }: HomeClassListFilterProps) => {
+    const longestGroupString = groups.sort(function (a, b) {
+        return b.length - a.length
+    })[0]
+
+    const longestGroupLength = longestGroupString.length
+
     return (
-        <div className="flex flex-col ml-2 mr-6 justify-evenly pt-10">
+        <div className="flex flex-col ml-2 mr-6 justify-evenly pt-10 overflow-y-scroll">
             {groups.map((group, index) => {
                 return (
                     <button
@@ -23,7 +29,7 @@ export default ({
                             setDisplayedGroup(group)
                             closeMenu(false)
                         }}
-                        className="flex font-studentName h-16 my-4 bg-gray-300 w-32 justify-center shadow-custom rounded-lg pt-1 self-center text-4xl"
+                        className={`flex font-studentName h-16 my-4 bg-gray-300 justify-center shadow-custom rounded-lg pt-1 self-center text-4xl ${longestGroupLength > 4 ? 'w-56' : 'w-32'}`}
                         key={index}
                     >
                         {group}

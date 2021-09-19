@@ -32,11 +32,12 @@ interface StudentProps {
 }
 
 export default (props: StudentProps) => {
-    const {cross, loading} = useCross(props.currentUser, props.id)
+    const { cross, loading } = useCross(props.currentUser, props.id)
     const db = Firebase.firestore()
     const [highlight, setHighlight] = useState(props.highlight)
     const [selected, setSelected] = useState(props.selected)
-    const [crosses, setCrosses] = useState<firebase.firestore.DocumentData[]>(cross)
+    const [crosses, setCrosses] =
+        useState<firebase.firestore.DocumentData[]>(cross)
     const [hidden, setHidden] = useState(false)
 
     useEffect(() => {
@@ -44,16 +45,14 @@ export default (props: StudentProps) => {
     }, [props.selected])
 
     useEffect(() => {
-        if (!props.displayedStudents.map((s) => s.id).includes(props.id)) setHidden(true)
+        if (!props.displayedStudents.map((s) => s.id).includes(props.id))
+            setHidden(true)
         else setHidden(false)
-
     }, [props.displayedStudents, props.id])
 
     useEffect(() => {
-        
         setCrosses(cross)
     }, [cross, loading])
-
 
     const handleForget = () => {
         db.collection('users')
@@ -66,7 +65,6 @@ export default (props: StudentProps) => {
         props.refresher(props.displayedGroup)
         props.toggleSelected(props.id)
     }
-
 
     const crossFilter = (crossType: string, runningP: number) => {
         if (runningP === props.periodes.length) {
@@ -146,11 +144,19 @@ export default (props: StudentProps) => {
             ? props.surname.substring(0, 8).concat('.')
             : props.surname
 
-            while (loading) return <div />
-
+            console.log(props.currentUserId)
+    while (loading) return <div />
 
     return (
-        <div className={`flex flex-row w-full md:w-1/2 lg:w-1/2 xl:w-1/3 items-center ${hidden ? 'hidden' : 'visible'}`}>
+        <div
+            className={`flex flex-row w-full md:w-1/2 lg:w-1/2 xl:w-1/3 items-center ${
+                hidden ? 'hidden' : 'visible'
+            } ${
+                props.currentUserId === '26kiVujCgjNpzCkYwugqkrt63Hx1'
+                    ? 'iphone-vertical'
+                    : ''
+            }`}
+        >
             <div className="flex h-full items-center mt-5 ml-2 xl:pt-6 static">
                 <button
                     className={`h-8 w-8 ${
