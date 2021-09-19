@@ -30,17 +30,6 @@ export default () => {
     if (currentUser === null) return <div />
     const { students, loading } = useStudents(currentUser.uid)
 
-     //////////////////////////// UPDATE ////////////////////////
-
-     const updateNotes = () => {
-        students.forEach((s) =>{
-        db.collection('users').doc(currentUser.uid).collection('eleves').doc(s.id).update({notes: ""})
-    })}
-
-    updateNotes()
-
-    //////////////////////////// UPDATE ////////////////////////
-
     const { groups } = useGroups(currentUser.uid)
     const { periodes, runningPeriode } = usePeriodes(currentUser.uid)
     const [displayedGroup, setDisplayedGroup] = useState('tous')
@@ -98,9 +87,6 @@ export default () => {
         (student) =>
             student.selected === false || student.selected === undefined
     )
-
-   
-
 
     const checkEmpty = () => {
         if (notYetSelectedStudents.length === 0) {

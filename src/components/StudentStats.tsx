@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { useStudent, useGroups, useCross, useStudents } from '../hooks'
+import React, { useContext, useState } from 'react'
+import { useStudent, useGroups, useCross } from '../hooks'
 import { AuthContext } from '../Auth'
 import { useParams, Link, useHistory } from 'react-router-dom'
 import closeCard from '../images/closeCard.png'

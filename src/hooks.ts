@@ -14,7 +14,7 @@ import {
     fetchListState,
     fetchComment,
     fetchStudentsIds,
-    fetchAllUsers,
+    fetchAllUsersIds,
 } from './database'
 
 export const useGroups = (currentUserId: string) => {
@@ -232,15 +232,17 @@ export const useUser = (currentUserId: string) => {
     return user
 }
 
-export const useAllUsers = () => {
-    const [allUser, setAllUsers] = useState<firebase.firestore.DocumentData[]>([])
+export const useAllUsersIds = (currentUserId: string) => {
+    const [allUserIds, setAllUsersIds] = useState<string[]>([])
 
     useEffect(() => {
-        const fetch = async () => setAllUsers(await fetchAllUsers())
+        const fetch = async () => {
+            setAllUsersIds(await fetchAllUsersIds(currentUserId))
+        }
         fetch()
-    })
+    }, [currentUserId])
 
-    return allUser
+    return allUserIds
 }
 
 export const useLists = (currentUserId: string, listsRefresher?: number) => {

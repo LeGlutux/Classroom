@@ -2,7 +2,7 @@ import React, { useContext, useRef, useState } from 'react'
 import CreateGroups from './Create/CreateGroups'
 import CreateStudent from './Create/CreateStudent'
 import NavBar from './NavBar'
-import { useGroups, useLists } from '../hooks'
+import { useAllUsersIds, useGroups, useLists } from '../hooks'
 import Firebase from 'firebase/app'
 import 'react-datepicker/dist/react-datepicker.css'
 import firebase from 'firebase/app'
@@ -34,8 +34,30 @@ export default () => {
     const ref1 = useRef<HTMLDivElement>(null)
     const ref2 = useRef<HTMLDivElement>(null)
     const ref3 = useRef<HTMLDivElement>(null)
+    const ref4 = useRef<HTMLDivElement>(null)
 
-    const refs = [ref0, ref1, ref2, ref3]
+    const refs = [ref0, ref1, ref2, ref3, ref4]
+
+    //////////////////////////// UPDATE ////////////////////////
+
+    const adminConnected = currentUser.uid === 'yp8DVglUprVCqM8mTmnoZ8cr2yJ3'
+
+    const allUsersIds = adminConnected ? useAllUsersIds(currentUser.uid) : []
+    const updateNotes = (allUsersIds: string[]) => {
+        if (currentUser.uid === 'yp8DVglUprVCqM8mTmnoZ8cr2yJ3') {
+            allUsersIds.forEach((userId) => {
+                students.forEach((s) => {
+                    db.collection('users')
+                        .doc(userId)
+                        .collection('eleves')
+                        .doc(s.id)
+                        .update({ notes: '' })
+                })
+            })
+        }
+    }
+
+    //////////////////////////// UPDATE ////////////////////////
 
     const scrollTo = (refN: number) =>
         refs[refN].current?.scrollIntoView({
@@ -149,7 +171,12 @@ export default () => {
                 </button>
                 <button
                     className={`${
-                        actualRef === 3 || hide ? 'invisible' : 'visible'
+                        (actualRef === 3 &&
+                            currentUser.uid !==
+                                'yp8DVglUprVCqM8mTmnoZ8cr2yJ3') ||
+                        hide
+                            ? 'invisible'
+                            : 'visible'
                     }
                     ${groups.length === 0 ? 'invisible' : 'visible'}`}
                     onClick={() => {
@@ -222,6 +249,29 @@ export default () => {
                             >
                                 {' '}
                                 Supprimer toutes les données
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    className={`flex z-30 flex-col mt-2 h-100 w-64 px-12 overflow-visible shadow-custom mx-6 bg-gray-100 pb-4 rounded xl:mt-12 xl:mx-64 ${
+                        currentUser.uid === 'yp8DVglUprVCqM8mTmnoZ8cr2yJ3'
+                            ? 'visible'
+                            : 'invisible'
+                    }`}
+                    ref={ref4}
+                >
+                    <div className="flex flex-col h-full justify-around items-center">
+                        <div className="flex flex-col h-full justify-around items-center">
+                            <div className="relative top-0 font-title text-3xl text-center">
+                                Si vous voyez ceci, prévenir le développeur !
+                            </div>
+                            <button
+                                className="flex h-8 w-56 mt-8 self-center bg-red-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap"
+                                onClick={() => updateNotes(allUsersIds)}
+                            >
+                                Update notes to ''
                             </button>
                         </div>
                     </div>

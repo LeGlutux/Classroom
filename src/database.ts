@@ -176,14 +176,16 @@ export const fetchUser = async (currentUserId: string) => {
     return data
 }
 
-export const fetchAllUsers = async () => { 
+export const fetchAllUsersIds = async (currentUserId: string) => { 
     const db = Firebase.firestore()
-    const querySnapshot = await db.collection('users').get()
+    const querySnapshot = await db.collection('users').orderBy('email').get()
 
     const data = [] as firebase.firestore.DocumentData[]
     querySnapshot.docs.forEach((doc) => data.push(doc.data()))
 
-    return data
+    const Ids = data.map((doc) => doc.id)
+
+    return Ids
 }
 
 export const fetchComment = async (currentUserId: string, currentStudentId: string) => {

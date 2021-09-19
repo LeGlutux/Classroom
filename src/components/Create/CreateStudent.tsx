@@ -4,7 +4,6 @@ import Firebase from '../../firebase'
 import NewStudentGroups from '../NewStudentGroups'
 import ok from '../../images/ok.png'
 import { useLists } from '../../hooks'
-import { groupCollapsed } from 'console'
 
 interface Props {
     groups: string[]
