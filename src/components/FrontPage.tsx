@@ -4,7 +4,6 @@ import ClassListFilter from '../components/ClassListFilter'
 import HomeClassListFilter from '../components/HomeClassListFilter'
 import NavBar from './NavBar'
 import useOnClickOutside, {
-    useCrosses,
     useGroups,
     usePeriodes,
     useStudents,
@@ -27,9 +26,7 @@ export default () => {
     const [displayRandomStudent, setDisplayRandomStudent] = useState(false)
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
-    const { students, loading, allIds } = useStudents(currentUser.uid)
-
-    const { crosses } = useCrosses(currentUser.uid, allIds)
+    const { students, loading } = useStudents(currentUser.uid)
 
     const { groups } = useGroups(currentUser.uid)
     const { periodes, runningPeriode } = usePeriodes(currentUser.uid)
@@ -141,7 +138,9 @@ export default () => {
             />
             {displayedGroup !== 'tous' && (
                 <div className="flex w-full h-full flex-col pb-24 bg-white overflow-y-scroll md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start">
-                    {hardStudents.map(
+                    {students
+                    .sort((a) => a.highlight ? -1 : 1)
+                    .map(
                         ({
                             name,
                             surname,
@@ -153,12 +152,13 @@ export default () => {
                         }) => {
                             return (
                                 <Student
+                                    displayedStudents={hardStudents}
                                     periodes={periodes}
                                     runningPeriode={runningPeriode}
                                     currentUser={currentUser.uid}
                                     key={id}
                                     loading={loading}
-                                    crosses={crosses}
+                                    currentUserId={currentUser.uid}
                                     selected={selected}
                                     classes={classes}
                                     name={name}

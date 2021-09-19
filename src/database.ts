@@ -30,7 +30,7 @@ export const fetchCross = async (
     return data
 }
 
-export const fetchCrosses = async (
+export const fetchCrosses = (
     currentUserId: string,
     allStudentIds: string[]
 ) => {
