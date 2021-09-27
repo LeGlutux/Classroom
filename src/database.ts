@@ -35,20 +35,19 @@ export const fetchCrosses = (
     allStudentIds: string[]
 ) => {
     const db = Firebase.firestore()
-    const data: { id: string, docs: firebase.firestore.DocumentData[] }[] = []
+    const data: { id: string; docs: firebase.firestore.DocumentData[] }[] = []
     allStudentIds.forEach(async (id) => {
-        const querySnapshot =
-            await db
-                .collection('users')
-                .doc(currentUserId)
-                .collection('eleves')
-                .doc(id)
-                .collection('crosses')
-                .get()
+        const querySnapshot = await db
+            .collection('users')
+            .doc(currentUserId)
+            .collection('eleves')
+            .doc(id)
+            .collection('crosses')
+            .get()
 
         const docs = [] as firebase.firestore.DocumentData[]
         querySnapshot.docs.forEach((doc) => docs.push(doc.data()))
-        data.push({ id: id, docs: docs })
+        data.push({ id, docs })
     })
 
     return data
@@ -57,7 +56,7 @@ export const fetchCrosses = (
 export const fetchListState = async (
     currentUserId: string,
     currentStudentId: string,
-    currentListId: string,
+    currentListId: string
 ) => {
     const db = Firebase.firestore()
     const querySnapshot = await db
@@ -176,7 +175,7 @@ export const fetchUser = async (currentUserId: string) => {
     return data
 }
 
-export const fetchAllUsersIds = async (currentUserId: string) => { 
+export const fetchAllUsersIds = async (currentUserId: string) => {
     const db = Firebase.firestore()
     const querySnapshot = await db.collection('users').orderBy('email').get()
 
@@ -188,11 +187,27 @@ export const fetchAllUsersIds = async (currentUserId: string) => {
     return Ids
 }
 
-export const fetchComment = async (currentUserId: string, currentStudentId: string) => {
+export const fetchComment = async (
+    currentUserId: string,
+    currentStudentId: string
+) => {
     const db = Firebase.firestore()
-    const querySnapshot = await db.collection('users').doc(currentUserId).collection('eleves').doc(currentStudentId).get()
+    const querySnapshot = await db
+        .collection('users')
+        .doc(currentUserId)
+        .collection('eleves')
+        .doc(currentStudentId)
+        .get()
 
     const data = querySnapshot.data()?.comment
 
     return data
+}
+export const fetchVersion = async () => {
+    const db = Firebase.firestore()
+    const querySnapshot = await db.collection('props').doc('app-data').get()
+
+    const version = querySnapshot.data()?.version
+
+    return version
 }

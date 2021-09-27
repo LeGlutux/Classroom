@@ -7,6 +7,7 @@ import useOnClickOutside, {
     useGroups,
     usePeriodes,
     useStudents,
+    useUser,
 } from '../hooks'
 import { AuthContext } from '../Auth'
 import 'firebase/firestore'
@@ -15,10 +16,12 @@ import magicStick from '../images/magicStick.png'
 import brain from '../images/brain.png'
 import questionMark from '../images/questionMark.png'
 import loader_image from '../images/loader.gif'
+import updater_gif from '../images/updater.gif'
 import addPage from '../images/addPage.png'
 import Firebase from '../firebase'
 import firebase from 'firebase'
 import { Link } from 'react-router-dom'
+import Updater from './Updater'
 
 export default () => {
     const db = Firebase.firestore()
@@ -28,10 +31,13 @@ export default () => {
     const [displayRandomStudent, setDisplayRandomStudent] = useState(false)
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
+    const { user, refreshUser } = useUser(currentUser.uid)
     const { students, loading } = useStudents(currentUser.uid)
 
     const { groups } = useGroups(currentUser.uid)
     const { periodes, runningPeriode } = usePeriodes(currentUser.uid)
+    const [updating, setUpdating] = useState(false)
+
     const [displayedGroup, setDisplayedGroup] = useState('tous')
     const [hardStudents, setHardStudents] = useState<
         firebase.firestore.DocumentData[]
@@ -180,8 +186,30 @@ export default () => {
         )
     }
 
+    if (updating === true) {
+        return (
+            <div className="w-full h-screen flex flex-col justify-center items-center">
+                <div className="h-full flex flex-col justify-center items-center">
+                    <div className="font-title text-4xl mb-8 text-bold">
+                        Mise à jour
+                    </div>
+                    <div className="w-48 h-48 mt-8">
+                        <img src={updater_gif} alt="" />
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div className="w-full h-screen flex flex-col">
+            <Updater
+                userId={currentUser.uid}
+                userVersion={user!.version}
+                refreshUser={refreshUser}
+                students={students}
+                setUpdating={setUpdating}
+            />
             <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full">
                 {title}
             </div>

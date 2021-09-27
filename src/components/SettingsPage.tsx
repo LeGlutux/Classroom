@@ -2,7 +2,13 @@ import React, { useContext, useRef, useState } from 'react'
 import CreateGroups from './Create/CreateGroups'
 import CreateStudent from './Create/CreateStudent'
 import NavBar from './NavBar'
-import { useAllUsersIds, useGroups, useLists } from '../hooks'
+import {
+    useAllUsersIds,
+    useVersion,
+    useGroups,
+    useLists,
+    useUser,
+} from '../hooks'
 import Firebase from 'firebase/app'
 import 'react-datepicker/dist/react-datepicker.css'
 import firebase from 'firebase/app'
@@ -20,8 +26,10 @@ export default () => {
     const [confirm, setConfirm] = useState(false)
     const [confirm2, setConfirm2] = useState(false)
     const { currentUser } = useContext(AuthContext)
+    const { version } = useVersion()
     if (currentUser === null) return <div />
     const { groups, refreshGroups } = useGroups(currentUser.uid)
+    const user = useUser(currentUser.uid)
     const history = useHistory()
     const { students } = useStudents(currentUser.uid)
     const { periodes, refreshPeriodes, runningPeriode, refreshRunningPeriode } =
@@ -40,21 +48,37 @@ export default () => {
 
     //////////////////////////// UPDATE ////////////////////////
 
+    // const users = [
+    //     '0NOwYmXPFXXRx7VRjkIEWID3ih22',
+    //     '26kiVujCgjNpzCkYwugqkrt63Hx1',
+    //     '9jSmI33IBdYKK3FMahg98CZBUSc2',
+    //     '9yWVfWghOzP4Oykdv5O7vdzO2dZ2',
+    //     'DAEVUEgE9MPVnfL96dbuRoG7Giz2',
+    //     'T8GoW8hFrwM6HYssAoZQnfRDu2s1',
+    //     'UMTmrkzngnVMznMhZY02r7GaB223',
+    //     'mtckGF4W7eR2fsvNgegRRjfWkZE2',
+    //     'nu1lUSMNxNM0IDC8XAiTMOrLLUp2',
+    //     'yp8DVglUprVCqM8mTmnoZ8cr2yJ3',
+    // ]
+
+    // users.forEach((u) => {
+    //     db.collection('users').doc(u).update({ version: '3.2' })
+    // })
+
     const adminConnected = currentUser.uid === 'yp8DVglUprVCqM8mTmnoZ8cr2yJ3'
 
     const allUsersIds = adminConnected ? useAllUsersIds(currentUser.uid) : []
-    const updateNotes = (allUsersIds: string[]) => {
+    const updateUsersProps = (usersIds: string[]) => {
         if (currentUser.uid === 'yp8DVglUprVCqM8mTmnoZ8cr2yJ3') {
-            allUsersIds.forEach((userId) => {
-                students.forEach((s) => {
-                    db.collection('users')
-                        .doc(userId)
-                        .collection('eleves')
-                        .doc(s.id)
-                        .update({ notes: '' })
-                })
+            usersIds.forEach((userId) => {
+                // db.collection('users').doc(userId).update({ props: ??? })
             })
         }
+    }
+
+    const launchNewVersion = () => {
+        const newVersion = version + 0.1
+        db.collection('props').doc('app-props').update({ version: newVersion })
     }
 
     //////////////////////////// UPDATE ////////////////////////
@@ -171,10 +195,7 @@ export default () => {
                 </button>
                 <button
                     className={`${
-                        (actualRef === 3 &&
-                            currentUser.uid !==
-                                'yp8DVglUprVCqM8mTmnoZ8cr2yJ3') ||
-                        hide
+                        (actualRef === 3 && !adminConnected) || hide
                             ? 'invisible'
                             : 'visible'
                     }
@@ -256,9 +277,7 @@ export default () => {
 
                 <div
                     className={`flex z-30 flex-col mt-2 h-100 w-64 px-12 overflow-visible shadow-custom mx-6 bg-gray-100 pb-4 rounded xl:mt-12 xl:mx-64 ${
-                        currentUser.uid === 'yp8DVglUprVCqM8mTmnoZ8cr2yJ3'
-                            ? 'visible'
-                            : 'invisible'
+                        adminConnected ? 'visible' : 'invisible'
                     }`}
                     ref={ref4}
                 >
@@ -267,11 +286,14 @@ export default () => {
                             <div className="relative top-0 font-title text-3xl text-center">
                                 Si vous voyez ceci, prévenir le développeur !
                             </div>
+                            <div>
+                                {'version: '} {version}
+                            </div>
                             <button
-                                className="flex h-8 w-56 mt-8 self-center bg-red-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap"
-                                onClick={() => updateNotes(allUsersIds)}
+                                className="flex h-8 w-56 mt-8 self-center bg-green-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap"
+                                onClick={() => launchNewVersion()}
                             >
-                                Update notes to ''
+                                Lancer une nouvelle version
                             </button>
                         </div>
                     </div>

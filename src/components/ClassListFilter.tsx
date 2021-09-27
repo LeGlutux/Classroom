@@ -13,10 +13,9 @@ export default ({
     setDisplayedGroup,
     closeMenu,
 }: ClassListFilterProps) => {
-
     const replacer = (word: string) => {
-        return word.replace(/ /g, ":")
-    } 
+        return word.replace(/ /g, ':')
+    }
     return (
         <div className="flex overflow-x-scroll w-9/12 ml-2 pr-1 bg-tranparent justify-start">
             {groups.map((group, index) => {

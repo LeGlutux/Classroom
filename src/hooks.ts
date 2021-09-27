@@ -15,6 +15,7 @@ import {
     fetchComment,
     fetchStudentsIds,
     fetchAllUsersIds,
+    fetchVersion,
 } from './database'
 
 export const useGroups = (currentUserId: string) => {
@@ -28,7 +29,6 @@ export const useGroups = (currentUserId: string) => {
             setLoading(false)
         }
         fetch()
-
     }, [currentUserId])
 
     const refreshGroups = async () => {
@@ -41,14 +41,14 @@ export const useGroups = (currentUserId: string) => {
 }
 
 export const useCrosses = (currentUserId: string, allStudentsIds: string[]) => {
-    const [crosses, setCrosses] = useState<{ id: string, docs: firebase.firestore.DocumentData[] }[]>()
+    const [crosses, setCrosses] =
+        useState<{ id: string; docs: firebase.firestore.DocumentData[] }[]>()
 
     useEffect(() => {
         const fetch = async () => {
             setCrosses(await fetchCrosses(currentUserId, allStudentsIds))
         }
         fetch()
-
     }, [currentUserId, allStudentsIds])
 
     const refreshCrosses = async () => {
@@ -58,7 +58,11 @@ export const useCrosses = (currentUserId: string, allStudentsIds: string[]) => {
     return { crosses, refreshCrosses }
 }
 
-export const useCross = (currentUserId: string, currentStudentId: string, refresher?: number) => {
+export const useCross = (
+    currentUserId: string,
+    currentStudentId: string,
+    refresher?: number
+) => {
     const [cross, setCross] = useState<firebase.firestore.DocumentData[]>([])
     const [loading, setLoading] = useState(true)
 
@@ -69,18 +73,13 @@ export const useCross = (currentUserId: string, currentStudentId: string, refres
             setLoading(false)
         }
         fetch()
-
-    },
-        [currentUserId, currentStudentId, refresher]
-
-    )
+    }, [currentUserId, currentStudentId, refresher])
 
     useEffect(() => {
         const fetch = async () => {
             setCross(await fetchCross(currentUserId, currentStudentId))
         }
         fetch()
-
     }, [currentUserId, currentStudentId])
 
     const refreshCross = async () => {
@@ -90,37 +89,55 @@ export const useCross = (currentUserId: string, currentStudentId: string, refres
     return { loading, cross, refreshCross }
 }
 
-export const useListState = (currentUserId: string, currentStudentId: string, currentListId: string) => {
+export const useListState = (
+    currentUserId: string,
+    currentStudentId: string,
+    currentListId: string
+) => {
     const [listState, setListState] = useState<number[]>([0, 0, 0, 0])
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         const fetch = async () => {
             setLoading(true)
-            setListState(await fetchListState(currentUserId, currentStudentId, currentListId))
+            setListState(
+                await fetchListState(
+                    currentUserId,
+                    currentStudentId,
+                    currentListId
+                )
+            )
             setLoading(false)
         }
         fetch()
-
     }, [currentUserId, currentStudentId, currentListId])
 
     useEffect(() => {
         const fetch = async () => {
-            setListState(await fetchListState(currentUserId, currentStudentId, currentListId))
+            setListState(
+                await fetchListState(
+                    currentUserId,
+                    currentStudentId,
+                    currentListId
+                )
+            )
         }
         fetch()
-
     }, [currentUserId, currentStudentId, currentListId])
 
     const refreshState = async () => {
-        setListState(await fetchListState(currentUserId, currentStudentId, currentListId))
+        setListState(
+            await fetchListState(currentUserId, currentStudentId, currentListId)
+        )
     }
 
     return { listState, loading, refreshState }
 }
 
 export const useStudents = (currentUserId: string) => {
-    const [students, setStudents] = useState<firebase.firestore.DocumentData[]>([])
+    const [students, setStudents] = useState<firebase.firestore.DocumentData[]>(
+        []
+    )
     const [allIds, setAllIds] = useState<string[]>([])
     const [loading, setLoading] = useState(true)
 
@@ -132,7 +149,6 @@ export const useStudents = (currentUserId: string) => {
             setLoading(false)
         }
         fetch()
-
     }, [currentUserId])
 
     const filterStudents = async (group: string) => {
@@ -160,7 +176,6 @@ export const usePeriodes = (currentUserId: string) => {
             setPeriodes(await fetchPeriodes(currentUserId))
         }
         fetch()
-
     }, [currentUserId])
 
     const refreshPeriodes = async () => {
@@ -174,9 +189,7 @@ export const usePeriodes = (currentUserId: string) => {
             setRunningPeriode(await fetchRunningPeriode(currentUserId))
         }
         fetch()
-
     }, [currentUserId])
-
 
     const refreshRunningPeriode = async () => {
         setRunningPeriode(await fetchRunningPeriode(currentUserId))
@@ -184,7 +197,6 @@ export const usePeriodes = (currentUserId: string) => {
 
     return { periodes, refreshPeriodes, runningPeriode, refreshRunningPeriode }
 }
-
 
 export const usePaths = () => {
     const [paths, setPaths] = useState<string[]>([])
@@ -194,7 +206,6 @@ export const usePaths = () => {
             setPaths(await fetchPaths())
         }
         fetch()
-
     }, [])
 
     const refreshPaths = async () => {
@@ -212,7 +223,6 @@ export const useStudent = (currentUserId: string, studentId: string) => {
             setStudent(await fetchStudentWithId(currentUserId, studentId))
         }
         fetch()
-
     }, [currentUserId, studentId])
 
     return student
@@ -226,10 +236,10 @@ export const useUser = (currentUserId: string) => {
             setUser(await fetchUser(currentUserId))
         }
         fetch()
-
     }, [currentUserId])
+    const refreshUser = async () => setUser(await fetchUser(currentUserId))
 
-    return user
+    return { user, refreshUser }
 }
 
 export const useAllUsersIds = (currentUserId: string) => {
@@ -256,7 +266,6 @@ export const useLists = (currentUserId: string, listsRefresher?: number) => {
             setLoading(false)
         }
         fetch()
-
     }, [currentUserId, listsRefresher])
 
     return { lists, loading }
@@ -272,19 +281,35 @@ export const useComment = (currentUserId: string, currentStudentId: string) => {
         fetch()
     }, [currentUserId, currentStudentId])
 
-    const refreshComment = async () => setComment(await fetchComment(currentUserId, currentStudentId))
+    const refreshComment = async () =>
+        setComment(await fetchComment(currentUserId, currentStudentId))
 
     return { comment, refreshComment }
 }
 
-/////////////////////////////// Click outside component ////////////////////////////////////
+export const useVersion = () => {
+    const [version, setVersion] = useState<number>(-1)
+    const [loading, setLoading] = useState(true)
 
+    useEffect(() => {
+        const fetch = async () => {
+            setLoading(true)
+            setVersion(await fetchVersion())
+            setLoading(false)
+        }
+        fetch()
+    }, [])
+
+    return { version, loading }
+}
+
+/////////////////////////////// Click outside component ////////////////////////////////////
 
 type AnyEvent = MouseEvent | TouchEvent
 
 function useOnClickOutside<T extends HTMLElement = HTMLElement>(
     ref: RefObject<T>,
-    handler: (event: AnyEvent) => void,
+    handler: (event: AnyEvent) => void
 ) {
     useEffect(() => {
         const listener = (event: AnyEvent) => {
@@ -314,19 +339,19 @@ export default useOnClickOutside
 
 /////////////////////////////// Get if element is on viewport ////////////////////////////////////
 
-
 export const useOnScreen = (ref: React.RefObject<HTMLDivElement>) => {
-
     const [isIntersecting, setIntersecting] = useState(false)
 
-    const observer = new IntersectionObserver(
-        ([entry]) => setIntersecting(entry.isIntersecting)
+    const observer = new IntersectionObserver(([entry]) =>
+        setIntersecting(entry.isIntersecting)
     )
 
     useEffect(() => {
         observer.observe(ref.current!)
         // Remove the observer as soon as the component is unmounted
-        return () => { observer.disconnect() }
+        return () => {
+            observer.disconnect()
+        }
     }, [ref, observer])
 
     return isIntersecting
