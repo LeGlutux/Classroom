@@ -13,8 +13,6 @@ interface UpdaterProps {
 export default (props: UpdaterProps) => {
     const { version, loading } = useVersion()
 
-    console.log('ma version ', props.userVersion, 'version actuelle ', version)
-
     const [checkUpdate, setCheckUpdate] = useState(true)
     const db = firebase.firestore()
     const updateRequired =
@@ -26,9 +24,7 @@ export default (props: UpdaterProps) => {
         // props.students.forEach((s) => {
         //     db.collection('users')
         //         .doc(props.userId)
-        //         .collection('eleves')
-        //         .doc(s.id)
-        //         .update({})
+        //         .update({ icons: [1, 2, 3, 4, 0, 0] })
         // })
 
         db.collection('users').doc(props.userId).update({ version })

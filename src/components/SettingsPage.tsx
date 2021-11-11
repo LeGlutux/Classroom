@@ -22,6 +22,8 @@ import { cards } from '../classes'
 import openCard from '../images/openCard.png'
 import closeCard from '../images/closeCard.png'
 
+import CardCustomer from './CardCustomization/CardCustomer'
+
 export default () => {
     const [confirm, setConfirm] = useState(false)
     const [confirm2, setConfirm2] = useState(false)
@@ -43,6 +45,7 @@ export default () => {
     const ref2 = useRef<HTMLDivElement>(null)
     const ref3 = useRef<HTMLDivElement>(null)
     const ref4 = useRef<HTMLDivElement>(null)
+    const ref5 = useRef<HTMLDivElement>(null)
 
     const refs = [ref0, ref1, ref2, ref3, ref4]
 
@@ -59,10 +62,13 @@ export default () => {
     //     'mtckGF4W7eR2fsvNgegRRjfWkZE2',
     //     'nu1lUSMNxNM0IDC8XAiTMOrLLUp2',
     //     'yp8DVglUprVCqM8mTmnoZ8cr2yJ3',
+    //     'meiyn54Sf69sGMvVNieJORfJeJA5',
     // ]
 
     // users.forEach((u) => {
-    //     db.collection('users').doc(u).update({ version: '3.2' })
+    //     db.collection('users')
+    //         .doc(u)
+    //         .update({ icons: [1, 2, 3, 4, 0, 0] })
     // })
 
     const adminConnected = currentUser.uid === 'yp8DVglUprVCqM8mTmnoZ8cr2yJ3'
@@ -81,7 +87,7 @@ export default () => {
         db.collection('props').doc('app-props').update({ version: newVersion })
     }
 
-    //////////////////////////// UPDATE ////////////////////////
+    //////////////////////////// Scrolling ////////////////////////
 
     const scrollTo = (refN: number) =>
         refs[refN].current?.scrollIntoView({
@@ -92,6 +98,8 @@ export default () => {
     const [hide, setHide] = useState(false)
     const [actualRef, setActualRef] = useState<number>(0)
 
+    ///////////////////////// Add Periode ////////////////////////
+
     const handleAddPeriode = () => {
         db.collection('users')
             .doc(currentUser.uid)
@@ -99,6 +107,9 @@ export default () => {
                 periodes: firebase.firestore.FieldValue.arrayUnion(new Date()),
             })
     }
+
+    ///////////////////////// Delete All ////////////////////////
+
     const handleDeleteAll = () => {
         students.forEach((student) => {
             lists.forEach((l) => {
@@ -195,7 +206,7 @@ export default () => {
                 </button>
                 <button
                     className={`${
-                        (actualRef === 3 && !adminConnected) || hide
+                        (actualRef === 4 && !adminConnected) || hide
                             ? 'invisible'
                             : 'visible'
                     }
@@ -226,7 +237,14 @@ export default () => {
                     />
                 </div>
 
-                <div className={`${cards}`} ref={ref2}>
+                <div
+                    className={`flex z-30 flex-col mt-2 h-100 w-64 px-12 overflow-visible shadow-custom mx-6 bg-gray-100 pb-4 rounded xl:mt-12 xl:mx-64 `}
+                    ref={ref2}
+                >
+                    <CardCustomer userId={currentUser.uid} />
+                </div>
+
+                <div className={`${cards}`} ref={ref3}>
                     <div className="flex flex-col h-full items-center pb-4">
                         <div className="flex flex-col h-full justify-around items-center">
                             <div className="relative top-0 font-title text-3xl text-center">
@@ -258,7 +276,7 @@ export default () => {
                     </div>
                 </div>
 
-                <div className={cards} ref={ref3}>
+                <div className={cards} ref={ref4}>
                     <div className="flex flex-col h-full justify-around items-center">
                         <div className="flex flex-col h-full justify-around items-center">
                             <div className="relative top-0 font-title text-3xl text-center">
@@ -279,7 +297,7 @@ export default () => {
                     className={`flex z-30 flex-col mt-2 h-100 w-64 px-12 overflow-visible shadow-custom mx-6 bg-gray-100 pb-4 rounded xl:mt-12 xl:mx-64 ${
                         adminConnected ? 'visible' : 'invisible'
                     }`}
-                    ref={ref4}
+                    ref={ref5}
                 >
                     <div className="flex flex-col h-full justify-around items-center">
                         <div className="flex flex-col h-full justify-around items-center">

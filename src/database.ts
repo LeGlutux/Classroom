@@ -211,3 +211,12 @@ export const fetchVersion = async () => {
 
     return version
 }
+
+export const fetchIcons = async (currentUserId: string) => {
+    const db = Firebase.firestore()
+    const querySnapshot = await db.collection('users').doc(currentUserId).get()
+
+    const data = querySnapshot.data()?.icons
+
+    return data
+}

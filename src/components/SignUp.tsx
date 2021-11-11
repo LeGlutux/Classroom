@@ -35,6 +35,7 @@ const SignUp = () => {
                         periodes: [new Date()],
                         runningPeriode: 1 as number,
                         version: 0,
+                        icons: [1, 2, 3, 4, 0, 0],
                     })
 
                 history.push('/')

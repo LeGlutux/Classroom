@@ -29,7 +29,9 @@ export default ({
                             setDisplayedGroup(group)
                             closeMenu(false)
                         }}
-                        className={`flex font-studentName h-16 my-4 bg-gray-300 justify-center shadow-custom rounded-lg pt-1 self-center text-4xl ${longestGroupLength > 4 ? 'w-56' : 'w-32'}`}
+                        className={`flex font-studentName h-16 my-4 bg-gray-300 justify-center shadow-custom rounded-lg pt-1 self-center text-4xl ${
+                            longestGroupLength > 4 ? 'w-56' : 'w-32'
+                        }`}
                         key={index}
                     >
                         {group}

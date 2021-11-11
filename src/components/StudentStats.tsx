@@ -1,27 +1,26 @@
 import React, { useContext, useState } from 'react'
-import { useStudent, useGroups, useCross } from '../hooks'
+import { useStudent, useGroups, useCross, useIcons } from '../hooks'
 import { AuthContext } from '../Auth'
 import { useParams, Link, useHistory } from 'react-router-dom'
 import closeCard from '../images/closeCard.png'
 import firebase from 'firebase/app'
 import CrossTab from './CrossTab'
-import alarm from '../images/behaviour.png'
-import bookPile from '../images/homework.png'
-import schoolBag from '../images/supply.png'
-import pen from '../images/observation.png'
 import backArrow from '../images/return.png'
 import ConfirmModal from './ConfirmModal'
 import edit from '../images/edit.png'
+import { handleIcon } from '../functions'
 
 export default () => {
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
+    const icons = useIcons(currentUser.uid)
     const { id } = useParams()
     if (id === undefined) return <div />
     const [crossRefresher, setCrossRefresher] = useState(0)
     const { cross } = useCross(currentUser.uid, id, crossRefresher)
     const student = useStudent(currentUser.uid, id)
     if (student === undefined) return <div />
+
     const crossFilter = (crossType: string) => {
         const filtered = cross.filter(
             (element: firebase.firestore.DocumentData) =>
@@ -39,6 +38,7 @@ export default () => {
             student={student}
             studentId={id}
             crossFilter={crossFilter}
+            icons={icons.icons}
         />
     )
 }
@@ -50,6 +50,7 @@ const View = ({
     student,
     studentId,
     crossFilter,
+    icons,
 }: {
     currentUser: firebase.User
     crossRefresher: number
@@ -57,6 +58,7 @@ const View = ({
     student: firebase.firestore.DocumentData
     studentId: string
     crossFilter: (crossType: string) => firebase.firestore.DocumentData[]
+    icons: number[]
 }) => {
     const { groups } = useGroups(currentUser.uid)
     const startDate = new Date('2021-08-30 00:00:01')
@@ -77,10 +79,10 @@ const View = ({
     const [editNotes, setEditNotes] = useState(false)
     const [notes, setNotes] = useState(student.notes)
     const [notesInputValue, setNotesInputValue] = useState(notes)
-    const shortedNotes = (notes: string) => {
-        const shortedNotes =
-            notes.length >= 60 ? notes.substring(0, 56).concat('...') : notes
-        return shortedNotes
+    const shortedNotes = (note: string) => {
+        const shortNotes =
+            note.length >= 60 ? note.substring(0, 56).concat('...') : note
+        return shortNotes
     }
 
     const confirmAction = () => {
@@ -88,7 +90,7 @@ const View = ({
             .doc(currentUser.uid)
             .collection('eleves')
             .doc(studentId)
-            .update({notes: notesInputValue})
+            .update({ notes: notesInputValue })
         setNotes(notesInputValue)
     }
 
@@ -133,6 +135,8 @@ const View = ({
             history.goBack()
         } else alert("Cette classe n'existe pas")
     }
+
+    const iconsNumber = icons.indexOf(0) === -1 ? 6 : icons.indexOf(0)
 
     return (
         <div className="flex flex-col h-screen">
@@ -270,7 +274,7 @@ const View = ({
                     </div>
                 </div>
                 <div
-                    className={`flex w-full mb-8 mr-4 justify-center font-title2 text-3xl items-center `}
+                    className={`flex w-full mb-4 mr-4 justify-center font-title2 text-3xl items-center `}
                 >
                     {student.classes}
                 </div>
@@ -288,19 +292,73 @@ const View = ({
             </div>
 
             <div className="flex flex-row ml-4 mb-4">
-                <div className="w-6 text-sm font-bold h-4 my-2">Sem</div>
+                <div className="w-4 text-sm font-bold h-4 my-2">S</div>
                 <div className="w-full h-4 flex flex-row justify-evenly my-2 text-xl">
-                    <div className="flex flex-row w-full mx-4 items-center justify-center">
-                        <img className="h-10 w-10" src={alarm} alt="" />
+                    <div
+                        className={`flex flex-row w-full mx-4 items-center justify-center ${
+                            icons[0] === 0 ? 'hidden' : 'visible'
+                        } `}
+                    >
+                        <img
+                            className="h-6 w-6"
+                            src={handleIcon(icons[0])}
+                            alt=""
+                        />
                     </div>
-                    <div className="flex flex-row w-full mx-4 items-center justify-center">
-                        <img className="h-10 w-10" src={bookPile} alt="" />
+                    <div
+                        className={`flex flex-row w-full mx-4 items-center justify-center ${
+                            icons[1] === 0 ? 'hidden' : 'visible'
+                        } `}
+                    >
+                        <img
+                            className="h-6 w-6"
+                            src={handleIcon(icons[1])}
+                            alt=""
+                        />
                     </div>
-                    <div className="flex flex-row w-full mx-4 items-center justify-center">
-                        <img className="h-10 w-10" src={schoolBag} alt="" />
+                    <div
+                        className={`flex flex-row w-full mx-4 items-center justify-center ${
+                            icons[2] === 0 ? 'hidden' : 'visible'
+                        } `}
+                    >
+                        <img
+                            className="h-6 w-6"
+                            src={handleIcon(icons[2])}
+                            alt=""
+                        />
                     </div>
-                    <div className="flex flex-row w-full mx-4 items-center justify-center">
-                        <img className="h-10 w-10" src={pen} alt="" />
+                    <div
+                        className={`flex flex-row w-full mx-4 items-center justify-center ${
+                            icons[3] === 0 ? 'hidden' : 'visible'
+                        } `}
+                    >
+                        <img
+                            className="h-6 w-6"
+                            src={handleIcon(icons[3])}
+                            alt=""
+                        />
+                    </div>
+                    <div
+                        className={`flex flex-row w-full mx-4 items-center justify-center ${
+                            icons[4] === 0 ? 'hidden' : 'visible'
+                        } `}
+                    >
+                        <img
+                            className="h-6 w-6"
+                            src={handleIcon(icons[4])}
+                            alt=""
+                        />
+                    </div>
+                    <div
+                        className={`flex flex-row w-full mx-4 items-center justify-center ${
+                            icons[5] === 0 ? 'hidden' : 'visible'
+                        } `}
+                    >
+                        <img
+                            className="h-6 w-6"
+                            src={handleIcon(icons[5])}
+                            alt=""
+                        />
                     </div>
                 </div>
             </div>
@@ -317,6 +375,7 @@ const View = ({
                             }
                             index={weeks.length - index}
                             key={index}
+                            iconsNumber={icons.indexOf(0)}
                         />
                     )
                 })}
@@ -324,17 +383,47 @@ const View = ({
             <div className="flex flex-row ml-4 mb-2">
                 <div className="w-6 text-sm font-bold h-4 my-2" />
                 <div className="w-full h-4 flex flex-row justify-evenly my-2 text-xl">
-                    <div className="flex flex-row w-full mx-4 items-center justify-center">
+                    <div
+                        className={`flex flex-row w-full mx-4 items-center justify-center ${
+                            iconsNumber < 1 ? 'hidden' : 'visible'
+                        }`}
+                    >
                         {crossFilter('behaviour').length}
                     </div>
-                    <div className="flex flex-row w-full mx-4 items-center justify-center">
+                    <div
+                        className={`flex flex-row w-full mx-4 items-center justify-center ${
+                            iconsNumber < 2 ? 'hidden' : 'visible'
+                        }`}
+                    >
                         {crossFilter('homework').length}
                     </div>
-                    <div className="flex flex-row w-full mx-4 items-center justify-center">
+                    <div
+                        className={`flex flex-row w-full mx-4 items-center justify-center ${
+                            iconsNumber < 3 ? 'hidden' : 'visible'
+                        }`}
+                    >
                         {crossFilter('supply').length}
                     </div>
-                    <div className="flex flex-row w-full mx-4 items-center justify-center">
+                    <div
+                        className={`flex flex-row w-full mx-4 items-center justify-center ${
+                            iconsNumber < 4 ? 'hidden' : 'visible'
+                        }`}
+                    >
                         {crossFilter('observation').length}
+                    </div>
+                    <div
+                        className={`flex flex-row w-full mx-4 items-center justify-center ${
+                            iconsNumber < 5 ? 'hidden' : 'visible'
+                        }`}
+                    >
+                        {crossFilter('calculator').length}
+                    </div>
+                    <div
+                        className={`flex flex-row w-full mx-4 items-center justify-center ${
+                            iconsNumber < 6 ? 'hidden' : 'visible'
+                        }`}
+                    >
+                        {crossFilter('phone').length}
                     </div>
                 </div>
             </div>
@@ -342,41 +431,75 @@ const View = ({
                 <div className="w-6 text-sm font-bold h-4 my-2" />
                 <div className="w-full h-4 flex flex-row justify-evenly my-2 text-xl">
                     <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center `}
+                        className={`flex flex-row w-full mx-4 items-center justify-center ${
+                            iconsNumber < 1 ? 'hidden' : 'visible'
+                        }`}
                     >
                         <button
                             onClick={() => {
                                 handleDeleteCross('behaviour')
                             }}
                         >
-                            <img className="h-10 w-10" src={backArrow} alt="" />
+                            <img className="h-8 w-8" src={backArrow} alt="" />
                         </button>
                     </div>
                     <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center`}
+                        className={`flex flex-row w-full mx-4 items-center justify-center ${
+                            iconsNumber < 2 ? 'hidden' : 'visible'
+                        }`}
                     >
                         <button
                             onClick={() => {
                                 handleDeleteCross('homework')
                             }}
                         >
-                            <img className="h-10 w-10" src={backArrow} alt="" />
+                            <img className="h-8 w-8" src={backArrow} alt="" />
                         </button>
                     </div>
                     <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center `}
+                        className={`flex flex-row w-full mx-4 items-center justify-center ${
+                            iconsNumber < 3 ? 'hidden' : 'visible'
+                        }`}
                     >
                         <button onClick={() => handleDeleteCross('supply')}>
-                            <img className="h-10 w-10" src={backArrow} alt="" />
+                            <img className="h-8 w-8" src={backArrow} alt="" />
                         </button>
                     </div>
                     <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center `}
+                        className={`flex flex-row w-full mx-4 items-center justify-center ${
+                            iconsNumber < 4 ? 'hidden' : 'visible'
+                        }`}
                     >
                         <button
                             onClick={() => handleDeleteCross('observation')}
                         >
-                            <img className="h-10 w-10" src={backArrow} alt="" />
+                            <img className="h-8 w-8" src={backArrow} alt="" />
+                        </button>
+                    </div>
+                    <div
+                        className={`flex flex-row w-full mx-4 items-center justify-center ${
+                            iconsNumber < 5 ? 'hidden' : 'visible'
+                        }`}
+                    >
+                        <button
+                            onClick={() => {
+                                handleDeleteCross('calculator')
+                            }}
+                        >
+                            <img className="h-8 w-8" src={backArrow} alt="" />
+                        </button>
+                    </div>
+                    <div
+                        className={`flex flex-row w-full mx-4 items-center justify-center ${
+                            iconsNumber < 6 ? 'hidden' : 'visible'
+                        }`}
+                    >
+                        <button
+                            onClick={() => {
+                                handleDeleteCross('phone')
+                            }}
+                        >
+                            <img className="h-8 w-8" src={backArrow} alt="" />
                         </button>
                     </div>
                 </div>
@@ -388,7 +511,6 @@ const View = ({
                         className="flex h-8 w-8 justify-center items-center"
                         onClick={() => {
                             setEditNotes(true)
-                            console.log('clicked')
                         }}
                     >
                         <img className="h-6 w-6" src={edit} alt="" />

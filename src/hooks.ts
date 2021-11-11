@@ -16,6 +16,7 @@ import {
     fetchStudentsIds,
     fetchAllUsersIds,
     fetchVersion,
+    fetchIcons,
 } from './database'
 
 export const useGroups = (currentUserId: string) => {
@@ -301,6 +302,22 @@ export const useVersion = () => {
     }, [])
 
     return { version, loading }
+}
+
+export const useIcons = (currentUserId: string) => {
+    const [icons, setIcons] = useState<number[]>([1, 2, 3, 4, 0, 0])
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        const fetch = async () => {
+            setLoading(true)
+            setIcons(await fetchIcons(currentUserId))
+            setLoading(false)
+        }
+        fetch()
+    }, [currentUserId])
+
+    return { icons, loading }
 }
 
 /////////////////////////////// Click outside component ////////////////////////////////////
