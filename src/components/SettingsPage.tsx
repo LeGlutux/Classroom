@@ -47,7 +47,7 @@ export default () => {
     const ref4 = useRef<HTMLDivElement>(null)
     const ref5 = useRef<HTMLDivElement>(null)
 
-    const refs = [ref0, ref1, ref2, ref3, ref4]
+    const refs = [ref0, ref1, ref2, ref3, ref4, ref5]
 
     //////////////////////////// UPDATE ////////////////////////
 
