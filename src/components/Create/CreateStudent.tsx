@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import solo from '../../images/solo.png'
 import Firebase from '../../firebase'
 import NewStudentGroups from '../NewStudentGroups'
@@ -19,12 +19,20 @@ export default (props: Props) => {
     const { lists } = useLists(props.currentUserId)
     const firstInputRef = useRef<HTMLInputElement>(null)
 
+    const [clickable, setClickable] = useState(false)
+
+    useEffect(() => {
+        if (nameInputValue !== '' &&
+            surnameInputValue !== '') { setClickable(true) }
+        else setClickable(false)
+        console.log(clickable)
+    }, [nameInputValue, surnameInputValue])
+
     return (
         <div className="flex flex-col">
             <div
-                className={`absolute sm:ok-position2 w-10 h-10 ${
-                    sent ? 'fade-out' : 'invisible'
-                }`}
+                className={`absolute sm:ok-position2 w-10 h-10 ${sent ? 'fade-out' : 'invisible'
+                    }`}
             >
                 <img src={ok} alt="ok" />
             </div>
@@ -133,9 +141,14 @@ export default (props: Props) => {
                                 )
                             })}
                         </div>
+                        <div
+                            className={`flex h-12 w-40 self-center pt-2 mt-6 bg-gray-300 rounded text-gray-100 text-lg font-bold justify-center ${clickable ? 'hidden' : 'visible'}`}
+                        >
+                            Ajouter l'élève
+                        </div>
                         <button
                             type="submit"
-                            className="flex h-12 w-40 self-center pt-2 mt-6 bg-orange-500 rounded text-white text-lg font-bold justify-center"
+                            className={`flex h-12 w-40 self-center pt-2 mt-6 bg-orange-500 rounded text-white text-lg font-bold justify-center ${clickable ? 'visible' : 'hidden'}`}
                         >
                             Ajouter l'élève
                         </button>

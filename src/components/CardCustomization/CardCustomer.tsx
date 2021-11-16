@@ -9,6 +9,7 @@ import { useIcons } from '../../hooks'
 
 interface CardCustomerProps {
     userId: string
+    setSaveConfirm: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export default (props: CardCustomerProps) => {
@@ -17,10 +18,11 @@ export default (props: CardCustomerProps) => {
 
     const [icons, setIcons] = useState(userIcons)
     const [clicked, setClicked] = useState(false)
+    const [initialIcons, setInitialIcons] = useState(userIcons)
 
     const iconsVisualInitialState = (iconsList: number[]) => {
         const initialState = [] as string[]
-        ;[0, 1, 2, 3, 4, 5].forEach((i) =>
+        [0, 1, 2, 3, 4, 5].forEach((i) =>
             initialState.push(handleIcon(iconsList[i]))
         )
         return initialState
@@ -69,6 +71,7 @@ export default (props: CardCustomerProps) => {
             }
         }
         setClicked(!clicked)
+        setJustSaved(false)
     }
 
     const handleChangeIcon = (index: number, change: number) => {
@@ -97,19 +100,35 @@ export default (props: CardCustomerProps) => {
             setIconsDisplay(iconsD)
         }
         setClicked(!clicked)
+        setJustSaved(false)
     }
 
+    const [justSaved, setJustSaved] = useState(false)
     const handleSave = () => {
         db.collection('users').doc(props.userId).update({
             icons,
         })
+        setJustSaved(true)
+        props.setSaveConfirm(true)
     }
+    const [clickable, setClickable] = useState(false)
+
+    useEffect(() => {
+        if (icons !== initialIcons && justSaved === false) setClickable(true)
+        else setClickable(false)
+        console.log(clickable, icons, initialIcons)
+
+    }, [clicked, initialIcons, justSaved])
 
     return (
-        <div className="flex flex-col h-full justify-around items-center">
+        <div className="flex flex-col h-full justify-around items-center"
+        >
             <div className="flex flex-col h-full justify-around items-center">
                 <div className="relative top-0 font-title text-3xl text-center">
                     Personnalisez vos cartes !
+                </div>
+                <div className='absolute z-50'>
+                    Enregistré
                 </div>
                 <div
                     className={`flex flex-row w-full md:w-1/2 lg:w-1/2 xl:w-1/3 items-center`}
@@ -138,9 +157,8 @@ export default (props: CardCustomerProps) => {
                                 `}
                             >
                                 <div
-                                    className={`flex flex-col ${
-                                        icons[0] === 0 ? 'hidden' : 'visible'
-                                    }`}
+                                    className={`flex flex-col ${icons[0] === 0 ? 'hidden' : 'visible'
+                                        }`}
                                 >
                                     <button
                                         onClick={() => handleChangeIcon(0, 1)}
@@ -176,9 +194,8 @@ export default (props: CardCustomerProps) => {
                                 </div>
 
                                 <div
-                                    className={`flex flex-col ${
-                                        icons[1] === 0 ? 'hidden' : 'visible'
-                                    }`}
+                                    className={`flex flex-col ${icons[1] === 0 ? 'hidden' : 'visible'
+                                        }`}
                                 >
                                     <button
                                         onClick={() => handleChangeIcon(1, 1)}
@@ -213,9 +230,8 @@ export default (props: CardCustomerProps) => {
                                     </button>
                                 </div>
                                 <div
-                                    className={`flex flex-col ${
-                                        icons[2] === 0 ? 'hidden' : 'visible'
-                                    }`}
+                                    className={`flex flex-col ${icons[2] === 0 ? 'hidden' : 'visible'
+                                        }`}
                                 >
                                     <button
                                         onClick={() => handleChangeIcon(2, 1)}
@@ -250,9 +266,8 @@ export default (props: CardCustomerProps) => {
                                     </button>
                                 </div>
                                 <div
-                                    className={`flex flex-col ${
-                                        icons[3] === 0 ? 'hidden' : 'visible'
-                                    }`}
+                                    className={`flex flex-col ${icons[3] === 0 ? 'hidden' : 'visible'
+                                        }`}
                                 >
                                     <button
                                         onClick={() => handleChangeIcon(3, 1)}
@@ -287,9 +302,8 @@ export default (props: CardCustomerProps) => {
                                     </button>
                                 </div>
                                 <div
-                                    className={`flex flex-col ${
-                                        icons[4] === 0 ? 'hidden' : 'visible'
-                                    }`}
+                                    className={`flex flex-col ${icons[4] === 0 ? 'hidden' : 'visible'
+                                        }`}
                                 >
                                     <button
                                         onClick={() => handleChangeIcon(4, 1)}
@@ -324,9 +338,8 @@ export default (props: CardCustomerProps) => {
                                     </button>
                                 </div>
                                 <div
-                                    className={`flex flex-col ${
-                                        icons[5] === 0 ? 'hidden' : 'visible'
-                                    }`}
+                                    className={`flex flex-col ${icons[5] === 0 ? 'hidden' : 'visible'
+                                        }`}
                                 >
                                     <button
                                         onClick={() => handleChangeIcon(5, 1)}
@@ -366,24 +379,27 @@ export default (props: CardCustomerProps) => {
                 </div>{' '}
                 <div className="flex flex-row h-8 w-32 justify-around mt-3">
                     <button
-                        className={`${
-                            icons.indexOf(0) === 1 ? 'invisible' : 'visible'
-                        }`}
+                        className={`${icons.indexOf(0) === 1 ? 'invisible' : 'visible'
+                            }`}
                         onClick={() => handleChangeIconsNumber(-1)}
                     >
-                        <img className="h-12 w-12" src={delete_cross} alt="" />
+                        <img className="h-8 w-8" src={delete_cross} alt="" />
                     </button>
                     <button
-                        className={`${
-                            icons.indexOf(0) === -1 ? 'invisible' : 'visible'
-                        }`}
+                        className={`${icons.indexOf(0) === -1 ? 'invisible' : 'visible'
+                            }`}
                         onClick={() => handleChangeIconsNumber(1)}
                     >
-                        <img className="h-12 w-12" src={add} alt="" />
+                        <img className="h-8 w-8" src={add} alt="" />
                     </button>
                 </div>
+                <div
+                    className={`flex h-16 w-56 mt-8 self-center bg-gray-300 rounded text-gray-100 text-lg font-bold text-center justify-center pt-1 mb-5 flex-wrap ${clickable ? 'hidden' : 'visible'}`}
+                >
+                    Enregistrer les modifications
+                </div>
                 <button
-                    className="flex h-16 w-56 mt-8 self-center bg-green-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap"
+                    className={`flex h-16 w-56 mt-8 self-center bg-orange-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap ${clickable ? 'visible' : 'hidden'}`}
                     onClick={() => handleSave()}
                 >
                     Enregistrer les modifications

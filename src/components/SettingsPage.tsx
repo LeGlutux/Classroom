@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import CreateGroups from './Create/CreateGroups'
 import CreateStudent from './Create/CreateStudent'
 import NavBar from './NavBar'
@@ -27,6 +27,7 @@ import CardCustomer from './CardCustomization/CardCustomer'
 export default () => {
     const [confirm, setConfirm] = useState(false)
     const [confirm2, setConfirm2] = useState(false)
+    const [saveConfirm, setSaveConfirm] = useState(false)
     const { currentUser } = useContext(AuthContext)
     const { version } = useVersion()
     if (currentUser === null) return <div />
@@ -159,6 +160,21 @@ export default () => {
         history.goBack()
     }
 
+    const [count, setCount] = useState(0)
+
+
+    useEffect(() => {
+        if (saveConfirm) {
+            setCount(1)
+        }
+        setTimeout(() => {
+            setSaveConfirm(false)
+        }, 4000)
+        setTimeout(() => {
+            setCount(0)
+        }, 5000)
+    }, [saveConfirm])
+
     return (
         <div className={`w-full h-screen flex flex-col`}>
             <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full">
@@ -190,9 +206,8 @@ export default () => {
                 className={`flex w-full justify-between px-6 settings-page-arrows z-1`}
             >
                 <button
-                    className={`${
-                        actualRef === 0 || hide ? 'invisible' : 'visible'
-                    }
+                    className={`${actualRef === 0 || hide ? 'invisible' : 'visible'
+                        }
                     ${groups.length === 0 ? 'invisible' : 'visible'}
                     `}
                     onClick={() => {
@@ -205,11 +220,10 @@ export default () => {
                     <img className="w-4" src={closeCard} alt="" />
                 </button>
                 <button
-                    className={`${
-                        (actualRef === 4 && !adminConnected) || hide
-                            ? 'invisible'
-                            : 'visible'
-                    }
+                    className={`${(actualRef === 4 && !adminConnected) || hide || actualRef === 5
+                        ? 'invisible'
+                        : 'visible'
+                        }
                     ${groups.length === 0 ? 'invisible' : 'visible'}`}
                     onClick={() => {
                         scrollTo(actualRef + 1)
@@ -241,7 +255,9 @@ export default () => {
                     className={`flex z-30 flex-col mt-2 h-100 w-64 px-12 overflow-visible shadow-custom mx-6 bg-gray-100 pb-4 rounded xl:mt-12 xl:mx-64 `}
                     ref={ref2}
                 >
-                    <CardCustomer userId={currentUser.uid} />
+                    <CardCustomer
+                        userId={currentUser.uid}
+                        setSaveConfirm={setSaveConfirm} />
                 </div>
 
                 <div className={`${cards}`} ref={ref3}>
@@ -294,9 +310,8 @@ export default () => {
                 </div>
 
                 <div
-                    className={`flex z-30 flex-col mt-2 h-100 w-64 px-12 overflow-visible shadow-custom mx-6 bg-gray-100 pb-4 rounded xl:mt-12 xl:mx-64 ${
-                        adminConnected ? 'visible' : 'invisible'
-                    }`}
+                    className={`flex z-30 flex-col mt-2 h-100 w-64 px-12 overflow-visible shadow-custom mx-6 bg-gray-100 pb-4 rounded xl:mt-12 xl:mx-64 ${adminConnected ? 'visible' : 'invisible'
+                        }`}
                     ref={ref5}
                 >
                     <div className="flex flex-col h-full justify-around items-center">
@@ -327,6 +342,12 @@ export default () => {
                     </button>
                 </div>
             </div>
+            <div className={`flex justify-around absolute bottom-0 w-full h-8 z-50 bg-green-400 items-center text-lg text-bold text-white 
+            ${count !== 0 ?
+                    (saveConfirm ? "entering-b" : "fade-out") :
+                    'hidden'
+                }`}
+            >Les modifications ont été enregistrées</div>
 
             <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
                 <NavBar />

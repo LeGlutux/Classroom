@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from 'react'
+import React, { useState, useContext, useRef, useEffect } from 'react'
 import group from '../../images/group.png'
 import Firebase from '../../firebase'
 import firebase from 'firebase/app'
@@ -15,6 +15,13 @@ export default (props: Props) => {
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
     const inputRef = useRef<HTMLInputElement>(null)
+
+    const [clickable, setClickable] = useState(false)
+
+    useEffect(()=> {
+        if (inputValue !== '') setClickable(true)
+        else setClickable(false)
+    }, [inputValue])
 
     return (
         <div className="flex flex-col h-full">
@@ -72,9 +79,14 @@ export default (props: Props) => {
                                 />
                             </div>
                         </div>
+                        <div
+                            className={`flex h-12 w-40 self-center pt-2 mt-6 bg-gray-300 rounded text-gray-100 text-lg font-bold justify-center ${clickable ? "hidden" : 'visible'}`}
+                        >
+                            Ajouter le groupe
+                        </div>
                         <button
                             type="submit"
-                            className="flex h-8 w-40 self-center bg-orange-500 rounded text-white text-lg font-bold justify-center my-3"
+                            className={`flex h-12 w-40 self-center pt-2 mt-6 bg-orange-500 rounded text-white text-lg font-bold justify-center ${clickable ? "visible" : 'hidden'}`}
                         >
                             Ajouter le groupe
                         </button>
