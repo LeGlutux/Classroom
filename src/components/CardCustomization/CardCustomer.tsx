@@ -4,7 +4,7 @@ import add from '../../images/add.png'
 import delete_cross from '../../images/delete.png'
 import up from '../../images/up.png'
 import down from '../../images/down.png'
-import { handleIcon } from '../../functions'
+import { handleIcon, maxValue } from '../../functions'
 import { useIcons } from '../../hooks'
 
 interface CardCustomerProps {
@@ -36,8 +36,6 @@ export default (props: CardCustomerProps) => {
     }, [userIcons, loading])
 
     const db = firebase.firestore()
-
-    const maxValue = 19
 
     const handleChangeIconsNumber = (change: number) => {
         const nextIndex = icons.findIndex((n) => n === 0)

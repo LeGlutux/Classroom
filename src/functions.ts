@@ -19,10 +19,9 @@ import thumbs_up from './images/Icons/thumbs_up.png'
 import timer from './images/Icons/timer.png'
 import warning from './images/Icons/warning.png'
 import help from './images/Icons/help.png'
+import homework from './images/Icons/homework.png'
 
-
-
-
+export const maxValue = 20
 
 export const handleIcon = (iconNumber: number) => {
     if (iconNumber === 1) return alarm_clock
@@ -44,5 +43,6 @@ export const handleIcon = (iconNumber: number) => {
     if (iconNumber === 17) return timer
     if (iconNumber === 18) return warning
     if (iconNumber === 19) return help
+    if (iconNumber === 20) return homework
     else return 'none'
 }
