@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import firebase from 'firebase/app'
 import add from '../../images/add.png'
 import delete_cross from '../../images/delete.png'
@@ -122,14 +122,11 @@ export default (props: CardCustomerProps) => {
         <div className="flex flex-col h-full justify-around items-center"
         >
             <div className="flex flex-col h-full justify-around items-center">
-                <div className="relative top-0 font-title text-3xl text-center">
+                <div className="relative top-0 mt-10 font-title text-3xl text-center">
                     Personnalisez vos cartes !
                 </div>
-                <div className='absolute z-50'>
-                    Enregistré
-                </div>
                 <div
-                    className={`flex flex-row w-full md:w-1/2 lg:w-1/2 xl:w-1/3 items-center`}
+                    className={`flex flex-row w-full items-center`}
                 >
                     <div
                         className={`rounded overflow-hidden ml-2 mt-5 pb-1 mx-2 bg-gray-100 w-full shadow-custom`}
@@ -138,12 +135,12 @@ export default (props: CardCustomerProps) => {
                             <div className="flex flex-row">
                                 <button className={`flex flex-row mt-2`}>
                                     <div
-                                        className={`font-studentName ml-2 text-gray-900 font-medium h-5 text-2xl md:text-3xl lg:text-3x xl:text-4xl`}
+                                        className={`font-studentName ml-2 text-gray-900 font-medium h-5 text-2xl xl:text-3xl`}
                                     >
                                         {'Juan'}
                                     </div>
                                     <div
-                                        className={`font-studentName ml-2 text-gray-900 font-bold text-2xl md:text-3xl lg:text-3x xl:text-4xl`}
+                                        className={`font-studentName ml-2 text-gray-900 font-bold text-2xl xl:text-3xl`}
                                     >
                                         {'Miguel'}
                                     </div>
@@ -168,7 +165,7 @@ export default (props: CardCustomerProps) => {
                                             alt=""
                                         />
                                     </button>
-                                    <div className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full">
+                                    <div className="w-8 h-8 rounded-full">
                                         <img
                                             className=""
                                             src={
@@ -205,7 +202,7 @@ export default (props: CardCustomerProps) => {
                                             alt=""
                                         />
                                     </button>
-                                    <div className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full">
+                                    <div className="w-8 h-8 rounded-full">
                                         <img
                                             className=""
                                             src={
@@ -241,7 +238,7 @@ export default (props: CardCustomerProps) => {
                                             alt=""
                                         />
                                     </button>
-                                    <div className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full">
+                                    <div className="w-8 h-8 rounded-full">
                                         <img
                                             className=""
                                             src={
@@ -277,7 +274,7 @@ export default (props: CardCustomerProps) => {
                                             alt=""
                                         />
                                     </button>
-                                    <div className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full">
+                                    <div className="w-8 h-8 rounded-full">
                                         <img
                                             className=""
                                             src={
@@ -313,7 +310,7 @@ export default (props: CardCustomerProps) => {
                                             alt=""
                                         />
                                     </button>
-                                    <div className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full">
+                                    <div className="w-8 h-8 rounded-full">
                                         <img
                                             className=""
                                             src={
@@ -349,7 +346,7 @@ export default (props: CardCustomerProps) => {
                                             alt=""
                                         />
                                     </button>
-                                    <div className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full">
+                                    <div className="w-8 h-8 rounded-full">
                                         <img
                                             className=""
                                             src={

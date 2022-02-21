@@ -10,6 +10,7 @@ import {
     useUser,
 } from '../hooks'
 import Firebase from 'firebase/app'
+import loader_image from '../images/loader.gif'
 import 'react-datepicker/dist/react-datepicker.css'
 import firebase from 'firebase/app'
 import { AuthContext } from '../Auth'
@@ -31,7 +32,7 @@ export default () => {
     const { currentUser } = useContext(AuthContext)
     const { version } = useVersion()
     if (currentUser === null) return <div />
-    const { groups, refreshGroups } = useGroups(currentUser.uid)
+    const { groups, refreshGroups, loading } = useGroups(currentUser.uid)
     const user = useUser(currentUser.uid)
     const history = useHistory()
     const { students } = useStudents(currentUser.uid)
@@ -175,9 +176,31 @@ export default () => {
         }, 5000)
     }, [saveConfirm])
 
-    return (
+    if (loading) {
+        return (
+            <div className="w-full h-screen flex flex-col justify-center items-center">
+                <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full xl:text-6xl xl:h-16">
+                Paramétrez votre année
+                </div>
+                <div className="h-full flex flex-col justify-center items-center">
+                    <div className="font-title text-4xl mb-8 text-bold xl:text-6xl">
+                        Chargement des données
+                    </div>
+                    <div className="w-64 h-64 mt-8 xl:w-64 xl:h-64">
+                        <img src={loader_image} alt="" />
+                    </div>
+                </div>
+
+                <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
+                    <NavBar />
+                </div>
+            </div>
+        )
+    }
+
+    else return (
         <div className={`w-full h-screen flex flex-col`}>
-            <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full">
+            <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl xl:text-6xl xl:h-16 rounded-b-full">
                 Paramétrez votre année
             </div>
             <ConfirmModal
@@ -209,7 +232,7 @@ export default () => {
                     className={`${actualRef === 0 || hide ? 'invisible' : 'visible'
                         }
                     ${groups.length === 0 ? 'invisible' : 'visible'}
-                    `}
+                    xl:hidden`}
                     onClick={() => {
                         scrollTo(actualRef - 1)
                         setActualRef(actualRef - 1)
@@ -224,7 +247,7 @@ export default () => {
                         ? 'invisible'
                         : 'visible'
                         }
-                    ${groups.length === 0 ? 'invisible' : 'visible'}`}
+                    ${groups.length === 0 ? 'invisible' : 'visible'} xl:hidden`}
                     onClick={() => {
                         scrollTo(actualRef + 1)
                         setActualRef(actualRef + 1)
@@ -252,7 +275,7 @@ export default () => {
                 </div>
 
                 <div
-                    className={`flex z-30 flex-col mt-2 h-100 w-64 px-12 overflow-visible shadow-custom mx-6 bg-gray-100 pb-4 rounded xl:mt-12 xl:mx-64 `}
+                    className={cards}
                     ref={ref2}
                 >
                     <CardCustomer

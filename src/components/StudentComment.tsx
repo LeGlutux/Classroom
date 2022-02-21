@@ -70,12 +70,12 @@ export default (props: Props) => {
                 }`}
             >
                 <div className={`flex w-11/12 justify-between`}>
-                    <div className="flex flex-col text-sm font-student mx-1 font-bold">
+                    <div className="flex flex-col text-sm font-student mx-1 font-bold xl:text-xl">
                         {' '}
                         Commentaire:
                         {wrap && (
                             <div className="flex w-full justify-start">
-                                <div className="text-sm w-auto font-student font-normal">
+                                <div className="text-sm w-auto font-student font-normal xl:text-xl">
                                     {comment}
                                 </div>
                             </div>
@@ -83,14 +83,14 @@ export default (props: Props) => {
                     </div>
                     {!wrap && (
                         <div className="flex w-full justify-start">
-                            <div className="text-sm w-auto font-student font-normal">
+                            <div className="text-sm w-auto font-student font-normal xl:text-xl">
                                 {comment}
                             </div>
                         </div>
                     )}
 
                     <button onClick={() => handleEdition()}>
-                        <img className="h-4 w-6 mr-2" src={pen} alt="" />
+                        <img className="h-4 w-6 mr-2 xl:h-6 xl:w-8" src={pen} alt="" />
                     </button>
                 </div>
             </div>

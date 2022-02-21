@@ -527,13 +527,13 @@
 
 .bottom-right-custom {
     position: fixed;
-    bottom: 140px;
+    bottom: 22%;
     right: 4%;
 }
 
 .bottom-right-custom2 {
     position: fixed;
-    bottom: 65px;
+    bottom: 10%;
     right: 4%;
 }
 
@@ -630,6 +630,14 @@
 .h-200 {
     height: 40rem;
 }
+
+.text-10xl {
+    font-size: 10rem;
+  }
+
+.xl\:text-10xl {
+    font-size: 10rem;
+  }
 
 .shadow-custom {
     box-shadow: -10px 15px 15px -3px rgba(0, 0, 0, 0.1),

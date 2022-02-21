@@ -177,13 +177,13 @@ export default (props: StudentProps) => {
                     <div className="flex flex-row items-center">
                     <div className="flex h-full items-center self-center mt-2 ml-2 xl:pt-6 static">
                             <button
-                                className={`h-6 w-6 ${selected === false || selected === undefined
+                                className={`h-6 w-6 xl:h-10 xl:w-10 ${selected === false || selected === undefined
                                         ? 'invisible'
                                         : 'visible'
                                     }`}
                                 onClick={handleForget}
                             >
-                                <img className="h-6 w-6" src={brain} alt="" />
+                                <img className="h-6 w-6 xl:h-10 xl:w-10" src={brain} alt="" />
                             </button>
                         </div>
                         <button
@@ -201,14 +201,14 @@ export default (props: StudentProps) => {
                             className={`flex flex-row mt-2`}
                         >
                             <div
-                                className={`font-studentName ml-2 text-gray-900 font-medium h-5 text-2xl md:text-3xl lg:text-3x xl:text-4xl ${highlight ? 'text-red-600' : ''
+                                className={`font-studentName ml-2 text-gray-900 font-medium h-5 text-2xl md:text-3xl lg:text-3x xl:text-4xl xl:pt-4 ${highlight ? 'text-red-600' : ''
                                     }
                                 `}
                             >
                                 {shortSurname}
                             </div>
                             <div
-                                className={`font-studentName ml-2 text-gray-900 font-bold text-2xl md:text-3xl lg:text-3x xl:text-4xl ${highlight ? 'text-red-600' : ''
+                                className={`font-studentName ml-2 text-gray-900 font-bold text-2xl md:text-3xl lg:text-3x xl:text-4xl xl:pt-4 ${highlight ? 'text-red-600' : ''
                                     }`}
                             >
                                 {shortName}
@@ -348,7 +348,7 @@ export default (props: StudentProps) => {
                             </div>
                         </div>
                     </div>
-                    <div className="flex flex-row">
+                    <div className="flex flex-row xl:mt-5">
                         
                         <StudentComment
                             currentUserId={props.currentUser}

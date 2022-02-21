@@ -16,7 +16,7 @@ export default () => {
     if (loading) {
         return (
             <div className="w-full h-screen flex flex-col justify-center items-center">
-                <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full">
+                <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full xl:text-6xl xl:h-16">
                     Mes listes
                 </div>
                 <div className="h-full flex flex-col justify-center items-center">
@@ -38,7 +38,7 @@ export default () => {
     if (lists.length === 0) {
         return (
             <div className="w-full h-screen flex flex-col justify-center items-center">
-                <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full">
+                <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full xl:text-6xl xl:h-16">
                     Mes listes
                 </div>
                 <div className="h-full flex flex-col justify-center items-center">
@@ -66,7 +66,7 @@ export default () => {
 
     return (
         <div className="h-screen w-full flex flex-col">
-            <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full">
+            <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full xl:text-6xl xl:h-16">
                 Mes listes
             </div>
             <div className="flex flex-col w-full mt-8 border-t-2">

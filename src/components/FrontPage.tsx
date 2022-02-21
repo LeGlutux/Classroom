@@ -139,14 +139,14 @@ export default () => {
     if (loading) {
         return (
             <div className="w-full h-screen flex flex-col justify-center items-center">
-                <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full">
+                <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full xl:text-6xl xl:h-16">
                     {title}
                 </div>
                 <div className="h-full flex flex-col justify-center items-center">
-                    <div className="font-title text-4xl mb-8 text-bold">
+                    <div className="font-title text-4xl mb-8 text-bold xl:text-6xl">
                         Chargement des données
                     </div>
-                    <div className="w-48 h-48 mt-8">
+                    <div className="w-64 h-64 mt-8 xl:w-64 xl:h-64">
                         <img src={loader_image} alt="" />
                     </div>
                 </div>
@@ -161,14 +161,14 @@ export default () => {
     if (groups.length === 0) {
         return (
             <div className="w-full h-screen flex flex-col justify-center items-center">
-                <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full">
+                <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full xl:text-6xl xl:h-16">
                     {'Accueil'}
                 </div>
                 <div className="h-full flex flex-col justify-center items-center">
-                    <div className="font-title text-4xl mb-8 text-bold">
+                    <div className="font-title text-4xl mb-8 text-bold xl:text-6xl">
                         Bienvenue sur Thòt Note
                     </div>
-                    <div className="flex w-11/12 justify-center text-center font-title text-3xl mb-8 text-bold">
+                    <div className="flex w-11/12 justify-center text-center font-title text-3xl mb-8 text-bold xl:text-5xl">
                         Pour commencer à ajouter des classes et des élèves
                         rendez-vous sur :
                     </div>
@@ -316,12 +316,12 @@ export default () => {
                         setBurgerMenuFirstClicked(true)
                         filterStudents(displayedGroup)
                     }}
-                    className={`flex flex-col w-16 h-16 bg-gray-200 rounded-full bottom-right-custom2 shadow-custom items-center justify-center ${
+                    className={`flex flex-col w-16 h-16 xl:w-20 xl:h-20 bg-gray-200 rounded-full bottom-right-custom2 shadow-custom items-center justify-center ${
                         menuOpened ? 'fade-out' : 'fade-in'
                     } md:w-20 md:h-20}`}
                 >
                     <img
-                        className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 xl:w-16 xl:h-16"
+                        className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 xl:w-12 xl:h-12"
                         src={questionMark}
                         alt=""
                     />
@@ -335,7 +335,7 @@ export default () => {
                         setMenuOpened(!menuOpened)
                         setMagicStickStudentsList(hardStudents)
                     }}
-                    className={`w-16 h-16 md:w-20 md:h-20 bg-gray-200 rounded-full bottom-right-custom shadow-custom flex items-center justify-center ${
+                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 bg-gray-200 rounded-full bottom-right-custom shadow-custom flex items-center justify-center ${
                         burgerMenuFirstClicked
                             ? menuOpened
                                 ? 'entering-r'
@@ -344,7 +344,7 @@ export default () => {
                     }`}
                 >
                     <img
-                        className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 xl:w-16 xl:h-16 pb-1"
+                        className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 xl:w-12 xl:h-12 pb-1"
                         src={magicStick}
                         alt="élève aléatoire"
                     />
@@ -357,7 +357,7 @@ export default () => {
                         setMagicStickStudentsList(notYetSelectedStudents)
                         setTimeout(() => setDisplayRandomStudent(true), 200)
                     }}
-                    className={`w-16 h-16 md:w-20 md:h-20 bg-gray-200 rounded-full bottom-right-custom2 shadow-custom flex items-center justify-center ${
+                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 bg-gray-200 rounded-full bottom-right-custom2 shadow-custom flex items-center justify-center ${
                         burgerMenuFirstClicked
                             ? menuOpened
                                 ? 'entering-r'
@@ -366,7 +366,7 @@ export default () => {
                     }`}
                 >
                     <img
-                        className="w-10 h-10 md:w-12 md:h-12 lg:w-16 lg:h-16 xl:w-20 xl:h-20"
+                        className="w-10 h-10 md:w-12 md:h-12 lg:w-16 lg:h-16 xl:w-16 xl:h-16"
                         src={brain}
                         alt="élève aléatoire avec mémoire"
                     />
