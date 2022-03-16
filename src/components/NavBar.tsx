@@ -12,7 +12,9 @@ export default () => {
                     <img className="self-center" src={addPage} alt="" />
                 </Link>
             </div>
-            <div className={`rounded-full h-8 w-8 xl:h-10 xl:w-10 flex justify-center`}>
+            <div
+                className={`rounded-full h-8 w-8 xl:h-10 xl:w-10 flex justify-center`}
+            >
                 <Link to="/">
                     <img className="self-center" src={home} alt="" />
                 </Link>

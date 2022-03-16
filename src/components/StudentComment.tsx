@@ -90,7 +90,11 @@ export default (props: Props) => {
                     )}
 
                     <button onClick={() => handleEdition()}>
-                        <img className="h-4 w-6 mr-2 xl:h-6 xl:w-8" src={pen} alt="" />
+                        <img
+                            className="h-4 w-6 mr-2 xl:h-6 xl:w-8"
+                            src={pen}
+                            alt=""
+                        />
                     </button>
                 </div>
             </div>

@@ -13,7 +13,7 @@ export default ({
     setDisplayedGroup,
     closeMenu,
 }: HomeClassListFilterProps) => {
-    const longestGroupString = groups.sort(function (a, b) {
+    const longestGroupString = groups.sort((a, b) => {
         return b.length - a.length
     })[0]
 

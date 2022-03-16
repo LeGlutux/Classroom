@@ -34,7 +34,7 @@ export default (props: ListStatusButtonProps) => {
             .doc(props.listId.concat('s'))
             .update({ state: newState })
     }
-    const stateColor = (state: number) => {
+    const stateColor = (s: number) => {
         if (state === 0) return 'bg-white'
         if (state === 1) return 'bg-green-600'
         if (state === 2) return 'bg-red-600'
