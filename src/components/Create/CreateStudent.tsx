@@ -22,6 +22,7 @@ export default (props: Props) => {
     const [clickable, setClickable] = useState(false)
 
     useEffect(() => {
+
         if (nameInputValue !== '' && surnameInputValue !== '') {
             setClickable(true)
         } else setClickable(false)

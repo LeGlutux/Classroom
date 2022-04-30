@@ -114,7 +114,6 @@ export default (props: CardCustomerProps) => {
     useEffect(() => {
         if (icons !== initialIcons && justSaved === false) setClickable(true)
         else setClickable(false)
-        console.log(clickable, icons, initialIcons)
 
     }, [clicked, initialIcons, justSaved])
 

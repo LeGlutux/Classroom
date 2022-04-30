@@ -226,9 +226,9 @@ export default (props: StudentProps) => {
                         </button>
                     </div>
                     <div
-                        className={`w-full h-12 flex p-2 content-center justify-between pr-6 ${
-                            props.icons[5] === 'none' ? '' : 'mb-6'
-                        }`}
+                        className={`w-full h-12 flex p-2 content-center justify-between  pr-6 ${props.icons[5] === 'none' ? '' : 'mb-6'
+                            }`}
+
                     >
                         <div
                             className={`flex ${
