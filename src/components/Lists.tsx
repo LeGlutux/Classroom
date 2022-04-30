@@ -49,9 +49,10 @@ export default () => {
                         Pour essayer, ça se passe ici :
                     </div>
                     <div className="font-title text-4xl mb-8 text-bold">
-                        <Link 
-                        className="flex flex-col w-20 h-20 bg-gray-200 rounded-full shadow-custom items-center justify-center p-2"
-                        to="/createlist">
+                        <Link
+                            className="flex flex-col w-20 h-20 bg-gray-200 rounded-full shadow-custom items-center justify-center p-2"
+                            to="/createlist"
+                        >
                             <img src={add} alt="" />
                         </Link>
                     </div>
@@ -85,7 +86,7 @@ export default () => {
                     )
                 })}
             </div>
-            <div className="h-screen"></div>
+            <div className="h-screen" />
             <Link
                 className="flex flex-col w-16 h-16 bg-gray-200 rounded-full bottom-right-custom2 shadow-custom items-center justify-center"
                 to="/createlist"
