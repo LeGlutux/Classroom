@@ -226,7 +226,7 @@ export default () => {
                 }
             />
             <div
-                className={`flex w-full justify-between px-6 settings-page-arrows z-1`}
+                className={`flex w-full justify-between px-6 settings-page-arrows z-30 bg-transparent`}
             >
                 <button
                     className={`${actualRef === 0 || hide ? 'invisible' : 'visible'
@@ -263,11 +263,11 @@ export default () => {
                 className={`flex flex-row h-full overflow-x-hidden py-8 items-center px-8`}
                 ref={xScroller}
             >
-                <div className={cards} ref={ref0}>
+                <div className={cards(0, actualRef)} ref={ref0}>
                     <CreateGroups onAddGroup={refreshGroups} />
                 </div>
 
-                <div className={cards} ref={ref1}>
+                <div className={cards(1, actualRef)} ref={ref1}>
                     <CreateStudent
                         groups={groups}
                         currentUserId={currentUser.uid}
@@ -275,7 +275,7 @@ export default () => {
                 </div>
 
                 <div
-                    className={cards}
+                    className={cards(2, actualRef)}
                     ref={ref2}
                 >
                     <CardCustomer
@@ -283,7 +283,7 @@ export default () => {
                         setSaveConfirm={setSaveConfirm} />
                 </div>
 
-                <div className={`${cards}`} ref={ref3}>
+                <div className={`${cards(3, actualRef)}`} ref={ref3}>
                     <div className="flex flex-col h-full items-center pb-4">
                         <div className="flex flex-col h-full justify-around items-center">
                             <div className="relative top-0 font-title text-3xl text-center">
@@ -315,7 +315,7 @@ export default () => {
                     </div>
                 </div>
 
-                <div className={cards} ref={ref4}>
+                <div className={cards(4, actualRef)} ref={ref4}>
                     <div className="flex flex-col h-full justify-around items-center">
                         <div className="flex flex-col h-full justify-around items-center">
                             <div className="relative top-0 font-title text-3xl text-center">
@@ -333,7 +333,7 @@ export default () => {
                 </div>
 
                 <div
-                    className={`flex z-30 flex-col mt-2 h-100 w-64 px-12 overflow-visible shadow-custom mx-6 bg-gray-100 pb-4 rounded xl:mt-12 xl:mx-64 ${adminConnected ? 'visible' : 'invisible'
+                    className={`flex ${actualRef === 5 ? "z-40" : "z-20"} flex-col mt-2 h-100 w-64 px-12 overflow-visible shadow-custom mx-6 bg-gray-100 pb-4 rounded xl:mt-12 xl:mx-64 ${adminConnected ? 'visible' : 'invisible'
                         }`}
                     ref={ref5}
                 >

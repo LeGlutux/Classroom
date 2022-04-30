@@ -25,7 +25,6 @@ export default (props: Props) => {
         if (nameInputValue !== '' &&
             surnameInputValue !== '') { setClickable(true) }
         else setClickable(false)
-        console.log(clickable)
     }, [nameInputValue, surnameInputValue])
 
     return (
