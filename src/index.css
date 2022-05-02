@@ -588,9 +588,29 @@
     right: 5%;
 }
 
+.right-6 {
+    position: absolute;
+    right: 6%;
+  }
+
 .right-10 {
     position: absolute;
     right: 10%;
+}
+
+.bottom-2 {
+    position: absolute;
+    bottom: 2%;
+}
+
+.bottom-5 {
+    position: absolute;
+    bottom: 5%;
+}
+
+.left-5 {
+    position: absolute;
+    left: 5%;
 }
 
 .top-6 {

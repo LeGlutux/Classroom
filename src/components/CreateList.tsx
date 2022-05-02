@@ -5,7 +5,7 @@ import NavBar from './NavBar'
 import list from '../images/list.png'
 import add from '../images/add.png'
 import NewStudentGroups from './NewStudentGroups'
-import { useGroups, useLists, useStudents } from '../hooks'
+import { useGroups, useLists, usePeriodes, useStudents } from '../hooks'
 import { useHistory } from 'react-router-dom'
 
 export default () => {
@@ -16,6 +16,7 @@ export default () => {
     const history = useHistory()
     const { groups } = useGroups(currentUser.uid)
     const { students } = useStudents(currentUser.uid)
+    const { runningPeriode} = usePeriodes(currentUser.uid)
     const [listNameInputValue, setListNameInputValue] = useState('')
     const [defaultList, setDefaultList] = useState<string[]>([])
     const [itemN, setItemN] = useState(1)
@@ -433,7 +434,8 @@ export default () => {
                 </div>
             </form>
             <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                <NavBar />
+                <NavBar
+                runningPeriode={runningPeriode} />
             </div>
         </div>
     )
