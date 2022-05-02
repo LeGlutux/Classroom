@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import NavBar from './NavBar'
 import { useParams } from 'react-router-dom'
 import { AuthContext } from '../Auth'
-import { useLists, useStudents } from '../hooks'
+import { useLists, usePeriodes, useStudents } from '../hooks'
 import ListedStudent from './ListedStudent'
 
 export default () => {
@@ -11,6 +11,7 @@ export default () => {
     if (currentUser === null) return <div />
     const { students } = useStudents(currentUser.uid)
     const { lists } = useLists(currentUser.uid)
+    const {runningPeriode} = usePeriodes(currentUser.uid)
     if (lists === undefined) return <div />
     const currentList = lists.filter((l) => l.id === id)[0]
     if (currentList === undefined) return <div />
@@ -64,7 +65,8 @@ export default () => {
                     })}
             </div>
             <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                <NavBar />
+                <NavBar 
+                runningPeriode={runningPeriode}/>
             </div>
         </div>
     )

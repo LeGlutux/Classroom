@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { useLists } from '../hooks'
+import { useLists, usePeriodes } from '../hooks'
 import { AuthContext } from '../Auth'
 import NavBar from './NavBar'
 import add from '../images/add.png'
@@ -12,6 +12,7 @@ export default () => {
     if (currentUser === null) return <div />
     const [listsRefresher, setListsRefresher] = useState(0)
     const { lists, loading } = useLists(currentUser.uid, listsRefresher)
+    const { runningPeriode } = usePeriodes(currentUser.uid)
 
     if (loading) {
         return (
@@ -29,7 +30,8 @@ export default () => {
                 </div>
 
                 <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                    <NavBar />
+                    <NavBar
+                        runningPeriode={runningPeriode} />
                 </div>
             </div>
         )
@@ -59,7 +61,8 @@ export default () => {
                 </div>
 
                 <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                    <NavBar />
+                    <NavBar
+                        runningPeriode={runningPeriode} />
                 </div>
             </div>
         )
@@ -94,7 +97,8 @@ export default () => {
                 <img className="h-6 w-6" src={add} alt="" />
             </Link>
             <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                <NavBar />
+                <NavBar
+                    runningPeriode={runningPeriode} />
             </div>
         </div>
     )
