@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import addPage from '../images/addPage.png'
 import list from '../images/list.png'
 import home from '../images/home.png'
-import { fetchRunningPeriode } from '../database'
 
 interface Props {
     runningPeriode: number
