@@ -31,7 +31,8 @@ export default () => {
 
                 <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
                     <NavBar
-                        runningPeriode={runningPeriode} />
+                        activeMenu="list"
+                    />
                 </div>
             </div>
         )
@@ -62,7 +63,8 @@ export default () => {
 
                 <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
                     <NavBar
-                        runningPeriode={runningPeriode} />
+                        activeMenu="list"
+                    />
                 </div>
             </div>
         )
@@ -98,7 +100,8 @@ export default () => {
             </Link>
             <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
                 <NavBar
-                    runningPeriode={runningPeriode} />
+                    activeMenu="list"
+                />
             </div>
         </div>
     )

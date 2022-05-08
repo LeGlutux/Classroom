@@ -24,11 +24,13 @@ import openCard from '../images/openCard.png'
 import closeCard from '../images/closeCard.png'
 
 import CardCustomer from './CardCustomization/CardCustomer'
+import FileUploader from './FileUploader'
 
 export default () => {
     const [confirm, setConfirm] = useState(false)
     const [confirm2, setConfirm2] = useState(false)
     const [saveConfirm, setSaveConfirm] = useState(false)
+    const [uploader, setUploader] = useState(true)
     const { currentUser } = useContext(AuthContext)
     const { version } = useVersion()
     if (currentUser === null) return <div />
@@ -192,7 +194,9 @@ export default () => {
 
                 <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
                     <NavBar
-                    runningPeriode={runningPeriode} />
+                        activeMenu="addPage"
+                    />
+
                 </div>
             </div>
         )
@@ -267,7 +271,17 @@ export default () => {
                 ref={xScroller}
             >
                 <div className={cards(0, actualRef)} ref={ref0}>
-                    <CreateGroups onAddGroup={refreshGroups} />
+                    {uploader && <CreateGroups onAddGroup={refreshGroups} />}
+                    {!uploader && <FileUploader
+                        currentUserId={currentUser.uid}
+                        setSaveConfirm={setSaveConfirm}
+                    />}
+
+                    <button
+                        className="flex justify-end w-auto self-end text-blue-600 justify-items-end place-items-end"
+                        onClick={() => setUploader(!uploader)}>
+                        {!uploader ? 'Ajouter manuellement' : 'Importer depuis Pronote'}
+                    </button>
                 </div>
 
                 <div className={cards(1, actualRef)} ref={ref1}>
@@ -294,30 +308,30 @@ export default () => {
                             <div className="relative top-0 font-title text-3xl text-center">
                                 Lancer une nouvelle période
                             </div>
-                            
-                                <div className="flex flex-row items-center mb-5">
-                                    <img
-                                        className="w-8 h-8"
-                                        src={calendar}
-                                        alt=""
-                                    />
-                                    <div className="text-gray-800 font-studentName text-lg ml-2">
-                                        En cours : Période {runningPeriode}
-                                    </div>
-                                </div>
-                                <button
-                                    className="flex h-16 w-56 self-center bg-orange-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 pb-2 flex-wrap"
-                                    onClick={() => setConfirm(true)}
-                                >
-                                    {' '}
-                                    Commencer une nouvelle période
-                                </button>
-                                <PeriodeFilter
-                                    periodes={periodes}
-                                    currentUser={currentUser.uid}
-                                    refresh={refreshRunningPeriode}
+
+                            <div className="flex flex-row items-center mb-5">
+                                <img
+                                    className="w-8 h-8"
+                                    src={calendar}
+                                    alt=""
                                 />
-                            
+                                <div className="text-gray-800 font-studentName text-lg ml-2">
+                                    En cours : Période {runningPeriode}
+                                </div>
+                            </div>
+                            <button
+                                className="flex h-16 w-56 self-center bg-orange-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 pb-2 flex-wrap"
+                                onClick={() => setConfirm(true)}
+                            >
+                                {' '}
+                                Commencer une nouvelle période
+                            </button>
+                            <PeriodeFilter
+                                periodes={periodes}
+                                currentUser={currentUser.uid}
+                                refresh={refreshRunningPeriode}
+                            />
+
                         </div>
                     </div>
                 </div>
@@ -391,7 +405,8 @@ export default () => {
 
             <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
                 <NavBar
-                runningPeriode={runningPeriode} />
+                    activeMenu="addPage"
+                />
             </div>
         </div>
     )

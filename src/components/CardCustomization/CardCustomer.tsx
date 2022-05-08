@@ -136,12 +136,12 @@ export default (props: CardCustomerProps) => {
                                     <div
                                         className={`font-studentName ml-2 text-gray-900 font-medium h-5 text-2xl xl:text-3xl`}
                                     >
-                                        {'Juan'}
+                                        {'Alex'}
                                     </div>
                                     <div
                                         className={`font-studentName ml-2 text-gray-900 font-bold text-2xl xl:text-3xl`}
                                     >
-                                        {'Miguel'}
+                                        {'Daxe'}
                                     </div>
                                 </button>
                             </div>

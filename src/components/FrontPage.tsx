@@ -34,9 +34,9 @@ export default () => {
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
     const { user, refreshUser } = useUser(currentUser.uid)
-    const { students, loading } = useStudents(currentUser.uid)
+    const { students, } = useStudents(currentUser.uid)
 
-    const { groups } = useGroups(currentUser.uid)
+    const { groups, loading } = useGroups(currentUser.uid)
     const { periodes, runningPeriode } = usePeriodes(currentUser.uid)
     const [updating, setUpdating] = useState(false)
 
@@ -51,7 +51,6 @@ export default () => {
         const filtered = students
             .filter((student) => student.classes.includes(group))
             .sort((a) => (a.highlight ? -1 : 1))
-
         return filtered
     }
 
@@ -136,13 +135,12 @@ export default () => {
         }
     }
 
-    if (loading) {
+    if (loading === true) {
         return (
             <div className="w-full h-screen flex flex-col justify-center items-center">
                 <div className="flex flex-col w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full xl:text-6xl xl:h-16">
                     {title}
                 </div>
-
                 <div className="h-full flex flex-col justify-center items-center">
                     <div className="font-title text-4xl mb-8 text-bold xl:text-6xl">
                         Chargement des données
@@ -154,7 +152,8 @@ export default () => {
 
                 <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
                     <NavBar
-                    runningPeriode={runningPeriode} />
+                        activeMenu="home" />
+
                 </div>
             </div>
         )
@@ -182,8 +181,9 @@ export default () => {
                 </div>
 
                 <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                    <NavBar 
-                    runningPeriode={runningPeriode}/>
+                    <NavBar
+                        activeMenu="home" />
+
                 </div>
             </div>
         )
@@ -212,7 +212,8 @@ export default () => {
 
                 <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
                     <NavBar
-                    runningPeriode={runningPeriode} />
+                        activeMenu="home"
+                    />
                 </div>
             </div>
         )
@@ -235,17 +236,18 @@ export default () => {
 
     return (
         <div className="w-full h-screen flex flex-col">
-            <Updater
+            {/* <Updater
                 userId={currentUser.uid}
                 userVersion={user!.version}
                 refreshUser={refreshUser}
                 students={students}
                 setUpdating={setUpdating}
-            />
+            /> */}
             <div className="flex flex-col w-full h-12 border-b-2 p-1 border-gray-400 items-center font-title font-bold justify-around text-4xl rounded-b-full">
                 {title}
             </div>
 
+            <div className="flex font-stundentName justify-around font-normal text-md">{"P".concat(runningPeriode.toString())}</div>
 
 
             <MagicStick
@@ -376,7 +378,7 @@ export default () => {
                     />
                 </button>
             </div>
-            
+
 
             {groups.length !== 1 && displayedGroup !== 'tous' && (
                 <div className="flex flex-row justify-start bg-transparent w-full bottom-center-custom">
@@ -393,7 +395,8 @@ export default () => {
 
             <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
                 <NavBar
-                runningPeriode={runningPeriode} />
+                    activeMenu="home" />
+
             </div>
         </div>
     )

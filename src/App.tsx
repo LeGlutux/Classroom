@@ -36,7 +36,6 @@ export default () => {
                                 <Route path="/login">
                                     <Login />
                                 </Route>
-
                                 <Route path="/signup">
                                     <SignUp />
                                 </Route>

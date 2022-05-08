@@ -11,7 +11,7 @@ export default () => {
     if (currentUser === null) return <div />
     const { students } = useStudents(currentUser.uid)
     const { lists } = useLists(currentUser.uid)
-    const {runningPeriode} = usePeriodes(currentUser.uid)
+    const { runningPeriode } = usePeriodes(currentUser.uid)
     if (lists === undefined) return <div />
     const currentList = lists.filter((l) => l.id === id)[0]
     if (currentList === undefined) return <div />
@@ -65,8 +65,9 @@ export default () => {
                     })}
             </div>
             <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                <NavBar 
-                runningPeriode={runningPeriode}/>
+            <NavBar
+                activeMenu="list"
+                />
             </div>
         </div>
     )
