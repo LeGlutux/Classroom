@@ -164,7 +164,7 @@ export default (props: StudentProps) => {
                 }`}
         >
             <div
-                className={`rounded overflow-hidden mb-5 pb-1 mr-2 ml-5 bg-gray-100 w-full shadow-custom ${props.runningPeriode === props.periodes.length
+                className={`overflow-hidden mb-5 pb-1 mr-2 ml-5 bg-gray-100 w-full shadow-custom ${props.runningPeriode === props.periodes.length
                     ? 'bg-gray-100'
                     : 'border-2 border-gray-500'
                     }`}

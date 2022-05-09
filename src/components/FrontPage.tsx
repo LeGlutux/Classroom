@@ -34,9 +34,9 @@ export default () => {
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
     const { user, refreshUser } = useUser(currentUser.uid)
-    const { students, } = useStudents(currentUser.uid)
+    const { students, loading } = useStudents(currentUser.uid)
 
-    const { groups, loading } = useGroups(currentUser.uid)
+    const { groups } = useGroups(currentUser.uid)
     const { periodes, runningPeriode } = usePeriodes(currentUser.uid)
     const [updating, setUpdating] = useState(false)
 
@@ -135,7 +135,7 @@ export default () => {
         }
     }
 
-    if (loading === true) {
+    if (loading) {
         return (
             <div className="w-full h-screen flex flex-col justify-center items-center">
                 <div className="flex flex-col w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full xl:text-6xl xl:h-16">
@@ -236,13 +236,13 @@ export default () => {
 
     return (
         <div className="w-full h-screen flex flex-col">
-            {/* <Updater
+            <Updater
                 userId={currentUser.uid}
                 userVersion={user!.version}
                 refreshUser={refreshUser}
                 students={students}
                 setUpdating={setUpdating}
-            /> */}
+            />
             <div className="flex flex-col w-full h-12 border-b-2 p-1 border-gray-400 items-center font-title font-bold justify-around text-4xl rounded-b-full">
                 {title}
             </div>
