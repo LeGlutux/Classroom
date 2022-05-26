@@ -243,7 +243,7 @@ export default () => {
                 students={students}
                 setUpdating={setUpdating}
             />
-            <div className="flex flex-col w-full h-12 border-b-2 p-1 border-gray-400 items-center font-title font-bold justify-around text-4xl rounded-b-full">
+            <div className="flex flex-col w-full absolute top-0 bg-white h-12 border-b-2 p-1 border-gray-400 items-center font-title font-bold justify-around text-4xl rounded-b-full">
                 {title}
             </div>
 
@@ -261,7 +261,7 @@ export default () => {
                 displayedGroup={displayedGroup}
             />
             {displayedGroup !== 'tous' && (
-                <div className="flex w-full h-full flex-col pt-6 pb-24 bg-white overflow-y-scroll md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start">
+                <div className="flex w-full h-full flex-col pt-18 pb-24 bg-white overflow-y-scroll md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start">
                     {students
                         .sort((a) => (a.highlight ? -1 : 1))
                         .map(
