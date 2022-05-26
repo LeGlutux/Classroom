@@ -247,7 +247,7 @@ export default () => {
                 {title}
             </div>
 
-            <div className="flex font-stundentName justify-around font-normal text-md">{"P".concat(runningPeriode.toString())}</div>
+            <div className="flex font-stundentName backdrop-blur bg-transparent rounded-full p-1 px-2 absolute place-self-center mt-12 items-end font-normal text-md">{"P".concat(runningPeriode.toString())}</div>
 
 
             <MagicStick
@@ -261,7 +261,7 @@ export default () => {
                 displayedGroup={displayedGroup}
             />
             {displayedGroup !== 'tous' && (
-                <div className="flex w-full h-full flex-col pb-24 bg-white overflow-y-scroll md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start">
+                <div className="flex w-full h-full flex-col pt-6 pb-24 bg-white overflow-y-scroll md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start">
                     {students
                         .sort((a) => (a.highlight ? -1 : 1))
                         .map(

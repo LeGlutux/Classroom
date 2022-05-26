@@ -573,6 +573,10 @@
     z-index: -1;
 }
 
+.backdrop-blur {
+    backdrop-filter: blur(4px);
+}
+
 .top-50 {
     position: absolute;
     top: 50%;
