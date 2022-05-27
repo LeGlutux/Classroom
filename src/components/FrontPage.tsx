@@ -39,6 +39,7 @@ export default () => {
     const { groups } = useGroups(currentUser.uid)
     const { periodes, runningPeriode } = usePeriodes(currentUser.uid)
     const [updating, setUpdating] = useState(false)
+    const [displayed, setDisplayed] = useState(false)
 
     const [displayedGroup, setDisplayedGroup] = useState('tous')
     const [hardStudents, setHardStudents] = useState<
@@ -46,6 +47,13 @@ export default () => {
     >([])
     const [magicStickStudentsList, setMagicStickStudentsList] =
         useState(hardStudents)
+
+
+    useEffect(() => {
+        setDisplayed(false)
+        setTimeout(() => setDisplayed(true), 2000)
+    }, [displayedGroup]
+    )
 
     const filterStudents = (group: string) => {
         const filtered = students
@@ -243,6 +251,16 @@ export default () => {
                 students={students}
                 setUpdating={setUpdating}
             />
+            {(!displayed && displayedGroup !== 'tous') &&
+                <div className="flex flex-col items-center justify-center absolute w-full h-full mb-12 bg-white">
+                    <div className="font-title text-4xl mb-8 text-bold xl:text-6xl">
+                        Chargement des données
+                    </div>
+                    <div className="w-64 h-64 mt-8 xl:w-64 xl:h-64">
+                        <img src={loader_image} alt="" />
+                    </div>
+                </div>}
+
             <div className="flex flex-col w-full absolute top-0 bg-white h-12 border-b-2 p-1 border-gray-400 items-center font-title font-bold justify-around text-4xl rounded-b-full">
                 {title}
             </div>

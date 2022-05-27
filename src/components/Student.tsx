@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import openCard from '../images/openCard.png'
+import info from '../images/info.png'
 import Firebase from '../firebase'
 import firebase from 'firebase/app'
 import { Link } from 'react-router-dom'
@@ -164,7 +164,7 @@ export default (props: StudentProps) => {
                 }`}
         >
             <div
-                className={`overflow-hidden mb-5 pb-1 mr-2 ml-5 bg-gray-100 w-full shadow-custom ${props.runningPeriode === props.periodes.length
+                className={`overflow-hidden mb-5 pb-1 ml-3 mr-2 bg-gray-100 w-full shadow-custom ${props.runningPeriode === props.periodes.length
                     ? 'bg-gray-100'
                     : 'border-2 border-gray-500'
                     }`}
@@ -189,34 +189,48 @@ export default (props: StudentProps) => {
                                 />
                             </button>
                         </div>
-                        <button
-                            onClick={() => {
-                                db.collection('users')
-                                    .doc(props.currentUser)
-                                    .collection('eleves')
-                                    .doc(props.id)
-                                    .update({
-                                        highlight: !highlight,
-                                    })
-                                setHighlight(!highlight)
-                                props.toggleHighlight(props.id)
-                            }}
-                            className={`flex flex-row mt-2`}
-                        >
-                            <div
-                                className={`font-studentName ml-2 text-gray-900 font-medium h-5 text-2xl md:text-3xl lg:text-3x xl:text-4xl xl:pt-4 ${highlight ? 'text-red-600' : ''
-                                    }
+                        <div className='flex flex-row w-full justify-between'>
+                            <button
+                                onClick={() => {
+                                    db.collection('users')
+                                        .doc(props.currentUser)
+                                        .collection('eleves')
+                                        .doc(props.id)
+                                        .update({
+                                            highlight: !highlight,
+                                        })
+                                    setHighlight(!highlight)
+                                    props.toggleHighlight(props.id)
+                                }}
+                                className={`flex flex-row mt-2`}
+                            >
+                                <div
+                                    className={`font-studentName ml-2 text-gray-900 font-medium h-5 text-2xl md:text-3xl lg:text-3x xl:text-4xl xl:pt-4 ${highlight ? 'text-red-600' : ''
+                                        }
                                 `}
+                                >
+                                    {shortSurname}
+                                </div>
+                                <div
+                                    className={`font-studentName ml-2 text-gray-900 font-bold text-2xl md:text-3xl lg:text-3x xl:text-4xl xl:pt-4 ${highlight ? 'text-red-600' : ''
+                                        }`}
+                                >
+                                    {shortName}
+                                </div>
+                            </button>
+                            <Link
+                                className="flex mr-4"
+                                to={'/student/'.concat(props.id)}
                             >
-                                {shortSurname}
-                            </div>
-                            <div
-                                className={`font-studentName ml-2 text-gray-900 font-bold text-2xl md:text-3xl lg:text-3x xl:text-4xl xl:pt-4 ${highlight ? 'text-red-600' : ''
-                                    }`}
-                            >
-                                {shortName}
-                            </div>
-                        </button>
+                                <img
+                                    className="flex w-4 self-center"
+                                    src={info}
+                                    alt=""
+                                />
+                            </Link>
+                        </div>
+
+
                     </div>
                     <div
                         className={`w-full h-12 flex p-2 content-center justify-between  pr-6 ${props.icons[5] === 'none' ? '' : 'mb-6'
@@ -361,17 +375,6 @@ export default (props: StudentProps) => {
                     </div>
                 </div>
             </div>
-
-            <Link
-                className="flex flex-col mr-2 mt-8"
-                to={'/student/'.concat(props.id)}
-            >
-                    <img
-                        className="flex w-4 self-center pb-8 mb-2"
-                        src={openCard}
-                        alt=""
-                    />
-            </Link>
         </div>
     )
 }
