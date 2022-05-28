@@ -293,29 +293,31 @@ export default () => {
                                 comment,
                             }) => {
                                 return (
-                                    <Student
-                                        displayedStudents={hardStudents}
-                                        periodes={periodes}
-                                        runningPeriode={runningPeriode}
-                                        currentUser={currentUser.uid}
-                                        key={id}
-                                        loading={loading}
-                                        currentUserId={currentUser.uid}
-                                        selected={selected}
-                                        classes={classes}
-                                        name={name}
-                                        surname={surname}
-                                        comment={comment ? comment : ''}
-                                        id={id}
-                                        highlight={highlight}
-                                        toggleSelected={toggleSelected}
-                                        toggleHighlight={toggleHighlight}
-                                        refresher={(group) =>
-                                            filterStudents(group)
-                                        }
-                                        displayedGroup={displayedGroup}
-                                        icons={iconsDisplay}
-                                    />
+                                        <Student
+                                            displayedStudents={hardStudents}
+                                            periodes={periodes}
+                                            runningPeriode={runningPeriode}
+                                            currentUser={currentUser.uid}
+                                            key={id}
+                                            loading={loading}
+                                            currentUserId={currentUser.uid}
+                                            selected={selected}
+                                            classes={classes}
+                                            name={name}
+                                            surname={surname}
+                                            comment={comment ? comment : ''}
+                                            id={id}
+                                            highlight={highlight}
+                                            toggleSelected={toggleSelected}
+                                            toggleHighlight={toggleHighlight}
+                                            refresher={(group) =>
+                                                filterStudents(group)
+                                            }
+                                            displayedGroup={displayedGroup}
+                                            icons={iconsDisplay}
+                                        />
+                                        
+
                                 )
                             }
                         )}

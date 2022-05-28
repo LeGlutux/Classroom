@@ -1,8 +1,9 @@
-import React, { useCallback, useContext } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { withRouter, Redirect } from 'react-router'
 import Firebase from 'firebase/app'
 import { AuthContext } from '../Auth'
 import lock from '../images/lock.png'
+import loader_image from '../images/loader.gif'
 import { Link } from 'react-router-dom'
 import lucienEtMonstre from '../images/lucienEtMonstre.png'
 import mail from '../images/mail.png'
@@ -28,7 +29,13 @@ const Login = ({ history }: LoginProps) => {
         },
         [history]
     )
+        const [displayed, setDisplayed] = useState(false)
 
+    useEffect(() => {
+        setDisplayed(false)
+        setTimeout(() => setDisplayed(true), 2000)
+    }, []
+    )
     const { currentUser } = useContext(AuthContext)
 
     if (currentUser) {
@@ -37,6 +44,14 @@ const Login = ({ history }: LoginProps) => {
 
     return (
         <div>
+            {!displayed && <div className="flex flex-col items-center justify-center absolute w-full h-full mb-12 bg-white">
+                    <div className="font-title text-4xl mb-8 text-bold xl:text-6xl">
+                        Chargement des données
+                    </div>
+                    <div className="w-64 h-64 mt-8 xl:w-64 xl:h-64">
+                        <img src={loader_image} alt="" />
+                    </div>
+                </div>}
             <div className="bg-white h-screen w-full flex flex-col items-center">
                 <div className="flex flex-col w-full items-center">
                     <div className="text-8xl xl:text-big font-title pt-2 xl:mt-10">

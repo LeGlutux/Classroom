@@ -65,14 +65,18 @@ export default (props: Props) => {
     return (
         <div ref={cardRef} className="flex flex-row w-full">
             <div
-                className={`flew flex-row w-full ml-2 ${
-                    edit ? 'hidden' : 'visible'
-                }`}
+                className={`flew flex-row w-full ml-2 ${edit ? 'hidden' : 'visible'
+                    }`}
             >
                 <div className={`flex w-11/12 justify-between`}>
+                    <button onClick={() => handleEdition()}>
+                        <img
+                            className="h-4 mr-2 xl:h-6 xl:w-8"
+                            src={pen}
+                            alt=""
+                        />
+                    </button>
                     <div className="flex flex-col text-sm font-student mx-1 font-bold xl:text-xl">
-                        {' '}
-                        Commentaire:
                         {wrap && (
                             <div className="flex w-full justify-start">
                                 <div className="text-sm w-auto font-student font-normal xl:text-xl">
@@ -89,13 +93,7 @@ export default (props: Props) => {
                         </div>
                     )}
 
-                    <button onClick={() => handleEdition()}>
-                        <img
-                            className="h-4 w-6 mr-2 xl:h-6 xl:w-8"
-                            src={pen}
-                            alt=""
-                        />
-                    </button>
+
                 </div>
             </div>
             <div className={`${edit ? 'visible' : 'hidden'}`}>

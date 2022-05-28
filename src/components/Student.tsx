@@ -164,8 +164,8 @@ export default (props: StudentProps) => {
                 }`}
         >
             <div
-                className={`overflow-hidden mb-5 pb-1 ml-3 mr-2 bg-gray-100 w-full shadow-custom ${props.runningPeriode === props.periodes.length
-                    ? 'bg-gray-100'
+                className={`overflow-hidden ml-3 mr-2 bg-white w-full ${props.runningPeriode === props.periodes.length
+                    ? ''
                     : 'border-2 border-gray-500'
                     }`}
             >
@@ -205,14 +205,14 @@ export default (props: StudentProps) => {
                                 className={`flex flex-row mt-2`}
                             >
                                 <div
-                                    className={`font-studentName ml-2 text-gray-900 font-medium h-5 text-2xl md:text-3xl lg:text-3x xl:text-4xl xl:pt-4 ${highlight ? 'text-red-600' : ''
+                                    className={`font-studentName ml-2 text-gray-900 font-medium h-5 text-2xl md:text-3xl lg:text-3x xl:text-3xl xl:pt-4 ${highlight ? 'text-red-600' : ''
                                         }
                                 `}
                                 >
                                     {shortSurname}
                                 </div>
                                 <div
-                                    className={`font-studentName ml-2 text-gray-900 font-bold text-2xl md:text-3xl lg:text-3x xl:text-4xl xl:pt-4 ${highlight ? 'text-red-600' : ''
+                                    className={`font-studentName ml-2 text-gray-900 font-bold text-2xl md:text-3xl lg:text-3x xl:text-3xl xl:pt-4 ${highlight ? 'text-red-600' : ''
                                         }`}
                                 >
                                     {shortName}
@@ -250,7 +250,7 @@ export default (props: StudentProps) => {
                             >
                                 <img className="" src={props.icons[0]} alt="" />
                             </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-4xl xl:ml-3 xl:pb-8 ">
+                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
                                 {
                                     crossFilter(
                                         'behaviour',
@@ -272,7 +272,7 @@ export default (props: StudentProps) => {
                             >
                                 <img className="" src={props.icons[1]} alt="" />
                             </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-4xl xl:ml-3 xl:pb-8 ">
+                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
                                 {
                                     crossFilter(
                                         'homework',
@@ -294,7 +294,7 @@ export default (props: StudentProps) => {
                             >
                                 <img className="" src={props.icons[2]} alt="" />
                             </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-4xl xl:ml-3 xl:pb-8 ">
+                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
                                 {
                                     crossFilter('supply', props.runningPeriode)
                                         .length
@@ -314,7 +314,7 @@ export default (props: StudentProps) => {
                             >
                                 <img className="" src={props.icons[3]} alt="" />
                             </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-4xl xl:ml-3 xl:pb-8 ">
+                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
                                 {
                                     crossFilter(
                                         'observation',
@@ -336,7 +336,7 @@ export default (props: StudentProps) => {
                             >
                                 <img className="" src={props.icons[4]} alt="" />
                             </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-4xl xl:ml-3 xl:pb-8 ">
+                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
                                 {
                                     crossFilter(
                                         'calculator',
@@ -358,7 +358,7 @@ export default (props: StudentProps) => {
                             >
                                 <img className="" src={props.icons[5]} alt="" />
                             </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-4xl xl:ml-3 xl:pb-8 ">
+                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
                                 {
                                     crossFilter('phone', props.runningPeriode)
                                         .length
@@ -366,13 +366,14 @@ export default (props: StudentProps) => {
                             </div>
                         </div>
                     </div>
-                    <div className="flex flex-row xl:mt-5">
+                    <div className="flex flex-row lg:mt-3 xl:mt-5">
                         <StudentComment
                             currentUserId={props.currentUser}
                             currentStudentId={props.id}
                             comment={props.comment ? props.comment : ''}
                         />
                     </div>
+                    <div className="border-b-2 border-gray-400 w-2/3 rounded-full self-center mt-4"></div>
                 </div>
             </div>
         </div>

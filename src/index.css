@@ -86,6 +86,7 @@
     -o-animation: zoom ease 0.6s;
     -ms-animation: zoom ease 0.6s;
 }
+
 @keyframes zoom {
     0% {
         width: 25%;
@@ -153,6 +154,7 @@
     -o-animation: translate-down ease 0.6s;
     -ms-animation: translate-down ease 0.6s;
 }
+
 @keyframes translate-down {
     0% {
         top: -120px;
@@ -220,6 +222,7 @@
     -o-animation: translate-down ease 0.6s;
     -ms-animation: translate-down ease 0.6s;
 }
+
 @keyframes translate-down {
     0% {
         bottom: -120px;
@@ -288,6 +291,7 @@
     -o-animation: translate ease 0.4s;
     -ms-animation: translate ease 0.4s;
 }
+
 @keyframes translate {
     0% {
         right: -20%;
@@ -356,10 +360,12 @@
     -o-animation: fadeOut ease 1s;
     -ms-animation: fadeOut ease 1s;
 }
+
 @keyframes fadeOut {
     0% {
         opacity: 1;
     }
+
     100% {
         opacity: 0;
     }
@@ -369,6 +375,7 @@
     0% {
         opacity: 1;
     }
+
     100% {
         opacity: 0;
     }
@@ -378,6 +385,7 @@
     0% {
         opacity: 1;
     }
+
     100% {
         opacity: 0;
     }
@@ -387,6 +395,7 @@
     0% {
         opacity: 1;
     }
+
     100% {
         opacity: 0;
     }
@@ -396,6 +405,7 @@
     0% {
         opacity: 1;
     }
+
     100% {
         opacity: 0;
     }
@@ -409,10 +419,12 @@
     -o-animation: fadeIn ease 0.6s;
     -ms-animation: fadeIn ease 0.6s;
 }
+
 @keyframes fadeIn {
     100% {
         opacity: 1;
     }
+
     0% {
         opacity: 0;
     }
@@ -422,6 +434,7 @@
     100% {
         opacity: 1;
     }
+
     0% {
         opacity: 0;
     }
@@ -431,6 +444,7 @@
     100% {
         opacity: 1;
     }
+
     0% {
         opacity: 0;
     }
@@ -440,6 +454,7 @@
     100% {
         opacity: 1;
     }
+
     0% {
         opacity: 0;
     }
@@ -449,12 +464,14 @@
     100% {
         opacity: 1;
     }
+
     0% {
         opacity: 0;
     }
 }
 
 @supports (-webkit-touch-callout: none) {
+
     /* CSS specific to iOS devices */
     .iphone-vertical {
         margin-top: 4rem;
@@ -476,6 +493,7 @@
     opacity: 1;
     transition: visibility 0s 1s, opacity 0s 1s;
 }
+
 .text-vertical-rotated {
     writing-mode: tb-rl;
     transform: rotate(-180deg);
@@ -527,15 +545,15 @@
 
 .bottom-right-custom {
     position: fixed;
-    bottom: 22%;
+    bottom: 9rem;
     right: 4%;
-}
-
-.bottom-right-custom2 {
+  }
+  
+  .bottom-right-custom2 {
     position: fixed;
-    bottom: 10%;
+    bottom: 4rem;
     right: 4%;
-}
+  }
 
 .bottom-center-custom {
     position: fixed;
@@ -573,9 +591,18 @@
     z-index: -1;
 }
 
+.mainColor {
+    filter: invert(57%);
+    filter: sepia(30%);
+    filter: saturate(4794%);
+    filter: hue-rotate(1deg); 
+    filter: brightness(107%);
+    filter: contrast(103%);
+}
+
 .pt-18 {
     padding-top: 4.7rem;
-  }
+}
 
 .backdrop-blur {
     backdrop-filter: blur(4px);
@@ -599,7 +626,7 @@
 .right-6 {
     position: absolute;
     right: 6%;
-  }
+}
 
 .right-10 {
     position: absolute;
@@ -661,11 +688,11 @@
 
 .text-10xl {
     font-size: 10rem;
-  }
+}
 
 .xl\:text-10xl {
     font-size: 10rem;
-  }
+}
 
 .shadow-custom {
     box-shadow: -10px 15px 15px -3px rgba(0, 0, 0, 0.1),
@@ -691,6 +718,7 @@
 .xl\:text-customsize {
     font-size: 1.75rem;
 }
+
 .text-7xl {
     font-size: 5rem;
 }
