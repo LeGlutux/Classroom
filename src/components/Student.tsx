@@ -141,16 +141,16 @@ export default (props: StudentProps) => {
     }
 
     const shortName =
-        (props.name + props.surname).length > 18 && props.surname.length >= 15
+        (props.name + props.surname).length > 19 && props.surname.length >= 16
             ? props.name.substring(0, 3).concat('.')
-            : (props.name + props.surname).length > 18 &&
-              props.surname.length < 15
+            : (props.name + props.surname).length > 19 &&
+              props.surname.length < 16
             ? props.name.substring(0, 17 - props.surname.length).concat('.')
             : props.name
 
     const shortSurname =
-        (shortName + props.surname).length > 16 && props.surname.length > 12
-            ? props.surname.substring(0, 8).concat('.')
+        (shortName + props.surname).length > 19 && props.surname.length > 15
+            ? props.surname.substring(0, 12).concat('.')
             : props.surname
 
     while (loading) return <div />
