@@ -22,7 +22,7 @@ export default (props: CardCustomerProps) => {
 
     const iconsVisualInitialState = (iconsList: number[]) => {
         const initialState = [] as string[]
-        [0, 1, 2, 3, 4, 5].forEach((i) =>
+        ;[0, 1, 2, 3, 4, 5].forEach((i) =>
             initialState.push(handleIcon(iconsList[i]))
         )
         return initialState
@@ -114,19 +114,15 @@ export default (props: CardCustomerProps) => {
     useEffect(() => {
         if (icons !== initialIcons && justSaved === false) setClickable(true)
         else setClickable(false)
-
     }, [clicked, initialIcons, justSaved])
 
     return (
-        <div className="flex flex-col h-full justify-around items-center"
-        >
+        <div className="flex flex-col h-full justify-around items-center">
             <div className="flex flex-col h-full justify-around items-center">
                 <div className="relative top-0 mt-10 font-title text-3xl text-center">
                     Personnalisez vos cartes !
                 </div>
-                <div
-                    className={`flex flex-row w-full items-center`}
-                >
+                <div className={`flex flex-row w-full items-center`}>
                     <div
                         className={`rounded overflow-hidden ml-2 mt-5 pb-1 mx-2 bg-gray-100 w-full shadow-custom`}
                     >
@@ -151,8 +147,9 @@ export default (props: CardCustomerProps) => {
                                 `}
                             >
                                 <div
-                                    className={`flex flex-col ${icons[0] === 0 ? 'hidden' : 'visible'
-                                        }`}
+                                    className={`flex flex-col ${
+                                        icons[0] === 0 ? 'hidden' : 'visible'
+                                    }`}
                                 >
                                     <button
                                         onClick={() => handleChangeIcon(0, 1)}
@@ -188,8 +185,9 @@ export default (props: CardCustomerProps) => {
                                 </div>
 
                                 <div
-                                    className={`flex flex-col ${icons[1] === 0 ? 'hidden' : 'visible'
-                                        }`}
+                                    className={`flex flex-col ${
+                                        icons[1] === 0 ? 'hidden' : 'visible'
+                                    }`}
                                 >
                                     <button
                                         onClick={() => handleChangeIcon(1, 1)}
@@ -224,8 +222,9 @@ export default (props: CardCustomerProps) => {
                                     </button>
                                 </div>
                                 <div
-                                    className={`flex flex-col ${icons[2] === 0 ? 'hidden' : 'visible'
-                                        }`}
+                                    className={`flex flex-col ${
+                                        icons[2] === 0 ? 'hidden' : 'visible'
+                                    }`}
                                 >
                                     <button
                                         onClick={() => handleChangeIcon(2, 1)}
@@ -260,8 +259,9 @@ export default (props: CardCustomerProps) => {
                                     </button>
                                 </div>
                                 <div
-                                    className={`flex flex-col ${icons[3] === 0 ? 'hidden' : 'visible'
-                                        }`}
+                                    className={`flex flex-col ${
+                                        icons[3] === 0 ? 'hidden' : 'visible'
+                                    }`}
                                 >
                                     <button
                                         onClick={() => handleChangeIcon(3, 1)}
@@ -296,8 +296,9 @@ export default (props: CardCustomerProps) => {
                                     </button>
                                 </div>
                                 <div
-                                    className={`flex flex-col ${icons[4] === 0 ? 'hidden' : 'visible'
-                                        }`}
+                                    className={`flex flex-col ${
+                                        icons[4] === 0 ? 'hidden' : 'visible'
+                                    }`}
                                 >
                                     <button
                                         onClick={() => handleChangeIcon(4, 1)}
@@ -332,8 +333,9 @@ export default (props: CardCustomerProps) => {
                                     </button>
                                 </div>
                                 <div
-                                    className={`flex flex-col ${icons[5] === 0 ? 'hidden' : 'visible'
-                                        }`}
+                                    className={`flex flex-col ${
+                                        icons[5] === 0 ? 'hidden' : 'visible'
+                                    }`}
                                 >
                                     <button
                                         onClick={() => handleChangeIcon(5, 1)}
@@ -373,27 +375,33 @@ export default (props: CardCustomerProps) => {
                 </div>{' '}
                 <div className="flex flex-row h-8 w-32 justify-around mt-3">
                     <button
-                        className={`${icons.indexOf(0) === 1 ? 'invisible' : 'visible'
-                            }`}
+                        className={`${
+                            icons.indexOf(0) === 1 ? 'invisible' : 'visible'
+                        }`}
                         onClick={() => handleChangeIconsNumber(-1)}
                     >
                         <img className="h-8 w-8" src={delete_cross} alt="" />
                     </button>
                     <button
-                        className={`${icons.indexOf(0) === -1 ? 'invisible' : 'visible'
-                            }`}
+                        className={`${
+                            icons.indexOf(0) === -1 ? 'invisible' : 'visible'
+                        }`}
                         onClick={() => handleChangeIconsNumber(1)}
                     >
                         <img className="h-8 w-8" src={add} alt="" />
                     </button>
                 </div>
                 <div
-                    className={`flex h-16 w-56 mt-8 self-center bg-gray-300 rounded text-gray-100 text-lg font-bold text-center justify-center pt-1 mb-5 flex-wrap ${clickable ? 'hidden' : 'visible'}`}
+                    className={`flex h-16 w-56 mt-8 self-center bg-gray-300 rounded text-gray-100 text-lg font-bold text-center justify-center pt-1 mb-5 flex-wrap ${
+                        clickable ? 'hidden' : 'visible'
+                    }`}
                 >
                     Enregistrer les modifications
                 </div>
                 <button
-                    className={`flex h-16 w-56 mt-8 self-center bg-orange-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap ${clickable ? 'visible' : 'hidden'}`}
+                    className={`flex h-16 w-56 mt-8 self-center bg-orange-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap ${
+                        clickable ? 'visible' : 'hidden'
+                    }`}
                     onClick={() => handleSave()}
                 >
                     Enregistrer les modifications

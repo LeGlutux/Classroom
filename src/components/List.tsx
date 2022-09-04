@@ -65,9 +65,7 @@ export default () => {
                     })}
             </div>
             <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-            <NavBar
-                activeMenu="list"
-                />
+                <NavBar activeMenu="list" />
             </div>
         </div>
     )

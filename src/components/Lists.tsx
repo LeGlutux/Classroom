@@ -30,9 +30,7 @@ export default () => {
                 </div>
 
                 <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                    <NavBar
-                        activeMenu="list"
-                    />
+                    <NavBar activeMenu="list" />
                 </div>
             </div>
         )
@@ -62,9 +60,7 @@ export default () => {
                 </div>
 
                 <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                    <NavBar
-                        activeMenu="list"
-                    />
+                    <NavBar activeMenu="list" />
                 </div>
             </div>
         )
@@ -99,9 +95,7 @@ export default () => {
                 <img className="h-6 w-6" src={add} alt="" />
             </Link>
             <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                <NavBar
-                    activeMenu="list"
-                />
+                <NavBar activeMenu="list" />
             </div>
         </div>
     )

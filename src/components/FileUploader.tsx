@@ -31,24 +31,19 @@ export default (props: FileUploaderProps) => {
             const lowerCased = w.toLowerCase()
             const cased = lowerCased.replace(/\b\w/g, (c) => c.toUpperCase())
             const debuggedCased1 =
-                cased.indexOf('é') === -1
+                cased.indexOf('É') === -1
                     ? cased
                     : cased.substring(0, 1).toUpperCase() +
-                      cased.substring(1, cased.indexOf('é') + 1) +
-                      cased[cased.indexOf('é') + 1].toLowerCase() +
-                      cased.substring(cased.indexOf('é') + 2)
+                      cased.substring(1, cased.indexOf('É')) +
+                      'é' +
+                      cased.substring(cased.indexOf('É') + 1)
             const debuggedCased =
-                debuggedCased1.indexOf('è') === -1
+                debuggedCased1.indexOf('È') === -1
                     ? debuggedCased1
                     : debuggedCased1.substring(0, 1).toUpperCase() +
-                      debuggedCased1.substring(
-                          1,
-                          debuggedCased1.indexOf('è') + 1
-                      ) +
-                      debuggedCased1[
-                          debuggedCased1.indexOf('è') + 1
-                      ].toLowerCase() +
-                      debuggedCased1.substring(debuggedCased1.indexOf('è') + 2)
+                      debuggedCased1.substring(1, debuggedCased1.indexOf('È')) +
+                      'è' +
+                      debuggedCased1.substring(debuggedCased1.indexOf('è') + 1)
             isUpperCase(w)
                 ? nameArray.push(debuggedCased)
                 : surnameArray.push(debuggedCased)
@@ -107,11 +102,7 @@ export default (props: FileUploaderProps) => {
                     const pap = data["Projet d'accompagnement"]
                         ? data["Projet d'accompagnement"]
                         : ''
-                    const student = Object.assign(
-                        splitter(data.Élève),
-                        splitter(data.Élève),
-                        { pap }
-                    )
+                    const student = Object.assign(splitter(data.Élève), { pap })
                     students.push(student)
                 })
                 setStudents(students)

@@ -193,221 +193,220 @@ export default () => {
                 </div>
 
                 <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                    <NavBar
-                        activeMenu="addPage"
-                    />
-
+                    <NavBar activeMenu="addPage" />
                 </div>
             </div>
         )
-    }
-
-    else return (
-        <div className={`w-full h-screen flex flex-col`}>
-            <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl xl:text-6xl xl:h-16 rounded-b-full">
-                Paramétrez votre année
-            </div>
-            <ConfirmModal
-                confirm={confirm}
-                setConfirm={setConfirm}
-                confirmAction={handleNewPeriode}
-                textBox={
-                    'Êtes-vous sûr(e) de vouloir commencer une nouvelle période ?'
-                }
-                subTextBox={
-                    'En faisant cela, vous ne pourrez plus ajouter de croix pour les périodes précédentes'
-                }
-            />
-            <ConfirmModal
-                confirm={confirm2}
-                setConfirm={setConfirm2}
-                confirmAction={handleDeleteAll}
-                textBox={
-                    'Êtes-vous sûr(e) de vouloir supprimer toutes les données ?'
-                }
-                subTextBox={
-                    'En faisant cela, vous supprimez définitivement vos élèves et vos classes'
-                }
-            />
-            <div
-                className={`flex w-full justify-between px-6 settings-page-arrows z-30 bg-transparent`}
-            >
-                <button
-                    className={`${actualRef === 0 || hide ? 'invisible' : 'visible'
+    } else
+        return (
+            <div className={`w-full h-screen flex flex-col`}>
+                <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl xl:text-6xl xl:h-16 rounded-b-full">
+                    Paramétrez votre année
+                </div>
+                <ConfirmModal
+                    confirm={confirm}
+                    setConfirm={setConfirm}
+                    confirmAction={handleNewPeriode}
+                    textBox={
+                        'Êtes-vous sûr(e) de vouloir commencer une nouvelle période ?'
+                    }
+                    subTextBox={
+                        'En faisant cela, vous ne pourrez plus ajouter de croix pour les périodes précédentes'
+                    }
+                />
+                <ConfirmModal
+                    confirm={confirm2}
+                    setConfirm={setConfirm2}
+                    confirmAction={handleDeleteAll}
+                    textBox={
+                        'Êtes-vous sûr(e) de vouloir supprimer toutes les données ?'
+                    }
+                    subTextBox={
+                        'En faisant cela, vous supprimez définitivement vos élèves et vos classes'
+                    }
+                />
+                <div
+                    className={`flex w-full justify-between px-6 settings-page-arrows z-30 bg-transparent`}
+                >
+                    <button
+                        className={`${
+                            actualRef === 0 || hide ? 'invisible' : 'visible'
                         }
                     ${groups.length === 0 ? 'invisible' : 'visible'}
                     xl:hidden`}
-                    onClick={() => {
-                        scrollTo(actualRef - 1)
-                        setActualRef(actualRef - 1)
-                        setHide(true)
-                        setTimeout(() => setHide(false), 400)
-                    }}
-                >
-                    <img className="w-4" src={closeCard} alt="" />
-                </button>
-                <button
-                    className={`${(actualRef === 4 && !adminConnected) ||
-                        hide ||
-                        actualRef === 5
-                        ? 'invisible'
-                        : 'visible'
+                        onClick={() => {
+                            scrollTo(actualRef - 1)
+                            setActualRef(actualRef - 1)
+                            setHide(true)
+                            setTimeout(() => setHide(false), 400)
+                        }}
+                    >
+                        <img className="w-4" src={closeCard} alt="" />
+                    </button>
+                    <button
+                        className={`${
+                            (actualRef === 4 && !adminConnected) ||
+                            hide ||
+                            actualRef === 5
+                                ? 'invisible'
+                                : 'visible'
                         }
                     ${groups.length === 0 ? 'invisible' : 'visible'} xl:hidden`}
-
-                    onClick={() => {
-                        scrollTo(actualRef + 1)
-                        setActualRef(actualRef + 1)
-                        setHide(true)
-                        setTimeout(() => setHide(false), 400)
-                    }}
-                >
-                    <img className="w-4" src={openCard} alt="" />
-                </button>
-            </div>
-
-            <div
-                className={`flex flex-row h-full overflow-x-hidden py-8 items-center px-8`}
-                ref={xScroller}
-            >
-                <div className={cards(0, actualRef)} ref={ref0}>
-                    {uploader && <CreateGroups onAddGroup={refreshGroups} />}
-                    {!uploader && <FileUploader
-                        currentUserId={currentUser.uid}
-                        setSaveConfirm={setSaveConfirm}
-                    />}
-
-                    <button
-                        className="flex justify-end w-auto self-end text-blue-600 justify-items-end place-items-end"
-                        onClick={() => setUploader(!uploader)}>
-                        {!uploader ? 'Ajouter manuellement' : 'Importer depuis Pronote'}
+                        onClick={() => {
+                            scrollTo(actualRef + 1)
+                            setActualRef(actualRef + 1)
+                            setHide(true)
+                            setTimeout(() => setHide(false), 400)
+                        }}
+                    >
+                        <img className="w-4" src={openCard} alt="" />
                     </button>
                 </div>
 
-                <div className={cards(1, actualRef)} ref={ref1}>
-                    <CreateStudent
-                        groups={groups}
-                        currentUserId={currentUser.uid}
-                    />
-                </div>
-
                 <div
-                    className={cards(2, actualRef)}
-                    ref={ref2}
-
+                    className={`flex flex-row h-full overflow-x-hidden py-8 items-center px-8`}
+                    ref={xScroller}
                 >
-                    <CardCustomer
-                        userId={currentUser.uid}
-                        setSaveConfirm={setSaveConfirm} />
-                </div>
-
-
-                <div className={`${cards(3, actualRef)}`} ref={ref3}>
-                    <div className="flex flex-col h-full items-center pb-4">
-                        <div className="flex flex-col h-full justify-around items-center">
-                            <div className="relative top-0 font-title text-3xl text-center">
-                                Lancer une nouvelle période
-                            </div>
-
-                            <div className="flex flex-row items-center mb-5">
-                                <img
-                                    className="w-8 h-8"
-                                    src={calendar}
-                                    alt=""
-                                />
-                                <div className="text-gray-800 font-studentName text-lg ml-2">
-                                    En cours : Période {runningPeriode}
-                                </div>
-                            </div>
-                            <button
-                                className="flex h-16 w-56 self-center bg-orange-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 pb-2 flex-wrap"
-                                onClick={() => setConfirm(true)}
-                            >
-                                {' '}
-                                Commencer une nouvelle période
-                            </button>
-                            <PeriodeFilter
-                                periodes={periodes}
-                                currentUser={currentUser.uid}
-                                refresh={refreshRunningPeriode}
+                    <div className={cards(0, actualRef)} ref={ref0}>
+                        {uploader && (
+                            <CreateGroups onAddGroup={refreshGroups} />
+                        )}
+                        {!uploader && (
+                            <FileUploader
+                                currentUserId={currentUser.uid}
+                                setSaveConfirm={setSaveConfirm}
                             />
+                        )}
 
+                        <button
+                            className="flex justify-end w-auto self-end text-blue-600 justify-items-end place-items-end"
+                            onClick={() => setUploader(!uploader)}
+                        >
+                            {!uploader
+                                ? 'Ajouter manuellement'
+                                : 'Importer depuis Pronote'}
+                        </button>
+                    </div>
+
+                    <div className={cards(1, actualRef)} ref={ref1}>
+                        <CreateStudent
+                            groups={groups}
+                            currentUserId={currentUser.uid}
+                        />
+                    </div>
+
+                    <div className={cards(2, actualRef)} ref={ref2}>
+                        <CardCustomer
+                            userId={currentUser.uid}
+                            setSaveConfirm={setSaveConfirm}
+                        />
+                    </div>
+
+                    <div className={`${cards(3, actualRef)}`} ref={ref3}>
+                        <div className="flex flex-col h-full items-center pb-4">
+                            <div className="flex flex-col h-full justify-around items-center">
+                                <div className="relative top-0 font-title text-3xl text-center">
+                                    Lancer une nouvelle période
+                                </div>
+
+                                <div className="flex flex-row items-center mb-5">
+                                    <img
+                                        className="w-8 h-8"
+                                        src={calendar}
+                                        alt=""
+                                    />
+                                    <div className="text-gray-800 font-studentName text-lg ml-2">
+                                        En cours : Période {runningPeriode}
+                                    </div>
+                                </div>
+                                <button
+                                    className="flex h-16 w-56 self-center bg-orange-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 pb-2 flex-wrap"
+                                    onClick={() => setConfirm(true)}
+                                >
+                                    {' '}
+                                    Commencer une nouvelle période
+                                </button>
+                                <PeriodeFilter
+                                    periodes={periodes}
+                                    currentUser={currentUser.uid}
+                                    refresh={refreshRunningPeriode}
+                                />
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div className={cards(4, actualRef)} ref={ref4}>
-                    <div className="flex flex-col h-full justify-around items-center">
+                    <div className={cards(4, actualRef)} ref={ref4}>
+                        <div className="flex flex-col h-full justify-around items-center">
+                            <div className="flex flex-col h-full justify-around items-center">
+                                <div className="flex flex-col h-full justify-around items-center">
+                                    <div className="relative top-0 font-title text-3xl text-center">
+                                        L'année est finie ?
+                                    </div>
+                                    <button
+                                        className="flex h-16 w-56 mt-8 self-center bg-red-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap"
+                                        onClick={() => setConfirm2(true)}
+                                    >
+                                        {' '}
+                                        Supprimer toutes les données
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
+                    <div
+                        className={`flex ${
+                            actualRef === 5 ? 'z-40' : 'z-20'
+                        } flex-col mt-2 h-100 w-64 px-12 overflow-visible shadow-custom mx-6 bg-gray-100 pb-4 rounded xl:mt-12 xl:mx-64 ${
+                            adminConnected ? 'visible' : 'invisible'
+                        }`}
+                        ref={ref5}
+                    >
                         <div className="flex flex-col h-full justify-around items-center">
                             <div className="flex flex-col h-full justify-around items-center">
                                 <div className="relative top-0 font-title text-3xl text-center">
-                                    L'année est finie ?
+                                    Si vous voyez ceci, prévenir le développeur
+                                    !
+                                </div>
+                                <div>
+                                    {'version: '} {version}
                                 </div>
                                 <button
-                                    className="flex h-16 w-56 mt-8 self-center bg-red-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap"
-                                    onClick={() => setConfirm2(true)}
+                                    className="flex h-8 w-56 mt-8 self-center bg-green-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap"
+                                    onClick={() => launchNewVersion()}
                                 >
-                                    {' '}
-                                    Supprimer toutes les données
+                                    Lancer une nouvelle version
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div
-                    className={`flex ${actualRef === 5 ? "z-40" : "z-20"} flex-col mt-2 h-100 w-64 px-12 overflow-visible shadow-custom mx-6 bg-gray-100 pb-4 rounded xl:mt-12 xl:mx-64 ${adminConnected ? 'visible' : 'invisible'
-
-                        }`}
-                    ref={ref5}
-                >
-                    <div className="flex flex-col h-full justify-around items-center">
-                        <div className="flex flex-col h-full justify-around items-center">
-                            <div className="relative top-0 font-title text-3xl text-center">
-                                Si vous voyez ceci, prévenir le développeur
-                                !
-                            </div>
-                            <div>
-                                {'version: '} {version}
-                            </div>
-                            <button
-                                className="flex h-8 w-56 mt-8 self-center bg-green-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap"
-                                onClick={() => launchNewVersion()}
-                            >
-                                Lancer une nouvelle version
-                            </button>
-                        </div>
+                <div className="w-full mb-6 h-16 bg-white">
+                    <div className="my-8 flex justify-center bg-white">
+                        <button
+                            className="text-lg text-gray-700 font-bold"
+                            onClick={() => Firebase.auth().signOut()}
+                        >
+                            Se déconnecter
+                        </button>
                     </div>
                 </div>
-            </div>
-            <div className="w-full mb-6 h-16 bg-white">
-                <div className="my-8 flex justify-center bg-white">
-                    <button
-                        className="text-lg text-gray-700 font-bold"
-                        onClick={() => Firebase.auth().signOut()}
-                    >
-                        Se déconnecter
-                    </button>
+                <div
+                    className={`flex justify-around absolute bottom-0 w-full h-8 z-50 bg-green-400 items-center text-lg text-bold text-white 
+            ${
+                count !== 0
+                    ? saveConfirm
+                        ? 'entering-b'
+                        : 'fade-out'
+                    : 'hidden'
+            }`}
+                >
+                    Les modifications ont été enregistrées
+                </div>
+
+                <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
+                    <NavBar activeMenu="addPage" />
                 </div>
             </div>
-            <div
-                className={`flex justify-around absolute bottom-0 w-full h-8 z-50 bg-green-400 items-center text-lg text-bold text-white 
-            ${count !== 0
-                        ? saveConfirm
-                            ? 'entering-b'
-                            : 'fade-out'
-                        : 'hidden'
-                    }`}
-            >
-                Les modifications ont été enregistrées
-            </div>
-
-            <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                <NavBar
-                    activeMenu="addPage"
-                />
-            </div>
-        </div>
-    )
+        )
 }

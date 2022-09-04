@@ -48,12 +48,10 @@ export default () => {
     const [magicStickStudentsList, setMagicStickStudentsList] =
         useState(hardStudents)
 
-
     useEffect(() => {
         setDisplayed(false)
         setTimeout(() => setDisplayed(true), 2000)
-    }, [displayedGroup]
-    )
+    }, [displayedGroup])
 
     const filterStudents = (group: string) => {
         const filtered = students
@@ -70,12 +68,12 @@ export default () => {
         const initialState = [] as string[]
         icons
             ? [0, 1, 2, 3, 4, 5].forEach((i) =>
-                initialState.push(handleIcon(iconsArray[i]))
-            )
+                  initialState.push(handleIcon(iconsArray[i]))
+              )
             : db
-                .collection('users')
-                .doc(currentUser.uid)
-                .update({ icons: [1, 2, 3, 4, 0, 0] })
+                  .collection('users')
+                  .doc(currentUser.uid)
+                  .update({ icons: [1, 2, 3, 4, 0, 0] })
         return initialState
     }
 
@@ -159,9 +157,7 @@ export default () => {
                 </div>
 
                 <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                    <NavBar
-                        activeMenu="home" />
-
+                    <NavBar activeMenu="home" />
                 </div>
             </div>
         )
@@ -189,9 +185,7 @@ export default () => {
                 </div>
 
                 <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                    <NavBar
-                        activeMenu="home" />
-
+                    <NavBar activeMenu="home" />
                 </div>
             </div>
         )
@@ -219,9 +213,7 @@ export default () => {
                 </div>
 
                 <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                    <NavBar
-                        activeMenu="home"
-                    />
+                    <NavBar activeMenu="home" />
                 </div>
             </div>
         )
@@ -251,7 +243,7 @@ export default () => {
                 students={students}
                 setUpdating={setUpdating}
             />
-            {(!displayed && displayedGroup !== 'tous') &&
+            {!displayed && displayedGroup !== 'tous' && (
                 <div className="flex flex-col items-center justify-center absolute w-full h-full mb-12 bg-white">
                     <div className="font-title text-4xl mb-8 text-bold xl:text-6xl">
                         Chargement des données
@@ -259,14 +251,16 @@ export default () => {
                     <div className="w-64 h-64 mt-8 xl:w-64 xl:h-64">
                         <img src={loader_image} alt="" />
                     </div>
-                </div>}
+                </div>
+            )}
 
             <div className="flex flex-col w-full absolute top-0 bg-white h-12 border-b-2 p-1 border-gray-400 items-center font-title font-bold justify-around text-4xl rounded-b-full">
                 {title}
             </div>
 
-            <div className="flex font-stundentName backdrop-blur bg-transparent rounded-full p-1 px-2 absolute place-self-center mt-12 items-end font-normal text-md">{"P".concat(runningPeriode.toString())}</div>
-
+            <div className="flex font-stundentName backdrop-blur bg-transparent rounded-full p-1 px-2 absolute place-self-center mt-12 items-end font-normal text-md">
+                {'P'.concat(runningPeriode.toString())}
+            </div>
 
             <MagicStick
                 toggleSelected={toggleSelected}
@@ -293,31 +287,29 @@ export default () => {
                                 comment,
                             }) => {
                                 return (
-                                        <Student
-                                            displayedStudents={hardStudents}
-                                            periodes={periodes}
-                                            runningPeriode={runningPeriode}
-                                            currentUser={currentUser.uid}
-                                            key={id}
-                                            loading={loading}
-                                            currentUserId={currentUser.uid}
-                                            selected={selected}
-                                            classes={classes}
-                                            name={name}
-                                            surname={surname}
-                                            comment={comment ? comment : ''}
-                                            id={id}
-                                            highlight={highlight}
-                                            toggleSelected={toggleSelected}
-                                            toggleHighlight={toggleHighlight}
-                                            refresher={(group) =>
-                                                filterStudents(group)
-                                            }
-                                            displayedGroup={displayedGroup}
-                                            icons={iconsDisplay}
-                                        />
-                                        
-
+                                    <Student
+                                        displayedStudents={hardStudents}
+                                        periodes={periodes}
+                                        runningPeriode={runningPeriode}
+                                        currentUser={currentUser.uid}
+                                        key={id}
+                                        loading={loading}
+                                        currentUserId={currentUser.uid}
+                                        selected={selected}
+                                        classes={classes}
+                                        name={name}
+                                        surname={surname}
+                                        comment={comment ? comment : ''}
+                                        id={id}
+                                        highlight={highlight}
+                                        toggleSelected={toggleSelected}
+                                        toggleHighlight={toggleHighlight}
+                                        refresher={(group) =>
+                                            filterStudents(group)
+                                        }
+                                        displayedGroup={displayedGroup}
+                                        icons={iconsDisplay}
+                                    />
                                 )
                             }
                         )}
@@ -345,8 +337,9 @@ export default () => {
                         setBurgerMenuFirstClicked(true)
                         filterStudents(displayedGroup)
                     }}
-                    className={`flex flex-col w-16 h-16 xl:w-20 xl:h-20 bg-gray-200 rounded-full bottom-right-custom2 shadow-custom items-center justify-center ${menuOpened ? 'fade-out' : 'fade-in'
-                        } md:w-20 md:h-20}`}
+                    className={`flex flex-col w-16 h-16 xl:w-20 xl:h-20 bg-gray-200 rounded-full bottom-right-custom2 shadow-custom items-center justify-center ${
+                        menuOpened ? 'fade-out' : 'fade-in'
+                    } md:w-20 md:h-20}`}
                 >
                     <img
                         className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 xl:w-12 xl:h-12"
@@ -363,12 +356,13 @@ export default () => {
                         setMenuOpened(!menuOpened)
                         setMagicStickStudentsList(hardStudents)
                     }}
-                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 bg-gray-200 rounded-full bottom-right-custom shadow-custom flex items-center justify-center ${burgerMenuFirstClicked
-                        ? menuOpened
-                            ? 'entering-r'
-                            : 'get-out-r'
-                        : 'invisible'
-                        }`}
+                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 bg-gray-200 rounded-full bottom-right-custom shadow-custom flex items-center justify-center ${
+                        burgerMenuFirstClicked
+                            ? menuOpened
+                                ? 'entering-r'
+                                : 'get-out-r'
+                            : 'invisible'
+                    }`}
                 >
                     <img
                         className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 xl:w-12 xl:h-12 pb-1"
@@ -384,12 +378,13 @@ export default () => {
                         setMagicStickStudentsList(notYetSelectedStudents)
                         setTimeout(() => setDisplayRandomStudent(true), 200)
                     }}
-                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 bg-gray-200 rounded-full bottom-right-custom2 shadow-custom flex items-center justify-center ${burgerMenuFirstClicked
-                        ? menuOpened
-                            ? 'entering-r'
-                            : 'get-out-r'
-                        : 'invisible'
-                        }`}
+                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 bg-gray-200 rounded-full bottom-right-custom2 shadow-custom flex items-center justify-center ${
+                        burgerMenuFirstClicked
+                            ? menuOpened
+                                ? 'entering-r'
+                                : 'get-out-r'
+                            : 'invisible'
+                    }`}
                 >
                     <img
                         className="w-10 h-10 md:w-12 md:h-12 lg:w-16 lg:h-16 xl:w-16 xl:h-16"
@@ -398,7 +393,6 @@ export default () => {
                     />
                 </button>
             </div>
-
 
             {groups.length !== 1 && displayedGroup !== 'tous' && (
                 <div className="flex flex-row justify-start bg-transparent w-full bottom-center-custom">
@@ -414,9 +408,7 @@ export default () => {
             )}
 
             <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                <NavBar
-                    activeMenu="home" />
-
+                <NavBar activeMenu="home" />
             </div>
         </div>
     )

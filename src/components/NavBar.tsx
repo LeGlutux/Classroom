@@ -9,9 +9,8 @@ import onList from '../images/onList.png'
 import home from '../images/home.png'
 import onHome from '../images/onHome.png'
 
-
 interface NavBarProps {
-activeMenu: string
+    activeMenu: string
 }
 
 export default (props: NavBarProps) => {
@@ -19,19 +18,33 @@ export default (props: NavBarProps) => {
         <div className="flex flex-row bg-gray-300 border-5 border-orange-300 px-4 h-full justify-around py-2">
             <div className="rounded-full h-8 w-8 xl:h-10 xl:w-10 flex justify-center">
                 <Link to="/create">
-                    <img className="self-center" src={props.activeMenu==="addPage" ? onAddPage : addPage } alt="" />
+                    <img
+                        className="self-center"
+                        src={
+                            props.activeMenu === 'addPage' ? onAddPage : addPage
+                        }
+                        alt=""
+                    />
                 </Link>
             </div>
             <div
                 className={`rounded-full h-8 w-8 xl:h-10 xl:w-10 flex justify-center`}
             >
                 <Link to="/">
-                    <img className="self-center" src={props.activeMenu==="home" ? onHome : home} alt="" />
+                    <img
+                        className="self-center"
+                        src={props.activeMenu === 'home' ? onHome : home}
+                        alt=""
+                    />
                 </Link>
             </div>
             <div className="rounded-full h-8 w-8 xl:h-10 xl:w-10 flex justify-center">
                 <Link to="/lists">
-                    <img className="self-center" src={props.activeMenu==="list" ? onList : list} alt="" />
+                    <img
+                        className="self-center"
+                        src={props.activeMenu === 'list' ? onList : list}
+                        alt=""
+                    />
                 </Link>
             </div>
         </div>

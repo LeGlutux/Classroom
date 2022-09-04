@@ -65,8 +65,9 @@ export default (props: Props) => {
     return (
         <div ref={cardRef} className="flex flex-row w-full">
             <div
-                className={`flew flex-row w-full ml-2 ${edit ? 'hidden' : 'visible'
-                    }`}
+                className={`flew flex-row w-full ml-2 ${
+                    edit ? 'hidden' : 'visible'
+                }`}
             >
                 <div className={`flex w-11/12 justify-between`}>
                     <button onClick={() => handleEdition()}>
@@ -92,8 +93,6 @@ export default (props: Props) => {
                             </div>
                         </div>
                     )}
-
-
                 </div>
             </div>
             <div className={`${edit ? 'visible' : 'hidden'}`}>

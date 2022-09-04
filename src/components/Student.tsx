@@ -144,9 +144,9 @@ export default (props: StudentProps) => {
         (props.name + props.surname).length > 18 && props.surname.length >= 15
             ? props.name.substring(0, 3).concat('.')
             : (props.name + props.surname).length > 18 &&
-                props.surname.length < 15
-                ? props.name.substring(0, 17 - props.surname.length).concat('.')
-                : props.name
+              props.surname.length < 15
+            ? props.name.substring(0, 17 - props.surname.length).concat('.')
+            : props.name
 
     const shortSurname =
         (shortName + props.surname).length > 16 && props.surname.length > 12
@@ -157,29 +157,34 @@ export default (props: StudentProps) => {
 
     return (
         <div
-            className={`flex mt-1 flex-row w-full md:w-1/2 lg:w-1/2 xl:w-1/3 items-center ${hidden ? 'hidden' : 'visible'
-                } ${props.currentUserId === '26kiVujCgjNpzCkYwugqkrt63Hx1'
+            className={`flex mt-1 flex-row w-full md:w-1/2 lg:w-1/2 xl:w-1/3 items-center ${
+                hidden ? 'hidden' : 'visible'
+            } ${
+                props.currentUserId === '26kiVujCgjNpzCkYwugqkrt63Hx1'
                     ? 'iphone-vertical'
                     : ''
-                }`}
+            }`}
         >
             <div
-                className={`overflow-hidden ml-3 mr-2 bg-white w-full ${props.runningPeriode === props.periodes.length
-                    ? ''
-                    : 'border-2 border-gray-500'
-                    }`}
+                className={`overflow-hidden ml-3 mr-2 bg-white w-full ${
+                    props.runningPeriode === props.periodes.length
+                        ? ''
+                        : 'border-2 border-gray-500'
+                }`}
             >
                 <div
-                    className={`flex justify-between flex-col ${props.icons[5] === 'none' ? '' : 'h-38'
-                        }`}
+                    className={`flex justify-between flex-col ${
+                        props.icons[5] === 'none' ? '' : 'h-38'
+                    }`}
                 >
                     <div className="flex flex-row items-center">
                         <div className="flex h-full items-center self-center mt-2 ml-2 xl:pt-6 static">
                             <button
-                                className={`h-6 w-6 xl:h-10 xl:w-10 ${selected === false || selected === undefined
-                                    ? 'invisible'
-                                    : 'visible'
-                                    }`}
+                                className={`h-6 w-6 xl:h-10 xl:w-10 ${
+                                    selected === false || selected === undefined
+                                        ? 'invisible'
+                                        : 'visible'
+                                }`}
                                 onClick={handleForget}
                             >
                                 <img
@@ -189,7 +194,7 @@ export default (props: StudentProps) => {
                                 />
                             </button>
                         </div>
-                        <div className='flex flex-row w-full justify-between'>
+                        <div className="flex flex-row w-full justify-between">
                             <button
                                 onClick={() => {
                                     db.collection('users')
@@ -205,15 +210,17 @@ export default (props: StudentProps) => {
                                 className={`flex flex-row mt-2`}
                             >
                                 <div
-                                    className={`font-studentName ml-2 text-gray-900 font-medium h-5 text-2xl md:text-3xl lg:text-3x xl:text-3xl xl:pt-4 ${highlight ? 'text-red-600' : ''
-                                        }
+                                    className={`font-studentName ml-2 text-gray-900 font-medium h-5 text-2xl md:text-3xl lg:text-3x xl:text-3xl xl:pt-4 ${
+                                        highlight ? 'text-red-600' : ''
+                                    }
                                 `}
                                 >
                                     {shortSurname}
                                 </div>
                                 <div
-                                    className={`font-studentName ml-2 text-gray-900 font-bold text-2xl md:text-3xl lg:text-3x xl:text-3xl xl:pt-4 ${highlight ? 'text-red-600' : ''
-                                        }`}
+                                    className={`font-studentName ml-2 text-gray-900 font-bold text-2xl md:text-3xl lg:text-3x xl:text-3xl xl:pt-4 ${
+                                        highlight ? 'text-red-600' : ''
+                                    }`}
                                 >
                                     {shortName}
                                 </div>
@@ -229,20 +236,20 @@ export default (props: StudentProps) => {
                                 />
                             </Link>
                         </div>
-
-
                     </div>
                     <div
-                        className={`w-full h-12 flex p-2 content-center justify-between  pr-6 ${props.icons[5] === 'none' ? '' : 'mb-6'
-                            }`}
-
+                        className={`w-full h-12 flex p-2 content-center justify-between  pr-6 ${
+                            props.icons[5] === 'none' ? '' : 'mb-6'
+                        }`}
                     >
                         <div
-                            className={`flex ${props.icons[0] === 'none' ? 'hidden' : 'visible'
-                                } ${props.icons[5] === 'none'
+                            className={`flex ${
+                                props.icons[0] === 'none' ? 'hidden' : 'visible'
+                            } ${
+                                props.icons[5] === 'none'
                                     ? 'flex-row'
                                     : 'flex-col items-center'
-                                }`}
+                            }`}
                         >
                             <button
                                 onClick={() => handleAddCross('behaviour')}
@@ -260,11 +267,13 @@ export default (props: StudentProps) => {
                             </div>
                         </div>
                         <div
-                            className={`flex ${props.icons[1] === 'none' ? 'hidden' : 'visible'
-                                } ${props.icons[5] === 'none'
+                            className={`flex ${
+                                props.icons[1] === 'none' ? 'hidden' : 'visible'
+                            } ${
+                                props.icons[5] === 'none'
                                     ? 'flex-row'
                                     : 'flex-col items-center'
-                                }`}
+                            }`}
                         >
                             <button
                                 onClick={() => handleAddCross('homework')}
@@ -282,11 +291,13 @@ export default (props: StudentProps) => {
                             </div>
                         </div>
                         <div
-                            className={`flex ${props.icons[2] === 'none' ? 'hidden' : 'visible'
-                                } ${props.icons[5] === 'none'
+                            className={`flex ${
+                                props.icons[2] === 'none' ? 'hidden' : 'visible'
+                            } ${
+                                props.icons[5] === 'none'
                                     ? 'flex-row'
                                     : 'flex-col items-center'
-                                }`}
+                            }`}
                         >
                             <button
                                 onClick={() => handleAddCross('supply')}
@@ -302,11 +313,13 @@ export default (props: StudentProps) => {
                             </div>
                         </div>
                         <div
-                            className={`flex ${props.icons[3] === 'none' ? 'hidden' : 'visible'
-                                } ${props.icons[5] === 'none'
+                            className={`flex ${
+                                props.icons[3] === 'none' ? 'hidden' : 'visible'
+                            } ${
+                                props.icons[5] === 'none'
                                     ? 'flex-row'
                                     : 'flex-col items-center'
-                                }`}
+                            }`}
                         >
                             <button
                                 onClick={() => handleAddCross('observation')}
@@ -324,11 +337,13 @@ export default (props: StudentProps) => {
                             </div>
                         </div>
                         <div
-                            className={`flex ${props.icons[4] === 'none' ? 'hidden' : 'visible'
-                                } ${props.icons[5] === 'none'
+                            className={`flex ${
+                                props.icons[4] === 'none' ? 'hidden' : 'visible'
+                            } ${
+                                props.icons[5] === 'none'
                                     ? 'flex-row'
                                     : 'flex-col items-center'
-                                }`}
+                            }`}
                         >
                             <button
                                 onClick={() => handleAddCross('calculator')}
@@ -346,11 +361,13 @@ export default (props: StudentProps) => {
                             </div>
                         </div>
                         <div
-                            className={`flex ${props.icons[5] === 'none' ? 'hidden' : 'visible'
-                                } ${props.icons[5] === 'none'
+                            className={`flex ${
+                                props.icons[5] === 'none' ? 'hidden' : 'visible'
+                            } ${
+                                props.icons[5] === 'none'
                                     ? 'flex-row'
                                     : 'flex-col items-center'
-                                }`}
+                            }`}
                         >
                             <button
                                 onClick={() => handleAddCross('phone')}

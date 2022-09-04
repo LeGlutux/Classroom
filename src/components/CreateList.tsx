@@ -84,10 +84,10 @@ export default () => {
         itemN === 1
             ? ref2
             : itemN === 2
-                ? ref3
-                : itemN === 3
-                    ? ref4
-                    : submitButtonRef
+            ? ref3
+            : itemN === 3
+            ? ref4
+            : submitButtonRef
 
     const [clickable, setClickable] = useState(false)
 
@@ -107,8 +107,6 @@ export default () => {
 
     return (
         <div className="h-screen w-full flex flex-col">
-            
-            
             <span className="absolute-tr p-4">
                 <svg
                     className="h-4 w-4 fill-current text-grey hover:text-grey-darkest"
@@ -183,8 +181,9 @@ export default () => {
                         <div className="w-9/12 flex flex-col hover:border-gray-800">
                             <div className="w-9/12 flex flex-col hover:border-gray-800">
                                 <div
-                                    className={`flex flex-row items-end ml-10 ${itemN >= 1 ? 'visible' : 'invisible'
-                                        }`}
+                                    className={`flex flex-row items-end ml-10 ${
+                                        itemN >= 1 ? 'visible' : 'invisible'
+                                    }`}
                                 >
                                     <input
                                         value={item1}
@@ -202,10 +201,11 @@ export default () => {
                                         )}`}
                                     >
                                         <button
-                                            className={`w-6 h-6 text-bold ${defaultValue[0] !== 3
+                                            className={`w-6 h-6 text-bold ${
+                                                defaultValue[0] !== 3
                                                     ? 'text-invisible'
                                                     : 'text-base'
-                                                }`}
+                                            }`}
                                             onClick={(e) => {
                                                 incrementArray(0)
                                                 setRefresh(refresh + 1)
@@ -218,14 +218,16 @@ export default () => {
                                     </div>
                                 </div>
                                 <div
-                                    className={`flex flex-row items-end ${itemN >= 2 ? 'visible' : 'invisible'
-                                        }`}
+                                    className={`flex flex-row items-end ${
+                                        itemN >= 2 ? 'visible' : 'invisible'
+                                    }`}
                                 >
                                     <span
-                                        className={`flex mx-3 h-4 w-4 mb-3 ${itemN === 2
+                                        className={`flex mx-3 h-4 w-4 mb-3 ${
+                                            itemN === 2
                                                 ? 'visible'
                                                 : 'invisible'
-                                            }`}
+                                        }`}
                                     >
                                         <svg
                                             className="h-4 w-4 fill-current text-grey hover:text-grey-darkest"
@@ -255,10 +257,11 @@ export default () => {
                                         )}`}
                                     >
                                         <button
-                                            className={`w-6 h-6 text-bold ${defaultValue[1] !== 3
+                                            className={`w-6 h-6 text-bold ${
+                                                defaultValue[1] !== 3
                                                     ? 'text-invisible'
                                                     : 'text-base'
-                                                }`}
+                                            }`}
                                             onClick={(e) => {
                                                 incrementArray(1)
                                                 setRefresh(refresh + 1)
@@ -271,14 +274,16 @@ export default () => {
                                     </div>
                                 </div>
                                 <div
-                                    className={`flex flex-row items-end ${itemN >= 3 ? 'visible' : 'invisible'
-                                        }`}
+                                    className={`flex flex-row items-end ${
+                                        itemN >= 3 ? 'visible' : 'invisible'
+                                    }`}
                                 >
                                     <span
-                                        className={`flex mx-3 h-4 w-4 mb-3 ${itemN === 3
+                                        className={`flex mx-3 h-4 w-4 mb-3 ${
+                                            itemN === 3
                                                 ? 'visible'
                                                 : 'invisible'
-                                            }`}
+                                        }`}
                                     >
                                         <svg
                                             className="h-4 w-4 fill-current text-grey hover:text-grey-darkest"
@@ -308,10 +313,11 @@ export default () => {
                                         )}`}
                                     >
                                         <button
-                                            className={`w-6 h-6 text-bold ${defaultValue[2] !== 3
+                                            className={`w-6 h-6 text-bold ${
+                                                defaultValue[2] !== 3
                                                     ? 'text-invisible'
                                                     : 'text-base'
-                                                }`}
+                                            }`}
                                             onClick={(e) => {
                                                 incrementArray(2)
                                                 setRefresh(refresh + 1)
@@ -324,14 +330,16 @@ export default () => {
                                     </div>
                                 </div>
                                 <div
-                                    className={`flex flex-row items-end ${itemN === 4 ? 'visible' : 'invisible'
-                                        }`}
+                                    className={`flex flex-row items-end ${
+                                        itemN === 4 ? 'visible' : 'invisible'
+                                    }`}
                                 >
                                     <span
-                                        className={`flex mx-3 h-4 w-4 mb-3 ${itemN === 4
+                                        className={`flex mx-3 h-4 w-4 mb-3 ${
+                                            itemN === 4
                                                 ? 'visible'
                                                 : 'invisible'
-                                            }`}
+                                        }`}
                                     >
                                         <svg
                                             className="h-4 w-4 fill-current text-grey hover:text-grey-darkest"
@@ -361,10 +369,11 @@ export default () => {
                                         )}`}
                                     >
                                         <button
-                                            className={`w-6 h-6 text-bold ${defaultValue[3] !== 3
+                                            className={`w-6 h-6 text-bold ${
+                                                defaultValue[3] !== 3
                                                     ? 'text-invisible'
                                                     : 'text-base'
-                                                }`}
+                                            }`}
                                             onClick={(e) => {
                                                 incrementArray(3)
                                                 setRefresh(refresh + 1)
@@ -379,8 +388,9 @@ export default () => {
                             </div>
                         </div>
                         <div
-                            className={`w-full flex flex-row ${itemN >= 4 ? 'invisible' : ''
-                                }`}
+                            className={`w-full flex flex-row ${
+                                itemN >= 4 ? 'invisible' : ''
+                            }`}
                         >
                             <button
                                 type="submit"
@@ -405,8 +415,9 @@ export default () => {
                     </div>
 
                     <div
-                        className={`flex h-8 w-40 self-center mt-6 bg-gray-300 rounded text-gray-100 text-lg font-bold justify-center ${clickable ? 'hidden' : 'visible'
-                            }`}
+                        className={`flex h-8 w-40 self-center mt-6 bg-gray-300 rounded text-gray-100 text-lg font-bold justify-center ${
+                            clickable ? 'hidden' : 'visible'
+                        }`}
                     >
                         Créer la liste
                     </div>
@@ -414,18 +425,16 @@ export default () => {
                         type="submit"
                         ref={submitButtonRef}
                         onClick={() => history.goBack()}
-                        className={`flex h-8 w-40 self-center mt-6 bg-orange-500 rounded text-white text-lg font-bold justify-center ${clickable ? 'visible' : 'hidden'
-                            }`}
+                        className={`flex h-8 w-40 self-center mt-6 bg-orange-500 rounded text-white text-lg font-bold justify-center ${
+                            clickable ? 'visible' : 'hidden'
+                        }`}
                     >
                         Créer la liste
                     </button>
                 </div>
             </form>
             <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                <NavBar
-                activeMenu="list"
-                />
-
+                <NavBar activeMenu="list" />
             </div>
         </div>
     )
