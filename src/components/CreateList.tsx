@@ -24,34 +24,39 @@ export default () => {
     const [item2, setItem2] = useState('')
     const [item3, setItem3] = useState('')
     const [item4, setItem4] = useState('')
-    const id = Date.now().toString()
-    const handleCreateList = () => {
-        db.collection('users')
-            .doc(currentUser.uid)
-            .collection('lists')
-            .doc(id)
-            .set({
-                name: listNameInputValue,
-                id: id,
-                date: new Date(),
-                group: defaultList,
-                itemN,
-                items: [item1, item2, item3, item4],
-            })
-        students
-            .filter((s) => s.classes.includes(defaultList[0]))
-            .forEach((s) => {
-                db.collection('users')
-                    .doc(currentUser.uid)
-                    .collection('eleves')
-                    .doc(s.id)
-                    .collection('listes')
-                    .doc(id.concat('s'))
-                    .set({
-                        state: defaultValue,
-                        id: id.concat('s'),
-                    })
-            })
+    const [item5, setItem5] = useState('')
+
+    const handleCreateList = (empty: boolean) => {
+        const item1IfEmpty = empty ? listNameInputValue : item1 // Mettre l'item1 au nom de la liste s'il est seul
+        defaultList.forEach((elem) => {
+            const id = Date.now().toString() + (Math.random() * 1000).toString()
+            db.collection('users')
+                .doc(currentUser.uid)
+                .collection('lists')
+                .doc(id)
+                .set({
+                    name: listNameInputValue,
+                    id: id,
+                    date: new Date(),
+                    group: [elem],
+                    itemN,
+                    items: [item1IfEmpty, item2, item3, item4, item5],
+                })
+            students
+                .filter((s) => s.classes.includes(elem))
+                .forEach((s) => {
+                    db.collection('users')
+                        .doc(currentUser.uid)
+                        .collection('eleves')
+                        .doc(s.id)
+                        .collection('listes')
+                        .doc(id.concat('s'))
+                        .set({
+                            state: defaultValue,
+                            id: id.concat('s'),
+                        })
+                })
+        })
     }
     const [refresh, setRefresh] = useState(0)
 
@@ -63,11 +68,11 @@ export default () => {
         else return ''
     }
 
-    const [defaultValue, setDefaultValue] = useState([0, 0, 0, 0])
+    const [defaultValue, setDefaultValue] = useState([0, 0, 0, 0, 0])
 
     const incrementArray = (itemN: number) => {
         const incrementValue = (previousValue: number) => {
-            if (previousValue === 3) return 0
+            if (previousValue === 4) return 0
             else return previousValue + 1
         }
         defaultValue.splice(itemN, 1, incrementValue(defaultValue[itemN]))
@@ -78,6 +83,7 @@ export default () => {
     const ref2 = useRef<HTMLInputElement>(null)
     const ref3 = useRef<HTMLInputElement>(null)
     const ref4 = useRef<HTMLInputElement>(null)
+    const ref5 = useRef<HTMLInputElement>(null)
     const submitButtonRef = useRef<HTMLButtonElement>(null)
 
     const nextInputRef =
@@ -87,6 +93,8 @@ export default () => {
             ? ref3
             : itemN === 3
             ? ref4
+            : itemN === 4
+            ? ref5
             : submitButtonRef
 
     const [clickable, setClickable] = useState(false)
@@ -96,7 +104,7 @@ export default () => {
             lists !== undefined &&
             listNameInputValue !== '' &&
             !(listNameInputValue in lists) &&
-            item1 !== '' &&
+            (item1 !== '' || (item1 === '' && itemN === 1)) &&
             !(itemN >= 2 && item2 === '') &&
             !(itemN >= 3 && item3 === '') &&
             !(itemN === 4 && item4 === '')
@@ -129,12 +137,12 @@ export default () => {
                         listNameInputValue !== '' &&
                         defaultList.length >= 0 &&
                         !(listNameInputValue in lists) &&
-                        item1 !== '' &&
+                        (item1 !== '' || (item1 === '' && itemN === 1)) &&
                         !(itemN >= 2 && item2 === '') &&
                         !(itemN >= 3 && item3 === '') &&
                         !(itemN === 4 && item4 === '')
                     ) {
-                        handleCreateList()
+                        handleCreateList(item1 === '' && itemN === 1)
                     } else {
                         alert("le formulaire n'est pas complet")
                     }
@@ -202,7 +210,7 @@ export default () => {
                                     >
                                         <button
                                             className={`w-6 h-6 text-bold ${
-                                                defaultValue[0] !== 3
+                                                defaultValue[0] !== 4
                                                     ? 'text-invisible'
                                                     : 'text-base'
                                             }`}
@@ -258,7 +266,7 @@ export default () => {
                                     >
                                         <button
                                             className={`w-6 h-6 text-bold ${
-                                                defaultValue[1] !== 3
+                                                defaultValue[1] !== 4
                                                     ? 'text-invisible'
                                                     : 'text-base'
                                             }`}
@@ -314,7 +322,7 @@ export default () => {
                                     >
                                         <button
                                             className={`w-6 h-6 text-bold ${
-                                                defaultValue[2] !== 3
+                                                defaultValue[2] !== 4
                                                     ? 'text-invisible'
                                                     : 'text-base'
                                             }`}
@@ -331,7 +339,7 @@ export default () => {
                                 </div>
                                 <div
                                     className={`flex flex-row items-end ${
-                                        itemN === 4 ? 'visible' : 'invisible'
+                                        itemN >= 4 ? 'visible' : 'invisible'
                                     }`}
                                 >
                                     <span
@@ -370,7 +378,7 @@ export default () => {
                                     >
                                         <button
                                             className={`w-6 h-6 text-bold ${
-                                                defaultValue[3] !== 3
+                                                defaultValue[3] !== 4
                                                     ? 'text-invisible'
                                                     : 'text-base'
                                             }`}
@@ -385,11 +393,67 @@ export default () => {
                                         </button>
                                     </div>
                                 </div>
+                                <div
+                                    className={`flex flex-row items-end ${
+                                        itemN === 5 ? 'visible' : 'invisible'
+                                    }`}
+                                >
+                                    <span
+                                        className={`flex mx-3 h-4 w-4 mb-3 ${
+                                            itemN === 5
+                                                ? 'visible'
+                                                : 'invisible'
+                                        }`}
+                                    >
+                                        <svg
+                                            className="h-4 w-4 fill-current text-grey hover:text-grey-darkest"
+                                            role="button"
+                                            onClick={() => {
+                                                setItemN(itemN - 1)
+                                                setItem5('')
+                                            }}
+                                        >
+                                            <title>Close</title>
+                                            <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
+                                        </svg>
+                                    </span>
+                                    <input
+                                        value={item5}
+                                        ref={ref5}
+                                        onChange={(e) => {
+                                            setItem5(e.target.value)
+                                        }}
+                                        className={`h-10 mt-3 ml-5 bg-transparent w-40 border-b-2 border-gray-800 text-lg xl:text-center`}
+                                        type="text"
+                                        placeholder={'item 5'}
+                                    />
+                                    <div
+                                        className={`flex justify-center items-center w-6 h-6 ml-10 border-black border-2 mb-1 ${color(
+                                            defaultValue[4]
+                                        )}`}
+                                    >
+                                        <button
+                                            className={`w-6 h-6 text-bold ${
+                                                defaultValue[4] !== 4
+                                                    ? 'text-invisible'
+                                                    : 'text-base'
+                                            }`}
+                                            onClick={(e) => {
+                                                incrementArray(4)
+                                                setRefresh(refresh + 1)
+                                                e.preventDefault()
+                                                e.stopPropagation()
+                                            }}
+                                        >
+                                            ?
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div
                             className={`w-full flex flex-row ${
-                                itemN >= 4 ? 'invisible' : ''
+                                itemN >= 5 ? 'invisible' : ''
                             }`}
                         >
                             <button
@@ -397,7 +461,7 @@ export default () => {
                                 className="flex flex-row"
                                 onClick={(e) => {
                                     e.preventDefault()
-                                    if (itemN <= 4) setItemN(itemN + 1)
+                                    if (itemN <= 5) setItemN(itemN + 1)
                                     setTimeout(
                                         () => nextInputRef.current!.focus(),
                                         10

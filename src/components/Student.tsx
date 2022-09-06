@@ -390,7 +390,7 @@ export default (props: StudentProps) => {
                             comment={props.comment ? props.comment : ''}
                         />
                     </div>
-                    <div className="border-b-2 border-gray-400 w-2/3 rounded-full self-center mt-4"></div>
+                    <div className="border-b-2 border-gray-400 w-2/3 rounded-full self-center mt-4" />
                 </div>
             </div>
         </div>

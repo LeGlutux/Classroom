@@ -19,27 +19,19 @@ export default (props: ListedStudentProps) => {
         props.currentList.id
     )
 
-    const fullName = props.surname.concat(' ').concat(props.name)
+    const fullName = props.name.toUpperCase().concat(' ').concat(props.surname)
 
     const shortedFullName =
-        props.surname.length > 13
-            ? props.surname
-                  .substring(0, 11)
-                  .concat('. ')
-                  .concat(props.name.substring(0, 1))
-                  .concat('.')
-            : fullName.length > 13
-            ? fullName.substring(0, 13).concat('.')
-            : fullName
+        fullName.length > 15 ? fullName.substring(0, 15).concat('.') : fullName
 
     while (loading === true) return <div />
 
     return (
         <div className="flex flex-row w-full h-8 border-b-2 border-gray-300">
-            <div className="flex border-r-2 border-gray-300 justify-center w-4/12 overflow-x-hidden text-center">
+            <div className="flex border-r-2 border-gray-300 w-5/12 overflow-x-hidden text-center pl-1">
                 {shortedFullName}
             </div>
-            <div className="flex border-r-2 border-gray-300 justify-center w-3/12 overflow-x-hidden text-center">
+            <div className="flex border-r-2 border-gray-300 justify-center w-2/12 overflow-x-hidden text-center">
                 {props.classes}
             </div>
 
@@ -84,6 +76,18 @@ export default (props: ListedStudentProps) => {
                         listId={props.currentList.id}
                         listState={listState}
                         indexOfItem={3}
+                    />
+                </div>
+            )}
+
+            {props.currentList.itemN > 4 && (
+                <div className="flex w-8 h-full">
+                    <ListStatusButton
+                        studentId={props.studentId}
+                        userId={props.userId}
+                        listId={props.currentList.id}
+                        listState={listState}
+                        indexOfItem={4}
                     />
                 </div>
             )}

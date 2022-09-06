@@ -95,7 +95,7 @@ export const useListState = (
     currentStudentId: string,
     currentListId: string
 ) => {
-    const [listState, setListState] = useState<number[]>([0, 0, 0, 0])
+    const [listState, setListState] = useState<number[]>([0, 0, 0, 0, 0])
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
