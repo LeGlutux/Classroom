@@ -53,6 +53,12 @@ export default () => {
         setTimeout(() => setDisplayed(true), 2000)
     }, [displayedGroup])
 
+    useEffect(() => {
+        db.collection('users')
+            .doc(currentUser.uid)
+            .update({ lastConnection: Date()})
+    }, [])
+
     const filterStudents = (group: string) => {
         const filtered = students
             .filter((student) => student.classes.includes(group))
