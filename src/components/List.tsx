@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 import { AuthContext } from '../Auth'
 import { useLists, usePeriodes, useStudents } from '../hooks'
 import ListedStudent from './ListedStudent'
+import { isMobile } from 'react-device-detect'
 
 export default () => {
     const { id } = useParams<{ id: string }>()
@@ -21,7 +22,11 @@ export default () => {
             <div className="flex self-center my-4 text-2xl">
                 {currentList.name}
             </div>
-            <div className="flex flex-row h-auto border-2 border-gray-300">
+            <div
+                className={`flex flex-row h-auto border-2 border-gray-300 ${
+                    isMobile ? '' : 'mr-4'
+                }`}
+            >
                 <div className="flex items-center justify-center w-5/12 text-xl border-r-2 border-gray-300">
                     Nom
                 </div>

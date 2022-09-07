@@ -272,97 +272,49 @@ export default () => {
                 onFilter={(group: string) => filterStudents(group)}
                 displayedGroup={displayedGroup}
             />
-            {displayedGroup !== 'tous' &&
-                currentUser.uid !== 'pa9jyVUbwjbzl25HLtTpJwOkuQ03' && (
-                    <div className="flex w-full h-full flex-col pt-18 pb-24 bg-white overflow-y-scroll md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start">
-                        {students
-                            .sort((a) => (a.highlight ? -1 : 1))
-                            .map(
-                                ({
-                                    name,
-                                    surname,
-                                    classes,
-                                    id,
-                                    selected,
-                                    highlight,
-                                    comment,
-                                }) => {
-                                    return (
-                                        <Student
-                                            displayedStudents={hardStudents}
-                                            periodes={periodes}
-                                            runningPeriode={runningPeriode}
-                                            currentUser={currentUser.uid}
-                                            key={id}
-                                            loading={loading}
-                                            currentUserId={currentUser.uid}
-                                            selected={selected}
-                                            classes={classes}
-                                            name={name}
-                                            surname={surname}
-                                            comment={comment ? comment : ''}
-                                            id={id}
-                                            highlight={highlight}
-                                            toggleSelected={toggleSelected}
-                                            toggleHighlight={toggleHighlight}
-                                            refresher={(group) =>
-                                                filterStudents(group)
-                                            }
-                                            displayedGroup={displayedGroup}
-                                            icons={iconsDisplay}
-                                        />
-                                    )
-                                }
-                            )}
-                    </div>
-                )}
-
-            {displayedGroup !== 'tous' && // Spécifité pour David Lelay jusqu'à la prochaine note
-                currentUser.uid === 'pa9jyVUbwjbzl25HLtTpJwOkuQ03' && (
-                    <div className="flex w-full h-full flex-col pt-18 pb-24 bg-white overflow-y-scroll md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start">
-                        {students
-                            .reverse()
-                            .sort((a) => (a.highlight ? -1 : 1))
-                            .map(
-                                ({
-                                    name,
-                                    surname,
-                                    classes,
-                                    id,
-                                    selected,
-                                    highlight,
-                                    comment,
-                                }) => {
-                                    return (
-                                        <Student
-                                            displayedStudents={hardStudents}
-                                            periodes={periodes}
-                                            runningPeriode={runningPeriode}
-                                            currentUser={currentUser.uid}
-                                            key={id}
-                                            loading={loading}
-                                            currentUserId={currentUser.uid}
-                                            selected={selected}
-                                            classes={classes}
-                                            name={name}
-                                            surname={surname}
-                                            comment={comment ? comment : ''}
-                                            id={id}
-                                            highlight={highlight}
-                                            toggleSelected={toggleSelected}
-                                            toggleHighlight={toggleHighlight}
-                                            refresher={(group) =>
-                                                filterStudents(group)
-                                            }
-                                            displayedGroup={displayedGroup}
-                                            icons={iconsDisplay}
-                                        />
-                                    )
-                                }
-                            )}
-                    </div>
-                )}
-            {/* Fin de spécificité pour Davis Lelay */}
+            {displayedGroup !== 'tous' && (
+                <div className="flex w-full h-full flex-col pt-18 pb-24 bg-white overflow-y-scroll md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start">
+                    {students
+                        .sort((a) => (a.highlight ? -1 : 1))
+                        .map(
+                            ({
+                                name,
+                                surname,
+                                classes,
+                                id,
+                                selected,
+                                highlight,
+                                comment,
+                            }) => {
+                                return (
+                                    <Student
+                                        displayedStudents={hardStudents}
+                                        periodes={periodes}
+                                        runningPeriode={runningPeriode}
+                                        currentUser={currentUser.uid}
+                                        key={id}
+                                        loading={loading}
+                                        currentUserId={currentUser.uid}
+                                        selected={selected}
+                                        classes={classes}
+                                        name={name}
+                                        surname={surname}
+                                        comment={comment ? comment : ''}
+                                        id={id}
+                                        highlight={highlight}
+                                        toggleSelected={toggleSelected}
+                                        toggleHighlight={toggleHighlight}
+                                        refresher={(group) =>
+                                            filterStudents(group)
+                                        }
+                                        displayedGroup={displayedGroup}
+                                        icons={iconsDisplay}
+                                    />
+                                )
+                            }
+                        )}
+                </div>
+            )}
 
             {displayedGroup === 'tous' && (
                 <div className="flex w-full h-full flex-col bg-white overflow-y-scroll justify-around py-2">

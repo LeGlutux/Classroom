@@ -115,7 +115,10 @@ export default () => {
 
     return (
         <div className="h-screen w-full flex flex-col">
-            <span className="absolute-tr p-4">
+            <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full xl:text-6xl xl:h-16">
+                Créer une liste
+            </div>
+            <span className="absolute-tl">
                 <svg
                     className="h-4 w-4 fill-current text-grey hover:text-grey-darkest"
                     role="button"

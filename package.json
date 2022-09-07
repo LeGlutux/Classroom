@@ -19,6 +19,7 @@
     "papaparse": "^5.3.2",
     "react": "^16.13.1",
     "react-datepicker": "^2.14.1",
+    "react-device-detect": "^2.2.2",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.3.1",
     "react-scripts": "^3.4.3",

@@ -505,6 +505,12 @@
     right: 3%;
 }
 
+.absolute-tl {
+    position: absolute;
+    top: 6%;
+    left: 2%;
+}
+
 .firebase-emulator-warning {
     display: none;
 }
