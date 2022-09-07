@@ -61,10 +61,8 @@ export default (props: UpdaterProps) => {
                 </div>
 
                 <div className="text-sm text-center mx-2 mt-4 xl:text-xl">
-                    La prochaine version propose des icônes pour les croix
-                    personnalisables, vous pourrez également en ajouter (jusqu'à
-                    6) ou en retirer. Pas d'inquiétude, retirer les icônes ne
-                    fait pas disparaître les données.{' '}
+                    Nouveautés : les listes sont maintenant rangées dans l'ordre NOM Prénom +
+                    Quelques ajustements esthétiques
                 </div>
 
                 <div className="flex flex-col h-40 justify-around mt-12 items-center">
