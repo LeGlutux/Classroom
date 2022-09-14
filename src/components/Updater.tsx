@@ -61,11 +61,8 @@ export default (props: UpdaterProps) => {
                 </div>
 
                 <div className="text-sm text-center mx-2 mt-4 xl:text-xl">
-                    Nouveautés : Les listes sont maintenant rangées dans l'ordre
-                    NOM Prénom, créer une liste avec plusieurs classes cochées
-                    créer maintenant une liste du même type pour chaque classe
-                    choisie de plus quelques ajustements esthétiques ont étés
-                    efectués.
+                    Dans les listes le "?" est maintenant remplacé par la
+                    couleur jaune. Qu'on se le dise.
                 </div>
 
                 <div className="flex flex-col h-40 justify-around mt-12 items-center">

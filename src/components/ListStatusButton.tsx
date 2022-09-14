@@ -38,7 +38,7 @@ export default (props: ListStatusButtonProps) => {
         if (state === 0) return 'bg-white'
         if (state === 1) return 'bg-green-600'
         if (state === 2) return 'bg-red-600'
-        if (state === 3) return 'bg-white'
+        if (state === 3) return 'bg-yellow-600'
         else return ''
     }
 
@@ -46,10 +46,8 @@ export default (props: ListStatusButtonProps) => {
         <button
             className={`flex w-8 h-full justify-center items-center text-2xl text-bold border-gray-300 border-r-2 ${stateColor(
                 state
-            )} ${state !== 3 ? 'text-invisible' : ''}`}
+            )} `}
             onClick={() => handleClick()}
-        >
-            ?
-        </button>
+        />
     )
 }
