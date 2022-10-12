@@ -53,37 +53,13 @@ export default () => {
 
     const refs = [ref0, ref1, ref2, ref3, ref4, ref5]
 
-    //////////////////////////// UPDATE ////////////////////////
 
-    // const users = [
-    //     '0NOwYmXPFXXRx7VRjkIEWID3ih22',
-    //     '26kiVujCgjNpzCkYwugqkrt63Hx1',
-    //     '9jSmI33IBdYKK3FMahg98CZBUSc2',
-    //     '9yWVfWghOzP4Oykdv5O7vdzO2dZ2',
-    //     'DAEVUEgE9MPVnfL96dbuRoG7Giz2',
-    //     'T8GoW8hFrwM6HYssAoZQnfRDu2s1',
-    //     'UMTmrkzngnVMznMhZY02r7GaB223',
-    //     'mtckGF4W7eR2fsvNgegRRjfWkZE2',
-    //     'nu1lUSMNxNM0IDC8XAiTMOrLLUp2',
-    //     'yp8DVglUprVCqM8mTmnoZ8cr2yJ3',
-    //     'meiyn54Sf69sGMvVNieJORfJeJA5',
-    // ]
-
-    // users.forEach((u) => {
-    //     db.collection('users')
-    //         .doc(u)
-    //         .update({ icons: [1, 2, 3, 4, 0, 0] })
-    // })
 
     const adminConnected = currentUser.uid === 'yp8DVglUprVCqM8mTmnoZ8cr2yJ3'
 
-    const allUsersIds = adminConnected ? useAllUsersIds(currentUser.uid) : []
+    const allUsersIds = useAllUsersIds(currentUser.uid)
     const updateUsersProps = (usersIds: string[]) => {
-        if (currentUser.uid === 'yp8DVglUprVCqM8mTmnoZ8cr2yJ3') {
-            usersIds.forEach((userId) => {
-                // db.collection('users').doc(userId).update({ props: ??? })
-            })
-        }
+        // update toutes les props => faire plutôt dans updater
     }
 
     const launchNewVersion = () => {
@@ -373,9 +349,11 @@ export default () => {
                                 </div>
                                 <button
                                     className="flex h-8 w-56 mt-8 self-center bg-green-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap"
-                                    onClick={() => launchNewVersion()}
+                                    onClick={() =>
+                                        updateUsersProps(allUsersIds)
+                                    }
                                 >
-                                    Lancer une nouvelle version
+                                    Setup Postits
                                 </button>
                             </div>
                         </div>

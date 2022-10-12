@@ -8,6 +8,7 @@ interface UpdaterProps {
     refreshUser: () => Promise<void>
     students: firebase.firestore.DocumentData[]
     setUpdating: React.Dispatch<React.SetStateAction<boolean>>
+    classes: string[]
 }
 
 export default (props: UpdaterProps) => {
@@ -21,11 +22,11 @@ export default (props: UpdaterProps) => {
     const onConfirmUpdate = () => {
         props.setUpdating(true)
 
-        // props.students.forEach((s) => {
-        //     db.collection('users')
-        //         .doc(props.userId)
-        //         .update({ icons: [1, 2, 3, 4, 0, 0] })
-        // })
+        const postIt = [] as { classe: string; content: string }[]
+        props.classes.forEach((classe) => {
+            postIt.push({ classe, content: '' })
+        })
+        db.collection('users').doc(props.userId).update({ postIt })
 
         db.collection('users').doc(props.userId).update({ version })
         props.refreshUser()
@@ -46,23 +47,15 @@ export default (props: UpdaterProps) => {
                     updateRequired ? 'entering-t' : 'invisible'
                 }`}
             >
-                {/* <span className="absolute top-0 right-0 p-4">
-                    <svg
-                        className="h-4 w-4 fill-current text-grey hover:text-grey-darkest"
-                        role="button"
-                        onClick={() => setCheckUpdate(false)}
-                    >
-                        <title>Close</title>
-                        <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
-                    </svg>
-                </span> */}
                 <div className="text-xl text-center font-bold mx-2 xl:text-3xl">
                     Votre version de Thòt Note n'est pas à jour{' '}
                 </div>
 
                 <div className="text-sm text-center mx-2 mt-4 xl:text-xl">
-                    Dans les listes le "?" est maintenant remplacé par la
-                    couleur jaune. Qu'on se le dise.
+                    Des post-it sont maintenant disponibles pour chaque classe.
+                    Un badge de notification apparaîtra lorsque un post-it non
+                    vide aura été écrit pour une classe. Pour en créer un, il
+                    suffit d'appuyer sur le bouton menu depuis une classe.
                 </div>
 
                 <div className="flex flex-col h-40 justify-around mt-12 items-center">
@@ -74,14 +67,6 @@ export default (props: UpdaterProps) => {
                         }}
                     >
                         Mettre à jour
-                    </button>
-                    <button
-                        className="text-blue-500 mt-8 w-40 h-12 lg:w-32 lg:h-12 xl:w-40 xl:h-16 font-studentName text-sm"
-                        onClick={() => {
-                            setCheckUpdate(false)
-                        }}
-                    >
-                        Continuer avec la version actuelle
                     </button>
                 </div>
             </div>

@@ -9,13 +9,16 @@ import useOnClickOutside, {
     usePeriodes,
     useStudents,
     useUser,
+    usePostIts,
 } from '../hooks'
 import { AuthContext } from '../Auth'
 import 'firebase/firestore'
 import MagicStick from './MagicStick'
 import magicStick from '../images/magicStick.png'
+import stickyNoteRed from '../images/stickyNoteRed2.png'
 import brain from '../images/brain.png'
-import questionMark from '../images/questionMark.png'
+import stickyNote from '../images/stickyNote.png'
+import burgerMenu from '../images/burgerMenu.png'
 import loader_image from '../images/loader.gif'
 import updater_gif from '../images/updater.gif'
 import addPage from '../images/addPage.png'
@@ -24,6 +27,7 @@ import firebase from 'firebase'
 import { Link } from 'react-router-dom'
 import Updater from './Updater'
 import { handleIcon } from '../functions'
+import PostIt from './PostIt'
 
 export default () => {
     const db = Firebase.firestore()
@@ -35,11 +39,20 @@ export default () => {
     if (currentUser === null) return <div />
     const { user, refreshUser } = useUser(currentUser.uid)
     const { students, loading } = useStudents(currentUser.uid)
-
+    const { postIts } = usePostIts(currentUser.uid)
+    const postIt = (group: string) => {
+        if (postIts.find((item) => item.classe === group) === undefined)
+            return false
+        else
+            return postIts.find((item) => item.classe === group)?.content !== ''
+    }
     const { groups } = useGroups(currentUser.uid)
     const { periodes, runningPeriode } = usePeriodes(currentUser.uid)
     const [updating, setUpdating] = useState(false)
     const [displayed, setDisplayed] = useState(false)
+
+    const [displayPostIt, setDisplayPostIt] = useState(false)
+    const [postItClasse, setPostItClasse] = useState('none')
 
     const [displayedGroup, setDisplayedGroup] = useState('tous')
     const [hardStudents, setHardStudents] = useState<
@@ -56,7 +69,7 @@ export default () => {
     useEffect(() => {
         db.collection('users')
             .doc(currentUser.uid)
-            .update({ lastConnection: Date()})
+            .update({ lastConnection: Date() })
     }, [])
 
     const filterStudents = (group: string) => {
@@ -150,7 +163,7 @@ export default () => {
     if (loading) {
         return (
             <div className="w-full h-screen flex flex-col justify-center items-center">
-                <div className="flex flex-col w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full xl:text-6xl xl:h-16">
+                <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full xl:text-6xl xl:h-16">
                     {title}
                 </div>
                 <div className="h-full flex flex-col justify-center items-center">
@@ -248,6 +261,7 @@ export default () => {
                 refreshUser={refreshUser}
                 students={students}
                 setUpdating={setUpdating}
+                classes={groups}
             />
             {!displayed && displayedGroup !== 'tous' && (
                 <div className="flex flex-col items-center justify-center absolute w-full h-full mb-12 bg-white">
@@ -262,6 +276,12 @@ export default () => {
 
             <div className="flex flex-col w-full absolute top-0 bg-white h-12 border-b-2 p-1 border-gray-400 items-center font-title font-bold justify-around text-4xl rounded-b-full">
                 {title}
+                <img
+                    className={`absolute h-8 w-8 ml-20 mb-1 ${
+                        postIt(displayedGroup) ? 'visible' : 'invisible'
+                    }`}
+                    src={stickyNoteRed}
+                />
             </div>
 
             <div className="flex font-stundentName backdrop-blur bg-transparent rounded-full p-1 px-2 absolute place-self-center mt-12 items-end font-normal text-md">
@@ -278,6 +298,24 @@ export default () => {
                 onFilter={(group: string) => filterStudents(group)}
                 displayedGroup={displayedGroup}
             />
+            {postIts.map(({ classe, content }, index) => {
+                return (
+                    displayedGroup === classe &&
+                    displayPostIt && (
+                        <PostIt
+                            currentUserId={currentUser.uid}
+                            classe={classe}
+                            content={content}
+                            currentClasse={postItClasse}
+                            setDisplay={setDisplayPostIt}
+                            postIts={postIts}
+                            index={index}
+                            key={index}
+                        />
+                    )
+                )
+            })}
+
             {displayedGroup !== 'tous' && (
                 <div className="flex w-full h-full flex-col pt-18 pb-24 bg-white overflow-y-scroll md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start">
                     {students
@@ -332,6 +370,7 @@ export default () => {
                             }}
                             closeMenu={setMenuOpened}
                             groups={groups}
+                            display={postIt}
                         />
                     }
                 </div>
@@ -350,7 +389,7 @@ export default () => {
                 >
                     <img
                         className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 xl:w-12 xl:h-12"
-                        src={questionMark}
+                        src={burgerMenu}
                         alt=""
                     />
                 </button>
@@ -397,6 +436,25 @@ export default () => {
                         className="w-10 h-10 md:w-12 md:h-12 lg:w-16 lg:h-16 xl:w-16 xl:h-16"
                         src={brain}
                         alt="élève aléatoire avec mémoire"
+                    />
+                </button>
+                <button
+                    onClick={() => {
+                        setMenuOpened(!menuOpened)
+                        setDisplayPostIt(true)
+                    }}
+                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 bg-gray-200 rounded-full bottom-right-custom3 shadow-custom flex items-center justify-center ${
+                        burgerMenuFirstClicked
+                            ? menuOpened
+                                ? 'entering-r'
+                                : 'get-out-r'
+                            : 'invisible'
+                    }`}
+                >
+                    <img
+                        className="w-10 h-10 md:w-12 md:h-12 lg:w-16 lg:h-16 xl:w-16 xl:h-16"
+                        src={stickyNote}
+                        alt="pense-bête"
                     />
                 </button>
             </div>

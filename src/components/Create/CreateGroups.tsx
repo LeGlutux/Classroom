@@ -34,6 +34,9 @@ export default (props: Props) => {
                         db.collection('users')
                             .doc(currentUser.uid)
                             .update({
+                                postIt: firebase.firestore.FieldValue.arrayUnion(
+                                    { classe: inputValue, content: '' }
+                                ),
                                 classes:
                                     firebase.firestore.FieldValue.arrayUnion(
                                         inputValue

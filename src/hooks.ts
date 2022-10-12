@@ -17,7 +17,30 @@ import {
     fetchAllUsersIds,
     fetchVersion,
     fetchIcons,
+    fetchPostIts,
 } from './database'
+
+export const usePostIts = (currentUserId: string) => {
+    const [postIts, setPostIts] = useState<{ classe: string, content: string }[]>([])
+    const [loading, setLoading] = useState(false)
+
+    useEffect(() => {
+        const fetch = async () => {
+            setLoading(true)
+            setPostIts(await fetchPostIts(currentUserId))
+            setLoading(false)
+        }
+        fetch()
+    }, [currentUserId])
+
+    const refreshPostIt = async () => {
+        setLoading(true)
+        setPostIts(await fetchPostIts(currentUserId))
+        setLoading(false)
+    }
+
+    return { postIts, loading, refreshPostIt }
+}
 
 export const useGroups = (currentUserId: string) => {
     const [groups, setGroups] = useState<string[]>([])

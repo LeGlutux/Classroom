@@ -1,6 +1,15 @@
 import firebase from 'firebase'
 import Firebase from './firebase'
 
+export const fetchPostIts = async (currentUserId: string) => {
+    const db = Firebase.firestore()
+    const querySnapshot = await db.collection('users').doc(currentUserId).get()
+
+    const data = querySnapshot.data()?.postIt
+
+    return data
+}
+
 export const fetchGroups = async (currentUserId: string) => {
     const db = Firebase.firestore()
     const querySnapshot = await db.collection('users').doc(currentUserId).get()
