@@ -61,7 +61,7 @@ const View = ({
     icons: number[]
 }) => {
     const { groups } = useGroups(currentUser.uid)
-    const startDate = new Date('2022-09-03 00:00:01')
+    const startDate = new Date('2023-09-04 00:00:01')
     const [confirm, setConfirm] = useState(false)
     const [editing, setEditing] = useState(false)
     const [nameInputValue, setNameInputValue] = useState('')
