@@ -61,7 +61,33 @@ const View = ({
     icons: number[]
 }) => {
     const { groups } = useGroups(currentUser.uid)
-    const startDate = new Date('2023-09-04 00:00:01')
+    const getClosestFirstMondayOfSeptember = (): Date => {
+        const today = new Date();
+        let year = today.getFullYear();
+    
+        // Crée la date du 1er septembre de l'année en cours
+        let septemberFirst = new Date(year, 8, 1);
+        
+        // Calcule le jour de la semaine pour le 1er septembre
+        let dayOfWeek = septemberFirst.getDay();
+    
+        // Calcule le décalage pour atteindre le premier lundi
+        let offset = (8 - dayOfWeek) % 7;
+    
+        // Ajoute le décalage pour obtenir le premier lundi
+        let firstMondayOfSeptember = new Date(septemberFirst.setDate(1 + offset));
+    
+        // Si le premier lundi est dans le futur, recommence avec l'année précédente
+        if (firstMondayOfSeptember > today) {
+            septemberFirst = new Date(--year, 8, 1);
+            dayOfWeek = septemberFirst.getDay();
+            offset = (8 - dayOfWeek) % 7;
+            firstMondayOfSeptember = new Date(septemberFirst.setDate(1 + offset));
+        }
+    
+        return firstMondayOfSeptember;
+    };
+    const startDate = getClosestFirstMondayOfSeptember()
     const [confirm, setConfirm] = useState(false)
     const [editing, setEditing] = useState(false)
     const [nameInputValue, setNameInputValue] = useState('')

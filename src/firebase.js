@@ -19,10 +19,10 @@ const Firebase = firebase.initializeApp(config)
 
 // connects to firebase emulators
 
-if (window.location.hostname === "localhost") {
-  Firebase.auth().useEmulator("http://localhost:9099")
-  firebase.firestore().settings({ host: 'localhost:8080', ssl: false })
+// if (window.location.hostname === "localhost") {
+//   Firebase.auth().useEmulator("http://localhost:9099")
+//   firebase.firestore().settings({ host: 'localhost:8080', ssl: false })
 
-}
+// }
 
 export default Firebase

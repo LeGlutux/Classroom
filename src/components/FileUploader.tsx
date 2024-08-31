@@ -86,6 +86,10 @@ export default (props: FileUploaderProps) => {
         Papa.parse(e.target.files[0], {
             header: true,
             skipEmptyLines: true,
+            transformHeader: (header, index) => {
+                if (index === 0 && header === '') return 'Élève'; // Renomme la première colonne si l'en-tête est vide
+                return header;
+            },
             complete: (results) => {
                 const students = [] as {
                     surname: string
