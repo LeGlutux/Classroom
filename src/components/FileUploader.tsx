@@ -23,35 +23,32 @@ export default (props: FileUploaderProps) => {
     }, [classe, students])
 
     const splitter = (s: string) => {
-        const id = Math.random().toString(36).substring(2, 9)
-        const words = s.split(' ')
-        const nameArray = [] as string[]
-        const surnameArray = [] as string[]
+        const id = Math.random().toString(36).substring(2, 9);
+        const words = s.split(' ');
+        const nameArray = [] as string[];
+        const surnameArray = [] as string[];
+    
         words.forEach((w) => {
-            const lowerCased = w.toLowerCase()
-            const cased = lowerCased.replace(/\b\w/g, (c) => c.toUpperCase())
-            const debuggedCased1 =
-                cased.indexOf('É') === -1
-                    ? cased
-                    : cased.substring(0, 1).toUpperCase() +
-                      cased.substring(1, cased.indexOf('É')) +
-                      'é' +
-                      cased.substring(cased.indexOf('É') + 1)
-            const debuggedCased =
-                debuggedCased1.indexOf('È') === -1
-                    ? debuggedCased1
-                    : debuggedCased1.substring(0, 1).toUpperCase() +
-                      debuggedCased1.substring(1, debuggedCased1.indexOf('È')) +
-                      'è' +
-                      debuggedCased1.substring(debuggedCased1.indexOf('è') + 1)
-            isUpperCase(w)
-                ? nameArray.push(debuggedCased)
-                : surnameArray.push(debuggedCased)
-        })
-
-        const name = nameArray.join(' ')
-        const surname = surnameArray.join(' ')
-        return { name, surname, id }
+            const lowerCased = w.toLowerCase();
+            // Transforme correctement la première lettre en majuscule, même pour les lettres accentuées
+            const cased = lowerCased.charAt(0).toUpperCase() + lowerCased.slice(1);
+            
+            // Place le mot dans le bon tableau
+            if (isUpperCase(w)) {
+                nameArray.push(cased);
+            } else {
+                surnameArray.push(cased);
+            }
+        });
+    
+        const name = nameArray.join(' ');
+        const surname = surnameArray.join(' ');
+        return { name, surname, id };
+    }
+    
+    // Fonction pour vérifier si une chaîne est en majuscule
+    const isUpperCase = (str: string) => {
+        return str === str.toUpperCase();
     }
 
     const handleSave = (
