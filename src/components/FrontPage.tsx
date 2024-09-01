@@ -79,6 +79,19 @@ export default () => {
         return filtered
     }
 
+    useEffect(() => {
+        // Récupérer l'état du groupe affiché depuis le localStorage lors du montage
+        const savedGroup = localStorage.getItem('displayedGroup')
+        if (savedGroup) {
+            setDisplayedGroup(savedGroup)
+        }
+    }, [])
+
+    useEffect(() => {
+        // Sauvegarder l'état du groupe affiché dans le localStorage chaque fois qu'il change
+        localStorage.setItem('displayedGroup', displayedGroup)
+    }, [displayedGroup])
+
     ///////////////// icons /////////////////
     const userIcons = useIcons(currentUser.uid)
 
