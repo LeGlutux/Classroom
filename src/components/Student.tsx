@@ -6,9 +6,10 @@ import { Link } from 'react-router-dom'
 import brain from '../images/brain.png'
 import StudentComment from './StudentComment'
 import { useCross } from '../hooks'
+import { StudentInterface } from '../interfaces/Student'
 
 interface StudentProps {
-    displayedStudents: firebase.firestore.DocumentData[]
+    displayedStudents: StudentInterface[]
     name: string
     surname: string
     classes: string
@@ -28,7 +29,8 @@ interface StudentProps {
     icons: string[]
 }
 
-export default (props: StudentProps) => {
+const StudentComponent: React.FC<StudentProps> = (props) => {
+
     const { cross, loading } = useCross(props.currentUser, props.id)
     const db = Firebase.firestore()
     const [highlight, setHighlight] = useState(props.highlight)
@@ -396,3 +398,5 @@ export default (props: StudentProps) => {
         </div>
     )
 }
+
+export default StudentComponent

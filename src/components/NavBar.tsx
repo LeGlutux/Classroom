@@ -11,6 +11,7 @@ import onHome from '../images/onHome.png'
 
 interface NavBarProps {
     activeMenu: string
+    onHomeClick: () => void
 }
 
 export default (props: NavBarProps) => {
@@ -29,6 +30,7 @@ export default (props: NavBarProps) => {
             </div>
             <div
                 className={`rounded-full h-8 w-8 xl:h-10 xl:w-10 flex justify-center`}
+                onClick={props.onHomeClick}
             >
                 <Link to="/">
                     <img

@@ -43,6 +43,11 @@ export default () => {
     const { lists } = useLists(currentUser.uid)
     const db = firebase.firestore()
 
+    const handleHomeClick = () => {
+    localStorage.removeItem('displayedGroup'); // Supprimez l'état du cache
+    console.log("Cache vidé, redirection vers l'accueil");
+}
+
     const xScroller = useRef<HTMLDivElement>(null)
     const ref0 = useRef<HTMLDivElement>(null)
     const ref1 = useRef<HTMLDivElement>(null)
@@ -91,40 +96,52 @@ export default () => {
     ///////////////////////// Delete All ////////////////////////
 
     const handleDeleteAll = () => {
+        const batch = db.batch();
+    
+        // Supprimez toutes les listes associées à chaque élève
         students.forEach((student) => {
             lists.forEach((l) => {
-                db.collection('users')
+                const listRef = db.collection('users')
                     .doc(currentUser.uid)
                     .collection('eleves')
                     .doc(student.id)
                     .collection('listes')
-                    .doc(l.id.concat('s'))
-                    .delete()
-            })
-
-            db.collection('users')
+                    .doc(l.id.concat('s'));
+                batch.delete(listRef);
+            });
+    
+            // Supprimez le document de l'élève lui-même
+            const studentRef = db.collection('users')
                 .doc(currentUser.uid)
                 .collection('eleves')
-                .doc(student.id)
-                .delete()
-        })
+                .doc(student.id);
+            batch.delete(studentRef);
+        });
+    
+        // Supprimez toutes les listes
         lists.forEach((l) => {
-            db.collection('users')
+            const listRef = db.collection('users')
                 .doc(currentUser.uid)
                 .collection('lists')
-                .doc(l.id)
-                .delete()
-        })
-
-        db.collection('users')
-            .doc(currentUser.uid)
-            .update({
-                classes: [] as string[],
-                periodes: [new Date()],
-                runningPeriode: 1 as number,
-            })
-        history.replace('/')
-    }
+                .doc(l.id);
+            batch.delete(listRef);
+        });
+    
+        // Appliquez les suppressions en batch
+        batch.commit().then(() => {
+            // Réinitialisez les classes et périodes après le succès de la suppression
+            db.collection('users')
+                .doc(currentUser.uid)
+                .update({
+                    classes: [] as string[],
+                    periodes: [new Date()],
+                    runningPeriode: 1 as number,
+                });
+            history.replace('/');
+        }).catch((error) => {
+            console.error("Erreur lors de la suppression des données: ", error);
+        });
+    };
 
     const handleNewPeriode = () => {
         handleAddPeriode()
@@ -169,7 +186,7 @@ export default () => {
                 </div>
 
                 <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                    <NavBar activeMenu="addPage" />
+                    <NavBar activeMenu="addPage" onHomeClick={handleHomeClick} />
                 </div>
             </div>
         )
@@ -383,7 +400,7 @@ export default () => {
                 </div>
 
                 <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                    <NavBar activeMenu="addPage" />
+                    <NavBar activeMenu="addPage" onHomeClick={handleHomeClick} />
                 </div>
             </div>
         )

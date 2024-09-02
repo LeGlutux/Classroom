@@ -1,5 +1,6 @@
 import firebase from 'firebase'
 import { useState, useEffect, RefObject } from 'react'
+import { StudentInterface } from './interfaces/Student'
 import {
     fetchGroups,
     fetchUser,
@@ -159,38 +160,38 @@ export const useListState = (
 }
 
 export const useStudents = (currentUserId: string) => {
-    const [students, setStudents] = useState<firebase.firestore.DocumentData[]>(
-        []
-    )
-    const [allIds, setAllIds] = useState<string[]>([])
-    const [loading, setLoading] = useState(true)
+    const [students, setStudents] = useState<StudentInterface[]>([]);
+    const [allIds, setAllIds] = useState<string[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetch = async () => {
-            setLoading(true)
-            setStudents(await fetchStudents(currentUserId))
-            setAllIds(await fetchStudentsIds(currentUserId))
-            setLoading(false)
-        }
-        fetch()
-    }, [currentUserId])
+            setLoading(true);
+            const studentData = await fetchStudents(currentUserId);
+            setStudents(studentData);
+            setAllIds(await fetchStudentsIds(currentUserId));
+            setLoading(false);
+        };
+        fetch();
+    }, [currentUserId]);
 
     const filterStudents = async (group: string) => {
-        const filteredStudents = (await fetchStudents(currentUserId))
+        const filteredStudents = students
             .filter((student) => student.classes.includes(group))
-            .sort((a) => (a.highlight ? -1 : 1))
+            .sort((a) => (a.highlight ? -1 : 1));
 
-        setStudents(filteredStudents)
-    }
+        setStudents(filteredStudents);
+    };
 
     const refreshStudents = async () => {
-        setLoading(true)
-        setStudents(await fetchStudents(currentUserId))
-        setLoading(false)
-    }
+        setLoading(true);
+        const studentData = await fetchStudents(currentUserId);
+        setStudents(studentData);
+        setLoading(false);
+    };
 
-    return { students, filterStudents, refreshStudents, loading, allIds }
-}
+    return { students, filterStudents, refreshStudents, loading, allIds };
+};
 
 export const usePeriodes = (currentUserId: string) => {
     const [periodes, setPeriodes] = useState<Date[]>([])

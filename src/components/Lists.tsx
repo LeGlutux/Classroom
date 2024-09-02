@@ -8,6 +8,10 @@ import ListPreview from './ListPreview'
 import loader_image from '../images/loader.gif'
 
 export default () => {
+    const handleHomeClick = () => {
+        localStorage.removeItem('displayedGroup'); // Supprimez l'état du cache
+        console.log("Cache vidé, redirection vers l'accueil");
+    }    
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
     const [listsRefresher, setListsRefresher] = useState(0)
@@ -30,7 +34,7 @@ export default () => {
                 </div>
 
                 <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                    <NavBar activeMenu="list" />
+                    <NavBar activeMenu="list" onHomeClick={handleHomeClick} />
                 </div>
             </div>
         )
@@ -60,7 +64,7 @@ export default () => {
                 </div>
 
                 <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                    <NavBar activeMenu="list" />
+                    <NavBar activeMenu="list" onHomeClick={handleHomeClick} />
                 </div>
             </div>
         )
@@ -95,7 +99,7 @@ export default () => {
                 <img className="h-6 w-6" src={add} alt="" />
             </Link>
             <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                <NavBar activeMenu="list" />
+                <NavBar activeMenu="list" onHomeClick={handleHomeClick}/>
             </div>
         </div>
     )

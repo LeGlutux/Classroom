@@ -60,6 +60,11 @@ export default () => {
     }
     const [refresh, setRefresh] = useState(0)
 
+    const handleHomeClick = () => {
+        localStorage.removeItem('displayedGroup'); // Supprimez l'état du cache
+        console.log("Cache vidé, redirection vers l'accueil");
+    }
+
     const color = (itemN: number) => {
         if (itemN === 0) return 'bg-white'
         if (itemN === 1) return 'bg-green-600'
@@ -501,7 +506,10 @@ export default () => {
                 </div>
             </form>
             <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                <NavBar activeMenu="list" />
+                <NavBar 
+                activeMenu="list"
+                onHomeClick={handleHomeClick}
+                />
             </div>
         </div>
     )

@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import Student from '../components/Student'
 import ClassListFilter from '../components/ClassListFilter'
 import HomeClassListFilter from '../components/HomeClassListFilter'
 import NavBar from './NavBar'
@@ -12,6 +11,7 @@ import useOnClickOutside, {
     usePostIts,
 } from '../hooks'
 import { AuthContext } from '../Auth'
+import Student from '../components/Student'
 import 'firebase/firestore'
 import MagicStick from './MagicStick'
 import magicStick from '../images/magicStick.png'
@@ -23,11 +23,11 @@ import loader_image from '../images/loader.gif'
 import updater_gif from '../images/updater.gif'
 import addPage from '../images/addPage.png'
 import Firebase from '../firebase'
-import firebase from 'firebase'
 import { Link } from 'react-router-dom'
 import Updater from './Updater'
 import { handleIcon } from '../functions'
 import PostIt from './PostIt'
+import { StudentInterface } from '../interfaces/Student'
 
 export default () => {
     const db = Firebase.firestore()
@@ -38,7 +38,7 @@ export default () => {
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
     const { user, refreshUser } = useUser(currentUser.uid)
-    const { students, loading } = useStudents(currentUser.uid)
+    const { students, loading: studentsLoading } = useStudents(currentUser.uid)
     const { postIts } = usePostIts(currentUser.uid)
     const postIt = (group: string) => {
         if (postIts.find((item) => item.classe === group) === undefined)
@@ -46,18 +46,20 @@ export default () => {
         else
             return postIts.find((item) => item.classe === group)?.content !== ''
     }
-    const { groups } = useGroups(currentUser.uid)
+    const { groups, loading: groupsLoading } = useGroups(currentUser.uid)
     const { periodes, runningPeriode } = usePeriodes(currentUser.uid)
     const [updating, setUpdating] = useState(false)
     const [displayed, setDisplayed] = useState(false)
+
+    const handleHomeClick = () => {
+        setDisplayedGroup('tous')
+    }
 
     const [displayPostIt, setDisplayPostIt] = useState(false)
     const [postItClasse, setPostItClasse] = useState('none')
 
     const [displayedGroup, setDisplayedGroup] = useState('tous')
-    const [hardStudents, setHardStudents] = useState<
-        firebase.firestore.DocumentData[]
-    >([])
+    const [hardStudents, setHardStudents] = useState<StudentInterface[]>([])
     const [magicStickStudentsList, setMagicStickStudentsList] =
         useState(hardStudents)
 
@@ -72,12 +74,38 @@ export default () => {
             .update({ lastConnection: Date() })
     }, [])
 
-    const filterStudents = (group: string) => {
+    useEffect(() => {
+        if (!studentsLoading && groups.length > 0) {
+            setHardStudents(
+                students.filter((student) =>
+                    displayedGroup === 'tous'
+                        ? true
+                        : student.classes.includes(displayedGroup)
+                )
+            )
+        }
+    }, [studentsLoading, groups, displayedGroup, students])
+
+    const filterStudents = (group: string): StudentInterface[] => {
         const filtered = students
-            .filter((student) => student.classes.includes(group))
-            .sort((a) => (a.highlight ? -1 : 1))
+            .filter((student: StudentInterface) =>
+                student.classes.includes(group)
+            )
+            .sort((a: StudentInterface) => (a.highlight ? -1 : 1))
         return filtered
     }
+
+    // automatique du groupe affiché si une seule classe existe
+    useEffect(() => {
+        if (
+            !groupsLoading &&
+            Array.isArray(groups) &&
+            groups.length === 1 &&
+            displayedGroup === 'tous'
+        ) {
+            setDisplayedGroup(groups[0])
+        }
+    }, [groupsLoading, groups, displayedGroup])
 
     useEffect(() => {
         // Récupérer l'état du groupe affiché depuis le localStorage lors du montage
@@ -91,6 +119,22 @@ export default () => {
         // Sauvegarder l'état du groupe affiché dans le localStorage chaque fois qu'il change
         localStorage.setItem('displayedGroup', displayedGroup)
     }, [displayedGroup])
+
+    useEffect(() => {
+        if (!displayedGroup) {
+            setDisplayedGroup('tous')
+        }
+    }, [])
+
+    useEffect(() => {
+        console.log('groups:', groups)
+        console.log('displayedGroup:', displayedGroup)
+        if (groups && groups.length === 1 && displayedGroup === 'tous') {
+            console.log('Setting displayedGroup to:', groups[0])
+            setDisplayedGroup(groups[0])
+            filterStudents(groups[0])
+        }
+    }, [groups, displayedGroup])
 
     ///////////////// icons /////////////////
     const userIcons = useIcons(currentUser.uid)
@@ -118,7 +162,7 @@ export default () => {
 
     useEffect(() => {
         setHardStudents(filterStudents(displayedGroup))
-    }, [loading, displayedGroup])
+    }, [studentsLoading, displayedGroup])
 
     const toggleHighlight = (studentId: string) => {
         hardStudents.forEach((s) => {
@@ -149,10 +193,6 @@ export default () => {
     const handleClickOutside = () => setMenuOpened(false)
     useOnClickOutside(ref, handleClickOutside)
 
-    if (groups.length === 1 && displayedGroup === 'tous') {
-        setDisplayedGroup(groups[0])
-        filterStudents(groups[0])
-    }
     const notYetSelectedStudents = hardStudents.filter(
         (student) =>
             student.selected === false || student.selected === undefined
@@ -173,7 +213,7 @@ export default () => {
         }
     }
 
-    if (loading) {
+    if (studentsLoading || groupsLoading) {
         return (
             <div className="w-full h-screen flex flex-col justify-center items-center">
                 <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full xl:text-6xl xl:h-16">
@@ -189,7 +229,7 @@ export default () => {
                 </div>
 
                 <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                    <NavBar activeMenu="home" />
+                    <NavBar activeMenu="home" onHomeClick={handleHomeClick} />
                 </div>
             </div>
         )
@@ -217,7 +257,7 @@ export default () => {
                 </div>
 
                 <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                    <NavBar activeMenu="home" />
+                    <NavBar activeMenu="home" onHomeClick={handleHomeClick} />
                 </div>
             </div>
         )
@@ -245,7 +285,7 @@ export default () => {
                 </div>
 
                 <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                    <NavBar activeMenu="home" />
+                    <NavBar activeMenu="home" onHomeClick={handleHomeClick} />
                 </div>
             </div>
         )
@@ -350,10 +390,10 @@ export default () => {
                                         runningPeriode={runningPeriode}
                                         currentUser={currentUser.uid}
                                         key={id}
-                                        loading={loading}
+                                        loading={studentsLoading}
                                         currentUserId={currentUser.uid}
                                         selected={selected}
-                                        classes={classes}
+                                        classes={classes[0]}
                                         name={name}
                                         surname={surname}
                                         comment={comment ? comment : ''}
@@ -486,7 +526,7 @@ export default () => {
             )}
 
             <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                <NavBar activeMenu="home" />
+                <NavBar activeMenu="home" onHomeClick={handleHomeClick} />
             </div>
         </div>
     )

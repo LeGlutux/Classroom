@@ -7,6 +7,7 @@ import ListedStudent from './ListedStudent'
 import { isMobile } from 'react-device-detect'
 
 export default () => {
+    const onHomeClick = () => {}
     const { id } = useParams<{ id: string }>()
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
@@ -66,7 +67,7 @@ export default () => {
                                 key={id}
                                 name={name}
                                 surname={surname}
-                                classes={classes}
+                                classes={classes[0]}
                                 studentId={id}
                                 userId={currentUser.uid}
                                 currentList={currentList}
@@ -75,7 +76,7 @@ export default () => {
                     })}
             </div>
             <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                <NavBar activeMenu="list" />
+                <NavBar activeMenu="list" onHomeClick={onHomeClick} />
             </div>
         </div>
     )

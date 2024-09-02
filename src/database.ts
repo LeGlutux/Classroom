@@ -1,5 +1,7 @@
 import firebase from 'firebase'
 import Firebase from './firebase'
+import { StudentInterface } from './interfaces/Student'; // Assurez-vous que le chemin est correct
+
 
 export const fetchPostIts = async (currentUserId: string) => {
     const db = Firebase.firestore()
@@ -95,20 +97,26 @@ export const fetchStudentsIds = async (currentUserId: string) => {
     return data
 }
 
-export const fetchStudents = async (currentUserId: string) => {
-    const db = Firebase.firestore()
-    const querySnapshot = await db
-        .collection('users')
-        .doc(currentUserId)
-        .collection('eleves')
-        .orderBy('name')
-        .get()
+export const fetchStudents = async (currentUserId: string): Promise<StudentInterface[]> => {
+    const db = Firebase.firestore();
+    const querySnapshot = await db.collection('users').doc(currentUserId).collection('eleves').orderBy('name').get();
 
-    const data = [] as firebase.firestore.DocumentData[]
-    querySnapshot.docs.forEach((doc) => data.push(doc.data()))
+    // Transformation des documents Firestore en objets Student :
+    return querySnapshot.docs.map(doc => {
+        const data = doc.data(); // Récupère les données brutes du document
 
-    return data
-}
+        return {
+            id: doc.id, // Ajoute l'id du document
+            name: data.name, // Typage manuel pour correspondre à l'interface Student
+            surname: data.surname,
+            classes: data.classes,
+            highlight: data.highlight,
+            selected: data.selected,
+            comment: data.comment,
+            crosses: data.crosses || [],
+        } as StudentInterface;
+    });
+};
 
 export const fetchPeriodes = async (currentUserId: string) => {
     const db = Firebase.firestore()
