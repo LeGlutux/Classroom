@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import firebase from 'firebase/app'
+import { IconCheck, IconClose, IconQuestion } from './Icons'
 
 interface ListStatusButtonProps {
     studentId: string
@@ -7,6 +8,20 @@ interface ListStatusButtonProps {
     listId: string
     indexOfItem: number
     listState: number[]
+}
+
+export const listStatusClass = (state: number) => {
+    if (state === 1) return 'is-ok'
+    if (state === 2) return 'is-no'
+    if (state === 3) return 'is-maybe'
+    return 'is-empty'
+}
+
+export const ListStatusMark = ({ state }: { state: number }) => {
+    if (state === 1) return <IconCheck />
+    if (state === 2) return <IconClose />
+    if (state === 3) return <IconQuestion />
+    return null
 }
 
 export default (props: ListStatusButtonProps) => {
@@ -34,26 +49,14 @@ export default (props: ListStatusButtonProps) => {
             .doc(props.listId.concat('s'))
             .update({ state: newState })
     }
-    const stateColor = (s: number) => {
-        if (state === 0) return 'bg-white'
-        if (state === 1) return 'bg-green-600'
-        if (state === 2) return 'bg-red-600'
-        if (state === 3) return 'bg-yellow-600'
-        else return ''
-    }
 
     return (
         <button
-            className={`flex w-full h-full justify-center items-center text-xl font-bold border-gray-200 border-r-2 transition-all hover:opacity-80 box-border flex-shrink-0 ${stateColor(
-                state
-            )}`}
-            style={{ minWidth: '54px', width: '100%' }}
-            onClick={() => handleClick()}
+            type="button"
+            className={`list-status ${listStatusClass(state)}`}
+            onClick={handleClick}
         >
-            {state === 1 && <span className="text-white">✓</span>}
-            {state === 2 && <span className="text-white">✗</span>}
-            {state === 3 && <span className="text-yellow-800">?</span>}
-            {state === 0 && <span className="opacity-0 pointer-events-none select-none">&nbsp;</span>}
+            <ListStatusMark state={state} />
         </button>
     )
 }

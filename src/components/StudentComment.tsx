@@ -23,8 +23,6 @@ export default (props: Props) => {
 
     const [inputValue, setInputValue] = useState(props.comment)
     const [edit, setEdit] = useState(false)
-    const wrap =
-        props.comment !== undefined && props.comment.length >= 20 ? true : false
 
     const handleEdition = () => {
         setEdit(true)
@@ -63,41 +61,22 @@ export default (props: Props) => {
     useOnClickOutside(cardRef, handleValidation)
 
     return (
-        <div ref={cardRef} className="flex flex-row w-full">
-            <div
-                className={`flew flex-row w-full ml-2 ${
-                    edit ? 'hidden' : 'visible'
-                }`}
-            >
-                <div className={`flex w-11/12 justify-between`}>
-                    <button onClick={() => handleEdition()}>
-                        <img
-                            className="h-4 mr-2 xl:h-6 xl:w-8"
-                            src={pen}
-                            alt=""
-                        />
-                    </button>
-                    <div className="flex flex-col text-sm font-student mx-1 font-bold xl:text-xl">
-                        {wrap && (
-                            <div className="flex w-full justify-start">
-                                <div className="text-sm w-auto font-student font-normal xl:text-xl">
-                                    {comment}
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                    {!wrap && (
-                        <div className="flex w-full justify-start">
-                            <div className="text-sm w-auto font-student font-normal xl:text-xl">
-                                {comment}
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </div>
-            <div className={`${edit ? 'visible' : 'hidden'}`}>
+        <div ref={cardRef} className="student-note">
+            {!edit && (
+                <button
+                    type="button"
+                    className={`student-note-btn ${
+                        comment ? '' : 'is-empty'
+                    }`}
+                    onClick={() => handleEdition()}
+                >
+                    <img src={pen} alt="" />
+                    <span>{comment || 'Ajouter une note'}</span>
+                </button>
+            )}
+            {edit && (
                 <form
-                    className={`flex flex-row items-center`}
+                    className="student-note-form"
                     onSubmit={(e) => {
                         handleValidation()
                         e.preventDefault()
@@ -105,7 +84,7 @@ export default (props: Props) => {
                     }}
                     action=""
                 >
-                    <span className="h-6 w-6 mx-2">
+                    <span className="h-6 w-6">
                         <svg
                             className="h-6 w-6 fill-current text-grey hover:text-grey-darkest"
                             role="button"
@@ -119,15 +98,15 @@ export default (props: Props) => {
                         ref={inputRef}
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
-                        className="w-10/12 mr-2 mb-2 h-8 z-50 placeholder-gray-700 bg-transparent border-b-2 border-gray-600 text-lg xl:text-center"
+                        className="w-10/12 mr-2 h-8 z-50 placeholder-gray-400 bg-transparent text-lg xl:text-center"
                         type="text"
-                        placeholder={comment}
+                        placeholder="Ajouter une note"
                     />
                     <button className="w-2/12 mx-2" type="submit">
                         <img className="w-6 h-6" src={check} alt="" />
                     </button>
                 </form>
-            </div>
+            )}
         </div>
     )
 }

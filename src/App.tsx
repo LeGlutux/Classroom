@@ -10,12 +10,14 @@ import SignUp from './components/SignUp'
 import Lists from './components/Lists'
 import CreateList from './components/CreateList'
 import List from './components/List'
+import V3Welcome from './components/V3Welcome'
 
 export default () => {
     return (
         <div>
             <div className={`flex w-full flex-col`}>
                 <AuthProvider>
+                    <V3Welcome />
                     <div>
                         <Router>
                             <Switch>

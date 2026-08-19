@@ -5,10 +5,28 @@ import { useParams, Link, useHistory } from 'react-router-dom'
 import closeCard from '../images/closeCard.png'
 import firebase from 'firebase/app'
 import CrossTab from './CrossTab'
-import backArrow from '../images/return.png'
 import ConfirmModal from './ConfirmModal'
 import edit from '../images/edit.png'
-import { handleIcon } from '../functions'
+import { handleIcon, buildCrossSlots, CrossSlot } from '../functions'
+
+const classToValue = (classes: unknown): string => {
+    if (Array.isArray(classes)) {
+        return classes[0] ? String(classes[0]) : ''
+    }
+    if (classes == null) return ''
+    return String(classes)
+}
+
+const classToLabel = (classes: unknown): string => {
+    if (Array.isArray(classes)) {
+        return classes.filter(Boolean).join(', ')
+    }
+    if (classes == null) return ''
+    return String(classes)
+}
+
+const classesPayload = (current: unknown, next: string) =>
+    Array.isArray(current) ? [next] : next
 
 export default () => {
     const { currentUser } = useContext(AuthContext)
@@ -16,20 +34,20 @@ export default () => {
     const icons = useIcons(currentUser.uid)
     const { id } = useParams<{ id: string }>()
     if (id === undefined) return <div />
-    const [crossRefresher, setCrossRefresher] = useState(0)
+    const [crossRefresher] = useState(0)
     const { cross } = useCross(currentUser.uid, id, crossRefresher)
     const student = useStudent(currentUser.uid, id)
     if (student === undefined) return <div />
+    const slots = buildCrossSlots(icons.icons, icons.positiveIcons)
 
     return (
         <View
             currentUser={currentUser}
             crossRefresher={crossRefresher}
-            setCrossRefresher={setCrossRefresher}
             student={student}
             studentId={id}
             cross={cross}
-            icons={icons.icons}
+            slots={slots}
         />
     )
 }
@@ -37,19 +55,17 @@ export default () => {
 const View = ({
     currentUser,
     crossRefresher,
-    setCrossRefresher,
     student,
     studentId,
     cross,
-    icons,
+    slots,
 }: {
     currentUser: firebase.User
     crossRefresher: number
-    setCrossRefresher: React.Dispatch<React.SetStateAction<number>>
     student: firebase.firestore.DocumentData
     studentId: string
     cross: firebase.firestore.DocumentData[]
-    icons: number[]
+    slots: CrossSlot[]
 }) => {
     const { groups } = useGroups(currentUser.uid)
     const crossFilter = (crossType: string) => {
@@ -97,6 +113,9 @@ const View = ({
     const [nameInputValue, setNameInputValue] = useState('')
     const [surnameInputValue, setSurnameInputValue] = useState('')
     const [classInputValue, setClassInputValue] = useState('')
+    const [displayName, setDisplayName] = useState(student.name)
+    const [displaySurname, setDisplaySurname] = useState(student.surname)
+    const [displayClasses, setDisplayClasses] = useState(student.classes)
     const currentWeek =
         Math.floor(
             (new Date().getTime() - startDate.getTime()) / (7 * 86400000)
@@ -107,11 +126,12 @@ const View = ({
 
     /////////////////// Notes //////////////////////
     const [editNotes, setEditNotes] = useState(false)
-    const [notes, setNotes] = useState(student.notes)
+    const [notes, setNotes] = useState(student.notes || '')
     const [notesInputValue, setNotesInputValue] = useState(notes)
     const shortedNotes = (note: string) => {
+        const text = note || ''
         const shortNotes =
-            note.length >= 60 ? note.substring(0, 56).concat('...') : note
+            text.length >= 60 ? text.substring(0, 56).concat('...') : text
         return shortNotes
     }
 
@@ -126,19 +146,6 @@ const View = ({
 
     /////////////////////////////////////////////////
 
-    const handleDeleteCross = (crossType: string) => {
-        if (crossFilter(crossType).length !== 0) {
-            const crossId = crossFilter(crossType)[0].id
-            db.collection('users')
-                .doc(currentUser.uid)
-                .collection('eleves')
-                .doc(studentId)
-                .collection('crosses')
-                .doc(crossId)
-                .delete()
-            setCrossRefresher(crossRefresher + 1)
-        }
-    }
     const handleDeletion = () => {
         db.collection('users')
             .doc(currentUser.uid)
@@ -148,77 +155,165 @@ const View = ({
         history.goBack()
     }
 
-    const handleEdition = () => {
-        if (groups.includes(classInputValue)) {
-            db.collection('users')
-                .doc(currentUser.uid)
-                .collection('eleves')
-                .doc(studentId)
-                .set(
-                    {
-                        name: nameInputValue,
-                        surname: surnameInputValue,
-                        classes: classInputValue,
-                    },
-                    { merge: true }
-                )
-            history.goBack()
-        } else alert("Cette classe n'existe pas")
+    const openEdition = () => {
+        setNameInputValue(String(displayName || ''))
+        setSurnameInputValue(String(displaySurname || ''))
+        setClassInputValue(classToValue(displayClasses))
+        setEditing(true)
     }
 
-    const iconsNumber = icons.indexOf(0) === -1 ? 6 : icons.indexOf(0)
+    const handleEdition = () => {
+        const name = nameInputValue.trim()
+        const surname = surnameInputValue.trim()
+        const classe = classInputValue.trim()
+        if (!name || !surname) {
+            alert("Le prénom et le nom sont obligatoires")
+            return
+        }
+        if (!groups.includes(classe)) {
+            alert("Cette classe n'existe pas")
+            return
+        }
+        const nextClasses = classesPayload(displayClasses, classe)
+        db.collection('users')
+            .doc(currentUser.uid)
+            .collection('eleves')
+            .doc(studentId)
+            .set(
+                {
+                    name,
+                    surname,
+                    classes: nextClasses,
+                },
+                { merge: true }
+            )
+        setDisplayName(name)
+        setDisplaySurname(surname)
+        setDisplayClasses(nextClasses)
+        setEditing(false)
+    }
+
+    const classOptions =
+        classInputValue && !groups.includes(classInputValue)
+            ? [classInputValue, ...groups]
+            : groups
 
     return (
         <div className="flex flex-col h-screen">
-            <div
-                className={`flex flex-col z-50 w-full h-full items-center justify-center self-center modal-positon ${
-                    editNotes ? 'visible' : 'invisible'
-                }`}
-                style={{ backgroundColor: 'rgba(255,255,255,0.6)' }}
-            >
+            {editNotes ? (
                 <div
-                    className={`flex flex-col border-black bg-white shadow-lg justify-center items-center w-3/4 h-100 relative ${
-                        editNotes ? 'entering-t' : 'invisible'
-                    }`}
+                    className="modal-overlay"
+                    onClick={() => setEditNotes(false)}
                 >
-                    <span className="absolute top-0 right-0 p-4">
-                        <svg
-                            className="h-4 w-4 fill-current text-grey hover:text-grey-darkest"
-                            role="button"
-                            onClick={() => setEditNotes(false)}
-                        >
-                            <title>Close</title>
-                            <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
-                        </svg>
-                    </span>
-                    <textarea
-                        value={notesInputValue}
-                        onChange={(e) => setNotesInputValue(e.target.value)}
-                        className="flex w-10/12 mr-2 mt-10 h-64 z-50 placeholder-gray-700 bg-transparent border-2 border-gray-200 text-lg align-text-top"
-                        placeholder={notes}
-                    />
-
-                    <div className="flex flex-row w-full justify-around mt-6">
-                        <button
-                            className="bg-red-700 rounded-lg font-bold w-24 h-12 lg:w-32 lg:h-12 xl:w-40 xl:h-16 shadow-xl font-studentName sm:text-lg md:text-xl lg:text-2xl xl:text-3xl"
-                            onClick={() => {
-                                setEditNotes(false)
-                            }}
-                        >
-                            Annuler
-                        </button>
-                        <button
-                            className="bg-green-700 rounded-lg font-bold w-24 h-12 lg:w-32 lg:h-12 xl:w-40 xl:h-16 shadow-xl font-studentName sm:text-lg md:text-xl lg:text-2xl xl:text-3xl"
-                            onClick={() => {
-                                confirmAction()
-                                setEditNotes(false)
-                            }}
-                        >
-                            Confirmer
-                        </button>
+                    <div
+                        className="modal-card"
+                        onClick={(event) => event.stopPropagation()}
+                    >
+                        <div className="modal-empty">Notes</div>
+                        <label className="modal-field">
+                            <span className="modal-label">Commentaire</span>
+                            <textarea
+                                value={notesInputValue}
+                                onChange={(e) =>
+                                    setNotesInputValue(e.target.value)
+                                }
+                                className="modal-textarea"
+                                placeholder="Ajouter une note"
+                            />
+                        </label>
+                        <div className="modal-actions">
+                            <button
+                                type="button"
+                                className="modal-btn modal-btn-ghost"
+                                onClick={() => setEditNotes(false)}
+                            >
+                                Annuler
+                            </button>
+                            <button
+                                type="button"
+                                className="modal-btn modal-btn-primary"
+                                onClick={() => {
+                                    confirmAction()
+                                    setEditNotes(false)
+                                }}
+                            >
+                                Enregistrer
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
+            ) : null}
+
+            {editing ? (
+                <div
+                    className="modal-overlay"
+                    onClick={() => setEditing(false)}
+                >
+                    <div
+                        className="modal-card"
+                        onClick={(event) => event.stopPropagation()}
+                    >
+                        <div className="modal-empty">Modifier l'élève</div>
+                        <label className="modal-field">
+                            <span className="modal-label">Prénom</span>
+                            <input
+                                className="modal-input"
+                                value={surnameInputValue}
+                                onChange={(e) =>
+                                    setSurnameInputValue(e.target.value)
+                                }
+                                type="text"
+                            />
+                        </label>
+                        <label className="modal-field">
+                            <span className="modal-label">Nom</span>
+                            <input
+                                className="modal-input"
+                                value={nameInputValue}
+                                onChange={(e) =>
+                                    setNameInputValue(e.target.value)
+                                }
+                                type="text"
+                            />
+                        </label>
+                        <label className="modal-field">
+                            <span className="modal-label">Classe</span>
+                            <select
+                                className="modal-select"
+                                value={classInputValue}
+                                onChange={(e) =>
+                                    setClassInputValue(e.target.value)
+                                }
+                            >
+                                {classOptions.length === 0 ? (
+                                    <option value="">Aucune classe</option>
+                                ) : null}
+                                {classOptions.map((group) => (
+                                    <option key={group} value={group}>
+                                        {group}
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
+                        <div className="modal-actions">
+                            <button
+                                type="button"
+                                className="modal-btn modal-btn-ghost"
+                                onClick={() => setEditing(false)}
+                            >
+                                Annuler
+                            </button>
+                            <button
+                                type="button"
+                                className="modal-btn modal-btn-primary"
+                                onClick={handleEdition}
+                            >
+                                Enregistrer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            ) : null}
 
             <ConfirmModal
                 confirm={confirm}
@@ -228,168 +323,35 @@ const View = ({
                 subTextBox={''}
             />
 
-            <div
-                className={`flex flex-col items-center z-50 absolute w-full ${
-                    editing ? 'visible' : 'invisible'
-                }`}
-            >
-                <div
-                    className={`w-full text-center mt-4 font-title text-5xl flex items-center`}
-                >
-                    <Link to="/">
-                        <img className="h-8 w-4 ml-2" src={closeCard} alt="" />
+            <div className="flex flex-col items-center">
+                <div className="w-full mt-4 flex items-center px-3">
+                    <Link to="/" className="flex items-center justify-center w-8 h-8 flex-shrink-0">
+                        <img className="h-6 w-3" src={closeCard} alt="" />
                     </Link>
-                    <div className="w-full mr-4 flex flex-row items-baseline justify-center text-4xl">
-                        <input
-                            value={surnameInputValue}
-                            onChange={(e) =>
-                                setSurnameInputValue(e.target.value)
-                            }
-                            className="h-10 w-32 mt-3 placeholder-gray-700 ml-5 bg-transparent border-b-2 border-gray-600 text-2xl text-center"
-                            type="text"
-                            placeholder={student.surname}
-                        />
-                        <input
-                            className="h-10 w-32 mt-3 placeholder-gray-700 text-2xl ml-5 bg-transparent border-b-2 border-gray-600 text-center"
-                            value={nameInputValue}
-                            onChange={(e) => setNameInputValue(e.target.value)}
-                            type="text"
-                            placeholder={student.name}
-                        />
+                    <div className="flex-1 mr-8 flex flex-row items-center justify-center font-studentName text-xl font-semibold leading-tight text-center px-2">
+                        {displaySurname} {displayName}
                     </div>
                 </div>
-                <div
-                    className={`flex w-full px-8 justify-between mb-4 font-title2 text-3xl items-center `}
-                >
-                    <button
-                        className="bg-red-700 rounded-lg font-bold w-24 h-8 text-sm lg:w-32 lg:h-12 xl:w-40 xl:h-16 shadow-xl font-studentName sm:text-lg md:text-xl lg:text-2xl xl:text-3xl"
-                        onClick={() => {
-                            setEditing(false)
-                        }}
-                    >
-                        Annuler
-                    </button>
-                    <input
-                        className="h-10 w-20 mt-3 placeholder-gray-700 text-lg bg-transparent border-b-2 border-gray-600 text-center"
-                        value={classInputValue}
-                        onChange={(e) => setClassInputValue(e.target.value)}
-                        type="text"
-                        placeholder={student.classes}
-                    />
-                    <button
-                        className="bg-green-700 rounded-lg font-bold w-24 h-8 text-sm lg:w-32 lg:h-12 xl:w-40 xl:h-16 shadow-xl font-studentName sm:text-lg md:text-xl lg:text-2xl xl:text-3xl"
-                        onClick={() => {
-                            handleEdition()
-                            setEditing(false)
-                        }}
-                    >
-                        Confirmer
-                    </button>
+                <div className="flex w-full mb-4 justify-center items-center text-sm text-gray-600">
+                    {classToLabel(displayClasses)}
                 </div>
-            </div>
-
-            <div
-                className={`flex flex-col items-center ${
-                    editing ? 'invisible' : 'visible'
-                }`}
-            >
-                <div
-                    className={`w-full text-center mt-4 font-title text-5xl flex items-center`}
-                >
-                    <Link to="/">
-                        <img className="h-8 w-4 ml-2" src={closeCard} alt="" />
-                    </Link>
-                    <div className="w-full mr-4 flex flex-row items-baseline justify-center text-4xl">
-                        {student.surname} {student.name}
-                    </div>
-                </div>
-                <div
-                    className={`flex w-full mb-4 mr-4 justify-center font-title2 text-3xl items-center `}
-                >
-                    {student.classes}
-                </div>
-                <button
-                    className="h-6 w-6 mr-4 absolute top-10 right-10"
-                    onClick={() => {
-                        setEditing(true)
-                        setNameInputValue(student.name.toString())
-                        setSurnameInputValue(student.surname.toString())
-                        setClassInputValue(student.classes.toString())
-                    }}
-                >
-                    <img src={edit} alt="modifier" />
-                </button>
             </div>
 
             <div className="flex flex-row ml-4 mb-4">
                 <div className="w-4 text-sm font-bold h-4 my-2">S</div>
                 <div className="w-full h-4 flex flex-row justify-evenly my-2 text-xl">
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            icons[0] === 0 ? 'hidden' : 'visible'
-                        } `}
-                    >
-                        <img
-                            className="h-6 w-6"
-                            src={handleIcon(icons[0])}
-                            alt=""
-                        />
-                    </div>
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            icons[1] === 0 ? 'hidden' : 'visible'
-                        } `}
-                    >
-                        <img
-                            className="h-6 w-6"
-                            src={handleIcon(icons[1])}
-                            alt=""
-                        />
-                    </div>
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            icons[2] === 0 ? 'hidden' : 'visible'
-                        } `}
-                    >
-                        <img
-                            className="h-6 w-6"
-                            src={handleIcon(icons[2])}
-                            alt=""
-                        />
-                    </div>
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            icons[3] === 0 ? 'hidden' : 'visible'
-                        } `}
-                    >
-                        <img
-                            className="h-6 w-6"
-                            src={handleIcon(icons[3])}
-                            alt=""
-                        />
-                    </div>
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            icons[4] === 0 ? 'hidden' : 'visible'
-                        } `}
-                    >
-                        <img
-                            className="h-6 w-6"
-                            src={handleIcon(icons[4])}
-                            alt=""
-                        />
-                    </div>
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            icons[5] === 0 ? 'hidden' : 'visible'
-                        } `}
-                    >
-                        <img
-                            className="h-6 w-6"
-                            src={handleIcon(icons[5])}
-                            alt=""
-                        />
-                    </div>
+                    {slots.map((slot) => (
+                        <div
+                            key={slot.type}
+                            className="flex flex-row w-full mx-4 items-center justify-center"
+                        >
+                            <img
+                                className="h-6 w-6"
+                                src={handleIcon(slot.icon)}
+                                alt=""
+                            />
+                        </div>
+                    ))}
                 </div>
             </div>
             <div className="flex flex-col text-2xl h-82 ml-4 overflow-y-scroll">
@@ -405,7 +367,7 @@ const View = ({
                             }
                             index={weeks.length - index}
                             key={index}
-                            iconsNumber={icons.indexOf(0)}
+                            slots={slots}
                         />
                     )
                 })}
@@ -413,125 +375,14 @@ const View = ({
             <div className="flex flex-row ml-4 mb-2">
                 <div className="w-6 text-sm font-bold h-4 my-2" />
                 <div className="w-full h-4 flex flex-row justify-evenly my-2 text-xl">
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            iconsNumber < 1 ? 'hidden' : 'visible'
-                        }`}
-                    >
-                        {crossFilter('behaviour').length}
-                    </div>
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            iconsNumber < 2 ? 'hidden' : 'visible'
-                        }`}
-                    >
-                        {crossFilter('homework').length}
-                    </div>
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            iconsNumber < 3 ? 'hidden' : 'visible'
-                        }`}
-                    >
-                        {crossFilter('supply').length}
-                    </div>
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            iconsNumber < 4 ? 'hidden' : 'visible'
-                        }`}
-                    >
-                        {crossFilter('observation').length}
-                    </div>
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            iconsNumber < 5 ? 'hidden' : 'visible'
-                        }`}
-                    >
-                        {crossFilter('calculator').length}
-                    </div>
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            iconsNumber < 6 ? 'hidden' : 'visible'
-                        }`}
-                    >
-                        {crossFilter('phone').length}
-                    </div>
-                </div>
-            </div>
-            <div className="flex flex-row ml-4 mb-2">
-                <div className="w-6 text-sm font-bold h-4 my-2" />
-                <div className="w-full h-4 flex flex-row justify-evenly my-2 text-xl">
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            iconsNumber < 1 ? 'hidden' : 'visible'
-                        }`}
-                    >
-                        <button
-                            onClick={() => {
-                                handleDeleteCross('behaviour')
-                            }}
+                    {slots.map((slot) => (
+                        <div
+                            key={slot.type}
+                            className="flex flex-row w-full mx-4 items-center justify-center"
                         >
-                            <img className="h-8 w-8" src={backArrow} alt="" />
-                        </button>
-                    </div>
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            iconsNumber < 2 ? 'hidden' : 'visible'
-                        }`}
-                    >
-                        <button
-                            onClick={() => {
-                                handleDeleteCross('homework')
-                            }}
-                        >
-                            <img className="h-8 w-8" src={backArrow} alt="" />
-                        </button>
-                    </div>
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            iconsNumber < 3 ? 'hidden' : 'visible'
-                        }`}
-                    >
-                        <button onClick={() => handleDeleteCross('supply')}>
-                            <img className="h-8 w-8" src={backArrow} alt="" />
-                        </button>
-                    </div>
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            iconsNumber < 4 ? 'hidden' : 'visible'
-                        }`}
-                    >
-                        <button
-                            onClick={() => handleDeleteCross('observation')}
-                        >
-                            <img className="h-8 w-8" src={backArrow} alt="" />
-                        </button>
-                    </div>
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            iconsNumber < 5 ? 'hidden' : 'visible'
-                        }`}
-                    >
-                        <button
-                            onClick={() => {
-                                handleDeleteCross('calculator')
-                            }}
-                        >
-                            <img className="h-8 w-8" src={backArrow} alt="" />
-                        </button>
-                    </div>
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            iconsNumber < 6 ? 'hidden' : 'visible'
-                        }`}
-                    >
-                        <button
-                            onClick={() => {
-                                handleDeleteCross('phone')
-                            }}
-                        >
-                            <img className="h-8 w-8" src={backArrow} alt="" />
-                        </button>
-                    </div>
+                            {crossFilter(slot.type).length}
+                        </div>
+                    ))}
                 </div>
             </div>
             <div className="flex flex-row justify-start h-10 mx-3">
@@ -540,6 +391,7 @@ const View = ({
                     <button
                         className="flex h-8 w-8 justify-center items-center"
                         onClick={() => {
+                            setNotesInputValue(notes)
                             setEditNotes(true)
                         }}
                     >
@@ -548,12 +400,20 @@ const View = ({
                 </div>
                 <div className="mx-2">{shortedNotes(notes)}</div>
             </div>
-            <div className="flex items-center justify-center">
+            <div className="student-stats-footer">
                 <button
+                    type="button"
+                    className="student-stats-link"
+                    onClick={openEdition}
+                >
+                    Modifier le nom / la classe
+                </button>
+                <button
+                    type="button"
+                    className="student-stats-link student-stats-link-danger"
                     onClick={() => {
                         setConfirm(true)
                     }}
-                    className="flex h-4 w-32 self-center mt-2 text-red-500 text-sm justify-center"
                 >
                     Supprimer l'élève
                 </button>

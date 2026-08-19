@@ -33,7 +33,7 @@ export const usePostIts = (currentUserId: string) => {
             setLoading(true)
             const data = await fetchPostIts(currentUserId)
             if (isMountedRef.current) {
-                setPostIts(data)
+                setPostIts(Array.isArray(data) ? data : [])
                 setLoading(false)
             }
         }
@@ -49,12 +49,12 @@ export const usePostIts = (currentUserId: string) => {
         setLoading(true)
         const data = await fetchPostIts(currentUserId)
         if (isMountedRef.current) {
-            setPostIts(data)
+            setPostIts(Array.isArray(data) ? data : [])
             setLoading(false)
         }
     }
 
-    return { postIts, loading, refreshPostIt }
+    return { postIts, setPostIts, loading, refreshPostIt }
 }
 
 export const useGroups = (currentUserId: string) => {
@@ -142,11 +142,13 @@ export const useCrosses = (currentUserId: string, allStudentsIds: string[]) => {
     const [crosses, setCrosses] =
         useState<{ id: string; docs: firebase.firestore.DocumentData[] }[]>()
     const isMountedRef = useRef(true)
+    const idsKey = (allStudentsIds || []).join(',')
 
     useEffect(() => {
         isMountedRef.current = true
+        const ids = idsKey ? idsKey.split(',') : []
         const fetch = async () => {
-            const data = await fetchCrosses(currentUserId, allStudentsIds)
+            const data = await fetchCrosses(currentUserId, ids)
             if (isMountedRef.current) {
                 setCrosses(data)
             }
@@ -156,10 +158,11 @@ export const useCrosses = (currentUserId: string, allStudentsIds: string[]) => {
         return () => {
             isMountedRef.current = false
         }
-    }, [currentUserId, allStudentsIds])
+    }, [currentUserId, idsKey])
 
     const refreshCrosses = async () => {
-        const data = await fetchCrosses(currentUserId, allStudentsIds)
+        const ids = idsKey ? idsKey.split(',') : []
+        const data = await fetchCrosses(currentUserId, ids)
         if (isMountedRef.current) {
             setCrosses(data)
         }
@@ -640,6 +643,9 @@ export const useVersion = () => {
 
 export const useIcons = (currentUserId: string) => {
     const [icons, setIcons] = useState<number[]>([1, 2, 3, 4, 0, 0])
+    const [positiveIcons, setPositiveIcons] = useState<number[]>([
+        0, 0, 0, 0, 0, 0,
+    ])
     const [loading, setLoading] = useState(true)
     const isMountedRef = useRef(true)
 
@@ -649,7 +655,8 @@ export const useIcons = (currentUserId: string) => {
             setLoading(true)
             const data = await fetchIcons(currentUserId)
             if (isMountedRef.current) {
-                setIcons(data)
+                setIcons(data.icons)
+                setPositiveIcons(data.positiveIcons)
                 setLoading(false)
             }
         }
@@ -660,7 +667,7 @@ export const useIcons = (currentUserId: string) => {
         }
     }, [currentUserId])
 
-    return { icons, loading }
+    return { icons, positiveIcons, loading }
 }
 
 /////////////////////////////// Click outside component ////////////////////////////////////

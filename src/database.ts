@@ -1,6 +1,11 @@
 import firebase from 'firebase/app'
 import Firebase from './firebase'
 import { StudentInterface } from './interfaces/Student'; // Assurez-vous que le chemin est correct
+import {
+    DEFAULT_NEGATIVE_ICONS,
+    DEFAULT_POSITIVE_ICONS,
+    padIconList,
+} from './functions'
 
 
 export const fetchPostIts = async (currentUserId: string) => {
@@ -238,8 +243,10 @@ export const fetchVersion = async () => {
 export const fetchIcons = async (currentUserId: string) => {
     const db = Firebase.firestore()
     const querySnapshot = await db.collection('users').doc(currentUserId).get()
+    const data = querySnapshot.data()
 
-    const data = querySnapshot.data()?.icons
-
-    return data
+    return {
+        icons: padIconList(data?.icons, DEFAULT_NEGATIVE_ICONS),
+        positiveIcons: padIconList(data?.positiveIcons, DEFAULT_POSITIVE_ICONS),
+    }
 }

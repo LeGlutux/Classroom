@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 import Firebase from '../firebase'
-import useOnClickOutside from '../hooks'
+import { IconNote } from './Icons'
 
 interface PostItProps {
     currentUserId: string
@@ -9,94 +9,85 @@ interface PostItProps {
     currentClasse: string
     setDisplay: React.Dispatch<React.SetStateAction<boolean>>
     postIts: { classe: string; content: string }[]
+    onSave: (postIts: { classe: string; content: string }[]) => void
     index: number
 }
+
+export const PostItAlert = () => (
+    <span className="postit-alert" aria-label="Pense-bête">
+        <IconNote />
+    </span>
+)
+
 export default (props: PostItProps) => {
     const db = Firebase.firestore()
     const [confirmErase, setConfirmErase] = useState(false)
     const [textInputValue, setTextInputValue] = useState(props.content)
+    const textRef = useRef(textInputValue)
+    textRef.current = textInputValue
+
     const handleErase = () => {
         setTextInputValue('')
     }
 
-    const handleSave = () => {
+    const handleClose = () => {
         if (props.classe !== 'tous') {
-            const newPostIts = props.postIts
+            const content = textRef.current
+            const newPostIts = props.postIts.slice()
             newPostIts[props.index] = {
                 classe: props.classe,
-                content: textInputValue,
+                content,
             }
+            props.onSave(newPostIts)
             db.collection('users')
                 .doc(props.currentUserId)
                 .update({ postIt: newPostIts })
         }
-    }
-
-    const handleClose = () => {
         props.setDisplay(false)
     }
 
-    const ref = useRef(null)
-    const handleClickOutside = () => {
-        handleClose()
-        handleSave()
-    }
-    useOnClickOutside(ref, handleClickOutside)
-
     return (
-        <div
-            className={`flex justify-center align-middle items-center w-full h-screen absolute ${'fade-in'}`}
-        >
+        <div className="modal-overlay postit-overlay" onClick={handleClose}>
             <div
-                ref={ref}
-                className="flex flex-col w-2/3 h-11/12 bg-yellow-500 rounded-md postIt-shadow"
+                className="postit-card"
+                onClick={(event) => event.stopPropagation()}
             >
-                <div className="flex flex-row">
-                    <span className="relative top-0 right-0 p-4">
-                        <svg
-                            className="h-4 w-4 fill-current text-grey hover:text-grey-darkest"
-                            role="button"
+                <div className="postit-title">{props.classe}</div>
+                <textarea
+                    value={textInputValue}
+                    onChange={(e) => setTextInputValue(e.target.value)}
+                    className="postit-input"
+                    placeholder="Fais-toi une petite note"
+                />
+                <div className="postit-actions">
+                    {!confirmErase ? (
+                        <button
+                            type="button"
+                            className="postit-erase"
+                            onClick={() => setConfirmErase(true)}
+                        >
+                            Effacer
+                        </button>
+                    ) : (
+                        <button
+                            type="button"
+                            className="postit-erase is-confirm"
                             onClick={() => {
-                                handleClose()
-                                handleSave()
+                                handleErase()
+                                setConfirmErase(false)
                             }}
                         >
-                            <title>Close</title>
-                            <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
-                        </svg>
-                    </span>
-                    <div className="flex flex-row w-full h-1/12 justify-center font-title text-5xl mr-10">
-                        <div>{props.classe}</div>
-                    </div>
-                </div>
-
-                <div className="flex h-64 justify-center">
-                    <textarea
-                        value={textInputValue}
-                        onChange={(e) => setTextInputValue(e.target.value)}
-                        className="flex w-10/12 h-64 z-30 bg-transparent text-lg align-text-top p-2"
-                        placeholder={'Fais-toi une petite note'}
-                    />
-                </div>
-                {!confirmErase && (
+                            Confirmer
+                        </button>
+                    )}
                     <button
-                        className={`pb-3 `}
-                        onClick={() => setConfirmErase(true)}
+                        type="button"
+                        className="postit-ok"
+                        onClick={handleClose}
                     >
-                        Effacer tout
+                        OK
                     </button>
-                )}
-                {confirmErase && (
-                    <button
-                        className={`pb-3 text-red-800 text-bold`}
-                        onClick={() => {
-                            handleErase()
-                            setConfirmErase(false)
-                        }}
-                    >
-                        Confirmer
-                    </button>
-                )}
+                </div>
             </div>
         </div>
     )

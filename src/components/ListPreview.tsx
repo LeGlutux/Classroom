@@ -69,13 +69,13 @@ export default (props: ListPreviewProps) => {
                 className="w-full flex flex-row border-gray-300 justify-between"
                 to={'/list/'.concat(props.id)}
             >
-                <div className="font-studentName my-1 self-center w-5/12 ml-4 text-xl">
+                <div className="font-studentName my-2 self-center w-5/12 ml-4 text-base truncate">
                     {props.name}
                 </div>
-                <div className="font-studentName my-1 self-center w-3/12 text-xl">
+                <div className="font-studentName my-2 self-center w-3/12 text-base truncate">
                     {classesToString}
                 </div>
-                <div className="font-studentName my-1 self-center w-1/12 text-xl">
+                <div className="font-studentName my-2 self-center w-1/12 text-base">
                     {props.itemsN}
                 </div>
                 <img
