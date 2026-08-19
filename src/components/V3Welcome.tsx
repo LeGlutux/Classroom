@@ -101,7 +101,10 @@ export default () => {
                 <button
                     type="button"
                     className={`v3-welcome-enter ${step >= 5 ? 'is-in' : ''}`}
-                    onClick={dismiss}
+                    onClick={(event) => {
+                        event.stopPropagation()
+                        dismiss()
+                    }}
                 >
                     Entrer
                 </button>
