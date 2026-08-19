@@ -1090,6 +1090,7 @@ body,
     background: #fff;
     border: 1px solid var(--tn-line);
     box-shadow: 0 8px 20px rgba(24, 24, 27, 0.08);
+    z-index: 20;
 }
 
 .home-class-list > *:nth-child(1) .home-class-card { animation-delay: 0.02s; }
@@ -1103,7 +1104,7 @@ body,
 
 .student-grid {
     padding-top: 0.2rem;
-    padding-bottom: 4.25rem;
+    padding-bottom: 5rem;
 }
 
 .student-grid > *:nth-child(1) .student-card { animation-delay: 0.02s; }
@@ -1686,6 +1687,72 @@ body,
 .bottom-center-custom {
     position: fixed;
     bottom: 45px;
+}
+
+.class-filter-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 3rem;
+    z-index: 15;
+    pointer-events: none;
+    padding: 1.4rem 0 0.45rem;
+}
+
+.class-filter-bar::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    pointer-events: none;
+    background: linear-gradient(
+        to top,
+        rgba(244, 244, 245, 0.92) 0%,
+        rgba(244, 244, 245, 0.62) 48%,
+        rgba(244, 244, 245, 0.18) 78%,
+        rgba(244, 244, 245, 0) 100%
+    );
+    backdrop-filter: blur(14px) saturate(1.15);
+    -webkit-backdrop-filter: blur(14px) saturate(1.15);
+    -webkit-mask-image: linear-gradient(to top, #000 42%, transparent);
+    mask-image: linear-gradient(to top, #000 42%, transparent);
+}
+
+.class-filter-bar-inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    overflow-x: auto;
+    width: 78%;
+    margin-left: 0.5rem;
+    padding: 0 0.15rem 0.15rem;
+    pointer-events: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.class-filter-bar-inner::-webkit-scrollbar {
+    display: none;
+}
+
+.class-filter-chip {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    height: 2rem;
+    margin: 0 0.25rem;
+    padding: 0 0.75rem;
+    border: 1px solid var(--tn-line);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--tn-ink);
+    font-family: inherit;
+    font-size: 0.875rem;
+    line-height: 1;
+    white-space: nowrap;
+    box-shadow: 0 1px 4px rgba(24, 24, 27, 0.06);
 }
 
 .modal-positon {

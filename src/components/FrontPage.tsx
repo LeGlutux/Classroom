@@ -476,16 +476,14 @@ export default () => {
             </div>
 
             {groups.length !== 1 && displayedGroup !== 'tous' && (
-                <div className="flex flex-row justify-start bg-transparent w-full bottom-center-custom">
-                    <ClassListFilter
-                        setDisplayedGroup={setDisplayedGroup}
-                        onFilter={(group) => {
-                            filterStudents(group)
-                        }}
-                        closeMenu={setMenuOpened}
-                        groups={groups}
-                    />
-                </div>
+                <ClassListFilter
+                    setDisplayedGroup={setDisplayedGroup}
+                    onFilter={(group) => {
+                        filterStudents(group)
+                    }}
+                    closeMenu={setMenuOpened}
+                    groups={groups}
+                />
             )}
 
             <div className={`flex-shrink-0 w-full h-12 nav-wrap`}>
