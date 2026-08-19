@@ -111,6 +111,86 @@ body,
     background: transparent;
 }
 
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--tn-bg);
+    padding: 1.5rem 1rem;
+}
+
+.auth-wrap {
+    width: 100%;
+    max-width: 22rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.auth-illu {
+    display: block;
+    height: 10.5rem;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    margin-bottom: 0.75rem;
+}
+
+.auth-title {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1.7rem;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    text-align: center;
+    margin-bottom: 1rem;
+    color: var(--tn-ink);
+}
+
+.auth-card {
+    width: 100%;
+}
+
+.auth-field {
+    display: flex;
+    align-items: center;
+    margin-top: 0.7rem;
+    min-height: 2.75rem;
+    padding: 0 0.8rem;
+    border: 1px solid var(--tn-line);
+    border-radius: 8px;
+    background: #fff;
+}
+
+.auth-field .tn-icon {
+    width: 1.15rem;
+    height: 1.15rem;
+    color: var(--tn-muted);
+    margin-right: 0.65rem;
+}
+
+.auth-field input {
+    flex: 1;
+    min-width: 0;
+    height: 2.75rem;
+    border: 0;
+    background: transparent;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--tn-ink);
+}
+
+.auth-alt {
+    margin-top: 0.9rem;
+    text-align: center;
+    font-size: 0.88rem;
+}
+
+.auth-alt a {
+    color: var(--tn-ink);
+    text-decoration: underline;
+}
+
 .student-name {
     font-family: 'Open Sans', sans-serif;
     font-size: 1.2rem;

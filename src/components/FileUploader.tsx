@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import Papa from 'papaparse'
 import Firebase from '../firebase'
 import firebase from 'firebase/app'
+import { parsePronoteCsv, PronoteStudent } from '../utils/pronoteImport'
 
 interface FileUploaderProps {
     currentUserId: string
@@ -9,52 +9,26 @@ interface FileUploaderProps {
 }
 
 export default (props: FileUploaderProps) => {
-    const [students, setStudents] = useState<
-        { surname: string; name: string; id: string; pap: string }[]
-    >([])
+    const [students, setStudents] = useState<PronoteStudent[]>([])
     const [clickable, setClickable] = useState(false)
     const [classe, setClasse] = useState('')
     const db = Firebase.firestore()
 
     useEffect(() => {
-        if (classe !== '' && students.length !== 0) {
-            setClickable(true)
-        } else setClickable(false)
+        const hasClass =
+            classe.trim() !== '' ||
+            students.some((student) => student.classe.trim() !== '')
+        setClickable(students.length !== 0 && hasClass)
     }, [classe, students])
 
-    const splitter = (s: string) => {
-        const id = Math.random().toString(36).substring(2, 9);
-        const words = s.split(' ');
-        const nameArray = [] as string[];
-        const surnameArray = [] as string[];
-    
-        words.forEach((w) => {
-            const lowerCased = w.toLowerCase();
-            // Transforme correctement la première lettre en majuscule, même pour les lettres accentuées
-            const cased = lowerCased.charAt(0).toUpperCase() + lowerCased.slice(1);
-            
-            // Place le mot dans le bon tableau
-            if (isUpperCase(w)) {
-                nameArray.push(cased);
-            } else {
-                surnameArray.push(cased);
+    const handleSave = (rows: PronoteStudent[]) => {
+        const classesToAdd: string[] = []
+        rows.forEach((s) => {
+            const studentClass = classe.trim() || s.classe.trim()
+            if (!studentClass) return
+            if (classesToAdd.indexOf(studentClass) === -1) {
+                classesToAdd.push(studentClass)
             }
-        });
-    
-        const name = nameArray.join(' ');
-        const surname = surnameArray.join(' ');
-        return { name, surname, id };
-    }
-    
-    // Fonction pour vérifier si une chaîne est en majuscule
-    const isUpperCase = (str: string) => {
-        return str === str.toUpperCase();
-    }
-
-    const handleSave = (
-        students: { surname: string; id: string; name: string; pap: string }[]
-    ) => {
-        students.forEach((s) => {
             db.collection('users')
                 .doc(props.currentUserId)
                 .collection('eleves')
@@ -62,7 +36,7 @@ export default (props: FileUploaderProps) => {
                 .set({
                     name: s.name,
                     surname: s.surname,
-                    classes: classe,
+                    classes: studentClass,
                     id: s.id,
                     highlight: false,
                     selected: false,
@@ -71,108 +45,96 @@ export default (props: FileUploaderProps) => {
                     notes: '',
                 })
         })
-        db.collection('users')
-            .doc(props.currentUserId)
-            .update({
-                classes: firebase.firestore.FieldValue.arrayUnion(classe),
-            })
+        classesToAdd.forEach((group) => {
+            db.collection('users')
+                .doc(props.currentUserId)
+                .update({
+                    classes: firebase.firestore.FieldValue.arrayUnion(group),
+                })
+        })
     }
 
     const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files || e.target.files.length === 0) return
-        
+
         const file = e.target.files[0]
         const fileName = file.name.toLowerCase()
-        
-        // Vérifie que c'est un fichier CSV
-        if (!fileName.endsWith('.csv')) {
-            alert('Seuls les fichiers CSV sont supportés. Veuillez exporter votre fichier depuis Pronote en format CSV.')
+
+        if (!fileName.endsWith('.csv') && !fileName.endsWith('.txt')) {
+            alert(
+                'Seuls les fichiers CSV sont supportés. Exportez depuis Pronote en CSV.'
+            )
             setStudents([])
             return
         }
-        
-        Papa.parse(file, {
-            header: true,
-            skipEmptyLines: true,
-            delimiter: ';', // Pronote utilise le point-virgule comme séparateur
-            encoding: 'UTF-8',
-            transformHeader: (header, index) => {
-                // Normalise les en-têtes pour gérer les variations et colonnes vides
-                const trimmedHeader = header.trim()
-                if (trimmedHeader === 'Élèves' || trimmedHeader === 'Élève') return 'Élève'
-                // Si l'en-tête est vide, utilise un nom générique
-                if (!trimmedHeader || trimmedHeader === '') return `Colonne_${index}`
-                return trimmedHeader
-            },
-            complete: (results) => {
-                const students = [] as {
-                    surname: string
-                    name: string
-                    id: string
-                    pap: string
-                }[]
-                
-                if (results.errors && results.errors.length > 0) {
-                    console.error('Erreurs de parsing CSV:', results.errors)
+
+        const applyParsed = (text: string) => {
+            try {
+                const parsed = parsePronoteCsv(text)
+                if (parsed.length > 0) {
+                    setStudents(parsed)
+                    return true
                 }
-                
-                results.data.forEach((d) => {
-                    const data = d as any
-                    
-                    // Cherche la colonne des élèves (peut être "Élève" ou "Élèves")
-                    const eleveName = data['Élève'] || data['Élèves'] || ''
-                    
-                    if (!eleveName || eleveName.trim() === '') {
-                        return // Ignore les lignes sans nom d'élève
-                    }
-                    
-                    // Cherche les informations PAP/PPS dans toutes les colonnes
-                    let pap = ''
-                    const papKeywords = ['PAP', 'PPS', 'PAI', 'mdph', 'bilan']
-                    
-                    // Parcourt toutes les colonnes pour trouver les informations PAP/PPS
-                    Object.keys(data).forEach((key) => {
-                        const value = data[key]
-                        if (value && typeof value === 'string' && value.trim() !== '') {
-                            const lowerValue = value.toLowerCase()
-                            if (papKeywords.some(keyword => lowerValue.includes(keyword.toLowerCase()))) {
-                                if (pap) {
-                                    pap += ', ' + value.trim()
-                                } else {
-                                    pap = value.trim()
-                                }
-                            }
-                        }
-                    })
-                    
-                    const student = Object.assign(splitter(eleveName), { pap })
-                    students.push(student)
-                })
-                
-                if (students.length > 0) {
-                    setStudents(students)
-                } else {
-                    console.error('Aucun élève trouvé dans le fichier CSV')
-                    alert('Erreur : Aucun élève trouvé dans le fichier. Vérifiez que le fichier est au format Pronote avec la colonne "Élèves".')
-                }
-            },
-            error: (error) => {
-                console.error('Erreur lors du parsing du fichier:', error)
-                alert('Erreur lors de la lecture du fichier CSV. Vérifiez que le fichier est valide.')
+            } catch (error) {
+                console.error(error)
+            }
+            return false
+        }
+
+        const reader = new FileReader()
+        reader.onload = () => {
+            const text = String(reader.result || '')
+            if (applyParsed(text)) return
+            const latin = new FileReader()
+            latin.onload = () => {
+                if (applyParsed(String(latin.result || ''))) return
+                alert(
+                    'Aucun élève trouvé. Vérifiez que le fichier CSV contient bien les noms (et si possible les classes).'
+                )
                 setStudents([])
             }
-        })
+            latin.onerror = () => {
+                alert('Erreur lors de la lecture du fichier CSV.')
+                setStudents([])
+            }
+            latin.readAsText(file, 'windows-1252')
+        }
+        reader.onerror = () => {
+            alert('Erreur lors de la lecture du fichier CSV.')
+            setStudents([])
+        }
+        reader.readAsText(file, 'UTF-8')
     }
+
+    const classHint = (() => {
+        const fromFile = Array.from(
+            new Set(
+                students
+                    .map((student) => student.classe.trim())
+                    .filter(Boolean)
+            )
+        )
+        if (students.length === 0) return ''
+        if (fromFile.length === 0) return 'Aucune classe détectée dans le fichier.'
+        return (
+            students.length +
+            ' élève' +
+            (students.length > 1 ? 's' : '') +
+            ' · ' +
+            fromFile.join(', ')
+        )
+    })()
+
     return (
         <div className="flex flex-col">
             <label className="modal-field" style={{ marginTop: 0 }}>
-                <span className="modal-label">Nom de la classe</span>
+                <span className="modal-label">Nom de la classe (optionnel)</span>
                 <input
                     value={classe}
                     onChange={(e) => setClasse(e.target.value)}
                     className="modal-input"
                     type="text"
-                    placeholder="Ex. 6A"
+                    placeholder="Si vide, les classes du fichier sont utilisées"
                 />
             </label>
             <label className="file-pick">
@@ -180,7 +142,7 @@ export default (props: FileUploaderProps) => {
                 <input
                     type="file"
                     name="file"
-                    accept=".csv"
+                    accept=".csv,.txt"
                     onChange={changeHandler}
                 />
                 <span className="file-pick-btn">
@@ -190,7 +152,8 @@ export default (props: FileUploaderProps) => {
                 </span>
             </label>
             <p className="settings-panel-note" style={{ textAlign: 'left' }}>
-                Export CSV depuis Pronote.
+                {classHint ||
+                    'Export Pronote en CSV (ou « Enregistrer sous » depuis Excel). L’import repère nom, prénom, classe et aménagements même si les colonnes bougent.'}
             </p>
             <button
                 type="button"
@@ -202,7 +165,7 @@ export default (props: FileUploaderProps) => {
                     setStudents([])
                 }}
             >
-                Importer la classe
+                Importer
             </button>
         </div>
     )

@@ -134,3 +134,17 @@ export const IconWrench: React.FC<IconProps> = (props) => (
         <path d="M14.7 6.3a3.4 3.4 0 0 0-4.7 4.7L5.2 15.8a1.5 1.5 0 0 0 2.1 2.1l4.8-4.8a3.4 3.4 0 0 0 4.7-4.7L15.2 10l-1.5-1.5 1-2.2z" />
     </Svg>
 )
+
+export const IconMail: React.FC<IconProps> = (props) => (
+    <Svg {...props}>
+        <rect x="3.5" y="5.5" width="17" height="13" rx="1.6" />
+        <path d="M4.2 7.2L12 13.2l7.8-6" />
+    </Svg>
+)
+
+export const IconLock: React.FC<IconProps> = (props) => (
+    <Svg {...props}>
+        <rect x="6.2" y="10.5" width="11.6" height="8.5" rx="1.4" />
+        <path d="M8.4 10.5V8.4a3.6 3.6 0 0 1 7.2 0v2.1" />
+    </Svg>
+)
