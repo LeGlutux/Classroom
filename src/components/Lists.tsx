@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react'
 import { useLists } from '../hooks'
 import { AuthContext } from '../Auth'
 import NavBar from './NavBar'
-import add from '../images/add.png'
 import { Link } from 'react-router-dom'
 import ListPreview from './ListPreview'
 import loader_image from '../images/loader.gif'
@@ -89,10 +88,11 @@ export default () => {
             </div>
             <div className="h-screen" />
             <Link
-                className="flex flex-col w-16 h-16 fab rounded-full bottom-right-custom2 items-center justify-center"
+                className="empty-plus lists-plus"
                 to="/createlist"
+                aria-label="Créer une liste"
             >
-                <img className="h-6 w-6" src={add} alt="" />
+                <IconPlus />
             </Link>
             <div className={`w-full h-12 nav-wrap sticky bottom-0`}>
                 <NavBar activeMenu="list" onHomeClick={handleHomeClick}/>

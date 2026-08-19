@@ -164,31 +164,37 @@ export default (props: FileUploaderProps) => {
         })
     }
     return (
-        <div className="flex flex-col items-center">
-            <p className="settings-panel-note">
-                Fichiers acceptés : CSV (export Pronote)
+        <div className="flex flex-col">
+            <label className="modal-field" style={{ marginTop: 0 }}>
+                <span className="modal-label">Nom de la classe</span>
+                <input
+                    value={classe}
+                    onChange={(e) => setClasse(e.target.value)}
+                    className="modal-input"
+                    type="text"
+                    placeholder="Ex. 6A"
+                />
+            </label>
+            <label className="file-pick">
+                <span className="modal-label">Fichier Pronote</span>
+                <input
+                    type="file"
+                    name="file"
+                    accept=".csv"
+                    onChange={changeHandler}
+                />
+                <span className="file-pick-btn">
+                    {students.length > 0
+                        ? students.length + ' élèves prêts'
+                        : 'Choisir un fichier CSV'}
+                </span>
+            </label>
+            <p className="settings-panel-note" style={{ textAlign: 'left' }}>
+                Export CSV depuis Pronote.
             </p>
-            <input
-                value={classe}
-                onChange={(e) => setClasse(e.target.value)}
-                className="h-10 w-10/12 z-50 placeholder-gray-700 my-2 bg-transparent border-b-2 border-gray-600 text-lg xl:text-center"
-                type="text"
-                placeholder="Nom de la classe"
-            />
-
-            <input
-                className="my-6 w-48"
-                type="file"
-                name="file"
-                accept=".csv,.xlsx,.xls"
-                onChange={changeHandler}
-                style={{ display: 'block' }}
-            />
-
             <button
-                className={`settings-btn ${
-                    clickable ? '' : 'is-disabled'
-                }`}
+                type="button"
+                className={`settings-btn ${clickable ? '' : 'is-disabled'}`}
                 onClick={() => {
                     handleSave(students)
                     setClasse('')
@@ -196,7 +202,7 @@ export default (props: FileUploaderProps) => {
                     setStudents([])
                 }}
             >
-                Ajouter le groupe
+                Importer la classe
             </button>
         </div>
     )

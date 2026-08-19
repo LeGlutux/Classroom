@@ -103,6 +103,14 @@ body,
     height: 1.55rem;
 }
 
+.lists-plus {
+    position: fixed;
+    bottom: 4.5rem;
+    right: 1rem;
+    z-index: 20;
+    background: transparent;
+}
+
 .student-name {
     font-family: 'Open Sans', sans-serif;
     font-size: 1.2rem;
@@ -276,6 +284,38 @@ body,
     padding: 0.75rem;
     resize: vertical;
     line-height: 1.45;
+}
+
+.file-pick {
+    display: flex;
+    flex-direction: column;
+    margin-top: 0.85rem;
+    position: relative;
+}
+
+.file-pick input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.file-pick-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.5rem;
+    padding: 0 0.75rem;
+    border: 1px solid var(--tn-line);
+    border-radius: 8px;
+    background: var(--tn-bg);
+    color: var(--tn-ink);
+    font-size: 0.95rem;
+    cursor: pointer;
 }
 
 .student-stats-footer {

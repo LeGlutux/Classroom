@@ -100,21 +100,21 @@ const SettingsMenu = () => {
             <div className="settings-group-label">Classes et élèves</div>
             <div className="settings-group">
                 <SettingsRow
-                    to="/create/classe"
-                    icon={<IconUsers />}
-                    title="Créer une classe"
-                    subtitle="Ajouter une classe à votre année"
-                />
-                <SettingsRow
                     to="/create/pronote"
                     icon={<IconUpload />}
                     title="Importer depuis Pronote"
                     subtitle="À partir d’un export CSV"
                 />
                 <SettingsRow
+                    to="/create/classe"
+                    icon={<IconUsers />}
+                    title="Créer une classe manuellement"
+                    subtitle="Une classe à la fois"
+                />
+                <SettingsRow
                     to="/create/eleves"
                     icon={<IconUser />}
-                    title="Ajouter des élèves"
+                    title="Ajouter des élèves manuellement"
                     subtitle="Un élève à la fois, dans une classe"
                 />
                 <SettingsRow
@@ -264,7 +264,7 @@ const SettingsClasse = () => {
     }
 
     return (
-        <SettingsLayout title="Créer une classe" backTo="/create">
+        <SettingsLayout title="Créer une classe manuellement" backTo="/create">
             <ConfirmModal
                 confirm={pendingClass !== null}
                 setConfirm={(value) => {
@@ -365,7 +365,7 @@ const SettingsEleves = () => {
     if (currentUser === null) return <div />
 
     return (
-        <SettingsLayout title="Ajouter des élèves" backTo="/create">
+        <SettingsLayout title="Ajouter des élèves manuellement" backTo="/create">
             <div className="settings-panel">
                 <CreateStudent groups={groups} currentUserId={currentUser.uid} />
             </div>
