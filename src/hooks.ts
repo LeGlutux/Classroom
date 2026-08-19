@@ -33,7 +33,7 @@ export const usePostIts = (currentUserId: string) => {
             setLoading(true)
             const data = await fetchPostIts(currentUserId)
             if (isMountedRef.current) {
-                setPostIts(data)
+                setPostIts(Array.isArray(data) ? data : [])
                 setLoading(false)
             }
         }
@@ -49,12 +49,12 @@ export const usePostIts = (currentUserId: string) => {
         setLoading(true)
         const data = await fetchPostIts(currentUserId)
         if (isMountedRef.current) {
-            setPostIts(data)
+            setPostIts(Array.isArray(data) ? data : [])
             setLoading(false)
         }
     }
 
-    return { postIts, loading, refreshPostIt }
+    return { postIts, setPostIts, loading, refreshPostIt }
 }
 
 export const useGroups = (currentUserId: string) => {

@@ -38,7 +38,7 @@ export default () => {
     if (currentUser === null) return <div />
     const { user, refreshUser } = useUser(currentUser.uid)
     const { students, loading: studentsLoading, filterStudents } = useStudents(currentUser.uid)
-    const { postIts } = usePostIts(currentUser.uid)
+    const { postIts, setPostIts } = usePostIts(currentUser.uid)
     const postIt = (group: string) => {
         if (postIts.find((item) => item.classe === group) === undefined)
             return false
@@ -346,6 +346,7 @@ export default () => {
                             currentClasse={postItClasse}
                             setDisplay={setDisplayPostIt}
                             postIts={postIts}
+                            onSave={setPostIts}
                             index={index}
                             key={index}
                         />

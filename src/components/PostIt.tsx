@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react'
 import Firebase from '../firebase'
-import useOnClickOutside from '../hooks'
 import { IconNote } from './Icons'
 
 interface PostItProps {
@@ -10,6 +9,7 @@ interface PostItProps {
     currentClasse: string
     setDisplay: React.Dispatch<React.SetStateAction<boolean>>
     postIts: { classe: string; content: string }[]
+    onSave: (postIts: { classe: string; content: string }[]) => void
     index: number
 }
 
@@ -23,35 +23,35 @@ export default (props: PostItProps) => {
     const db = Firebase.firestore()
     const [confirmErase, setConfirmErase] = useState(false)
     const [textInputValue, setTextInputValue] = useState(props.content)
+    const textRef = useRef(textInputValue)
+    textRef.current = textInputValue
 
     const handleErase = () => {
         setTextInputValue('')
     }
 
-    const handleSave = () => {
+    const handleClose = () => {
         if (props.classe !== 'tous') {
+            const content = textRef.current
             const newPostIts = props.postIts.slice()
             newPostIts[props.index] = {
                 classe: props.classe,
-                content: textInputValue,
+                content,
             }
+            props.onSave(newPostIts)
             db.collection('users')
                 .doc(props.currentUserId)
                 .update({ postIt: newPostIts })
         }
-    }
-
-    const handleClose = () => {
-        handleSave()
         props.setDisplay(false)
     }
 
-    const ref = useRef(null)
-    useOnClickOutside(ref, handleClose)
-
     return (
-        <div className="modal-overlay postit-overlay">
-            <div ref={ref} className="postit-card">
+        <div className="modal-overlay postit-overlay" onClick={handleClose}>
+            <div
+                className="postit-card"
+                onClick={(event) => event.stopPropagation()}
+            >
                 <div className="postit-title">{props.classe}</div>
                 <textarea
                     value={textInputValue}
