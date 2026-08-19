@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Firebase from '../firebase'
 import useOnClickOutside from '../hooks'
-import check from '../images/check.png'
-import pen from '../images/edit.png'
+import { IconCheck, IconPencil } from './Icons'
 
 interface Props {
     currentUserId: string
@@ -68,7 +67,7 @@ export default (props: Props) => {
                     className="student-note-btn"
                     onClick={() => handleEdition()}
                 >
-                    <img src={pen} alt="" />
+                    <IconPencil />
                     <span>{comment || 'Ajouter une note'}</span>
                 </button>
             )}
@@ -102,7 +101,7 @@ export default (props: Props) => {
                         placeholder={comment || 'Note'}
                     />
                     <button className="header-icon-btn" type="submit">
-                        <img src={check} alt="Valider" />
+                        <IconCheck />
                     </button>
                 </form>
             )}

@@ -44,26 +44,26 @@ export default () => {
                         <div className="flex items-center justify-center w-2/12 text-lg font-studentName font-semibold text-gray-700 border-r-2 border-gray-200 bg-gray-50 py-4 px-2 box-border">
                             Classe
                         </div>
-                        <div className="flex justify-center items-center w-14 flex-shrink-0 text-xs font-studentName font-semibold text-vertical-rotated border-r-2 border-gray-200 bg-orange-50 text-orange-700 py-3 box-border" style={{ minWidth: '54px', width: '54px' }}>
+                        <div className="flex justify-center items-center w-14 flex-shrink-0 text-xs font-studentName font-semibold text-vertical-rotated border-r-2 border-gray-200 bg-gray-50 text-gray-700 py-3 box-border" style={{ minWidth: '54px', width: '54px' }}>
                             {currentList.items[0]}
                         </div>
                         {currentList.itemN > 1 && (
-                            <div className="flex justify-center items-center w-14 flex-shrink-0 text-xs font-studentName font-semibold text-vertical-rotated border-r-2 border-gray-200 bg-orange-50 text-orange-700 py-3 box-border" style={{ minWidth: '54px', width: '54px' }}>
+                            <div className="flex justify-center items-center w-14 flex-shrink-0 text-xs font-studentName font-semibold text-vertical-rotated border-r-2 border-gray-200 bg-gray-50 text-gray-700 py-3 box-border" style={{ minWidth: '54px', width: '54px' }}>
                                 {currentList.items[1]}
                             </div>
                         )}
                         {currentList.itemN > 2 && (
-                            <div className="flex justify-center items-center w-14 flex-shrink-0 text-xs font-studentName font-semibold text-vertical-rotated border-r-2 border-gray-200 bg-orange-50 text-orange-700 py-3 box-border" style={{ minWidth: '54px', width: '54px' }}>
+                            <div className="flex justify-center items-center w-14 flex-shrink-0 text-xs font-studentName font-semibold text-vertical-rotated border-r-2 border-gray-200 bg-gray-50 text-gray-700 py-3 box-border" style={{ minWidth: '54px', width: '54px' }}>
                                 {currentList.items[2]}
                             </div>
                         )}
                         {currentList.itemN > 3 && (
-                            <div className="flex justify-center items-center w-14 flex-shrink-0 text-xs font-studentName font-semibold text-vertical-rotated border-r-2 border-gray-200 bg-orange-50 text-orange-700 py-3 box-border" style={{ minWidth: '54px', width: '54px' }}>
+                            <div className="flex justify-center items-center w-14 flex-shrink-0 text-xs font-studentName font-semibold text-vertical-rotated border-r-2 border-gray-200 bg-gray-50 text-gray-700 py-3 box-border" style={{ minWidth: '54px', width: '54px' }}>
                                 {currentList.items[3]}
                             </div>
                         )}
                         {currentList.itemN > 4 && (
-                            <div className="flex justify-center items-center w-14 flex-shrink-0 text-xs font-studentName font-semibold text-vertical-rotated border-r-2 border-gray-200 bg-orange-50 text-orange-700 py-3 box-border" style={{ minWidth: '54px', width: '54px' }}>
+                            <div className="flex justify-center items-center w-14 flex-shrink-0 text-xs font-studentName font-semibold text-vertical-rotated border-r-2 border-gray-200 bg-gray-50 text-gray-700 py-3 box-border" style={{ minWidth: '54px', width: '54px' }}>
                                 {currentList.items[4]}
                             </div>
                         )}

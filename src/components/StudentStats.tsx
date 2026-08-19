@@ -208,7 +208,7 @@ const View = ({
                             Annuler
                         </button>
                         <button
-                            className="btn-secondary"
+                            className="btn-primary"
                             onClick={() => {
                                 confirmAction()
                                 setEditNotes(false)
@@ -277,7 +277,7 @@ const View = ({
                         placeholder={student.classes}
                     />
                     <button
-                        className="btn-secondary"
+                        className="btn-primary"
                         onClick={() => {
                             handleEdition()
                             setEditing(false)

@@ -2,11 +2,10 @@ import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Redirect, useHistory } from 'react-router-dom'
 import Firebase from '../firebase'
 import { AuthContext } from '../Auth'
-import lock from '../images/lock.png'
 import { Link } from 'react-router-dom'
 import lucienEtMonstre from '../images/lucienEtMonstre.png'
-import mail from '../images/mail.png'
 import LoadingScreen from './LoadingScreen'
+import { IconLock, IconMail } from './Icons'
 
 const Login = () => {
     const history = useHistory()
@@ -59,11 +58,11 @@ const Login = () => {
             <div className="card auth-card">
                 <form className="auth-form" onSubmit={handleLogin} action="">
                     <label className="field">
-                        <img src={mail} alt="" />
+                        <IconMail />
                         <input name="email" type="email" placeholder="Email" />
                     </label>
                     <label className="field">
-                        <img src={lock} alt="" />
+                        <IconLock />
                         <input
                             name="password"
                             type="password"

@@ -1,5 +1,4 @@
 import React from 'react'
-import stickyNoteRed from '../images/stickyNoteRed2.png'
 
 interface HomeClassListFilterProps {
     groups: string[]
@@ -35,12 +34,10 @@ export default ({
                         >
                             {group}
                             <span
-                                className={`badge h-10 w-10 ${
-                                    display(group) ? 'visible' : 'invisible'
+                                className={`note-dot ${
+                                    display(group) ? '' : 'invisible'
                                 }`}
-                            >
-                                <img className="h-8 w-8" src={stickyNoteRed} alt="" />
-                            </span>
+                            />
                         </button>
                     )
                 })}

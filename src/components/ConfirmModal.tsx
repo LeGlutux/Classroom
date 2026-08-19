@@ -47,7 +47,7 @@ export default ({
                         Annuler
                     </button>
                     <button
-                        className="btn-secondary"
+                        className="btn-primary"
                         type="button"
                         onClick={() => {
                             confirmAction()

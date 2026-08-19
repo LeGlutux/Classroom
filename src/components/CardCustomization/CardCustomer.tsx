@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import firebase from 'firebase/app'
-import add from '../../images/add.png'
-import delete_cross from '../../images/delete.png'
-import up from '../../images/up.png'
-import down from '../../images/down.png'
 import { handleIcon, maxValue } from '../../functions'
 import { useIcons } from '../../hooks'
+import {
+    IconChevronDown,
+    IconChevronUp,
+    IconMinus,
+    IconPlus,
+} from '../Icons'
 
 interface CardCustomerProps {
     userId: string
@@ -136,7 +138,7 @@ export default (props: CardCustomerProps) => {
                                     onClick={() => handleChangeIcon(index, 1)}
                                     aria-label="Icône suivante"
                                 >
-                                    <img src={up} alt="" />
+                                    <IconChevronUp />
                                 </button>
                                 <div className="cross-stat" style={{ cursor: 'default' }}>
                                     <img src={iconsDisplay[index]} alt="" />
@@ -147,7 +149,7 @@ export default (props: CardCustomerProps) => {
                                     onClick={() => handleChangeIcon(index, -1)}
                                     aria-label="Icône précédente"
                                 >
-                                    <img src={down} alt="" />
+                                    <IconChevronDown />
                                 </button>
                             </div>
                         )
@@ -163,7 +165,7 @@ export default (props: CardCustomerProps) => {
                     onClick={() => handleChangeIconsNumber(-1)}
                     aria-label="Retirer une icône"
                 >
-                    <img className="h-8 w-8" src={delete_cross} alt="" />
+                    <IconMinus />
                 </button>
                 <button
                     type="button"
@@ -173,7 +175,7 @@ export default (props: CardCustomerProps) => {
                     onClick={() => handleChangeIconsNumber(1)}
                     aria-label="Ajouter une icône"
                 >
-                    <img className="h-8 w-8" src={add} alt="" />
+                    <IconPlus />
                 </button>
             </div>
             <div

@@ -15,12 +15,6 @@ import { AuthContext } from '../Auth'
 import Student from '../components/Student'
 import 'firebase/firestore'
 import MagicStick from './MagicStick'
-import magicStick from '../images/magicStick.png'
-import stickyNoteRed from '../images/stickyNoteRed2.png'
-import brain from '../images/brain.png'
-import stickyNote from '../images/stickyNote.png'
-import burgerMenu from '../images/burgerMenu.png'
-import loader_image from '../images/loader.gif'
 import Firebase from '../firebase'
 import { Link } from 'react-router-dom'
 import Updater from './Updater'
@@ -29,6 +23,7 @@ import PostIt from './PostIt'
 import { StudentInterface } from '../interfaces/Student'
 import PageShell from './PageShell'
 import LoadingScreen from './LoadingScreen'
+import { IconBrain, IconMenu, IconNote, IconShuffle } from './Icons'
 
 export default () => {
     const db = Firebase.firestore()
@@ -299,9 +294,9 @@ export default () => {
                 classes={groups}
             />
             {!displayed && displayedGroup !== 'tous' && (
-                <div className="modal-overlay" style={{ background: 'rgba(243, 238, 228, 0.92)' }}>
+                <div className="modal-overlay" style={{ background: 'rgba(244, 244, 245, 0.92)' }}>
                     <div className="empty-state">
-                        <img className="loader-mascot" src={loader_image} alt="" />
+                        <div className="loader" />
                         <p className="empty-state-title">Chargement des données</p>
                     </div>
                 </div>
@@ -315,12 +310,10 @@ export default () => {
                     <h1 className="page-title">{title}</h1>
                 </div>
                 <div className="page-header-side page-header-side-right">
-                    <img
-                        alt=""
-                        className={`h-7 w-7 ${
-                            postIt(displayedGroup) ? 'visible' : 'invisible'
+                    <span
+                        className={`note-dot ${
+                            postIt(displayedGroup) ? '' : 'invisible'
                         }`}
-                        src={stickyNoteRed}
                     />
                 </div>
             </header>
@@ -418,15 +411,11 @@ export default () => {
                         setBurgerMenuFirstClicked(true)
                         filterStudents(displayedGroup)
                     }}
-                    className={`flex flex-col w-16 h-16 xl:w-20 xl:h-20 fab-btn rounded-full bottom-right-custom2 items-center justify-center ${
+                    className={`fab-btn bottom-right-custom2 ${
                         menuOpened ? 'fade-out' : 'fade-in'
-                    } md:w-20 md:h-20}`}
+                    }`}
                 >
-                    <img
-                        className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 xl:w-12 xl:h-12"
-                        src={burgerMenu}
-                        alt=""
-                    />
+                    <IconMenu />
                 </button>
             )}
             <div ref={ref}>
@@ -437,19 +426,16 @@ export default () => {
                         setMenuOpened(!menuOpened)
                         setMagicStickStudentsList(hardStudents)
                     }}
-                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 fab-btn rounded-full bottom-right-custom flex items-center justify-center ${
+                    className={`fab-btn bottom-right-custom ${
                         burgerMenuFirstClicked
                             ? menuOpened
                                 ? 'entering-r'
                                 : 'get-out-r'
                             : 'invisible'
                     }`}
+                    aria-label="élève aléatoire"
                 >
-                    <img
-                        className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 xl:w-12 xl:h-12 pb-1"
-                        src={magicStick}
-                        alt="élève aléatoire"
-                    />
+                    <IconShuffle />
                 </button>
                 <button
                     onClick={() => {
@@ -459,38 +445,32 @@ export default () => {
                         setMagicStickStudentsList(notYetSelectedStudents)
                         setTimeout(() => setDisplayRandomStudent(true), 200)
                     }}
-                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 fab-btn rounded-full bottom-right-custom2 flex items-center justify-center ${
+                    className={`fab-btn bottom-right-custom2 ${
                         burgerMenuFirstClicked
                             ? menuOpened
                                 ? 'entering-r'
                                 : 'get-out-r'
                             : 'invisible'
                     }`}
+                    aria-label="élève aléatoire avec mémoire"
                 >
-                    <img
-                        className="w-10 h-10 md:w-12 md:h-12 lg:w-16 lg:h-16 xl:w-16 xl:h-16"
-                        src={brain}
-                        alt="élève aléatoire avec mémoire"
-                    />
+                    <IconBrain />
                 </button>
                 <button
                     onClick={() => {
                         setMenuOpened(!menuOpened)
                         setDisplayPostIt(true)
                     }}
-                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 fab-btn rounded-full bottom-right-custom3 flex items-center justify-center ${
+                    className={`fab-btn bottom-right-custom3 ${
                         burgerMenuFirstClicked
                             ? menuOpened
                                 ? 'entering-r'
                                 : 'get-out-r'
                             : 'invisible'
                     }`}
+                    aria-label="pense-bête"
                 >
-                    <img
-                        className="w-10 h-10 md:w-12 md:h-12 lg:w-16 lg:h-16 xl:w-16 xl:h-16"
-                        src={stickyNote}
-                        alt="pense-bête"
-                    />
+                    <IconNote />
                 </button>
             </div>
 

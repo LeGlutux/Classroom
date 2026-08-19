@@ -1,5 +1,4 @@
 import React from 'react'
-import loader_image from '../images/loader.gif'
 import PageShell from './PageShell'
 
 interface LoadingScreenProps {
@@ -13,7 +12,7 @@ interface LoadingScreenProps {
 export default (props: LoadingScreenProps) => {
     const body = (
         <div className="empty-state">
-            <img className="loader-mascot" src={loader_image} alt="" />
+            <div className="loader" />
             <p className="empty-state-title">
                 {props.message || 'Chargement des données'}
             </p>

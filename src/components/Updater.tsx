@@ -51,7 +51,7 @@ export default (props: UpdaterProps) => {
                 </div>
                 <div className="modal-actions">
                     <button
-                        className="btn-secondary"
+                        className="btn-primary"
                         type="button"
                         onClick={() => {
                             onConfirmUpdate()

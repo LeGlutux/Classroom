@@ -1,9 +1,8 @@
 import React, { useState, useContext, useRef, useEffect } from 'react'
-import group from '../../images/group.png'
 import Firebase from '../../firebase'
 import firebase from 'firebase/app'
 import { AuthContext } from '../../Auth'
-import ok from '../../images/ok.png'
+import { IconCheck, IconUsers } from '../Icons'
 
 interface Props {
     onAddGroup: () => void
@@ -68,7 +67,7 @@ export default (props: Props) => {
                             Ajoutez vos classes
                         </div>
                         <div className="field">
-                            <img src={group} alt="" />
+                            <IconUsers />
                             <input
                                 ref={inputRef}
                                 value={inputValue}
@@ -97,11 +96,12 @@ export default (props: Props) => {
                         </button>
 
                         <div
-                            className={`absolute sm:ok-position1 w-10 h-10 ${
+                            className={`absolute sm:ok-position1 ${
                                 sent ? 'fade-out' : 'invisible'
                             }`}
+                            style={{ color: 'var(--tn-ink)' }}
                         >
-                            <img src={ok} alt="ok" />
+                            <IconCheck />
                         </div>
                     </div>
                 </div>

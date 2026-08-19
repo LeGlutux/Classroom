@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import info from '../images/info.png'
 import Firebase from '../firebase'
 import firebase from 'firebase/app'
 import { Link } from 'react-router-dom'
-import brain from '../images/brain.png'
 import StudentComment from './StudentComment'
 import { useCross } from '../hooks'
 import { StudentInterface } from '../interfaces/Student'
+import { IconBrain, IconInfo } from './Icons'
 
 interface StudentProps {
     displayedStudents: StudentInterface[]
@@ -190,7 +189,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                         onClick={handleForget}
                         aria-label="Oublier l'élève"
                     >
-                        <img src={brain} alt="" />
+                        <IconBrain />
                     </button>
                     <button
                         type="button"
@@ -215,7 +214,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                         to={'/student/'.concat(props.id)}
                         aria-label="Fiche élève"
                     >
-                        <img src={info} alt="" />
+                        <IconInfo />
                     </Link>
                 </div>
                 <div

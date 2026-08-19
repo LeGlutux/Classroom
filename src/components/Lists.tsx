@@ -1,11 +1,11 @@
 import React, { useContext, useState } from 'react'
 import { useLists } from '../hooks'
 import { AuthContext } from '../Auth'
-import add from '../images/add.png'
 import { Link } from 'react-router-dom'
 import ListPreview from './ListPreview'
 import PageShell from './PageShell'
 import LoadingScreen from './LoadingScreen'
+import { IconPlus } from './Icons'
 
 export default () => {
     const handleHomeClick = () => {
@@ -68,8 +68,8 @@ export default () => {
                     />
                 )
             })}
-            <Link className="fab-btn rounded-full bottom-right-custom2 w-16 h-16 flex items-center justify-center" to="/createlist">
-                <img className="h-6 w-6" src={add} alt="Créer une liste" />
+            <Link className="fab-btn bottom-right-custom2" to="/createlist" aria-label="Créer une liste">
+                <IconPlus />
             </Link>
         </PageShell>
     )

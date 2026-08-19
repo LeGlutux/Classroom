@@ -14,12 +14,12 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { AuthContext } from '../Auth'
 import { usePeriodes, useStudents } from '../hooks'
 import PeriodeFilter from './PeriodeFilter'
-import calendar from '../images/calendar.png'
 import ConfirmModal from './ConfirmModal'
 import { useHistory } from 'react-router-dom'
 import { cards } from '../classes'
 import CardCustomer from './CardCustomization/CardCustomer'
 import FileUploader from './FileUploader'
+import { IconCalendar } from './Icons'
 
 export default () => {
     const [confirm, setConfirm] = useState(false)
@@ -292,12 +292,8 @@ export default () => {
                                 </div>
 
                                 <div className="flex flex-row items-center mb-5">
-                                    <img
-                                        className="w-8 h-8"
-                                        src={calendar}
-                                        alt=""
-                                    />
-                                    <div className="text-gray-800 font-studentName text-lg ml-2">
+                                    <IconCalendar />
+                                    <div className="text-sm ml-2" style={{ color: 'var(--tn-muted)' }}>
                                         En cours : Période {runningPeriode}
                                     </div>
                                 </div>

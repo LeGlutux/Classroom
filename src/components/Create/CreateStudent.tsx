@@ -1,9 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react'
-import solo from '../../images/solo.png'
 import Firebase from '../../firebase'
 import NewStudentGroups from '../NewStudentGroups'
-import ok from '../../images/ok.png'
 import { useLists } from '../../hooks'
+import { IconCheck, IconUser } from '../Icons'
 
 interface Props {
     groups: string[]
@@ -30,11 +29,12 @@ export default (props: Props) => {
     return (
         <div className="flex flex-col">
             <div
-                className={`absolute sm:ok-position2 w-10 h-10 ${
+                className={`absolute sm:ok-position2 ${
                     sent ? 'fade-out' : 'invisible'
                 }`}
+                style={{ color: 'var(--tn-ink)' }}
             >
-                <img src={ok} alt="ok" />
+                <IconCheck />
             </div>
             <form
                 className="flex flex-col w-full h-full bg-transparent mt-5"
@@ -107,7 +107,7 @@ export default (props: Props) => {
                             Ajoutez vos élèves
                         </div>
                         <div className="field">
-                            <img src={solo} alt="" />
+                            <IconUser />
                             <input
                                 ref={firstInputRef}
                                 value={surnameInputValue}

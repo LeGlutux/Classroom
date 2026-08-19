@@ -1,11 +1,9 @@
 import React, { useCallback } from 'react'
 import { useHistory } from 'react-router-dom'
 import Firebase from '../firebase'
-import femaleUser from '../images/femaleUser.png'
-import lock from '../images/lock.png'
 import { Link } from 'react-router-dom'
 import lucienPlongeon from '../images/lucienPlongeon.png'
-import mail from '../images/mail.png'
+import { IconLock, IconMail, IconUser } from './Icons'
 
 const SignUp = () => {
     const history = useHistory()
@@ -55,7 +53,7 @@ const SignUp = () => {
             <div className="card auth-card">
                 <form className="auth-form" onSubmit={handleSignUp} action="">
                     <label className="field">
-                        <img src={femaleUser} alt="" />
+                        <IconUser />
                         <input
                             name="name"
                             type="text"
@@ -63,11 +61,11 @@ const SignUp = () => {
                         />
                     </label>
                     <label className="field">
-                        <img src={mail} alt="" />
+                        <IconMail />
                         <input name="email" type="email" placeholder="Email" />
                     </label>
                     <label className="field">
-                        <img src={lock} alt="" />
+                        <IconLock />
                         <input
                             name="password"
                             type="password"

@@ -2,10 +2,10 @@ module.exports = {
     theme: {
         extend: {
             fontFamily: {
-                studentName: ['Nunito', 'Open Sans', 'sans-serif'],
-                title: ['Fraunces', 'Georgia', 'serif'],
-                title2: ['Fraunces', 'Georgia', 'serif'],
-                sans: ['Nunito', 'system-ui', 'sans-serif'],
+                studentName: ['Inter', 'system-ui', 'sans-serif'],
+                title: ['Inter', 'system-ui', 'sans-serif'],
+                title2: ['Inter', 'system-ui', 'sans-serif'],
+                sans: ['Inter', 'system-ui', 'sans-serif'],
             },
         },
     },

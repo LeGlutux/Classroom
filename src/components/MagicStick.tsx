@@ -86,7 +86,7 @@ export default (props: MagicStickProps) => {
                             Oublier
                         </button>
                         <button
-                            className="btn-secondary"
+                            className="btn-primary"
                             type="button"
                             onClick={() => {
                                 handleRememberStudent(randomStudent.id)
