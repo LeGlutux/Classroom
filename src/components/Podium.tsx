@@ -4,7 +4,8 @@ import { useGroups, usePeriodes, useStudents, useCrosses } from '../hooks'
 import { AuthContext } from '../Auth'
 import SettingsLayout from './SettingsLayout'
 import {
-    crossInCurrentPeriod,
+    PERIOD_YEAR,
+    crossInSelectedPeriod,
     isPositiveCross,
     studentInClass,
 } from '../functions'
@@ -35,6 +36,9 @@ export default () => {
     const { crosses } = useCrosses(uid, allIds)
     const { periodes, runningPeriode } = usePeriodes(uid)
     const [maxNegatives, setMaxNegatives] = useState(readMaxNegatives)
+    const [periodChoice, setPeriodChoice] = useState<number | null>(null)
+    const selectedPeriod =
+        periodChoice === null ? runningPeriode : periodChoice
 
     const rankedByClass = useMemo(() => {
         const crossesByStudent: {
@@ -50,7 +54,7 @@ export default () => {
                 .map((student) => {
                     const docs = crossesByStudent[student.id] || []
                     const inPeriod = docs.filter((doc) =>
-                        crossInCurrentPeriod(doc, periodes, runningPeriode)
+                        crossInSelectedPeriod(doc, periodes, selectedPeriod)
                     )
                     let negatives = 0
                     let positives = 0
@@ -78,7 +82,7 @@ export default () => {
                 })
             return { group, ranked }
         })
-    }, [groups, students, crosses, periodes, runningPeriode, maxNegatives])
+    }, [groups, students, crosses, periodes, selectedPeriod, maxNegatives])
 
     if (currentUser === null) return <div />
 
@@ -105,6 +109,30 @@ export default () => {
                 </p>
             ) : (
                 <React.Fragment>
+                    <label className="podium-filter">
+                        <span className="podium-filter-label">Période</span>
+                        <select
+                            className="modal-select podium-period-select"
+                            value={selectedPeriod}
+                            onChange={(event) => {
+                                setPeriodChoice(Number(event.target.value))
+                            }}
+                        >
+                            {(periodes || []).map((_, index) => {
+                                const n = index + 1
+                                return (
+                                    <option key={n} value={n}>
+                                        {'Période ' +
+                                            n +
+                                            (n === runningPeriode
+                                                ? ' (en cours)'
+                                                : '')}
+                                    </option>
+                                )
+                            })}
+                            <option value={PERIOD_YEAR}>Année</option>
+                        </select>
+                    </label>
                     <label className="podium-filter">
                         <span className="podium-filter-label">
                             Maximum de croix négatives
@@ -133,8 +161,15 @@ export default () => {
                         </select>
                     </label>
                     <p className="settings-panel-note">
-                        Période en cours. Le rouge compte les croix négatives,
-                        le bleu les positives.
+                        {selectedPeriod === PERIOD_YEAR
+                            ? 'Année entière.'
+                            : 'Période ' +
+                              selectedPeriod +
+                              (selectedPeriod === runningPeriode
+                                  ? ' en cours.'
+                                  : '.')}{' '}
+                        Le rouge compte les croix négatives, le bleu les
+                        positives.
                     </p>
                     {rankedByClass.map(({ group, ranked }) => (
                     <div key={group} className="podium-class">

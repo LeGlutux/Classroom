@@ -164,6 +164,8 @@ export const formatDateTime = (value: any) => {
     )
 }
 
+export const PERIOD_YEAR = 0
+
 export const crossInCurrentPeriod = (
     element: { time?: any },
     periodes: Date[],
@@ -185,4 +187,15 @@ export const crossInCurrentPeriod = (
         start instanceof Date ? start.getTime() : new Date(start).getTime()
     const endTime = end instanceof Date ? end.getTime() : new Date(end).getTime()
     return t > startTime && t < endTime
+}
+
+export const crossInSelectedPeriod = (
+    element: { time?: any },
+    periodes: Date[],
+    selectedPeriod: number
+) => {
+    if (selectedPeriod === PERIOD_YEAR) {
+        return !!crossTimeValue(element)
+    }
+    return crossInCurrentPeriod(element, periodes, selectedPeriod)
 }

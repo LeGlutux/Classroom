@@ -574,6 +574,10 @@ body,
     min-width: 4.25rem;
 }
 
+.podium-period-select {
+    min-width: 9.5rem;
+}
+
 .list-status,
 .list-swatch {
     display: flex;
