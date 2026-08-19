@@ -156,8 +156,8 @@ const SettingsMenu = () => {
                 <SettingsRow
                     to="/create/signaler"
                     icon={<IconFlag />}
-                    title="Signaler un problème"
-                    subtitle="Un message suffit, Léo le reçoit"
+                    title="Signaler un problème, faire une suggestion"
+                    subtitle="Un bug, une idée… Léo le reçoit"
                 />
             </div>
 

@@ -17,7 +17,7 @@ export default () => {
     const handleSend = async () => {
         const text = message.trim()
         if (!text) {
-            alert('Écrivez un court message pour décrire le problème.')
+            alert('Écrivez un court message pour décrire le problème ou la suggestion.')
             return
         }
         setSending(true)
@@ -48,13 +48,13 @@ export default () => {
 
     return (
         <SettingsLayout
-            title="Signaler un problème"
+            title="Signaler un problème, faire une suggestion"
             backTo="/create"
             toast={sent ? 'Merci, le message a bien été envoyé.' : undefined}
         >
             <div className="settings-panel">
                 <p className="settings-panel-note" style={{ textAlign: 'left' }}>
-                    Décrivez ce qui ne va pas. Le message arrive directement
+                    Un bug, un manque, une idée : le message arrive directement
                     chez Léo, avec votre email de compte.
                 </p>
                 <label className="modal-field">
