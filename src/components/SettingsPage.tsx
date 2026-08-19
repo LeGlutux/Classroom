@@ -161,13 +161,142 @@ const SettingsMenu = () => {
 const SettingsClasse = () => {
     const { currentUser } = useContext(AuthContext)
     const uid = currentUser ? currentUser.uid : ''
-    const { refreshGroups } = useGroups(uid)
+    const { groups, loading, refreshGroups } = useGroups(uid)
+    const { students } = useStudents(uid)
+    const { lists } = useLists(uid)
+    const [pendingClass, setPendingClass] = useState<string | null>(null)
     if (currentUser === null) return <div />
+
+    const studentInClass = (student: { classes: string | string[] }, group: string) => {
+        const classes = student.classes
+        if (Array.isArray(classes)) return classes.includes(group)
+        return classes === group
+    }
+
+    const studentCount = (group: string) =>
+        students.filter((student) => studentInClass(student, group)).length
+
+    const handleDeleteClass = async () => {
+        if (!pendingClass) return
+        const classe = pendingClass
+        const db = firebase.firestore()
+        const classStudents = students.filter((student) =>
+            studentInClass(student, classe)
+        )
+
+        for (const student of classStudents) {
+            const studentRef = db
+                .collection('users')
+                .doc(currentUser.uid)
+                .collection('eleves')
+                .doc(student.id)
+            const [crossesSnap, listesSnap] = await Promise.all([
+                studentRef.collection('crosses').get(),
+                studentRef.collection('listes').get(),
+            ])
+            const batch = db.batch()
+            crossesSnap.forEach((doc) => batch.delete(doc.ref))
+            listesSnap.forEach((doc) => batch.delete(doc.ref))
+            batch.delete(studentRef)
+            await batch.commit()
+        }
+
+        const classLists = lists.filter((list) => {
+            const group = list.group
+            if (Array.isArray(group)) return group.includes(classe)
+            return group === classe
+        })
+        if (classLists.length > 0) {
+            const listBatch = db.batch()
+            classLists.forEach((list) => {
+                listBatch.delete(
+                    db
+                        .collection('users')
+                        .doc(currentUser.uid)
+                        .collection('lists')
+                        .doc(list.id)
+                )
+            })
+            await listBatch.commit()
+        }
+
+        const userRef = db.collection('users').doc(currentUser.uid)
+        const userSnap = await userRef.get()
+        const postIts = (userSnap.data()?.postIt || []).filter(
+            (item: { classe: string }) => item.classe !== classe
+        )
+        await userRef.update({
+            classes: firebase.firestore.FieldValue.arrayRemove(classe),
+            postIt: postIts,
+        })
+
+        if (localStorage.getItem('displayedGroup') === classe) {
+            localStorage.setItem('displayedGroup', 'tous')
+        }
+        refreshGroups()
+        setPendingClass(null)
+    }
 
     return (
         <SettingsLayout title="Créer une classe" backTo="/create">
+            <ConfirmModal
+                confirm={pendingClass !== null}
+                setConfirm={(value) => {
+                    const next =
+                        typeof value === 'function'
+                            ? value(pendingClass !== null)
+                            : value
+                    if (!next) setPendingClass(null)
+                }}
+                confirmAction={() => {
+                    handleDeleteClass()
+                }}
+                danger
+                textBox={`Supprimer la classe ${pendingClass || ''} ?`}
+                subTextBox="Tous les élèves de cette classe seront supprimés, avec leurs croix, notes et listes. Cette action est définitive."
+            />
             <div className="settings-panel">
                 <CreateGroups onAddGroup={refreshGroups} />
+            </div>
+            <div className="settings-group-label">Classes actuelles</div>
+            <div className="settings-group">
+                {loading && groups.length === 0 ? (
+                    <div className="settings-empty">Chargement…</div>
+                ) : groups.length === 0 ? (
+                    <div className="settings-empty">
+                        Aucune classe pour le moment.
+                    </div>
+                ) : (
+                    groups.map((group) => {
+                        const count = studentCount(group)
+                        return (
+                            <div
+                                className="settings-row settings-row-static"
+                                key={group}
+                            >
+                                <span className="settings-row-icon">
+                                    <IconUsers />
+                                </span>
+                                <span className="settings-row-body">
+                                    <span className="settings-row-title">
+                                        {group}
+                                    </span>
+                                    <span className="settings-row-sub">
+                                        {count} {count > 1 ? 'élèves' : 'élève'}
+                                    </span>
+                                </span>
+                                <button
+                                    type="button"
+                                    className="class-delete-btn"
+                                    aria-label={`Supprimer ${group}`}
+                                    onClick={() => setPendingClass(group)}
+                                >
+                                    <IconTrash />
+                                </button>
+                            </div>
+                        )
+                    })
+                )}
             </div>
         </SettingsLayout>
     )

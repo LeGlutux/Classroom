@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import info from '../images/info.png'
 import Firebase from '../firebase'
 import firebase from 'firebase/app'
@@ -27,6 +27,57 @@ interface StudentProps {
     periodes: Date[]
     runningPeriode: number
     icons: string[]
+}
+
+interface CrossButtonProps {
+    src: string
+    onAdd: () => void
+    onRemove: () => void
+}
+
+const CrossButton: React.FC<CrossButtonProps> = ({ src, onAdd, onRemove }) => {
+    const longPress = useRef(false)
+    const timer = useRef<number | null>(null)
+
+    const start = () => {
+        longPress.current = false
+        timer.current = window.setTimeout(() => {
+            longPress.current = true
+            onRemove()
+            if (typeof navigator !== 'undefined' && navigator.vibrate) {
+                navigator.vibrate(12)
+            }
+        }, 500)
+    }
+
+    const cancel = () => {
+        if (timer.current !== null) {
+            window.clearTimeout(timer.current)
+            timer.current = null
+        }
+    }
+
+    return (
+        <button
+            type="button"
+            className="w-7 h-7 lg:w-9 lg:h-9 xl:w-9 xl:h-9 rounded-full touch-manipulation tap-target-44 flex items-center justify-center student-cross-btn"
+            onPointerDown={start}
+            onPointerUp={cancel}
+            onPointerLeave={cancel}
+            onPointerCancel={cancel}
+            onContextMenu={(event) => event.preventDefault()}
+            onClick={(event) => {
+                if (longPress.current) {
+                    event.preventDefault()
+                    longPress.current = false
+                    return
+                }
+                onAdd()
+            }}
+        >
+            <img className="student-cross-icon" src={src} alt="" />
+        </button>
+    )
 }
 
 const StudentComponent: React.FC<StudentProps> = (props) => {
@@ -104,16 +155,17 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
     const handleAddCross = (crossType: string) => {
         if (props.runningPeriode === props.periodes.length) {
             const newDate = new Date()
+            const id = newCrossId(crossType)
             db.collection('users')
                 .doc(props.currentUser)
                 .collection('eleves')
                 .doc(props.id)
                 .collection('crosses')
-                .doc(newCrossId(crossType))
+                .doc(id)
                 .set({
                     type: crossType,
                     time: newDate,
-                    id: newCrossId(crossType),
+                    id,
                     student_id: props.id,
                     student_name: props.name,
                     student_surname: props.surname,
@@ -124,16 +176,47 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                 .collection('eleves')
                 .doc(props.id)
                 .update({
-                    crosses: firebase.firestore.FieldValue.arrayUnion(
-                        newCrossId(crossType)
-                    ),
+                    crosses: firebase.firestore.FieldValue.arrayUnion(id),
                 })
 
             const newCross = crosses.concat([
-                { type: crossType, id: newCrossId(crossType), time: newDate },
+                { type: crossType, id, time: newDate },
             ])
             setCrosses(newCross)
         }
+    }
+
+    const crossTime = (element: firebase.firestore.DocumentData) => {
+        if (!element || !element.time) return 0
+        return element.time.toDate
+            ? element.time.toDate().getTime()
+            : new Date(element.time).getTime()
+    }
+
+    const handleRemoveCross = (crossType: string) => {
+        if (props.runningPeriode !== props.periodes.length) return
+        const current = crossFilter(crossType, props.runningPeriode)
+        if (current.length === 0) return
+        const latest = current.reduce((best, element) =>
+            crossTime(element) >= crossTime(best) ? element : best
+        )
+        if (!latest || !latest.id) return
+
+        db.collection('users')
+            .doc(props.currentUser)
+            .collection('eleves')
+            .doc(props.id)
+            .collection('crosses')
+            .doc(latest.id)
+            .delete()
+        db.collection('users')
+            .doc(props.currentUser)
+            .collection('eleves')
+            .doc(props.id)
+            .update({
+                crosses: firebase.firestore.FieldValue.arrayRemove(latest.id),
+            })
+        setCrosses(crosses.filter((element) => element.id !== latest.id))
     }
 
     const shortName =
@@ -249,13 +332,11 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                                     : 'flex-col items-center'
                             }`}
                         >
-                            <button
-                                type="button"
-                                onClick={() => handleAddCross('behaviour')}
-                                className="w-7 h-7 lg:w-9 lg:h-9 xl:w-9 xl:h-9 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
-                            >
-                                <img className="student-cross-icon" src={props.icons[0]} alt="" />
-                            </button>
+                            <CrossButton
+                                src={props.icons[0]}
+                                onAdd={() => handleAddCross('behaviour')}
+                                onRemove={() => handleRemoveCross('behaviour')}
+                            />
                             <div className="student-cross-count">
                                 {
                                     crossFilter(
@@ -274,13 +355,11 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                                     : 'flex-col items-center'
                             }`}
                         >
-                            <button
-                                type="button"
-                                onClick={() => handleAddCross('homework')}
-                                className="w-7 h-7 lg:w-9 lg:h-9 xl:w-9 xl:h-9 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
-                            >
-                                <img className="student-cross-icon" src={props.icons[1]} alt="" />
-                            </button>
+                            <CrossButton
+                                src={props.icons[1]}
+                                onAdd={() => handleAddCross('homework')}
+                                onRemove={() => handleRemoveCross('homework')}
+                            />
                             <div className="student-cross-count">
                                 {
                                     crossFilter(
@@ -299,13 +378,11 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                                     : 'flex-col items-center'
                             }`}
                         >
-                            <button
-                                type="button"
-                                onClick={() => handleAddCross('supply')}
-                                className="w-7 h-7 lg:w-9 lg:h-9 xl:w-9 xl:h-9 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
-                            >
-                                <img className="student-cross-icon" src={props.icons[2]} alt="" />
-                            </button>
+                            <CrossButton
+                                src={props.icons[2]}
+                                onAdd={() => handleAddCross('supply')}
+                                onRemove={() => handleRemoveCross('supply')}
+                            />
                             <div className="student-cross-count">
                                 {
                                     crossFilter('supply', props.runningPeriode)
@@ -322,13 +399,11 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                                     : 'flex-col items-center'
                             }`}
                         >
-                            <button
-                                type="button"
-                                onClick={() => handleAddCross('observation')}
-                                className="w-7 h-7 lg:w-9 lg:h-9 xl:w-9 xl:h-9 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
-                            >
-                                <img className="student-cross-icon" src={props.icons[3]} alt="" />
-                            </button>
+                            <CrossButton
+                                src={props.icons[3]}
+                                onAdd={() => handleAddCross('observation')}
+                                onRemove={() => handleRemoveCross('observation')}
+                            />
                             <div className="student-cross-count">
                                 {
                                     crossFilter(
@@ -347,13 +422,11 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                                     : 'flex-col items-center'
                             }`}
                         >
-                            <button
-                                type="button"
-                                onClick={() => handleAddCross('calculator')}
-                                className="w-7 h-7 lg:w-9 lg:h-9 xl:w-9 xl:h-9 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
-                            >
-                                <img className="student-cross-icon" src={props.icons[4]} alt="" />
-                            </button>
+                            <CrossButton
+                                src={props.icons[4]}
+                                onAdd={() => handleAddCross('calculator')}
+                                onRemove={() => handleRemoveCross('calculator')}
+                            />
                             <div className="student-cross-count">
                                 {
                                     crossFilter(
@@ -372,13 +445,11 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                                     : 'flex-col items-center'
                             }`}
                         >
-                            <button
-                                type="button"
-                                onClick={() => handleAddCross('phone')}
-                                className="w-7 h-7 lg:w-9 lg:h-9 xl:w-9 xl:h-9 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
-                            >
-                                <img className="student-cross-icon" src={props.icons[5]} alt="" />
-                            </button>
+                            <CrossButton
+                                src={props.icons[5]}
+                                onAdd={() => handleAddCross('phone')}
+                                onRemove={() => handleRemoveCross('phone')}
+                            />
                             <div className="student-cross-count">
                                 {
                                     crossFilter('phone', props.runningPeriode)
