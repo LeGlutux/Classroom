@@ -479,8 +479,8 @@ body,
 }
 
 .student-cross-icon {
-    width: 1.4rem;
-    height: 1.4rem;
+    width: 1.65rem;
+    height: 1.65rem;
     object-fit: contain;
 }
 
@@ -547,6 +547,17 @@ body,
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    background: #fff;
+    border: 1px solid var(--tn-line);
+    border-radius: 10px;
+    box-shadow: none;
+    color: var(--tn-ink);
+}
+
+.fab {
+    background: #fff;
+    border: 1px solid var(--tn-line);
+    box-shadow: 0 8px 20px rgba(24, 24, 27, 0.08);
 }
 
 .home-class-list > *:nth-child(1) .home-class-card { animation-delay: 0.02s; }

@@ -436,7 +436,7 @@ export default () => {
                         setBurgerMenuFirstClicked(true)
                         filterStudents(displayedGroup)
                     }}
-                    className={`flex flex-col w-16 h-16 xl:w-20 xl:h-20 bg-gray-200 rounded-full bottom-right-custom2 shadow-custom items-center justify-center ${
+                    className={`flex flex-col w-16 h-16 xl:w-20 xl:h-20 fab rounded-full bottom-right-custom2 items-center justify-center ${
                         menuOpened ? 'fade-out' : 'fade-in'
                     } md:w-20 md:h-20}`}
                 >
@@ -455,7 +455,7 @@ export default () => {
                         setMagicStickStudentsList(notYetSelectedStudents)
                         setTimeout(() => setDisplayRandomStudent(true), 200)
                     }}
-                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 bg-gray-200 rounded-full bottom-right-custom2 shadow-custom flex items-center justify-center ${
+                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 fab rounded-full bottom-right-custom2 flex items-center justify-center ${
                         burgerMenuFirstClicked
                             ? menuOpened
                                 ? 'entering-r'
@@ -474,7 +474,7 @@ export default () => {
                         setMenuOpened(!menuOpened)
                         setDisplayPostIt(true)
                     }}
-                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 bg-gray-200 rounded-full bottom-right-custom shadow-custom flex items-center justify-center ${
+                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 fab rounded-full bottom-right-custom flex items-center justify-center ${
                         burgerMenuFirstClicked
                             ? menuOpened
                                 ? 'entering-r'

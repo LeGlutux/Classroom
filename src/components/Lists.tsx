@@ -51,7 +51,7 @@ export default () => {
                     </div>
                     <div>
                         <Link
-                            className="flex flex-col w-20 h-20 bg-gray-200 rounded-full shadow-custom items-center justify-center p-2"
+                            className="flex flex-col w-20 h-20 fab rounded-full items-center justify-center p-2"
                             to="/createlist"
                         >
                             <img src={add} alt="" />
@@ -89,7 +89,7 @@ export default () => {
             </div>
             <div className="h-screen" />
             <Link
-                className="flex flex-col w-16 h-16 bg-gray-200 rounded-full bottom-right-custom2 shadow-custom items-center justify-center"
+                className="flex flex-col w-16 h-16 fab rounded-full bottom-right-custom2 items-center justify-center"
                 to="/createlist"
             >
                 <img className="h-6 w-6" src={add} alt="" />

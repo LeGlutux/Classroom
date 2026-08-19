@@ -60,7 +60,7 @@ const CrossButton: React.FC<CrossButtonProps> = ({ src, onAdd, onRemove }) => {
     return (
         <button
             type="button"
-            className="w-7 h-7 lg:w-9 lg:h-9 xl:w-9 xl:h-9 rounded-full touch-manipulation tap-target-44 flex items-center justify-center student-cross-btn"
+            className="w-8 h-8 lg:w-10 lg:h-10 xl:w-10 xl:h-10 rounded-full touch-manipulation tap-target-44 flex items-center justify-center student-cross-btn"
             onPointerDown={start}
             onPointerUp={cancel}
             onPointerLeave={cancel}
