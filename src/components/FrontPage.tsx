@@ -350,10 +350,6 @@ export default () => {
                 />
             </div>
 
-            <div className="flex font-stundentName backdrop-blur bg-transparent rounded-full p-1 px-2 absolute place-self-center mt-12 items-end font-normal text-md">
-                {'P'.concat(runningPeriode.toString())}
-            </div>
-
             <MagicStick
                 toggleSelected={toggleSelected}
                 allStudents={hardStudents}
@@ -383,7 +379,7 @@ export default () => {
             })}
 
             {displayedGroup !== 'tous' && (
-                <div className="flex w-full h-full flex-col pt-18 pb-24 overflow-y-scroll student-grid md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start">
+                <div className="flex-1 min-h-0 flex w-full flex-col overflow-y-scroll student-grid md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start">
                     {students.map(
                             ({
                                 name,
@@ -536,7 +532,7 @@ export default () => {
                 </div>
             )}
 
-            <div className={`w-full h-12 nav-wrap sticky bottom-0`}>
+            <div className={`flex-shrink-0 w-full h-12 nav-wrap`}>
                 <NavBar activeMenu="home" onHomeClick={handleHomeClick} />
             </div>
         </div>

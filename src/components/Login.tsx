@@ -57,7 +57,7 @@ const Login = () => {
             )}
             <div className="bg-white h-screen w-full flex flex-col items-center">
                 <div className="flex flex-col w-full items-center">
-                    <div className="text-8xl xl:text-big font-title pt-2 xl:mt-10">
+                    <div className="text-4xl xl:text-5xl font-title font-semibold pt-6 xl:mt-10 tracking-tight">
                         Thòt Note
                     </div>
                     <div className="flex w-full flex-col items-center xl:flex-row">

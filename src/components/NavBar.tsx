@@ -1,18 +1,16 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import addPage from '../images/addPage.png'
-import onAddPage from '../images/onAddPage.png'
-
 import list from '../images/list.png'
-import onList from '../images/onList.png'
-
 import home from '../images/home.png'
-import onHome from '../images/onHome.png'
 
 interface NavBarProps {
     activeMenu: string
     onHomeClick: () => void
 }
+
+const navIconClass = (active: boolean) =>
+    `self-center${active ? '' : ' nav-icon-inactive'}`
 
 export default (props: NavBarProps) => {
     return (
@@ -20,10 +18,8 @@ export default (props: NavBarProps) => {
             <div className="rounded-full h-8 w-8 xl:h-10 xl:w-10 flex justify-center">
                 <Link to="/create">
                     <img
-                        className="self-center"
-                        src={
-                            props.activeMenu === 'addPage' ? onAddPage : addPage
-                        }
+                        className={navIconClass(props.activeMenu === 'addPage')}
+                        src={addPage}
                         alt=""
                     />
                 </Link>
@@ -34,8 +30,8 @@ export default (props: NavBarProps) => {
             >
                 <Link to="/">
                     <img
-                        className="self-center"
-                        src={props.activeMenu === 'home' ? onHome : home}
+                        className={navIconClass(props.activeMenu === 'home')}
+                        src={home}
                         alt=""
                     />
                 </Link>
@@ -43,8 +39,8 @@ export default (props: NavBarProps) => {
             <div className="rounded-full h-8 w-8 xl:h-10 xl:w-10 flex justify-center">
                 <Link to="/lists">
                     <img
-                        className="self-center"
-                        src={props.activeMenu === 'list' ? onList : list}
+                        className={navIconClass(props.activeMenu === 'list')}
+                        src={list}
                         alt=""
                     />
                 </Link>

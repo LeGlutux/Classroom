@@ -63,7 +63,7 @@ const SignUp = () => {
             >
                 <div className="flex flex-col w-full">
                     <div className="w-full flex items-center flex-col">
-                        <div className=" font-title text-6xl xl:text-big">
+                        <div className="font-title font-semibold text-4xl xl:text-5xl tracking-tight">
                             Thòt Note
                         </div>
 

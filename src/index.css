@@ -40,6 +40,11 @@ body,
     border-bottom: 0 !important;
     border-radius: 0 !important;
     box-shadow: none !important;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1.15rem !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
 }
 
 .nav-wrap {
@@ -74,11 +79,22 @@ body,
     height: 1.1rem;
 }
 
+.nav-icon-inactive {
+    filter: grayscale(1);
+    opacity: 0.42;
+}
+
+.student-cross-icon {
+    width: 1.4rem;
+    height: 1.4rem;
+    object-fit: contain;
+}
+
 .student-card {
     background: var(--tn-surface);
     border: 1px solid var(--tn-line);
     border-radius: 10px;
-    margin: 0.35rem 0.75rem;
+    margin: 0.25rem 0.75rem;
     overflow: hidden;
     padding: 0.7rem 0.8rem 0.45rem;
     animation: tn-rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -137,6 +153,11 @@ body,
 .home-class-list > *:nth-child(6) .home-class-card { animation-delay: 0.27s; }
 .home-class-list > *:nth-child(7) .home-class-card { animation-delay: 0.32s; }
 .home-class-list > *:nth-child(8) .home-class-card { animation-delay: 0.37s; }
+
+.student-grid {
+    padding-top: 0.2rem;
+    padding-bottom: 4.25rem;
+}
 
 .student-grid > *:nth-child(1) .student-card { animation-delay: 0.02s; }
 .student-grid > *:nth-child(2) .student-card { animation-delay: 0.06s; }

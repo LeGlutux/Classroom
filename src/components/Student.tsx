@@ -153,7 +153,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
 
     return (
         <div
-            className={`flex mt-1 flex-row w-full md:w-1/2 lg:w-1/2 xl:w-1/3 items-center ${
+            className={`flex flex-row w-full md:w-1/2 lg:w-1/2 xl:w-1/3 items-center ${
                 hidden ? 'hidden' : 'visible'
             } ${
                 props.currentUserId === '26kiVujCgjNpzCkYwugqkrt63Hx1'
@@ -252,9 +252,9 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                             <button
                                 type="button"
                                 onClick={() => handleAddCross('behaviour')}
-                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
+                                className="w-7 h-7 lg:w-9 lg:h-9 xl:w-9 xl:h-9 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
                             >
-                                <img className="" src={props.icons[0]} alt="" />
+                                <img className="student-cross-icon" src={props.icons[0]} alt="" />
                             </button>
                             <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
                                 {
@@ -277,9 +277,9 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                             <button
                                 type="button"
                                 onClick={() => handleAddCross('homework')}
-                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
+                                className="w-7 h-7 lg:w-9 lg:h-9 xl:w-9 xl:h-9 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
                             >
-                                <img className="" src={props.icons[1]} alt="" />
+                                <img className="student-cross-icon" src={props.icons[1]} alt="" />
                             </button>
                             <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
                                 {
@@ -302,9 +302,9 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                             <button
                                 type="button"
                                 onClick={() => handleAddCross('supply')}
-                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
+                                className="w-7 h-7 lg:w-9 lg:h-9 xl:w-9 xl:h-9 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
                             >
-                                <img className="" src={props.icons[2]} alt="" />
+                                <img className="student-cross-icon" src={props.icons[2]} alt="" />
                             </button>
                             <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
                                 {
@@ -325,9 +325,9 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                             <button
                                 type="button"
                                 onClick={() => handleAddCross('observation')}
-                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
+                                className="w-7 h-7 lg:w-9 lg:h-9 xl:w-9 xl:h-9 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
                             >
-                                <img className="" src={props.icons[3]} alt="" />
+                                <img className="student-cross-icon" src={props.icons[3]} alt="" />
                             </button>
                             <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
                                 {
@@ -350,9 +350,9 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                             <button
                                 type="button"
                                 onClick={() => handleAddCross('calculator')}
-                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
+                                className="w-7 h-7 lg:w-9 lg:h-9 xl:w-9 xl:h-9 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
                             >
-                                <img className="" src={props.icons[4]} alt="" />
+                                <img className="student-cross-icon" src={props.icons[4]} alt="" />
                             </button>
                             <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
                                 {
@@ -375,9 +375,9 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                             <button
                                 type="button"
                                 onClick={() => handleAddCross('phone')}
-                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
+                                className="w-7 h-7 lg:w-9 lg:h-9 xl:w-9 xl:h-9 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
                             >
-                                <img className="" src={props.icons[5]} alt="" />
+                                <img className="student-cross-icon" src={props.icons[5]} alt="" />
                             </button>
                             <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
                                 {
