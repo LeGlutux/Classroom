@@ -64,7 +64,7 @@ export default (props: Props) => {
             >
                 <div className="flex flex-col h-full items-center pb-4 justify-center">
                     <div className="flex flex-col h-full justify-around items-center">
-                        <div className="relative top-0 font-title text-3xl">
+                        <div className="settings-title">
                             Ajoutez vos classes
                         </div>
                         <div className="flex flex-row items-center justify-center hover:border-gray-600 xl:w-full">
@@ -76,14 +76,14 @@ export default (props: Props) => {
                                     onChange={(e) =>
                                         setInputValue(e.target.value)
                                     }
-                                    className="h-10 z-50 placeholder-gray-700 ml-5 bg-transparent border-b-2 border-gray-600 text-lg xl:text-center"
+                                    className="field-input ml-3"
                                     type="text"
                                     placeholder="Nom de la classe"
                                 />
                             </div>
                         </div>
                         <div
-                            className={`flex h-12 w-40 self-center pt-2 mt-6 bg-gray-300 rounded text-gray-100 text-lg font-bold justify-center ${
+                            className={`btn-disabled mt-6 ${
                                 clickable ? 'hidden' : 'visible'
                             }`}
                         >
@@ -91,7 +91,7 @@ export default (props: Props) => {
                         </div>
                         <button
                             type="submit"
-                            className={`flex h-12 w-40 self-center pt-2 mt-6 bg-orange-500 rounded text-white text-lg font-bold justify-center ${
+                            className={`btn-primary mt-6 ${
                                 clickable ? 'visible' : 'hidden'
                             }`}
                         >

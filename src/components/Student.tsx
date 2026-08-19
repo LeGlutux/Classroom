@@ -162,10 +162,12 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
             }`}
         >
             <div
-                className={`overflow-hidden ml-3 mr-2 bg-white w-full ${
+                className={`student-card w-full ${
+                    highlight ? 'is-highlight' : ''
+                } ${
                     props.runningPeriode === props.periodes.length
                         ? ''
-                        : 'border-2 border-gray-500'
+                        : 'is-archived'
                 }`}
             >
                 <div
@@ -206,7 +208,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                                 className="flex flex-row flex-nowrap mt-2 items-baseline"
                             >
                                 <div
-                                    className={`font-studentName ml-2 text-gray-900 font-medium text-2xl md:text-3xl lg:text-3x xl:text-3xl xl:pt-4 whitespace-nowrap ${
+                                    className={`student-surname font-studentName ml-2 font-medium text-2xl md:text-3xl whitespace-nowrap ${
                                         highlight ? 'text-red-600' : ''
                                     }
                                 `}
@@ -214,7 +216,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                                     {shortSurname}
                                 </div>
                                 <div
-                                    className={`font-studentName ml-2 text-gray-900 font-bold text-2xl md:text-3xl lg:text-3x xl:text-3xl xl:pt-4 whitespace-nowrap ${
+                                    className={`student-name font-studentName ml-2 font-bold text-2xl md:text-3xl whitespace-nowrap ${
                                         highlight ? 'text-red-600' : ''
                                     }`}
                                 >
@@ -392,7 +394,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                             comment={props.comment ? props.comment : ''}
                         />
                     </div>
-                    <div className="border-b-2 border-gray-400 w-2/3 rounded-full self-center mt-4" />
+                    <div className="border-b border-gray-200 w-2/3 self-center mt-3 mb-2" />
                 </div>
             </div>
         </div>

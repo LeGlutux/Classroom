@@ -53,11 +53,11 @@ export default (props: MagicStickProps) => {
                 className={`flex flex-col z-50 absolute w-full h-full items-center justify-center self-center ${
                     props.displayRandomStudent ? 'visible' : 'invisible'
                 }`}
-                style={{ backgroundColor: 'rgba(255,255,255,0.6)' }}
+                style={{ backgroundColor: 'rgba(31,27,22,0.35)' }}
             >
                 <div
                     ref={ref1}
-                    className={`flex flex-col border-black bg-white shadow-lg justify-center items-center w-3/4 h-40 relative ${
+                    className={`modal-card ${
                         props.displayRandomStudent ? 'fade-in' : 'invisible'
                     } `}
                 >
@@ -80,11 +80,11 @@ export default (props: MagicStickProps) => {
                 className={`flex flex-col z-50 absolute w-full h-full items-center justify-center self-center ${
                     props.displayRandomStudent ? 'visible' : 'invisible'
                 }`}
-                style={{ backgroundColor: 'rgba(255,255,255,0.6)' }}
+                style={{ backgroundColor: 'rgba(31,27,22,0.35)' }}
             >
                 <div
                     ref={ref2}
-                    className={`flex flex-col border-black bg-white shadow-lg justify-center items-center w-3/4 h-82 relative ${
+                    className={`modal-card ${
                         props.displayRandomStudent ? 'fade-in' : 'invisible'
                     }`}
                 >
@@ -97,9 +97,9 @@ export default (props: MagicStickProps) => {
                         />
                     </div>
 
-                    <div className="flex flex-row w-full justify-around mt-4">
+                    <div className="modal-actions">
                         <button
-                            className="bg-gray-500 mb-8 rounded-lg font-bold w-24 h-12 lg:w-32 lg:h-12 xl:w-40 xl:h-16 shadow-xl font-studentName sm:text-lg md:text-xl lg:text-2xl xl:text-3xl"
+                            className="btn-ghost"
                             onClick={() => {
                                 props.setDisplayRandomStudent(false)
                             }}
@@ -107,7 +107,7 @@ export default (props: MagicStickProps) => {
                             Oublier
                         </button>
                         <button
-                            className="bg-green-500 mb-8 rounded-lg font-bold w-24 h-12 lg:w-32 lg:h-12 xl:w-40 xl:h-16 shadow-xl font-studentName sm:text-lg md:text-xl lg:text-2xl xl:text-3xl"
+                            className="btn-secondary"
                             onClick={() => {
                                 handleRememberStudent(randomStudent.id)
                                 props.setDisplayRandomStudent(false)
@@ -128,11 +128,11 @@ export default (props: MagicStickProps) => {
             className={`flex flex-col absolute w-full h-full items-center justify-center self-center ${
                 props.displayRandomStudent ? 'visible' : 'invisible'
             }`}
-            style={{ backgroundColor: 'rgba(255,255,255,0.6)' }}
+            style={{ backgroundColor: 'rgba(31,27,22,0.35)' }}
         >
             <div
                 ref={ref3}
-                className={`flex flex-col border-black bg-white shadow-lg justify-center items-center w-3/4 h-56 ${
+                className={`modal-card ${
                     props.displayRandomStudent ? 'fade-in' : 'invisible'
                 }`}
             >

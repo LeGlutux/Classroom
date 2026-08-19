@@ -165,14 +165,14 @@ export default (props: FileUploaderProps) => {
     }
     return (
         <div className="flex flex-col h-full items-center">
-            <div className="font-title text-3xl">Importer</div>
-            <div className="font-student italic text-sm text-gray-500">
-                fichiers acceptés : csv (export Pronote)
+            <div className="settings-title">Importer</div>
+            <div className="empty-state-text">
+                Fichiers acceptés : csv (export Pronote)
             </div>
             <input
                 value={classe}
                 onChange={(e) => setClasse(e.target.value)}
-                className="h-10 w-10/12 z-50 placeholder-gray-700 my-2 bg-transparent border-b-2 border-gray-600 text-lg xl:text-center"
+                className="field-input field my-2"
                 type="text"
                 placeholder="Nom de la classe"
             />
@@ -187,12 +187,7 @@ export default (props: FileUploaderProps) => {
             />
 
             <button
-                className={`flex h-12 w-40 self-center pt-2 mt-6 rounded  text-lg font-bold justify-center
-                ${
-                    clickable
-                        ? 'bg-orange-500 text-white'
-                        : 'bg-gray-300 text-gray-100 pointer-events-none'
-                }`}
+                className={clickable ? 'btn-primary' : 'btn-disabled'}
                 onClick={() => {
                     handleSave(students)
                     setClasse('')

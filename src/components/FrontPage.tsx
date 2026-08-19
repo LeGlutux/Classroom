@@ -21,14 +21,14 @@ import brain from '../images/brain.png'
 import stickyNote from '../images/stickyNote.png'
 import burgerMenu from '../images/burgerMenu.png'
 import loader_image from '../images/loader.gif'
-import updater_gif from '../images/updater.gif'
-import addPage from '../images/addPage.png'
 import Firebase from '../firebase'
 import { Link } from 'react-router-dom'
 import Updater from './Updater'
 import { handleIcon } from '../functions'
 import PostIt from './PostIt'
 import { StudentInterface } from '../interfaces/Student'
+import PageShell from './PageShell'
+import LoadingScreen from './LoadingScreen'
 
 export default () => {
     const db = Firebase.firestore()
@@ -228,99 +228,68 @@ export default () => {
 
     if (studentsLoading || groupsLoading) {
         return (
-            <div className="w-full h-screen flex flex-col justify-center items-center">
-                <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full xl:text-6xl xl:h-16">
-                    {title}
-                </div>
-                <div className="h-full flex flex-col justify-center items-center">
-                    <div className="font-title text-4xl mb-8 text-bold xl:text-6xl">
-                        Chargement des données
-                    </div>
-                    <div className="w-64 h-64 mt-8 xl:w-64 xl:h-64">
-                        <img src={loader_image} alt="" />
-                    </div>
-                </div>
-
-                <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                    <NavBar activeMenu="home" onHomeClick={handleHomeClick} />
-                </div>
-            </div>
+            <LoadingScreen
+                title={title}
+                activeMenu="home"
+                onHomeClick={handleHomeClick}
+            />
         )
     }
 
     if (groups.length === 0) {
         return (
-            <div className="w-full h-screen flex flex-col justify-center items-center">
-                <div className="flex flex-col w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full xl:text-6xl xl:h-16">
-                    {'Accueil'}
+            <PageShell
+                title="Accueil"
+                activeMenu="home"
+                onHomeClick={handleHomeClick}
+                flush
+            >
+                <div className="empty-state">
+                    <p className="empty-state-title">Bienvenue sur Thòt Note</p>
+                    <p className="empty-state-text">
+                        Commencez par ajouter vos classes et vos élèves dans
+                        les réglages.
+                    </p>
+                    <Link className="btn-primary" to="/create">
+                        Configurer l'année
+                    </Link>
                 </div>
-                <div className="h-full flex flex-col justify-center items-center">
-                    <div className="font-title text-4xl mb-8 text-bold xl:text-6xl">
-                        Bienvenue sur Thòt Note
-                    </div>
-                    <div className="flex w-11/12 justify-center text-center font-title text-3xl mb-8 text-bold xl:text-5xl">
-                        Pour commencer à ajouter des classes et des élèves
-                        rendez-vous sur :
-                    </div>
-                    <div className="font-title text-4xl mb-8 text-bold">
-                        <Link to="/create">
-                            <img className="self-center" src={addPage} alt="" />
-                        </Link>{' '}
-                    </div>
-                </div>
-
-                <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                    <NavBar activeMenu="home" onHomeClick={handleHomeClick} />
-                </div>
-            </div>
+            </PageShell>
         )
     }
 
     if (groups.length !== 0 && students.length === 0) {
         return (
-            <div className="w-full h-screen flex flex-col justify-center items-center">
-                <div className="flex flex-col w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full">
-                    {title}
+            <PageShell
+                title={title}
+                activeMenu="home"
+                onHomeClick={handleHomeClick}
+                flush
+            >
+                <div className="empty-state">
+                    <p className="empty-state-title">Les classes sont prêtes</p>
+                    <p className="empty-state-text">
+                        Il ne reste plus qu'à ajouter les élèves.
+                    </p>
+                    <Link className="btn-primary" to="/create">
+                        Ajouter des élèves
+                    </Link>
                 </div>
-
-                <div className="h-full flex flex-col justify-center items-center">
-                    <div className="flex w-11/12 text-center font-title text-4xl mb-8 text-bold">
-                        Les premières classes sont créées, il manque les élèves
-                    </div>
-                    <div className="flex w-11/12 justify-center font-title text-3xl mb-8 text-bold">
-                        rendez-vous sur :
-                    </div>
-                    <div className="font-title text-4xl mb-8 text-bold">
-                        <Link to="/create">
-                            <img className="self-center" src={addPage} alt="" />
-                        </Link>{' '}
-                    </div>
-                </div>
-
-                <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                    <NavBar activeMenu="home" onHomeClick={handleHomeClick} />
-                </div>
-            </div>
+            </PageShell>
         )
     }
 
     if (updating === true) {
         return (
-            <div className="w-full h-screen flex flex-col justify-center items-center">
-                <div className="h-full flex flex-col justify-center items-center">
-                    <div className="font-title text-4xl mb-8 text-bold">
-                        Mise à jour
-                    </div>
-                    <div className="w-48 h-48 mt-8">
-                        <img src={updater_gif} alt="" />
-                    </div>
-                </div>
-            </div>
+            <LoadingScreen
+                standalone
+                message="Mise à jour"
+            />
         )
     }
 
     return (
-        <div className="w-full h-screen flex flex-col overflow-hidden">
+        <div className="app-shell overflow-hidden">
             <Updater
                 userId={currentUser.uid}
                 userVersion={user?.version || 0}
@@ -330,29 +299,31 @@ export default () => {
                 classes={groups}
             />
             {!displayed && displayedGroup !== 'tous' && (
-                <div className="flex flex-col items-center justify-center absolute w-full h-full mb-12 bg-white z-10">
-                    <div className="font-title text-4xl mb-8 text-bold xl:text-6xl">
-                        Chargement des données
-                    </div>
-                    <div className="w-64 h-64 mt-8 xl:w-64 xl:h-64">
-                        <img src={loader_image} alt="" />
+                <div className="modal-overlay" style={{ background: 'rgba(243, 238, 228, 0.92)' }}>
+                    <div className="empty-state">
+                        <img className="loader-mascot" src={loader_image} alt="" />
+                        <p className="empty-state-title">Chargement des données</p>
                     </div>
                 </div>
             )}
 
-            <div className="flex-shrink-0 flex flex-col w-full bg-white h-12 border-b-2 p-1 border-gray-400 items-center font-title font-bold justify-around text-4xl rounded-b-full z-10">
-                {title}
-                <img alt=""
-                    className={`absolute h-8 w-8 ml-20 mb-1 ${
-                        postIt(displayedGroup) ? 'visible' : 'invisible'
-                    }`}
-                    src={stickyNoteRed}
-                />
-            </div>
-
-            <div className="flex font-stundentName backdrop-blur bg-transparent rounded-full p-1 px-2 absolute place-self-center mt-12 items-end font-normal text-md">
-                {'P'.concat(runningPeriode.toString())}
-            </div>
+            <header className="page-header">
+                <div className="page-header-side">
+                    <span className="period-chip">{'P'.concat(runningPeriode.toString())}</span>
+                </div>
+                <div className="page-header-main">
+                    <h1 className="page-title">{title}</h1>
+                </div>
+                <div className="page-header-side page-header-side-right">
+                    <img
+                        alt=""
+                        className={`h-7 w-7 ${
+                            postIt(displayedGroup) ? 'visible' : 'invisible'
+                        }`}
+                        src={stickyNoteRed}
+                    />
+                </div>
+            </header>
 
             <MagicStick
                 toggleSelected={toggleSelected}
@@ -383,7 +354,7 @@ export default () => {
             })}
 
             {displayedGroup !== 'tous' && (
-                <div className="flex w-full h-full flex-col pt-18 pb-24 bg-white overflow-y-scroll md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start">
+                <div className="flex-1 min-h-0 flex w-full flex-col pt-2 pb-24 overflow-y-scroll md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start">
                     {students.map(
                             ({
                                 name,
@@ -425,7 +396,7 @@ export default () => {
             )}
 
             {displayedGroup === 'tous' && (
-                <div className="flex-1 min-h-0 flex w-full flex-col bg-white overflow-hidden py-2">
+                <div className="flex-1 min-h-0 flex w-full flex-col overflow-hidden py-2">
                     {
                         <HomeClassListFilter
                             setDisplayedGroup={setDisplayedGroup}
@@ -447,7 +418,7 @@ export default () => {
                         setBurgerMenuFirstClicked(true)
                         filterStudents(displayedGroup)
                     }}
-                    className={`flex flex-col w-16 h-16 xl:w-20 xl:h-20 bg-gray-200 rounded-full bottom-right-custom2 shadow-custom items-center justify-center ${
+                    className={`flex flex-col w-16 h-16 xl:w-20 xl:h-20 fab-btn rounded-full bottom-right-custom2 items-center justify-center ${
                         menuOpened ? 'fade-out' : 'fade-in'
                     } md:w-20 md:h-20}`}
                 >
@@ -466,7 +437,7 @@ export default () => {
                         setMenuOpened(!menuOpened)
                         setMagicStickStudentsList(hardStudents)
                     }}
-                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 bg-gray-200 rounded-full bottom-right-custom shadow-custom flex items-center justify-center ${
+                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 fab-btn rounded-full bottom-right-custom flex items-center justify-center ${
                         burgerMenuFirstClicked
                             ? menuOpened
                                 ? 'entering-r'
@@ -488,7 +459,7 @@ export default () => {
                         setMagicStickStudentsList(notYetSelectedStudents)
                         setTimeout(() => setDisplayRandomStudent(true), 200)
                     }}
-                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 bg-gray-200 rounded-full bottom-right-custom2 shadow-custom flex items-center justify-center ${
+                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 fab-btn rounded-full bottom-right-custom2 flex items-center justify-center ${
                         burgerMenuFirstClicked
                             ? menuOpened
                                 ? 'entering-r'
@@ -507,7 +478,7 @@ export default () => {
                         setMenuOpened(!menuOpened)
                         setDisplayPostIt(true)
                     }}
-                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 bg-gray-200 rounded-full bottom-right-custom3 shadow-custom flex items-center justify-center ${
+                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 fab-btn rounded-full bottom-right-custom3 flex items-center justify-center ${
                         burgerMenuFirstClicked
                             ? menuOpened
                                 ? 'entering-r'
@@ -536,9 +507,7 @@ export default () => {
                 </div>
             )}
 
-            <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                <NavBar activeMenu="home" onHomeClick={handleHomeClick} />
-            </div>
+            <NavBar activeMenu="home" onHomeClick={handleHomeClick} />
         </div>
     )
 }

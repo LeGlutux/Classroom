@@ -119,7 +119,7 @@ export default (props: Props) => {
                         ref={inputRef}
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
-                        className="w-10/12 mr-2 mb-2 h-8 z-50 placeholder-gray-700 bg-transparent border-b-2 border-gray-600 text-lg xl:text-center"
+                        className="field-input"
                         type="text"
                         placeholder={comment}
                     />

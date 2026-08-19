@@ -35,32 +35,24 @@ export default (props: UpdaterProps) => {
         }, 4000)
     }
 
-    return (
-        <div
-            className={`flex flex-col z-50 w-full h-full items-center justify-center self-center modal-positon ${
-                updateRequired ? 'visible' : 'invisible'
-            }`}
-            style={{ backgroundColor: 'rgba(255,255,255,0.6)' }}
-        >
-            <div
-                className={`flex flex-col border-black bg-white shadow-lg justify-center items-center w-3/4 h-100 relative ${
-                    updateRequired ? 'entering-t' : 'invisible'
-                }`}
-            >
-                <div className="text-xl text-center font-bold mx-2 xl:text-3xl">
-                    Votre version de Thòt Note n'est pas à jour{' '}
-                </div>
+    if (!updateRequired) return null
 
-                <div className="text-sm text-center mx-2 mt-4 xl:text-xl">
+    return (
+        <div className="modal-overlay">
+            <div className="modal-card entering-t">
+                <div className="empty-state-title" style={{ fontSize: '1.35rem' }}>
+                    Votre version de Thòt Note n'est pas à jour
+                </div>
+                <div className="empty-state-text" style={{ marginTop: '0.85rem' }}>
                     Des post-it sont maintenant disponibles pour chaque classe.
-                    Un badge de notification apparaîtra lorsque un post-it non
+                    Un badge de notification apparaîtra lorsqu'un post-it non
                     vide aura été écrit pour une classe. Pour en créer un, il
                     suffit d'appuyer sur le bouton menu depuis une classe.
                 </div>
-
-                <div className="flex flex-col h-40 justify-around mt-12 items-center">
+                <div className="modal-actions">
                     <button
-                        className="bg-green-700 rounded-lg font-bold w-32 h-12 lg:w-32 lg:h-12 xl:w-48 xl:h-24 shadow-xl font-studentName sm:text-lg md:text-xl lg:text-2xl xl:text-2xl"
+                        className="btn-secondary"
+                        type="button"
                         onClick={() => {
                             onConfirmUpdate()
                             setCheckUpdate(false)

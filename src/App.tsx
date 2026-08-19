@@ -13,42 +13,31 @@ import List from './components/List'
 
 export default () => {
     return (
-        <div>
-            <div className={`flex w-full flex-col`}>
-                <AuthProvider>
-                    <div>
-                        <Router>
-                            <Switch>
-                                <PrivateRoute
-                                    path="/create"
-                                    component={SettingsPage}
-                                />
-                                <PrivateRoute path="/lists" component={Lists} />
-                                <PrivateRoute
-                                    path="/createlist"
-                                    component={CreateList}
-                                />
-                                <PrivateRoute
-                                    path="/list/:id"
-                                    component={List}
-                                />
-
-                                <Route path="/login">
-                                    <Login />
-                                </Route>
-                                <Route path="/signup">
-                                    <SignUp />
-                                </Route>
-                                <PrivateRoute
-                                    path="/student/:id"
-                                    component={StudentStats}
-                                />
-                                <PrivateRoute path="/" component={FrontPage} />
-                            </Switch>
-                        </Router>
-                    </div>
-                </AuthProvider>
-            </div>
+        <div className="app-root">
+            <AuthProvider>
+                <Router>
+                    <Switch>
+                        <PrivateRoute path="/create" component={SettingsPage} />
+                        <PrivateRoute path="/lists" component={Lists} />
+                        <PrivateRoute
+                            path="/createlist"
+                            component={CreateList}
+                        />
+                        <PrivateRoute path="/list/:id" component={List} />
+                        <Route path="/login">
+                            <Login />
+                        </Route>
+                        <Route path="/signup">
+                            <SignUp />
+                        </Route>
+                        <PrivateRoute
+                            path="/student/:id"
+                            component={StudentStats}
+                        />
+                        <PrivateRoute path="/" component={FrontPage} />
+                    </Switch>
+                </Router>
+            </AuthProvider>
         </div>
     )
 }

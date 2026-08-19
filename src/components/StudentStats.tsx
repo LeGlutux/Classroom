@@ -169,15 +169,14 @@ const View = ({
     const iconsNumber = icons.indexOf(0) === -1 ? 6 : icons.indexOf(0)
 
     return (
-        <div className="flex flex-col h-screen">
+        <div className="app-shell">
             <div
-                className={`flex flex-col z-50 w-full h-full items-center justify-center self-center modal-positon ${
+                className={`modal-overlay ${
                     editNotes ? 'visible' : 'invisible'
                 }`}
-                style={{ backgroundColor: 'rgba(255,255,255,0.6)' }}
             >
                 <div
-                    className={`flex flex-col border-black bg-white shadow-lg justify-center items-center w-3/4 h-100 relative ${
+                    className={`modal-card ${
                         editNotes ? 'entering-t' : 'invisible'
                     }`}
                 >
@@ -198,9 +197,9 @@ const View = ({
                         placeholder={notes}
                     />
 
-                    <div className="flex flex-row w-full justify-around mt-6">
+                    <div className="modal-actions">
                         <button
-                            className="bg-red-700 rounded-lg font-bold w-24 h-12 lg:w-32 lg:h-12 xl:w-40 xl:h-16 shadow-xl font-studentName sm:text-lg md:text-xl lg:text-2xl xl:text-3xl"
+                            className="btn-ghost"
                             onClick={() => {
                                 setEditNotes(false)
                             }}
@@ -208,7 +207,7 @@ const View = ({
                             Annuler
                         </button>
                         <button
-                            className="bg-green-700 rounded-lg font-bold w-24 h-12 lg:w-32 lg:h-12 xl:w-40 xl:h-16 shadow-xl font-studentName sm:text-lg md:text-xl lg:text-2xl xl:text-3xl"
+                            className="btn-secondary"
                             onClick={() => {
                                 confirmAction()
                                 setEditNotes(false)
@@ -234,7 +233,7 @@ const View = ({
                 }`}
             >
                 <div
-                    className={`w-full text-center mt-4 font-title text-5xl flex items-center`}
+                    className={`w-full text-center mt-4 page-title flex items-center`}
                 >
                     <Link to="/">
                         <img className="h-8 w-4 ml-2" src={closeCard} alt="" />
@@ -259,10 +258,10 @@ const View = ({
                     </div>
                 </div>
                 <div
-                    className={`flex w-full px-8 justify-between mb-4 font-title2 text-3xl items-center `}
+                    className={`flex w-full px-8 justify-between mb-4 items-center`}
                 >
                     <button
-                        className="bg-red-700 rounded-lg font-bold w-24 h-8 text-sm lg:w-32 lg:h-12 xl:w-40 xl:h-16 shadow-xl font-studentName sm:text-lg md:text-xl lg:text-2xl xl:text-3xl"
+                        className="btn-ghost"
                         onClick={() => {
                             setEditing(false)
                         }}
@@ -277,7 +276,7 @@ const View = ({
                         placeholder={student.classes}
                     />
                     <button
-                        className="bg-green-700 rounded-lg font-bold w-24 h-8 text-sm lg:w-32 lg:h-12 xl:w-40 xl:h-16 shadow-xl font-studentName sm:text-lg md:text-xl lg:text-2xl xl:text-3xl"
+                        className="btn-secondary"
                         onClick={() => {
                             handleEdition()
                             setEditing(false)
@@ -294,7 +293,7 @@ const View = ({
                 }`}
             >
                 <div
-                    className={`w-full text-center mt-4 font-title text-5xl flex items-center`}
+                    className={`w-full text-center mt-4 page-title flex items-center`}
                 >
                     <Link to="/">
                         <img className="h-8 w-4 ml-2" src={closeCard} alt="" />
@@ -304,7 +303,7 @@ const View = ({
                     </div>
                 </div>
                 <div
-                    className={`flex w-full mb-4 mr-4 justify-center font-title2 text-3xl items-center `}
+                    className={`flex w-full mb-4 mr-4 justify-center page-subtitle items-center `}
                 >
                     {student.classes}
                 </div>
@@ -534,26 +533,29 @@ const View = ({
                     </div>
                 </div>
             </div>
-            <div className="flex flex-row justify-start h-10 mx-3">
-                <div className="flex flex-col items-center">
-                    <div className="font-bold">Notes:</div>
+            <div className="card mx-3 mb-3 p-3 flex flex-row items-start">
+                <div className="flex flex-col items-center mr-3">
+                    <div className="font-bold">Notes</div>
                     <button
-                        className="flex h-8 w-8 justify-center items-center"
+                        className="header-icon-btn"
                         onClick={() => {
                             setEditNotes(true)
                         }}
+                        type="button"
                     >
-                        <img className="h-6 w-6" src={edit} alt="" />
+                        <img className="h-5 w-5" src={edit} alt="modifier" />
                     </button>
                 </div>
-                <div className="mx-2">{shortedNotes(notes)}</div>
+                <div className="mx-2 text-sm leading-snug">{shortedNotes(notes)}</div>
             </div>
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-center mb-6">
                 <button
                     onClick={() => {
                         setConfirm(true)
                     }}
-                    className="flex h-4 w-32 self-center mt-2 text-red-500 text-sm justify-center"
+                    className="btn-ghost"
+                    type="button"
+                    style={{ color: 'var(--tn-danger)' }}
                 >
                     Supprimer l'élève
                 </button>

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import CreateGroups from './Create/CreateGroups'
 import CreateStudent from './Create/CreateStudent'
 import NavBar from './NavBar'
+import LoadingScreen from './LoadingScreen'
 import {
     useAllUsersIds,
     useVersion,
@@ -9,7 +10,6 @@ import {
     useLists,
 } from '../hooks'
 import firebase from 'firebase/app'
-import loader_image from '../images/loader.gif'
 import 'react-datepicker/dist/react-datepicker.css'
 import { AuthContext } from '../Auth'
 import { usePeriodes, useStudents } from '../hooks'
@@ -169,30 +169,23 @@ export default () => {
 
     if (loading) {
         return (
-            <div className="w-full h-screen flex flex-col justify-center items-center">
-                <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full xl:text-6xl xl:h-16">
-                    Paramétrez votre année
-                </div>
-                <div className="h-full flex flex-col justify-center items-center">
-                    <div className="font-title text-4xl mb-8 text-bold xl:text-6xl">
-                        Chargement des données
-                    </div>
-                    <div className="w-64 h-64 mt-8 xl:w-64 xl:h-64">
-                        <img src={loader_image} alt="" />
-                    </div>
-                </div>
-
-                <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                    <NavBar activeMenu="addPage" onHomeClick={handleHomeClick} />
-                </div>
-            </div>
+            <LoadingScreen
+                title="Réglages"
+                activeMenu="addPage"
+                onHomeClick={handleHomeClick}
+            />
         )
     } else
         return (
-            <div className={`w-full h-screen flex flex-col`}>
-                <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl xl:text-6xl xl:h-16 rounded-b-full">
-                    Paramétrez votre année
-                </div>
+            <div className="app-shell">
+                <header className="page-header">
+                    <div className="page-header-side" />
+                    <div className="page-header-main">
+                        <h1 className="page-title">Réglages</h1>
+                        <div className="page-subtitle">Paramétrez votre année</div>
+                    </div>
+                    <div className="page-header-side" />
+                </header>
                 <ConfirmModal
                     confirm={confirm}
                     setConfirm={setConfirm}
@@ -254,7 +247,7 @@ export default () => {
                 </div>
 
                 <div
-                    className={`flex flex-row h-full overflow-x-hidden py-8 items-center px-8`}
+                    className={`flex flex-row flex-1 overflow-x-auto py-8 items-center px-8`}
                     ref={xScroller}
                 >
                     <div className={cards(0, actualRef)} ref={ref0}>
@@ -269,7 +262,7 @@ export default () => {
                         )}
 
                         <button
-                            className="flex justify-end w-auto self-end text-blue-600 justify-items-end place-items-end"
+                            className="auth-link self-end mt-3"
                             onClick={() => setUploader(!uploader)}
                         >
                             {!uploader
@@ -295,7 +288,7 @@ export default () => {
                     <div className={`${cards(3, actualRef)}`} ref={ref3}>
                         <div className="flex flex-col h-full items-center pb-4">
                             <div className="flex flex-col h-full justify-around items-center">
-                                <div className="relative top-0 font-title text-3xl text-center">
+                                <div className="settings-title">
                                     Lancer une nouvelle période
                                 </div>
 
@@ -310,7 +303,7 @@ export default () => {
                                     </div>
                                 </div>
                                 <button
-                                    className="flex h-16 w-56 self-center bg-orange-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 pb-2 flex-wrap"
+                                    className="btn-primary"
                                     onClick={() => setConfirm(true)}
                                 >
                                     {' '}
@@ -329,11 +322,11 @@ export default () => {
                         <div className="flex flex-col h-full justify-around items-center">
                             <div className="flex flex-col h-full justify-around items-center">
                                 <div className="flex flex-col h-full justify-around items-center">
-                                    <div className="relative top-0 font-title text-3xl text-center">
+                                    <div className="settings-title">
                                         L'année est finie ?
                                     </div>
                                     <button
-                                        className="flex h-16 w-56 mt-8 self-center bg-red-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap"
+                                        className="btn-danger"
                                         onClick={() => setConfirm2(true)}
                                     >
                                         {' '}
@@ -354,7 +347,7 @@ export default () => {
                     >
                         <div className="flex flex-col h-full justify-around items-center">
                             <div className="flex flex-col h-full justify-around items-center">
-                                <div className="relative top-0 font-title text-3xl text-center">
+                                <div className="settings-title">
                                     Si vous voyez ceci, prévenir le développeur
                                     !
                                 </div>
@@ -373,19 +366,16 @@ export default () => {
                         </div>
                     </div>
                 </div>
-                <div className="w-full mb-6 h-16 bg-white">
-                    <div className="my-8 flex justify-center bg-white">
-                        <button
-                            className="text-lg text-gray-700 font-bold"
-                            onClick={() => firebase.auth().signOut()}
-                        >
-                            Se déconnecter
-                        </button>
-                    </div>
+                <div className="w-full py-3 flex justify-center">
+                    <button
+                        className="btn-ghost"
+                        onClick={() => firebase.auth().signOut()}
+                    >
+                        Se déconnecter
+                    </button>
                 </div>
                 <div
-                    className={`flex justify-around absolute bottom-0 w-full h-8 z-50 bg-green-400 items-center text-lg text-bold text-white 
-            ${
+                    className={`toast-success ${
                 count !== 0
                     ? saveConfirm
                         ? 'entering-b'
@@ -396,9 +386,7 @@ export default () => {
                     Les modifications ont été enregistrées
                 </div>
 
-                <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                    <NavBar activeMenu="addPage" onHomeClick={handleHomeClick} />
-                </div>
+                <NavBar activeMenu="addPage" onHomeClick={handleHomeClick} />
             </div>
         )
 }
