@@ -44,12 +44,10 @@ export default (props: PostItProps) => {
     useOnClickOutside(ref, handleClickOutside)
 
     return (
-        <div
-            className={`flex justify-center align-middle items-center w-full h-screen absolute ${'fade-in'}`}
-        >
+        <div className="modal-overlay">
             <div
                 ref={ref}
-                className="flex flex-col w-2/3 h-11/12 bg-yellow-500 rounded-md postIt-shadow"
+                className="flex flex-col w-2/3 max-w-sm bg-yellow-500 rounded-md postIt-shadow"
             >
                 <div className="flex flex-row">
                     <span className="relative top-0 right-0 p-4">
