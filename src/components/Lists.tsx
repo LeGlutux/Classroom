@@ -6,6 +6,7 @@ import add from '../images/add.png'
 import { Link } from 'react-router-dom'
 import ListPreview from './ListPreview'
 import loader_image from '../images/loader.gif'
+import { IconPlus } from './Icons'
 
 export default () => {
     const handleHomeClick = () => {
@@ -48,13 +49,12 @@ export default () => {
                     <div className="empty-state">
                         <div className="empty-title">Créer des listes</div>
                         <div className="empty-text">Pour essayer, c’est par ici :</div>
-                    </div>
-                    <div>
                         <Link
-                            className="flex flex-col w-20 h-20 fab rounded-full items-center justify-center p-2"
+                            className="empty-plus"
                             to="/createlist"
+                            aria-label="Créer une liste"
                         >
-                            <img src={add} alt="" />
+                            <IconPlus />
                         </Link>
                     </div>
                 </div>

@@ -89,6 +89,20 @@ body,
     color: #52525b;
 }
 
+.empty-plus {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    color: var(--tn-ink);
+}
+
+.empty-plus .tn-icon {
+    width: 1.55rem;
+    height: 1.55rem;
+}
+
 .student-name {
     font-family: 'Open Sans', sans-serif;
     font-size: 1.2rem;
@@ -499,6 +513,21 @@ body,
     width: 1rem;
     height: 1rem;
     margin-right: 0.4rem;
+}
+
+.list-create-section {
+    margin-top: 1.2rem;
+    padding-top: 1.15rem;
+    border-top: 1px solid var(--tn-line);
+}
+
+.list-create-actions {
+    max-width: 28rem;
+    margin: 0 auto 1.15rem;
+}
+
+.list-create-actions .settings-btn {
+    margin-top: 0;
 }
 
 .list-class-chips {

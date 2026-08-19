@@ -205,116 +205,116 @@ export default () => {
                             placeholder="Devoirs, participation…"
                         />
                     </label>
-                </div>
 
-                <div className="settings-panel">
-                    <div className="settings-group-label" style={{ padding: 0 }}>
-                        Classes concernées
+                    <div className="list-create-section">
+                        <div className="settings-group-label" style={{ padding: 0 }}>
+                            Classes concernées
+                        </div>
+                        <div className="list-class-chips">
+                            {groups.map((value, index) => (
+                                <NewStudentGroups
+                                    list={defaultList}
+                                    classe={value}
+                                    key={index}
+                                />
+                            ))}
+                        </div>
+                        <p className="settings-panel-note" style={{ marginBottom: 0, marginTop: '0.75rem', textAlign: 'left' }}>
+                            Sélectionnez les classes pour lesquelles cette liste
+                            sera utilisée.
+                        </p>
                     </div>
-                    <div className="list-class-chips">
-                        {groups.map((value, index) => (
-                            <NewStudentGroups
-                                list={defaultList}
-                                classe={value}
-                                key={index}
+
+                    <div className="list-create-section">
+                        <div className="settings-group-label" style={{ padding: 0 }}>
+                            Items de la liste
+                        </div>
+                        {itemN >= 1 && (
+                            <ItemRow
+                                value={item1}
+                                onChange={setItem1}
+                                placeholder="Item 1 (ex. Fait, à faire…)"
+                                inputRef={ref1}
+                                state={defaultValue[0]}
+                                onCycleState={() => cycleState(0)}
                             />
-                        ))}
+                        )}
+                        {itemN >= 2 && (
+                            <ItemRow
+                                value={item2}
+                                onChange={setItem2}
+                                placeholder="Item 2"
+                                inputRef={ref2}
+                                state={defaultValue[1]}
+                                onCycleState={() => cycleState(1)}
+                                onRemove={() => {
+                                    setItemN(itemN - 1)
+                                    setItem2('')
+                                }}
+                            />
+                        )}
+                        {itemN >= 3 && (
+                            <ItemRow
+                                value={item3}
+                                onChange={setItem3}
+                                placeholder="Item 3"
+                                inputRef={ref3}
+                                state={defaultValue[2]}
+                                onCycleState={() => cycleState(2)}
+                                onRemove={() => {
+                                    setItemN(itemN - 1)
+                                    setItem3('')
+                                }}
+                            />
+                        )}
+                        {itemN >= 4 && (
+                            <ItemRow
+                                value={item4}
+                                onChange={setItem4}
+                                placeholder="Item 4"
+                                inputRef={ref4}
+                                state={defaultValue[3]}
+                                onCycleState={() => cycleState(3)}
+                                onRemove={() => {
+                                    setItemN(itemN - 1)
+                                    setItem4('')
+                                }}
+                            />
+                        )}
+                        {itemN === 5 && (
+                            <ItemRow
+                                value={item5}
+                                onChange={setItem5}
+                                placeholder="Item 5"
+                                inputRef={ref5}
+                                state={defaultValue[4]}
+                                onCycleState={() => cycleState(4)}
+                                onRemove={() => {
+                                    setItemN(itemN - 1)
+                                    setItem5('')
+                                }}
+                            />
+                        )}
+                        {itemN < 5 && (
+                            <button
+                                type="button"
+                                className="list-add-item"
+                                onClick={() => {
+                                    if (itemN <= 5) setItemN(itemN + 1)
+                                    setTimeout(
+                                        () => nextInputRef.current!.focus(),
+                                        10
+                                    )
+                                }}
+                            >
+                                <IconPlus />
+                                Ajouter un item
+                            </button>
+                        )}
                     </div>
-                    <p className="settings-panel-note" style={{ marginBottom: 0, marginTop: '0.85rem', textAlign: 'left' }}>
-                        Sélectionnez les classes pour lesquelles cette liste
-                        sera utilisée.
-                    </p>
                 </div>
 
-                <div className="settings-panel">
-                    <div className="settings-group-label" style={{ padding: 0 }}>
-                        Items de la liste
-                    </div>
-                    {itemN >= 1 && (
-                        <ItemRow
-                            value={item1}
-                            onChange={setItem1}
-                            placeholder="Item 1 (ex. Fait, à faire…)"
-                            inputRef={ref1}
-                            state={defaultValue[0]}
-                            onCycleState={() => cycleState(0)}
-                        />
-                    )}
-                    {itemN >= 2 && (
-                        <ItemRow
-                            value={item2}
-                            onChange={setItem2}
-                            placeholder="Item 2"
-                            inputRef={ref2}
-                            state={defaultValue[1]}
-                            onCycleState={() => cycleState(1)}
-                            onRemove={() => {
-                                setItemN(itemN - 1)
-                                setItem2('')
-                            }}
-                        />
-                    )}
-                    {itemN >= 3 && (
-                        <ItemRow
-                            value={item3}
-                            onChange={setItem3}
-                            placeholder="Item 3"
-                            inputRef={ref3}
-                            state={defaultValue[2]}
-                            onCycleState={() => cycleState(2)}
-                            onRemove={() => {
-                                setItemN(itemN - 1)
-                                setItem3('')
-                            }}
-                        />
-                    )}
-                    {itemN >= 4 && (
-                        <ItemRow
-                            value={item4}
-                            onChange={setItem4}
-                            placeholder="Item 4"
-                            inputRef={ref4}
-                            state={defaultValue[3]}
-                            onCycleState={() => cycleState(3)}
-                            onRemove={() => {
-                                setItemN(itemN - 1)
-                                setItem4('')
-                            }}
-                        />
-                    )}
-                    {itemN === 5 && (
-                        <ItemRow
-                            value={item5}
-                            onChange={setItem5}
-                            placeholder="Item 5"
-                            inputRef={ref5}
-                            state={defaultValue[4]}
-                            onCycleState={() => cycleState(4)}
-                            onRemove={() => {
-                                setItemN(itemN - 1)
-                                setItem5('')
-                            }}
-                        />
-                    )}
-                    {itemN < 5 && (
-                        <button
-                            type="button"
-                            className="list-add-item"
-                            onClick={() => {
-                                if (itemN <= 5) setItemN(itemN + 1)
-                                setTimeout(
-                                    () => nextInputRef.current!.focus(),
-                                    10
-                                )
-                            }}
-                        >
-                            <IconPlus />
-                            Ajouter un item
-                        </button>
-                    )}
-                </div>
-
-                <div className="settings-panel">
+                <div className="list-create-actions">
                     <button
                         type="submit"
                         ref={submitButtonRef}
@@ -324,7 +324,6 @@ export default () => {
                         className={`settings-btn ${
                             clickable ? '' : 'is-disabled'
                         }`}
-                        style={{ marginTop: 0 }}
                     >
                         Créer la liste
                     </button>
