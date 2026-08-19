@@ -25,7 +25,7 @@ import addPage from '../images/addPage.png'
 import Firebase from '../firebase'
 import { Link } from 'react-router-dom'
 import Updater from './Updater'
-import { handleIcon } from '../functions'
+import { buildCrossSlots, handleIcon } from '../functions'
 import PostIt from './PostIt'
 import { StudentInterface } from '../interfaces/Student'
 
@@ -132,28 +132,13 @@ export default () => {
 
     ///////////////// icons /////////////////
     const userIcons = useIcons(currentUser.uid)
-
-    const [icons, setIcons] = useState([1, 2, 3, 4, 0, 0])
-    const iconsVisualInitialState = (iconsArray: number[]) => {
-        const initialState = [] as string[]
-        icons
-            ? [0, 1, 2, 3, 4, 5].forEach((i) =>
-                  initialState.push(handleIcon(iconsArray[i]))
-              )
-            : db
-                  .collection('users')
-                  .doc(currentUser.uid)
-                  .update({ icons: [1, 2, 3, 4, 0, 0] })
-        return initialState
-    }
-
-    const [iconsDisplay, setIconsDisplay] = useState(['none'])
-
-    useEffect(() => {
-        setIcons(userIcons.icons)
-        setIconsDisplay(iconsVisualInitialState(userIcons.icons))
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [userIcons.icons, userIcons.loading])
+    const crossSlots = buildCrossSlots(
+        userIcons.icons,
+        userIcons.positiveIcons
+    ).map((slot) => ({
+        ...slot,
+        src: handleIcon(slot.icon),
+    }))
 
     // Filtrer les étudiants quand displayedGroup change OU quand les données sont chargées pour la première fois
     useEffect(() => {
@@ -405,7 +390,7 @@ export default () => {
                                             filterStudents(group)
                                         }
                                         displayedGroup={displayedGroup}
-                                        icons={iconsDisplay}
+                                        slots={crossSlots}
                                     />
                                 )
                             }

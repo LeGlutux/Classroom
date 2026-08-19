@@ -92,3 +92,13 @@ export const IconUpload: React.FC<IconProps> = (props) => (
         <path d="M12 16V7M8.5 10.5L12 7l3.5 3.5M5 19h14" />
     </Svg>
 )
+
+export const IconTrophy: React.FC<IconProps> = (props) => (
+    <Svg {...props}>
+        <path d="M8 4h8v4.2a4 4 0 0 1-8 0V4z" />
+        <path d="M8 5.5H5.2A2.2 2.2 0 0 0 7.4 8.2" />
+        <path d="M16 5.5h2.8A2.2 2.2 0 0 1 16.6 8.2" />
+        <path d="M12 12.2v3.3" />
+        <path d="M9 20h6M10 16h4v4h-4z" />
+    </Svg>
+)

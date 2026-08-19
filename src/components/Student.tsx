@@ -7,6 +7,13 @@ import magicStick from '../images/magicStick.png'
 import StudentComment from './StudentComment'
 import { useCross } from '../hooks'
 import { StudentInterface } from '../interfaces/Student'
+import { CrossPolarity } from '../functions'
+
+interface StudentSlot {
+    src: string
+    type: string
+    polarity: CrossPolarity
+}
 
 interface StudentProps {
     displayedStudents: StudentInterface[]
@@ -26,7 +33,7 @@ interface StudentProps {
     currentUser: string
     periodes: Date[]
     runningPeriode: number
-    icons: string[]
+    slots: StudentSlot[]
 }
 
 interface CrossButtonProps {
@@ -147,12 +154,13 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
         if (type === 'observation') return '4'
         if (type === 'calculator') return '5'
         if (type === 'phone') return '6'
+        if (type.indexOf('pos') === 0) return type
         else return '000'
     }
     const newCrossId = (type: string) => {
         return crossIdentifier(type).concat('c').concat(Date.now().toString())
     }
-    const handleAddCross = (crossType: string) => {
+    const handleAddCross = (crossType: string, polarity: CrossPolarity) => {
         if (props.runningPeriode === props.periodes.length) {
             const newDate = new Date()
             const id = newCrossId(crossType)
@@ -164,6 +172,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                 .doc(id)
                 .set({
                     type: crossType,
+                    polarity,
                     time: newDate,
                     id,
                     student_id: props.id,
@@ -180,7 +189,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                 })
 
             const newCross = crosses.concat([
-                { type: crossType, id, time: newDate },
+                { type: crossType, polarity, id, time: newDate },
             ])
             setCrosses(newCross)
         }
@@ -255,7 +264,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
             >
                 <div
                     className={`flex justify-between flex-col ${
-                        props.icons[5] === 'none' ? '' : 'h-38'
+                        props.slots.length === 6 ? 'h-38' : ''
                     }`}
                 >
                     <div className="flex flex-row items-center">
@@ -320,143 +329,35 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                     </div>
                     <div
                         className={`w-full h-12 flex p-2 items-center justify-between pr-6 ${
-                            props.icons[5] === 'none' ? '' : 'mb-6'
+                            props.slots.length === 6 ? 'mb-6' : ''
                         }`}
                     >
-                        <div
-                            className={`flex ${
-                                props.icons[0] === 'none' ? 'hidden' : 'visible'
-                            } ${
-                                props.icons[5] === 'none'
-                                    ? 'flex-row items-center'
-                                    : 'flex-col items-center'
-                            }`}
-                        >
-                            <CrossButton
-                                src={props.icons[0]}
-                                onAdd={() => handleAddCross('behaviour')}
-                                onRemove={() => handleRemoveCross('behaviour')}
-                            />
-                            <div className="student-cross-count">
-                                {
-                                    crossFilter(
-                                        'behaviour',
-                                        props.runningPeriode
-                                    ).length
-                                }
+                        {props.slots.map((slot) => (
+                            <div
+                                key={slot.type}
+                                className={`flex ${
+                                    props.slots.length === 6
+                                        ? 'flex-col items-center'
+                                        : 'flex-row items-center'
+                                }`}
+                            >
+                                <CrossButton
+                                    src={slot.src}
+                                    onAdd={() =>
+                                        handleAddCross(slot.type, slot.polarity)
+                                    }
+                                    onRemove={() => handleRemoveCross(slot.type)}
+                                />
+                                <div className="student-cross-count">
+                                    {
+                                        crossFilter(
+                                            slot.type,
+                                            props.runningPeriode
+                                        ).length
+                                    }
+                                </div>
                             </div>
-                        </div>
-                        <div
-                            className={`flex ${
-                                props.icons[1] === 'none' ? 'hidden' : 'visible'
-                            } ${
-                                props.icons[5] === 'none'
-                                    ? 'flex-row items-center'
-                                    : 'flex-col items-center'
-                            }`}
-                        >
-                            <CrossButton
-                                src={props.icons[1]}
-                                onAdd={() => handleAddCross('homework')}
-                                onRemove={() => handleRemoveCross('homework')}
-                            />
-                            <div className="student-cross-count">
-                                {
-                                    crossFilter(
-                                        'homework',
-                                        props.runningPeriode
-                                    ).length
-                                }
-                            </div>
-                        </div>
-                        <div
-                            className={`flex ${
-                                props.icons[2] === 'none' ? 'hidden' : 'visible'
-                            } ${
-                                props.icons[5] === 'none'
-                                    ? 'flex-row items-center'
-                                    : 'flex-col items-center'
-                            }`}
-                        >
-                            <CrossButton
-                                src={props.icons[2]}
-                                onAdd={() => handleAddCross('supply')}
-                                onRemove={() => handleRemoveCross('supply')}
-                            />
-                            <div className="student-cross-count">
-                                {
-                                    crossFilter('supply', props.runningPeriode)
-                                        .length
-                                }
-                            </div>
-                        </div>
-                        <div
-                            className={`flex ${
-                                props.icons[3] === 'none' ? 'hidden' : 'visible'
-                            } ${
-                                props.icons[5] === 'none'
-                                    ? 'flex-row items-center'
-                                    : 'flex-col items-center'
-                            }`}
-                        >
-                            <CrossButton
-                                src={props.icons[3]}
-                                onAdd={() => handleAddCross('observation')}
-                                onRemove={() => handleRemoveCross('observation')}
-                            />
-                            <div className="student-cross-count">
-                                {
-                                    crossFilter(
-                                        'observation',
-                                        props.runningPeriode
-                                    ).length
-                                }
-                            </div>
-                        </div>
-                        <div
-                            className={`flex ${
-                                props.icons[4] === 'none' ? 'hidden' : 'visible'
-                            } ${
-                                props.icons[5] === 'none'
-                                    ? 'flex-row items-center'
-                                    : 'flex-col items-center'
-                            }`}
-                        >
-                            <CrossButton
-                                src={props.icons[4]}
-                                onAdd={() => handleAddCross('calculator')}
-                                onRemove={() => handleRemoveCross('calculator')}
-                            />
-                            <div className="student-cross-count">
-                                {
-                                    crossFilter(
-                                        'calculator',
-                                        props.runningPeriode
-                                    ).length
-                                }
-                            </div>
-                        </div>
-                        <div
-                            className={`flex ${
-                                props.icons[5] === 'none' ? 'hidden' : 'visible'
-                            } ${
-                                props.icons[5] === 'none'
-                                    ? 'flex-row items-center'
-                                    : 'flex-col items-center'
-                            }`}
-                        >
-                            <CrossButton
-                                src={props.icons[5]}
-                                onAdd={() => handleAddCross('phone')}
-                                onRemove={() => handleRemoveCross('phone')}
-                            />
-                            <div className="student-cross-count">
-                                {
-                                    crossFilter('phone', props.runningPeriode)
-                                        .length
-                                }
-                            </div>
-                        </div>
+                        ))}
                     </div>
                     <StudentComment
                             currentUserId={props.currentUser}

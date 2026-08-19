@@ -17,6 +17,7 @@ import CardCustomer from './CardCustomization/CardCustomer'
 import FileUploader from './FileUploader'
 import PeriodeFilter from './PeriodeFilter'
 import ConfirmModal from './ConfirmModal'
+import Podium from './Podium'
 import {
     IconCalendar,
     IconChevronRight,
@@ -26,6 +27,7 @@ import {
     IconUpload,
     IconUser,
     IconUsers,
+    IconTrophy,
 } from './Icons'
 
 interface SettingsRowProps {
@@ -115,8 +117,18 @@ const SettingsMenu = () => {
                 <SettingsRow
                     to="/create/cartes"
                     icon={<IconGrid />}
-                    title="Personnaliser les cartes"
-                    subtitle="Choisir les icônes affichées"
+                    title="Personnaliser les croix"
+                    subtitle="Croix négatives et positives"
+                />
+            </div>
+
+            <div className="settings-group-label">Suivi</div>
+            <div className="settings-group">
+                <SettingsRow
+                    to="/create/podium"
+                    icon={<IconTrophy />}
+                    title="Podium"
+                    subtitle="Les meilleurs élèves de chaque classe"
                 />
             </div>
 
@@ -361,7 +373,7 @@ const SettingsCartes = () => {
 
     return (
         <SettingsLayout
-            title="Personnaliser les cartes"
+            title="Personnaliser les croix"
             backTo="/create"
             toast={
                 saveConfirm ? 'Les modifications ont été enregistrées' : undefined
@@ -551,6 +563,7 @@ export default () => {
             <Route path="/create/pronote" component={SettingsPronote} />
             <Route path="/create/eleves" component={SettingsEleves} />
             <Route path="/create/cartes" component={SettingsCartes} />
+            <Route path="/create/podium" component={Podium} />
             <Route path="/create/periodes" component={SettingsPeriodes} />
             <Route path="/create/annee" component={SettingsAnnee} />
             <Route path="/create/admin" component={SettingsAdmin} />

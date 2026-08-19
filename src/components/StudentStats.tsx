@@ -7,7 +7,7 @@ import firebase from 'firebase/app'
 import CrossTab from './CrossTab'
 import ConfirmModal from './ConfirmModal'
 import edit from '../images/edit.png'
-import { handleIcon } from '../functions'
+import { handleIcon, buildCrossSlots, CrossSlot } from '../functions'
 
 const classToValue = (classes: unknown): string => {
     if (Array.isArray(classes)) {
@@ -38,6 +38,7 @@ export default () => {
     const { cross } = useCross(currentUser.uid, id, crossRefresher)
     const student = useStudent(currentUser.uid, id)
     if (student === undefined) return <div />
+    const slots = buildCrossSlots(icons.icons, icons.positiveIcons)
 
     return (
         <View
@@ -46,7 +47,7 @@ export default () => {
             student={student}
             studentId={id}
             cross={cross}
-            icons={icons.icons}
+            slots={slots}
         />
     )
 }
@@ -57,14 +58,14 @@ const View = ({
     student,
     studentId,
     cross,
-    icons,
+    slots,
 }: {
     currentUser: firebase.User
     crossRefresher: number
     student: firebase.firestore.DocumentData
     studentId: string
     cross: firebase.firestore.DocumentData[]
-    icons: number[]
+    slots: CrossSlot[]
 }) => {
     const { groups } = useGroups(currentUser.uid)
     const crossFilter = (crossType: string) => {
@@ -196,8 +197,6 @@ const View = ({
         classInputValue && !groups.includes(classInputValue)
             ? [classInputValue, ...groups]
             : groups
-
-    const iconsNumber = icons.indexOf(0) === -1 ? 6 : icons.indexOf(0)
 
     return (
         <div className="flex flex-col h-screen">
@@ -341,72 +340,18 @@ const View = ({
             <div className="flex flex-row ml-4 mb-4">
                 <div className="w-4 text-sm font-bold h-4 my-2">S</div>
                 <div className="w-full h-4 flex flex-row justify-evenly my-2 text-xl">
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            icons[0] === 0 ? 'hidden' : 'visible'
-                        } `}
-                    >
-                        <img
-                            className="h-6 w-6"
-                            src={handleIcon(icons[0])}
-                            alt=""
-                        />
-                    </div>
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            icons[1] === 0 ? 'hidden' : 'visible'
-                        } `}
-                    >
-                        <img
-                            className="h-6 w-6"
-                            src={handleIcon(icons[1])}
-                            alt=""
-                        />
-                    </div>
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            icons[2] === 0 ? 'hidden' : 'visible'
-                        } `}
-                    >
-                        <img
-                            className="h-6 w-6"
-                            src={handleIcon(icons[2])}
-                            alt=""
-                        />
-                    </div>
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            icons[3] === 0 ? 'hidden' : 'visible'
-                        } `}
-                    >
-                        <img
-                            className="h-6 w-6"
-                            src={handleIcon(icons[3])}
-                            alt=""
-                        />
-                    </div>
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            icons[4] === 0 ? 'hidden' : 'visible'
-                        } `}
-                    >
-                        <img
-                            className="h-6 w-6"
-                            src={handleIcon(icons[4])}
-                            alt=""
-                        />
-                    </div>
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            icons[5] === 0 ? 'hidden' : 'visible'
-                        } `}
-                    >
-                        <img
-                            className="h-6 w-6"
-                            src={handleIcon(icons[5])}
-                            alt=""
-                        />
-                    </div>
+                    {slots.map((slot) => (
+                        <div
+                            key={slot.type}
+                            className="flex flex-row w-full mx-4 items-center justify-center"
+                        >
+                            <img
+                                className="h-6 w-6"
+                                src={handleIcon(slot.icon)}
+                                alt=""
+                            />
+                        </div>
+                    ))}
                 </div>
             </div>
             <div className="flex flex-col text-2xl h-82 ml-4 overflow-y-scroll">
@@ -422,7 +367,7 @@ const View = ({
                             }
                             index={weeks.length - index}
                             key={index}
-                            iconsNumber={icons.indexOf(0)}
+                            slots={slots}
                         />
                     )
                 })}
@@ -430,48 +375,14 @@ const View = ({
             <div className="flex flex-row ml-4 mb-2">
                 <div className="w-6 text-sm font-bold h-4 my-2" />
                 <div className="w-full h-4 flex flex-row justify-evenly my-2 text-xl">
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            iconsNumber < 1 ? 'hidden' : 'visible'
-                        }`}
-                    >
-                        {crossFilter('behaviour').length}
-                    </div>
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            iconsNumber < 2 ? 'hidden' : 'visible'
-                        }`}
-                    >
-                        {crossFilter('homework').length}
-                    </div>
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            iconsNumber < 3 ? 'hidden' : 'visible'
-                        }`}
-                    >
-                        {crossFilter('supply').length}
-                    </div>
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            iconsNumber < 4 ? 'hidden' : 'visible'
-                        }`}
-                    >
-                        {crossFilter('observation').length}
-                    </div>
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            iconsNumber < 5 ? 'hidden' : 'visible'
-                        }`}
-                    >
-                        {crossFilter('calculator').length}
-                    </div>
-                    <div
-                        className={`flex flex-row w-full mx-4 items-center justify-center ${
-                            iconsNumber < 6 ? 'hidden' : 'visible'
-                        }`}
-                    >
-                        {crossFilter('phone').length}
-                    </div>
+                    {slots.map((slot) => (
+                        <div
+                            key={slot.type}
+                            className="flex flex-row w-full mx-4 items-center justify-center"
+                        >
+                            {crossFilter(slot.type).length}
+                        </div>
+                    ))}
                 </div>
             </div>
             <div className="flex flex-row justify-start h-10 mx-3">
