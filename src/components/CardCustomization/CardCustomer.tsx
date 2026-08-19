@@ -116,11 +116,8 @@ export default (props: CardCustomerProps) => {
     }, [clicked, initialIcons, justSaved, icons])
 
     return (
-        <div className="flex flex-col h-full justify-around items-center">
-            <div className="flex flex-col h-full justify-around items-center">
-                <div className="relative top-0 mt-10 font-title text-3xl text-center">
-                    Personnalisez vos cartes !
-                </div>
+        <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center w-full">
                 <div className={`flex flex-row w-full items-center`}>
                     <div
                         className={`rounded overflow-hidden ml-2 mt-5 pb-1 mx-2 bg-gray-100 w-full shadow-custom`}
@@ -395,16 +392,14 @@ export default (props: CardCustomerProps) => {
                     </button>
                 </div>
                 <div
-                    className={`flex h-16 w-56 mt-8 self-center bg-gray-300 rounded text-gray-100 text-lg font-bold text-center justify-center pt-1 mb-5 flex-wrap ${
-                        clickable ? 'hidden' : 'visible'
+                    className={`settings-btn is-disabled ${
+                        clickable ? 'hidden' : ''
                     }`}
                 >
                     Enregistrer les modifications
                 </div>
                 <button
-                    className={`flex h-16 w-56 mt-8 self-center bg-orange-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap ${
-                        clickable ? 'visible' : 'hidden'
-                    }`}
+                    className={`settings-btn ${clickable ? '' : 'hidden'}`}
                     onClick={() => handleSave()}
                 >
                     Enregistrer les modifications

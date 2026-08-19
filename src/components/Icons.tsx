@@ -52,3 +52,43 @@ export const IconMinus: React.FC<IconProps> = (props) => (
         <path d="M5 12h14" />
     </Svg>
 )
+
+export const IconChevronRight: React.FC<IconProps> = (props) => (
+    <Svg {...props}>
+        <path d="M9 6l6 6-6 6" />
+    </Svg>
+)
+
+export const IconChevronLeft: React.FC<IconProps> = (props) => (
+    <Svg {...props}>
+        <path d="M15 6l-6 6 6 6" />
+    </Svg>
+)
+
+export const IconLogout: React.FC<IconProps> = (props) => (
+    <Svg {...props}>
+        <path d="M9 7V5.8A1.8 1.8 0 0 1 10.8 4h8.4A1.8 1.8 0 0 1 21 5.8v12.4a1.8 1.8 0 0 1-1.8 1.8h-8.4A1.8 1.8 0 0 1 9 18.2V17" />
+        <path d="M4 12h11M12 9l3 3-3 3" />
+    </Svg>
+)
+
+export const IconGrid: React.FC<IconProps> = (props) => (
+    <Svg {...props}>
+        <rect x="4" y="4" width="7" height="7" rx="1.2" />
+        <rect x="13" y="4" width="7" height="7" rx="1.2" />
+        <rect x="4" y="13" width="7" height="7" rx="1.2" />
+        <rect x="13" y="13" width="7" height="7" rx="1.2" />
+    </Svg>
+)
+
+export const IconTrash: React.FC<IconProps> = (props) => (
+    <Svg {...props}>
+        <path d="M5 7h14M9.5 7V5.6A1.1 1.1 0 0 1 10.6 4.5h2.8A1.1 1.1 0 0 1 14.5 5.6V7M8.5 7l.7 12h5.6l.7-12" />
+    </Svg>
+)
+
+export const IconUpload: React.FC<IconProps> = (props) => (
+    <Svg {...props}>
+        <path d="M12 16V7M8.5 10.5L12 7l3.5 3.5M5 19h14" />
+    </Svg>
+)
