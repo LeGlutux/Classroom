@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Papa from 'papaparse'
-import { isUpperCase } from './Tools/Strings'
-import Firebase from 'firebase'
+import Firebase from '../firebase'
+import firebase from 'firebase/app'
 
 interface FileUploaderProps {
     currentUserId: string
@@ -74,18 +74,35 @@ export default (props: FileUploaderProps) => {
         db.collection('users')
             .doc(props.currentUserId)
             .update({
-                classes: Firebase.firestore.FieldValue.arrayUnion(classe),
+                classes: firebase.firestore.FieldValue.arrayUnion(classe),
             })
     }
 
     const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!e.target.files) return {}
-        Papa.parse(e.target.files[0], {
+        if (!e.target.files || e.target.files.length === 0) return
+        
+        const file = e.target.files[0]
+        const fileName = file.name.toLowerCase()
+        
+        // Vérifie que c'est un fichier CSV
+        if (!fileName.endsWith('.csv')) {
+            alert('Seuls les fichiers CSV sont supportés. Veuillez exporter votre fichier depuis Pronote en format CSV.')
+            setStudents([])
+            return
+        }
+        
+        Papa.parse(file, {
             header: true,
             skipEmptyLines: true,
+            delimiter: ';', // Pronote utilise le point-virgule comme séparateur
+            encoding: 'UTF-8',
             transformHeader: (header, index) => {
-                if (index === 0 && header === '') return 'Élève'; // Renomme la première colonne si l'en-tête est vide
-                return header;
+                // Normalise les en-têtes pour gérer les variations et colonnes vides
+                const trimmedHeader = header.trim()
+                if (trimmedHeader === 'Élèves' || trimmedHeader === 'Élève') return 'Élève'
+                // Si l'en-tête est vide, utilise un nom générique
+                if (!trimmedHeader || trimmedHeader === '') return `Colonne_${index}`
+                return trimmedHeader
             },
             complete: (results) => {
                 const students = [] as {
@@ -94,27 +111,63 @@ export default (props: FileUploaderProps) => {
                     id: string
                     pap: string
                 }[]
+                
+                if (results.errors && results.errors.length > 0) {
+                    console.error('Erreurs de parsing CSV:', results.errors)
+                }
+                
                 results.data.forEach((d) => {
-                    const data = d as {
-                        Élève: string
-                        Sexe: string
-                        ["Projet d'accompagnement"]: string
+                    const data = d as any
+                    
+                    // Cherche la colonne des élèves (peut être "Élève" ou "Élèves")
+                    const eleveName = data['Élève'] || data['Élèves'] || ''
+                    
+                    if (!eleveName || eleveName.trim() === '') {
+                        return // Ignore les lignes sans nom d'élève
                     }
-                    const pap = data["Projet d'accompagnement"]
-                        ? data["Projet d'accompagnement"]
-                        : ''
-                    const student = Object.assign(splitter(data.Élève), { pap })
+                    
+                    // Cherche les informations PAP/PPS dans toutes les colonnes
+                    let pap = ''
+                    const papKeywords = ['PAP', 'PPS', 'PAI', 'mdph', 'bilan']
+                    
+                    // Parcourt toutes les colonnes pour trouver les informations PAP/PPS
+                    Object.keys(data).forEach((key) => {
+                        const value = data[key]
+                        if (value && typeof value === 'string' && value.trim() !== '') {
+                            const lowerValue = value.toLowerCase()
+                            if (papKeywords.some(keyword => lowerValue.includes(keyword.toLowerCase()))) {
+                                if (pap) {
+                                    pap += ', ' + value.trim()
+                                } else {
+                                    pap = value.trim()
+                                }
+                            }
+                        }
+                    })
+                    
+                    const student = Object.assign(splitter(eleveName), { pap })
                     students.push(student)
                 })
-                setStudents(students)
+                
+                if (students.length > 0) {
+                    setStudents(students)
+                } else {
+                    console.error('Aucun élève trouvé dans le fichier CSV')
+                    alert('Erreur : Aucun élève trouvé dans le fichier. Vérifiez que le fichier est au format Pronote avec la colonne "Élèves".')
+                }
             },
+            error: (error) => {
+                console.error('Erreur lors du parsing du fichier:', error)
+                alert('Erreur lors de la lecture du fichier CSV. Vérifiez que le fichier est valide.')
+                setStudents([])
+            }
         })
     }
     return (
         <div className="flex flex-col h-full items-center">
             <div className="font-title text-3xl">Importer</div>
             <div className="font-student italic text-sm text-gray-500">
-                fichiers acceptés : xlsx, csv
+                fichiers acceptés : csv (export Pronote)
             </div>
             <input
                 value={classe}
@@ -128,7 +181,7 @@ export default (props: FileUploaderProps) => {
                 className="my-6 w-48"
                 type="file"
                 name="file"
-                accept=".csv"
+                accept=".csv,.xlsx,.xls"
                 onChange={changeHandler}
                 style={{ display: 'block' }}
             />

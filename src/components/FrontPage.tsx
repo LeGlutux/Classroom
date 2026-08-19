@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
+import firebase from 'firebase/app'
 import ClassListFilter from '../components/ClassListFilter'
 import HomeClassListFilter from '../components/HomeClassListFilter'
 import NavBar from './NavBar'
@@ -32,13 +33,14 @@ import { StudentInterface } from '../interfaces/Student'
 export default () => {
     const db = Firebase.firestore()
     const [withMemory, setWithMemory] = useState(false)
+    const lastConnectionUpdateRef = React.useRef<number>(0)
     const [menuOpened, setMenuOpened] = useState<boolean>(false)
     const [burgerMenuFirstClicked, setBurgerMenuFirstClicked] = useState(false)
     const [displayRandomStudent, setDisplayRandomStudent] = useState(false)
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
     const { user, refreshUser } = useUser(currentUser.uid)
-    const { students, loading: studentsLoading } = useStudents(currentUser.uid)
+    const { students, loading: studentsLoading, filterStudents } = useStudents(currentUser.uid)
     const { postIts } = usePostIts(currentUser.uid)
     const postIt = (group: string) => {
         if (postIts.find((item) => item.classe === group) === undefined)
@@ -56,85 +58,79 @@ export default () => {
     }
 
     const [displayPostIt, setDisplayPostIt] = useState(false)
-    const [postItClasse, setPostItClasse] = useState('none')
+    const [postItClasse] = useState('none')
 
     const [displayedGroup, setDisplayedGroup] = useState('tous')
     const [hardStudents, setHardStudents] = useState<StudentInterface[]>([])
     const [magicStickStudentsList, setMagicStickStudentsList] =
         useState(hardStudents)
+    const lastFilteredGroupRef = useRef<string>('')
 
     useEffect(() => {
         setDisplayed(false)
-        setTimeout(() => setDisplayed(true), 2000)
+        const timeoutId = setTimeout(() => {
+            if (isMountedRef.current) {
+                setDisplayed(true)
+            }
+        }, 2000)
+        return () => {
+            clearTimeout(timeoutId)
+        }
     }, [displayedGroup])
 
+    // Débounce lastConnection update : max 1 fois par minute
+    const isMountedRef = useRef(true)
     useEffect(() => {
-        db.collection('users')
-            .doc(currentUser.uid)
-            .update({ lastConnection: Date() })
-    }, [])
-
-    useEffect(() => {
-        if (!studentsLoading && groups.length > 0) {
-            setHardStudents(
-                students.filter((student) =>
-                    displayedGroup === 'tous'
-                        ? true
-                        : student.classes.includes(displayedGroup)
-                )
-            )
+        isMountedRef.current = true
+        
+        const now = Date.now()
+        const lastUpdate = lastConnectionUpdateRef.current
+        const oneMinute = 60 * 1000
+        
+        // Ne mettre à jour que si plus d'1 minute s'est écoulée
+        if (now - lastUpdate > oneMinute) {
+            db.collection('users')
+                .doc(currentUser.uid)
+                .update({ lastConnection: firebase.firestore.FieldValue.serverTimestamp() })
+                .then(() => {
+                    if (isMountedRef.current) {
+                        lastConnectionUpdateRef.current = now
+                    }
+                })
+                .catch(() => {
+                    // Ignorer les erreurs silencieusement
+                })
         }
-    }, [studentsLoading, groups, displayedGroup, students])
-
-    const filterStudents = (group: string): StudentInterface[] => {
-        const filtered = students
-            .filter((student: StudentInterface) =>
-                student.classes.includes(group)
-            )
-            .sort((a: StudentInterface) => (a.highlight ? -1 : 1))
-        return filtered
-    }
-
-    // automatique du groupe affiché si une seule classe existe
-    useEffect(() => {
-        if (
-            !groupsLoading &&
-            Array.isArray(groups) &&
-            groups.length === 1 &&
-            displayedGroup === 'tous'
-        ) {
-            setDisplayedGroup(groups[0])
+        
+        return () => {
+            isMountedRef.current = false
         }
-    }, [groupsLoading, groups, displayedGroup])
+    }, [currentUser.uid, db])
 
+    // Initialisation : récupérer l'état depuis localStorage
     useEffect(() => {
-        // Récupérer l'état du groupe affiché depuis le localStorage lors du montage
         const savedGroup = localStorage.getItem('displayedGroup')
         if (savedGroup) {
             setDisplayedGroup(savedGroup)
-        }
-    }, [])
-
-    useEffect(() => {
-        // Sauvegarder l'état du groupe affiché dans le localStorage chaque fois qu'il change
-        localStorage.setItem('displayedGroup', displayedGroup)
-    }, [displayedGroup])
-
-    useEffect(() => {
-        if (!displayedGroup) {
+        } else if (!displayedGroup) {
             setDisplayedGroup('tous')
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    // Sauvegarder dans localStorage quand displayedGroup change
     useEffect(() => {
-        console.log('groups:', groups)
-        console.log('displayedGroup:', displayedGroup)
-        if (groups && groups.length === 1 && displayedGroup === 'tous') {
-            console.log('Setting displayedGroup to:', groups[0])
-            setDisplayedGroup(groups[0])
-            filterStudents(groups[0])
+        if (displayedGroup) {
+            localStorage.setItem('displayedGroup', displayedGroup)
         }
-    }, [groups, displayedGroup])
+    }, [displayedGroup])
+
+    // Automatique : si une seule classe, utiliser celle-ci
+    useEffect(() => {
+        if (!groupsLoading && Array.isArray(groups) && groups.length === 1 && displayedGroup === 'tous') {
+            setDisplayedGroup(groups[0])
+        }
+    }, [groupsLoading, groups, displayedGroup])
 
     ///////////////// icons /////////////////
     const userIcons = useIcons(currentUser.uid)
@@ -157,12 +153,29 @@ export default () => {
 
     useEffect(() => {
         setIcons(userIcons.icons)
-        setIconsDisplay(iconsVisualInitialState(icons))
+        setIconsDisplay(iconsVisualInitialState(userIcons.icons))
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userIcons.icons, userIcons.loading])
 
+    // Filtrer les étudiants quand displayedGroup change OU quand les données sont chargées pour la première fois
     useEffect(() => {
-        setHardStudents(filterStudents(displayedGroup))
+        // Éviter de re-filtrer si on a déjà filtré pour ce groupe ou si toujours en chargement
+        if (studentsLoading || lastFilteredGroupRef.current === displayedGroup) {
+            return
+        }
+        
+        // Filtrer seulement si on a des données
+        filterStudents(displayedGroup)
+        lastFilteredGroupRef.current = displayedGroup
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [studentsLoading, displayedGroup])
+    
+    // Mettre à jour hardStudents quand students change (après filtrage)
+    useEffect(() => {
+        if (students.length > 0) {
+            setHardStudents(students)
+        }
+    }, [students])
 
     const toggleHighlight = (studentId: string) => {
         hardStudents.forEach((s) => {
@@ -307,17 +320,17 @@ export default () => {
     }
 
     return (
-        <div className="w-full h-screen flex flex-col">
+        <div className="w-full h-screen flex flex-col overflow-hidden">
             <Updater
                 userId={currentUser.uid}
-                userVersion={user!.version}
+                userVersion={user?.version || 0}
                 refreshUser={refreshUser}
                 students={students}
                 setUpdating={setUpdating}
                 classes={groups}
             />
             {!displayed && displayedGroup !== 'tous' && (
-                <div className="flex flex-col items-center justify-center absolute w-full h-full mb-12 bg-white">
+                <div className="flex flex-col items-center justify-center absolute w-full h-full mb-12 bg-white z-10">
                     <div className="font-title text-4xl mb-8 text-bold xl:text-6xl">
                         Chargement des données
                     </div>
@@ -327,9 +340,9 @@ export default () => {
                 </div>
             )}
 
-            <div className="flex flex-col w-full absolute top-0 bg-white h-12 border-b-2 p-1 border-gray-400 items-center font-title font-bold justify-around text-4xl rounded-b-full">
+            <div className="flex-shrink-0 flex flex-col w-full bg-white h-12 border-b-2 p-1 border-gray-400 items-center font-title font-bold justify-around text-4xl rounded-b-full z-10">
                 {title}
-                <img
+                <img alt=""
                     className={`absolute h-8 w-8 ml-20 mb-1 ${
                         postIt(displayedGroup) ? 'visible' : 'invisible'
                     }`}
@@ -371,9 +384,7 @@ export default () => {
 
             {displayedGroup !== 'tous' && (
                 <div className="flex w-full h-full flex-col pt-18 pb-24 bg-white overflow-y-scroll md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start">
-                    {students
-                        .sort((a) => (a.highlight ? -1 : 1))
-                        .map(
+                    {students.map(
                             ({
                                 name,
                                 surname,
@@ -414,7 +425,7 @@ export default () => {
             )}
 
             {displayedGroup === 'tous' && (
-                <div className="flex w-full h-full flex-col bg-white overflow-y-scroll justify-around py-2">
+                <div className="flex-1 min-h-0 flex w-full flex-col bg-white overflow-hidden py-2">
                     {
                         <HomeClassListFilter
                             setDisplayedGroup={setDisplayedGroup}

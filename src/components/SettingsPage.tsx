@@ -7,12 +7,10 @@ import {
     useVersion,
     useGroups,
     useLists,
-    useUser,
 } from '../hooks'
-import Firebase from 'firebase/app'
+import firebase from 'firebase/app'
 import loader_image from '../images/loader.gif'
 import 'react-datepicker/dist/react-datepicker.css'
-import firebase from 'firebase/app'
 import { AuthContext } from '../Auth'
 import { usePeriodes, useStudents } from '../hooks'
 import PeriodeFilter from './PeriodeFilter'
@@ -35,7 +33,6 @@ export default () => {
     const { version } = useVersion()
     if (currentUser === null) return <div />
     const { groups, refreshGroups, loading } = useGroups(currentUser.uid)
-    const user = useUser(currentUser.uid)
     const history = useHistory()
     const { students } = useStudents(currentUser.uid)
     const { periodes, refreshPeriodes, runningPeriode, refreshRunningPeriode } =
@@ -44,9 +41,8 @@ export default () => {
     const db = firebase.firestore()
 
     const handleHomeClick = () => {
-    localStorage.removeItem('displayedGroup'); // Supprimez l'état du cache
-    console.log("Cache vidé, redirection vers l'accueil");
-}
+        localStorage.removeItem('displayedGroup')
+    }
 
     const xScroller = useRef<HTMLDivElement>(null)
     const ref0 = useRef<HTMLDivElement>(null)
@@ -67,10 +63,11 @@ export default () => {
         // update toutes les props => faire plutôt dans updater
     }
 
-    const launchNewVersion = () => {
-        const newVersion = version + 0.1
-        db.collection('props').doc('app-props').update({ version: newVersion })
-    }
+    // Fonction pour lancer une nouvelle version (non utilisée actuellement)
+    // const launchNewVersion = () => {
+    //     const newVersion = version + 0.1
+    //     db.collection('props').doc('app-props').update({ version: newVersion })
+    // }
 
     //////////////////////////// Scrolling ////////////////////////
 
@@ -380,7 +377,7 @@ export default () => {
                     <div className="my-8 flex justify-center bg-white">
                         <button
                             className="text-lg text-gray-700 font-bold"
-                            onClick={() => Firebase.auth().signOut()}
+                            onClick={() => firebase.auth().signOut()}
                         >
                             Se déconnecter
                         </button>

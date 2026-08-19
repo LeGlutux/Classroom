@@ -2,16 +2,16 @@ import firebase from 'firebase/app'
 import 'firebase/auth'
 import "firebase/firestore"
 
+// Fallback vers les valeurs d'origine si les variables d'environnement ne sont pas définies
 const config = {
-
-  apiKey: "AIzaSyAfwQcpuB_DhRWWcP0ZaB277Al1OccJ-OY",
-  authDomain: "classroom-48838.firebaseapp.com",
-  databaseURL: "https://classroom-48838.firebaseio.com",
-  projectId: "classroom-48838",
-  storageBucket: "classroom-48838.appspot.com",
-  messagingSenderId: "255308442151",
-  appId: "1:255308442151:web:8d1fa28ac2beab7d83bc02",
-  measurementId: "G-QMZXM5QL8Z"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "AIzaSyAfwQcpuB_DhRWWcP0ZaB277Al1OccJ-OY",
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "classroom-48838.firebaseapp.com",
+  databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL || "https://classroom-48838.firebaseio.com",
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || "classroom-48838",
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "classroom-48838.appspot.com",
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || "255308442151",
+  appId: process.env.REACT_APP_FIREBASE_APP_ID || "1:255308442151:web:8d1fa28ac2beab7d83bc02",
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID || "G-QMZXM5QL8Z"
 }
 
 

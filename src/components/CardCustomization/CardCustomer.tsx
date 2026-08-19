@@ -18,7 +18,7 @@ export default (props: CardCustomerProps) => {
 
     const [icons, setIcons] = useState(userIcons)
     const [clicked, setClicked] = useState(false)
-    const [initialIcons, setInitialIcons] = useState(userIcons)
+    const [initialIcons] = useState(userIcons)
 
     const iconsVisualInitialState = (iconsList: number[]) => {
         const initialState = [] as string[]
@@ -32,7 +32,7 @@ export default (props: CardCustomerProps) => {
 
     useEffect(() => {
         setIcons(userIcons)
-        setIconsDisplay(iconsVisualInitialState(icons))
+        setIconsDisplay(iconsVisualInitialState(userIcons))
     }, [userIcons, loading])
 
     const db = firebase.firestore()
@@ -114,7 +114,7 @@ export default (props: CardCustomerProps) => {
     useEffect(() => {
         if (icons !== initialIcons && justSaved === false) setClickable(true)
         else setClickable(false)
-    }, [clicked, initialIcons, justSaved])
+    }, [clicked, initialIcons, justSaved, icons])
 
     return (
         <div className="flex flex-col h-full justify-around items-center">

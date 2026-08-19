@@ -66,32 +66,26 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
     }
 
     const crossFilter = (crossType: string, runningP: number) => {
+        const filtered = crosses.filter(
+            (element: firebase.firestore.DocumentData) =>
+                element && element.type === crossType
+        )
+        
         if (runningP === props.periodes.length) {
-            const filtered = crosses
-                .filter(
-                    (element: firebase.firestore.DocumentData) =>
-                        element.type === crossType
-                )
-                .filter(
-                    (element: firebase.firestore.DocumentData) =>
-                        element.time > props.periodes[runningP - 1]
-                )
-            return filtered
+            // Dernière période : toutes les crosses après la dernière date de période
+            const periodeStart = props.periodes[runningP - 1]
+            return filtered.filter((element: firebase.firestore.DocumentData) => {
+                const crossTime = element.time?.toDate ? element.time.toDate() : element.time
+                return crossTime > periodeStart
+            })
         } else {
-            const filtered = crosses
-                .filter(
-                    (element: firebase.firestore.DocumentData) =>
-                        element.type === crossType
-                )
-                .filter(
-                    (element: firebase.firestore.DocumentData) =>
-                        element.time > props.periodes[runningP - 1]
-                )
-                .filter(
-                    (element: firebase.firestore.DocumentData) =>
-                        element.time < props.periodes[runningP]
-                )
-            return filtered
+            // Période intermédiaire : crosses entre deux dates
+            const periodeStart = props.periodes[runningP - 1]
+            const periodeEnd = props.periodes[runningP]
+            return filtered.filter((element: firebase.firestore.DocumentData) => {
+                const crossTime = element.time?.toDate ? element.time.toDate() : element.time
+                return crossTime > periodeStart && crossTime < periodeEnd
+            })
         }
     }
 
@@ -209,10 +203,10 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                                     setHighlight(!highlight)
                                     props.toggleHighlight(props.id)
                                 }}
-                                className={`flex flex-row mt-2`}
+                                className="flex flex-row flex-nowrap mt-2 items-baseline"
                             >
                                 <div
-                                    className={`font-studentName ml-2 text-gray-900 font-medium h-5 text-2xl md:text-3xl lg:text-3x xl:text-3xl xl:pt-4 ${
+                                    className={`font-studentName ml-2 text-gray-900 font-medium text-2xl md:text-3xl lg:text-3x xl:text-3xl xl:pt-4 whitespace-nowrap ${
                                         highlight ? 'text-red-600' : ''
                                     }
                                 `}
@@ -220,7 +214,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                                     {shortSurname}
                                 </div>
                                 <div
-                                    className={`font-studentName ml-2 text-gray-900 font-bold text-2xl md:text-3xl lg:text-3x xl:text-3xl xl:pt-4 ${
+                                    className={`font-studentName ml-2 text-gray-900 font-bold text-2xl md:text-3xl lg:text-3x xl:text-3xl xl:pt-4 whitespace-nowrap ${
                                         highlight ? 'text-red-600' : ''
                                     }`}
                                 >
@@ -254,8 +248,9 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                             }`}
                         >
                             <button
+                                type="button"
                                 onClick={() => handleAddCross('behaviour')}
-                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full"
+                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
                             >
                                 <img className="" src={props.icons[0]} alt="" />
                             </button>
@@ -278,8 +273,9 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                             }`}
                         >
                             <button
+                                type="button"
                                 onClick={() => handleAddCross('homework')}
-                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full"
+                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
                             >
                                 <img className="" src={props.icons[1]} alt="" />
                             </button>
@@ -302,8 +298,9 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                             }`}
                         >
                             <button
+                                type="button"
                                 onClick={() => handleAddCross('supply')}
-                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full"
+                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
                             >
                                 <img className="" src={props.icons[2]} alt="" />
                             </button>
@@ -324,8 +321,9 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                             }`}
                         >
                             <button
+                                type="button"
                                 onClick={() => handleAddCross('observation')}
-                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full"
+                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
                             >
                                 <img className="" src={props.icons[3]} alt="" />
                             </button>
@@ -348,8 +346,9 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                             }`}
                         >
                             <button
+                                type="button"
                                 onClick={() => handleAddCross('calculator')}
-                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full"
+                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
                             >
                                 <img className="" src={props.icons[4]} alt="" />
                             </button>
@@ -372,8 +371,9 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                             }`}
                         >
                             <button
+                                type="button"
                                 onClick={() => handleAddCross('phone')}
-                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full"
+                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
                             >
                                 <img className="" src={props.icons[5]} alt="" />
                             </button>

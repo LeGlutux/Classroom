@@ -1,4 +1,4 @@
-import firebase from 'firebase'
+import firebase from 'firebase/app'
 import Firebase from './firebase'
 import { StudentInterface } from './interfaces/Student'; // Assurez-vous que le chemin est correct
 
@@ -26,6 +26,7 @@ export const fetchCross = async (
     currentStudentId: string
 ) => {
     const db = Firebase.firestore()
+    // Hard fetch - toujours récupérer depuis Firebase
     const querySnapshot = await db
         .collection('users')
         .doc(currentUserId)
@@ -36,18 +37,22 @@ export const fetchCross = async (
 
     const data = [] as firebase.firestore.DocumentData[]
 
-    querySnapshot.docs.forEach((doc) => data.push(doc.data()))
+    querySnapshot.docs.forEach((doc) => {
+        const docData = doc.data()
+        if (docData) {
+            data.push(docData)
+        }
+    })
 
     return data
 }
 
-export const fetchCrosses = (
+export const fetchCrosses = async (
     currentUserId: string,
     allStudentIds: string[]
 ) => {
     const db = Firebase.firestore()
-    const data: { id: string; docs: firebase.firestore.DocumentData[] }[] = []
-    allStudentIds.forEach(async (id) => {
+    const promises = allStudentIds.map(async (id) => {
         const querySnapshot = await db
             .collection('users')
             .doc(currentUserId)
@@ -58,9 +63,10 @@ export const fetchCrosses = (
 
         const docs = [] as firebase.firestore.DocumentData[]
         querySnapshot.docs.forEach((doc) => docs.push(doc.data()))
-        data.push({ id, docs })
+        return { id, docs }
     })
 
+    const data = await Promise.all(promises)
     return data
 }
 

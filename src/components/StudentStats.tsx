@@ -14,21 +14,12 @@ export default () => {
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
     const icons = useIcons(currentUser.uid)
-    const { id } = useParams()
+    const { id } = useParams<{ id: string }>()
     if (id === undefined) return <div />
     const [crossRefresher, setCrossRefresher] = useState(0)
     const { cross } = useCross(currentUser.uid, id, crossRefresher)
     const student = useStudent(currentUser.uid, id)
     if (student === undefined) return <div />
-
-    const crossFilter = (crossType: string) => {
-        const filtered = cross.filter(
-            (element: firebase.firestore.DocumentData) =>
-                element.type === crossType
-        )
-        const ordered = filtered.sort((a, b) => (a.time < b.time ? 1 : -1))
-        return ordered
-    }
 
     return (
         <View
@@ -37,7 +28,7 @@ export default () => {
             setCrossRefresher={setCrossRefresher}
             student={student}
             studentId={id}
-            crossFilter={crossFilter}
+            cross={cross}
             icons={icons.icons}
         />
     )
@@ -49,7 +40,7 @@ const View = ({
     setCrossRefresher,
     student,
     studentId,
-    crossFilter,
+    cross,
     icons,
 }: {
     currentUser: firebase.User
@@ -57,10 +48,23 @@ const View = ({
     setCrossRefresher: React.Dispatch<React.SetStateAction<number>>
     student: firebase.firestore.DocumentData
     studentId: string
-    crossFilter: (crossType: string) => firebase.firestore.DocumentData[]
+    cross: firebase.firestore.DocumentData[]
     icons: number[]
 }) => {
     const { groups } = useGroups(currentUser.uid)
+    const crossFilter = (crossType: string) => {
+        if (!cross || !Array.isArray(cross)) return []
+        const filtered = cross.filter(
+            (element: firebase.firestore.DocumentData) =>
+                element && element.type === crossType
+        )
+        const ordered = filtered.sort((a, b) => {
+            const timeA = a.time?.toDate ? a.time.toDate().getTime() : (a.time?.getTime ? a.time.getTime() : a.time)
+            const timeB = b.time?.toDate ? b.time.toDate().getTime() : (b.time?.getTime ? b.time.getTime() : b.time)
+            return timeA < timeB ? 1 : -1
+        })
+        return ordered
+    }
     const getClosestFirstMondayOfSeptember = (): Date => {
         const today = new Date();
         let year = today.getFullYear();

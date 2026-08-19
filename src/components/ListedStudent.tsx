@@ -1,7 +1,7 @@
 import React from 'react'
 import ListStatusButton from './ListStatusButton'
 import { useListState } from '../hooks'
-import firebase from 'firebase'
+import firebase from 'firebase/app'
 
 interface ListedStudentProps {
     name: string
@@ -27,15 +27,15 @@ export default (props: ListedStudentProps) => {
     while (loading === true) return <div />
 
     return (
-        <div className="flex flex-row w-full h-8 border-b-2 border-gray-300">
-            <div className="flex border-r-2 border-gray-300 w-5/12 overflow-x-hidden text-center pl-1">
+        <div className="flex flex-row w-full h-12 items-center rounded-lg box-border">
+            <div className="flex border-r-2 border-gray-200 w-5/12 overflow-x-hidden text-center pl-4 font-studentName text-gray-800 box-border">
                 {shortedFullName}
             </div>
-            <div className="flex border-r-2 border-gray-300 justify-center w-2/12 overflow-x-hidden text-center">
+            <div className="flex border-r-2 border-gray-200 justify-center w-2/12 overflow-x-hidden text-center font-studentName text-gray-600 box-border">
                 {props.classes}
             </div>
 
-            <div className="flex w-8 h-full">
+            <div className="flex w-14 h-full flex-shrink-0 box-border" style={{ minWidth: '54px', width: '54px' }}>
                 <ListStatusButton
                     studentId={props.studentId}
                     userId={props.userId}
@@ -45,7 +45,7 @@ export default (props: ListedStudentProps) => {
                 />
             </div>
             {props.currentList.itemN > 1 && (
-                <div className="flex w-8 h-full">
+                <div className="flex w-14 h-full flex-shrink-0 box-border" style={{ minWidth: '54px', width: '54px' }}>
                     <ListStatusButton
                         studentId={props.studentId}
                         userId={props.userId}
@@ -57,7 +57,7 @@ export default (props: ListedStudentProps) => {
             )}
 
             {props.currentList.itemN > 2 && (
-                <div className="flex w-8 h-full">
+                <div className="flex w-14 h-full flex-shrink-0 box-border" style={{ minWidth: '54px', width: '54px' }}>
                     <ListStatusButton
                         studentId={props.studentId}
                         userId={props.userId}
@@ -69,7 +69,7 @@ export default (props: ListedStudentProps) => {
             )}
 
             {props.currentList.itemN > 3 && (
-                <div className="flex w-8 h-full">
+                <div className="flex w-14 h-full flex-shrink-0 box-border" style={{ minWidth: '54px', width: '54px' }}>
                     <ListStatusButton
                         studentId={props.studentId}
                         userId={props.userId}
@@ -81,7 +81,7 @@ export default (props: ListedStudentProps) => {
             )}
 
             {props.currentList.itemN > 4 && (
-                <div className="flex w-8 h-full">
+                <div className="flex w-14 h-full flex-shrink-0 box-border" style={{ minWidth: '54px', width: '54px' }}>
                     <ListStatusButton
                         studentId={props.studentId}
                         userId={props.userId}

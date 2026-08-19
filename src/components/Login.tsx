@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { withRouter, Redirect } from 'react-router'
-import Firebase from 'firebase/app'
+import { Redirect, useHistory } from 'react-router-dom'
+import Firebase from '../firebase'
 import { AuthContext } from '../Auth'
 import lock from '../images/lock.png'
 import loader_image from '../images/loader.gif'
@@ -8,11 +8,8 @@ import { Link } from 'react-router-dom'
 import lucienEtMonstre from '../images/lucienEtMonstre.png'
 import mail from '../images/mail.png'
 
-interface LoginProps {
-    history: any
-}
-
-const Login = ({ history }: LoginProps) => {
+const Login = () => {
+    const history = useHistory()
     const handleLogin = useCallback(
         async (event) => {
             event.preventDefault()
@@ -33,7 +30,12 @@ const Login = ({ history }: LoginProps) => {
 
     useEffect(() => {
         setDisplayed(false)
-        setTimeout(() => setDisplayed(true), 2000)
+        const timer = setTimeout(() => setDisplayed(true), 2000)
+        
+        // Cleanup function to prevent memory leak
+        return () => {
+            clearTimeout(timer)
+        }
     }, [])
     const { currentUser } = useContext(AuthContext)
 
@@ -127,4 +129,4 @@ const Login = ({ history }: LoginProps) => {
     )
 }
 
-export default withRouter(Login)
+export default Login

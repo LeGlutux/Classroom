@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { useLists, usePeriodes } from '../hooks'
+import { useLists } from '../hooks'
 import { AuthContext } from '../Auth'
 import NavBar from './NavBar'
 import add from '../images/add.png'
@@ -9,14 +9,12 @@ import loader_image from '../images/loader.gif'
 
 export default () => {
     const handleHomeClick = () => {
-        localStorage.removeItem('displayedGroup'); // Supprimez l'état du cache
-        console.log("Cache vidé, redirection vers l'accueil");
+        localStorage.removeItem('displayedGroup')
     }    
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
     const [listsRefresher, setListsRefresher] = useState(0)
     const { lists, loading } = useLists(currentUser.uid, listsRefresher)
-    const { runningPeriode } = usePeriodes(currentUser.uid)
 
     if (loading) {
         return (

@@ -44,10 +44,16 @@ export default (props: ListStatusButtonProps) => {
 
     return (
         <button
-            className={`flex w-8 h-full justify-center items-center text-2xl text-bold border-gray-300 border-r-2 ${stateColor(
+            className={`flex w-full h-full justify-center items-center text-xl font-bold border-gray-200 border-r-2 transition-all hover:opacity-80 box-border flex-shrink-0 ${stateColor(
                 state
-            )} `}
+            )}`}
+            style={{ minWidth: '54px', width: '100%' }}
             onClick={() => handleClick()}
-        />
+        >
+            {state === 1 && <span className="text-white">✓</span>}
+            {state === 2 && <span className="text-white">✗</span>}
+            {state === 3 && <span className="text-yellow-800">?</span>}
+            {state === 0 && <span className="opacity-0 pointer-events-none select-none">&nbsp;</span>}
+        </button>
     )
 }

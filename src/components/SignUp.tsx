@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
-import { withRouter, useHistory } from 'react-router'
-import Firebase from 'firebase/app'
+import { useHistory } from 'react-router-dom'
+import Firebase from '../firebase'
 import femaleUser from '../images/femaleUser.png'
 import lock from '../images/lock.png'
 import { Link } from 'react-router-dom'
@@ -139,4 +139,4 @@ const SignUp = () => {
     )
 }
 
-export default withRouter(SignUp)
+export default SignUp
