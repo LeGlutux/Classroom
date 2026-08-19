@@ -3,6 +3,8 @@ import { AuthContext } from '../Auth'
 
 const STORAGE_KEY = 'thotnote.v3.welcome'
 const CURSIVE = 'libère ta pédagogie.'
+const PRECIOUS = 'pédagogie'
+const PRECIOUS_START = CURSIVE.indexOf(PRECIOUS)
 const SUBTITLE = 'Le plus célèbre cahier de note virtuel vous présente sa V3.'
 
 const hasSeenWelcome = () => {
@@ -26,6 +28,18 @@ const prefersReducedMotion = () => {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }
 
+const isPreciousLetter = (index: number) =>
+    index >= PRECIOUS_START && index < PRECIOUS_START + PRECIOUS.length
+
+const letterDelay = (index: number) => {
+    if (index < PRECIOUS_START) return index * 0.09
+    const preciousBase = PRECIOUS_START * 0.09 + 0.34
+    if (index >= PRECIOUS_START + PRECIOUS.length) {
+        return preciousBase + (PRECIOUS.length - 1) * 0.2 + 0.38
+    }
+    return preciousBase + (index - PRECIOUS_START) * 0.2
+}
+
 export default () => {
     const { currentUser } = useContext(AuthContext)
     const [visible, setVisible] = useState(false)
@@ -36,15 +50,16 @@ export default () => {
         if (!currentUser || hasSeenWelcome()) return
         setVisible(true)
         if (prefersReducedMotion()) {
-            setStep(5)
+            setStep(6)
             return
         }
         const timers = [
-            window.setTimeout(() => setStep(1), 700),
-            window.setTimeout(() => setStep(2), 2400),
-            window.setTimeout(() => setStep(3), 3700),
-            window.setTimeout(() => setStep(4), 6400),
-            window.setTimeout(() => setStep(5), 7600),
+            window.setTimeout(() => setStep(1), 450),
+            window.setTimeout(() => setStep(2), 1400),
+            window.setTimeout(() => setStep(3), 3100),
+            window.setTimeout(() => setStep(4), 4400),
+            window.setTimeout(() => setStep(5), 8800),
+            window.setTimeout(() => setStep(6), 10000),
         ]
         return () => {
             timers.forEach((id) => window.clearTimeout(id))
@@ -52,7 +67,7 @@ export default () => {
     }, [currentUser])
 
     const dismiss = () => {
-        if (step < 4 || leaving) return
+        if (step < 5 || leaving) return
         setLeaving(true)
         window.setTimeout(() => {
             markWelcomeSeen()
@@ -69,38 +84,44 @@ export default () => {
             role="dialog"
             aria-label="Bienvenue sur Thòt Note V3"
         >
+            <div className="v3-welcome-grain" aria-hidden="true" />
             <div className="v3-welcome-inner">
-                <div className={`v3-welcome-line ${step >= 1 ? 'is-in' : ''}`}>
+                <div className={`v3-welcome-maison ${step >= 1 ? 'is-in' : ''}`}>
+                    Maison Thòt — Été 2026
+                </div>
+                <div className={`v3-welcome-line ${step >= 2 ? 'is-in' : ''}`}>
                     Bienvenue sur Thòt Note
                 </div>
-                <div className={`v3-welcome-v3 ${step >= 2 ? 'is-in' : ''}`}>
+                <div className={`v3-welcome-v3 ${step >= 3 ? 'is-in' : ''}`}>
                     V3
                 </div>
                 <div
-                    className={`v3-welcome-rule ${step >= 2 ? 'is-in' : ''}`}
+                    className={`v3-welcome-rule ${step >= 3 ? 'is-in' : ''}`}
                     aria-hidden="true"
                 />
-                <p className={`v3-welcome-cursive ${step >= 3 ? 'is-in' : ''}`}>
+                <p className={`v3-welcome-cursive ${step >= 4 ? 'is-in' : ''}`}>
                     {Array.from(CURSIVE).map((char, index) => (
                         <span
                             key={index}
                             className={
                                 char === ' '
                                     ? 'v3-welcome-space'
+                                    : isPreciousLetter(index)
+                                    ? 'v3-welcome-letter is-precious'
                                     : 'v3-welcome-letter'
                             }
-                            style={{ animationDelay: index * 0.09 + 's' }}
+                            style={{ animationDelay: letterDelay(index) + 's' }}
                         >
                             {char === ' ' ? '\u00a0' : char}
                         </span>
                     ))}
                 </p>
-                <p className={`v3-welcome-sub ${step >= 4 ? 'is-in' : ''}`}>
+                <p className={`v3-welcome-sub ${step >= 5 ? 'is-in' : ''}`}>
                     {SUBTITLE}
                 </p>
                 <button
                     type="button"
-                    className={`v3-welcome-enter ${step >= 5 ? 'is-in' : ''}`}
+                    className={`v3-welcome-enter ${step >= 6 ? 'is-in' : ''}`}
                     onClick={(event) => {
                         event.stopPropagation()
                         dismiss()
