@@ -63,24 +63,22 @@ export default (props: Props) => {
                 action=""
             >
                 <div className="flex flex-col h-full items-center pb-4 justify-center">
-                    <div className="flex flex-col h-full justify-around items-center">
+                    <div className="flex flex-col h-full justify-around items-center w-full">
                         <div className="settings-title">
                             Ajoutez vos classes
                         </div>
-                        <div className="flex flex-row items-center justify-center hover:border-gray-600 xl:w-full">
-                            <img className="w-8 h-8 mt-3" src={group} alt="" />
-                            <div className="w-9/12 flex flex-col hover:border-gray-600">
-                                <input
-                                    ref={inputRef}
-                                    value={inputValue}
-                                    onChange={(e) =>
-                                        setInputValue(e.target.value)
-                                    }
-                                    className="field-input ml-3"
-                                    type="text"
-                                    placeholder="Nom de la classe"
-                                />
-                            </div>
+                        <div className="field">
+                            <img src={group} alt="" />
+                            <input
+                                ref={inputRef}
+                                value={inputValue}
+                                onChange={(e) =>
+                                    setInputValue(e.target.value)
+                                }
+                                className="field-input"
+                                type="text"
+                                placeholder="Nom de la classe"
+                            />
                         </div>
                         <div
                             className={`btn-disabled mt-6 ${

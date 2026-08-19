@@ -47,25 +47,15 @@ export default (props: MagicStickProps) => {
     }
 
     //////////////////////////////// Tous les élèves ont étés choisis ////////////////////////////////
+    if (!props.displayRandomStudent) return null
+
     if (randomStudent === undefined) {
         return (
-            <div
-                className={`flex flex-col z-50 absolute w-full h-full items-center justify-center self-center ${
-                    props.displayRandomStudent ? 'visible' : 'invisible'
-                }`}
-                style={{ backgroundColor: 'rgba(31,27,22,0.35)' }}
-            >
-                <div
-                    ref={ref1}
-                    className={`modal-card ${
-                        props.displayRandomStudent ? 'fade-in' : 'invisible'
-                    } `}
-                >
-                    <div className="w-3/4 h-full flex flex-col justify-center">
-                        <div className="h-24 pt-8 sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-center font-bold">
-                            Tous les élèves ont été choisis, l'ensemble a été
-                            réinitialisé.
-                        </div>
+            <div className="modal-overlay">
+                <div ref={ref1} className="modal-card">
+                    <div className="empty-state-title" style={{ fontSize: '1.35rem' }}>
+                        Tous les élèves ont été choisis, l'ensemble a été
+                        réinitialisé.
                     </div>
                 </div>
             </div>
@@ -76,30 +66,19 @@ export default (props: MagicStickProps) => {
 
     if (props.withMemory) {
         return (
-            <div
-                className={`flex flex-col z-50 absolute w-full h-full items-center justify-center self-center ${
-                    props.displayRandomStudent ? 'visible' : 'invisible'
-                }`}
-                style={{ backgroundColor: 'rgba(31,27,22,0.35)' }}
-            >
-                <div
-                    ref={ref2}
-                    className={`modal-card ${
-                        props.displayRandomStudent ? 'fade-in' : 'invisible'
-                    }`}
-                >
-                    <div className="w-3/4 h-full flex justify-center sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-center font-bold">
-                        <LightStudent
-                            classes={randomStudent.classes[0]}
-                            name={randomStudent.name}
-                            surname={randomStudent.surname}
-                            id={randomStudent.id}
-                        />
-                    </div>
+            <div className="modal-overlay">
+                <div ref={ref2} className="modal-card">
+                    <LightStudent
+                        classes={randomStudent.classes[0]}
+                        name={randomStudent.name}
+                        surname={randomStudent.surname}
+                        id={randomStudent.id}
+                    />
 
                     <div className="modal-actions">
                         <button
                             className="btn-ghost"
+                            type="button"
                             onClick={() => {
                                 props.setDisplayRandomStudent(false)
                             }}
@@ -108,6 +87,7 @@ export default (props: MagicStickProps) => {
                         </button>
                         <button
                             className="btn-secondary"
+                            type="button"
                             onClick={() => {
                                 handleRememberStudent(randomStudent.id)
                                 props.setDisplayRandomStudent(false)
@@ -124,26 +104,14 @@ export default (props: MagicStickProps) => {
     //////////////////////////////// Aléatoire sans mémoire ////////////////////////////////
 
     return (
-        <div
-            className={`flex flex-col absolute w-full h-full items-center justify-center self-center ${
-                props.displayRandomStudent ? 'visible' : 'invisible'
-            }`}
-            style={{ backgroundColor: 'rgba(31,27,22,0.35)' }}
-        >
-            <div
-                ref={ref3}
-                className={`modal-card ${
-                    props.displayRandomStudent ? 'fade-in' : 'invisible'
-                }`}
-            >
-                <div className="w-3/4 h-full flex justify-center sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-center font-bold">
-                    <LightStudent
-                        name={randomStudent.name}
-                        surname={randomStudent.surname}
-                        id={randomStudent.id}
-                        classes={randomStudent.classes[0]}
-                    />
-                </div>
+        <div className="modal-overlay">
+            <div ref={ref3} className="modal-card">
+                <LightStudent
+                    name={randomStudent.name}
+                    surname={randomStudent.surname}
+                    id={randomStudent.id}
+                    classes={randomStudent.classes[0]}
+                />
             </div>
         </div>
     )

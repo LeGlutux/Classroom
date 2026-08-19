@@ -44,6 +44,7 @@ body,
 }
 
 .app-shell {
+    position: relative;
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -394,10 +395,18 @@ body,
 .student-card {
     background: var(--tn-surface);
     border: 1px solid var(--tn-line);
-    border-radius: 16px;
+    border-radius: 20px;
     box-shadow: 0 8px 20px rgba(47, 36, 22, 0.06);
-    margin: 0.4rem 0.75rem;
+    margin: 0.45rem 0.85rem;
     overflow: hidden;
+    padding: 0.7rem 0.85rem 0.55rem;
+    animation: tn-rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.student-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 28px rgba(47, 36, 22, 0.1);
 }
 
 .student-card.is-archived {
@@ -405,20 +414,235 @@ body,
     opacity: 0.88;
 }
 
+.student-card.is-highlight {
+    border-color: #e8b4ad;
+    background: #fff7f5;
+}
+
 .student-card.is-highlight .student-name,
 .student-card.is-highlight .student-surname {
     color: var(--tn-danger);
 }
 
+.student-card-head {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.student-card-names {
+    display: flex;
+    flex: 1;
+    align-items: baseline;
+    flex-wrap: wrap;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
+    color: inherit;
+    text-align: left;
+    padding: 0.15rem 0.2rem;
+}
+
+.student-surname {
+    font-family: 'Nunito', 'Open Sans', sans-serif;
+    font-weight: 600;
+    font-size: 1.35rem;
+    color: var(--tn-muted);
+    margin-right: 0.4rem;
+    white-space: nowrap;
+}
+
+.student-name {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 650;
+    font-size: 1.4rem;
+    color: var(--tn-ink);
+    white-space: nowrap;
+}
+
+.student-info-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 999px;
+    background: var(--tn-teal-soft);
+    flex-shrink: 0;
+}
+
+.student-info-btn img {
+    width: 0.85rem;
+    height: 0.85rem;
+}
+
+.memory-btn {
+    width: 2.1rem;
+    height: 2.1rem;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.memory-btn img {
+    width: 1.35rem;
+    height: 1.35rem;
+}
+
+.cross-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.25rem;
+    padding: 0.35rem 0 0.15rem;
+}
+
+.cross-stat {
+    display: flex;
+    align-items: center;
+    gap: 0.28rem;
+    min-height: 44px;
+    padding: 0.2rem 0.4rem;
+    border: 1px solid var(--tn-line);
+    border-radius: 14px;
+    background: #f7f1e7;
+    cursor: pointer;
+    font-family: inherit;
+    color: inherit;
+    transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.cross-stat:hover {
+    background: var(--tn-teal-soft);
+    border-color: #c5ddd8;
+}
+
+.cross-stat:active {
+    transform: scale(0.96);
+}
+
+.cross-row.is-stacked {
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.cross-row.is-stacked .cross-stat {
+    flex-direction: column;
+    min-width: 2.7rem;
+    padding: 0.28rem 0.4rem;
+}
+
+.cross-stat img {
+    width: 1.35rem;
+    height: 1.35rem;
+}
+
+.cross-count {
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    min-width: 0.9rem;
+    text-align: center;
+    font-size: 1.2rem;
+}
+
+.student-note {
+    margin-top: 0.35rem;
+    padding-top: 0.35rem;
+    border-top: 1px solid var(--tn-line);
+}
+
+.student-note-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    width: 100%;
+    border: 0;
+    background: transparent;
+    color: var(--tn-muted);
+    font-family: inherit;
+    font-size: 0.82rem;
+    text-align: left;
+    cursor: pointer;
+    padding: 0.2rem 0;
+}
+
+.student-note-btn img {
+    width: 0.9rem;
+    height: 0.9rem;
+    opacity: 0.7;
+}
+
+.student-note-form {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.student-note-form .field-input {
+    background: #f7f1e7;
+    border: 1px solid var(--tn-line);
+    border-radius: 10px;
+    padding: 0.35rem 0.6rem;
+}
+
+.chip {
+    cursor: pointer;
+}
+
+.student-grid {
+    display: flex;
+    flex-wrap: wrap;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    overflow-y: auto;
+    padding: 0.35rem 0 6.5rem;
+    align-content: flex-start;
+}
+
+.student-grid > *:nth-child(1) .student-card { animation-delay: 0.02s; }
+.student-grid > *:nth-child(2) .student-card { animation-delay: 0.06s; }
+.student-grid > *:nth-child(3) .student-card { animation-delay: 0.1s; }
+.student-grid > *:nth-child(4) .student-card { animation-delay: 0.14s; }
+.student-grid > *:nth-child(5) .student-card { animation-delay: 0.18s; }
+.student-grid > *:nth-child(6) .student-card { animation-delay: 0.22s; }
+.student-grid > *:nth-child(7) .student-card { animation-delay: 0.26s; }
+.student-grid > *:nth-child(8) .student-card { animation-delay: 0.3s; }
+
+.class-card {
+    animation: tn-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.class-card:nth-child(1) { animation-delay: 0.02s; }
+.class-card:nth-child(2) { animation-delay: 0.07s; }
+.class-card:nth-child(3) { animation-delay: 0.12s; }
+.class-card:nth-child(4) { animation-delay: 0.17s; }
+.class-card:nth-child(5) { animation-delay: 0.22s; }
+
+.class-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 30px rgba(47, 36, 22, 0.12);
+}
+
+.chip.is-active {
+    background: var(--tn-teal);
+    color: #fff;
+    border-color: var(--tn-teal);
+}
+
 .modal-overlay {
-    position: absolute;
+    position: fixed;
     inset: 0;
     z-index: 50;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(31, 27, 22, 0.35);
-    backdrop-filter: blur(6px);
+    background: rgba(31, 27, 22, 0.38);
+    backdrop-filter: blur(8px);
+    animation: tn-fade-in 0.22s ease both;
 }
 
 .modal-card {
@@ -428,6 +652,7 @@ body,
     box-shadow: var(--tn-shadow);
     padding: 1.5rem 1.25rem 1.25rem;
     position: relative;
+    animation: tn-pop 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .modal-actions {
@@ -448,6 +673,11 @@ body,
     background: var(--tn-surface) !important;
     border: 1px solid var(--tn-line);
     box-shadow: var(--tn-shadow) !important;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+}
+
+.fab-btn:hover {
+    transform: scale(1.06);
 }
 
 .toast-success {
@@ -456,27 +686,58 @@ body,
     align-items: center;
     position: absolute;
     bottom: 4.75rem;
-    left: 0;
-    right: 0;
-    height: 2.5rem;
+    left: 1rem;
+    right: 1rem;
+    height: 2.6rem;
+    border-radius: 14px;
     background: var(--tn-success);
     color: white;
     font-weight: 700;
     z-index: 40;
 }
 
+.settings-track {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-scroller {
+    display: flex;
+    flex: 1;
+    align-items: stretch;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 1.25rem 12vw 1rem;
+    scrollbar-width: none;
+}
+
+.settings-scroller::-webkit-scrollbar {
+    display: none;
+}
+
 .settings-card {
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    width: 18rem;
+    width: min(18.5rem, 78vw);
     min-height: 24rem;
-    margin: 0 0.75rem;
+    margin: 0 0.65rem;
     padding: 1.4rem 1.2rem 1.1rem;
     background: var(--tn-surface);
     border: 1px solid var(--tn-line);
     border-radius: 22px;
     box-shadow: var(--tn-shadow);
+    scroll-snap-align: center;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.settings-card.is-current {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 36px rgba(47, 36, 22, 0.12);
 }
 
 .settings-title {
@@ -484,7 +745,98 @@ body,
     font-size: 1.35rem;
     font-weight: 650;
     text-align: center;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.9rem;
+}
+
+.settings-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.2rem 0 0.55rem;
+}
+
+.settings-dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    border: 0;
+    border-radius: 999px;
+    background: #d8cec0;
+    padding: 0;
+    cursor: pointer;
+}
+
+.settings-dot.is-active {
+    background: var(--tn-teal);
+    width: 1.15rem;
+}
+
+.settings-arrow {
+    position: absolute;
+    top: 42%;
+    z-index: 25;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid var(--tn-line);
+    border-radius: 999px;
+    background: var(--tn-surface);
+    box-shadow: var(--tn-shadow);
+    color: var(--tn-ink);
+    cursor: pointer;
+}
+
+.settings-arrow svg {
+    width: 1.15rem;
+    height: 1.15rem;
+    fill: currentColor;
+}
+
+.settings-arrow-left { left: 0.6rem; }
+.settings-arrow-right { right: 0.6rem; }
+
+.icon-picker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.icon-picker-nudge {
+    border: 0;
+    background: transparent;
+    padding: 0.15rem;
+    cursor: pointer;
+}
+
+.icon-picker-nudge img {
+    width: 0.95rem;
+    height: 0.95rem;
+    opacity: 0.65;
+}
+
+.file-input {
+    font-family: inherit;
+    font-size: 0.85rem;
+    color: var(--tn-muted);
+    max-width: 14rem;
+}
+
+.pick-name {
+    text-align: center;
+}
+
+.pick-name .student-surname {
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--tn-muted);
+}
+
+.pick-name .student-name {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 2rem;
+    font-weight: 650;
 }
 
 .list-row {
@@ -520,471 +872,65 @@ body,
     }
 }
 
-.get-out-r {
-    animation: translateOut ease 0.6s;
-    visibility: hidden;
-    -webkit-animation: translateOut ease 0.6s;
-    -moz-animation: translateOut ease 0.6s;
-    -o-animation: translateOut ease 0.6s;
-    -ms-animation: translateOut ease 0.6s;
-}
-
-@keyframes translateOut {
-    100% {
-        right: -20%;
-        opacity: 0.5;
-    }
-
-    0% {
-        right: 4%;
-        opacity: 1;
-        visibility: visible;
-    }
-}
-
-@-moz-keyframes translateOut {
-    100% {
-        right: -20%;
-        opacity: 0.5;
-    }
-
-    0% {
-        right: 4%;
-        opacity: 1;
-        visibility: visible;
-    }
-}
-
-@-webkit-keyframes translateOut {
-    100% {
-        right: -20%;
-        opacity: 0.5;
-    }
-
-    0% {
-        right: 4%;
-        opacity: 1;
-        visibility: visible;
-    }
-}
-
-@-o-keyframes translateOut {
-    100% {
-        right: -20%;
-        opacity: 0.5;
-    }
-
-    0% {
-        right: 4%;
-        opacity: 1;
-        visibility: visible;
-    }
-}
-
-@-ms-keyframes translateOut {
-    100% {
-        right: -20%;
-        opacity: 0.5;
-    }
-
-    0% {
-        right: 4%;
-        opacity: 1;
-        visibility: visible;
-    }
-}
-
+.get-out-r,
+.entering-r,
+.entering-t,
+.entering-b,
+.fade-in,
+.fade-out,
 .zoom-in {
-    animation: zoom ease 0.6s;
-    position: relative;
-    -webkit-animation: zoom ease 0.6s;
-    -moz-animation: zoom ease 0.6s;
-    -o-animation: zoom ease 0.6s;
-    -ms-animation: zoom ease 0.6s;
+    animation-duration: 0.42s;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    animation-fill-mode: both;
 }
 
-@keyframes zoom {
-    0% {
-        width: 25%;
-        opacity: 0.5;
-    }
-
-    100% {
-        width: 75%;
-        opacity: 1;
-    }
+.entering-r { animation-name: tn-enter-right; }
+.get-out-r {
+    animation-name: tn-leave-right;
+    pointer-events: none;
 }
-
-@-moz-keyframes zoom {
-    0% {
-        width: 25%;
-        opacity: 0.5;
-    }
-
-    100% {
-        width: 75%;
-        opacity: 1;
-    }
-}
-
-@-webkit-keyframes zoom {
-    0% {
-        width: 25%;
-        opacity: 0.5;
-    }
-
-    100% {
-        width: 75%;
-        opacity: 1;
-    }
-}
-
-@-o-keyframes zoom {
-    0% {
-        width: 25%;
-        opacity: 0.5;
-    }
-
-    100% {
-        width: 75%;
-        opacity: 1;
-    }
-}
-
-@-ms-keyframes zoom {
-    0% {
-        width: 25%;
-        opacity: 0.5;
-    }
-
-    100% {
-        width: 75%;
-        opacity: 1;
-    }
-}
-
-.entering-t {
-    animation: translate-down ease 0.6s;
-    -webkit-animation: translate-down ease 0.6s;
-    -moz-animation: translate-down ease 0.6s;
-    -o-animation: translate-down ease 0.6s;
-    -ms-animation: translate-down ease 0.6s;
-}
-
-@keyframes translate-down {
-    0% {
-        top: -120px;
-        opacity: 0.5;
-    }
-
-    100% {
-        top: 0px;
-        opacity: 1;
-    }
-}
-
-@-moz-keyframes translate-down {
-    0% {
-        top: -120px;
-        opacity: 0.5;
-    }
-
-    100% {
-        top: 0px;
-        opacity: 1;
-    }
-}
-
-@-webkit-keyframes translate-down {
-    0% {
-        top: -120px;
-        opacity: 0.5;
-    }
-
-    100% {
-        top: 0px;
-        opacity: 1;
-    }
-}
-
-@-o-keyframes translate-down {
-    0% {
-        top: -120px;
-        opacity: 0.5;
-    }
-
-    100% {
-        top: 0px;
-        opacity: 1;
-    }
-}
-
-@-ms-keyframes translate-down {
-    0% {
-        top: -120px;
-        opacity: 0.5;
-    }
-
-    100% {
-        top: 0px;
-        opacity: 1;
-    }
-}
-
-.entering-b {
-    animation: translate-down ease 0.6s;
-    -webkit-animation: translate-down ease 0.6s;
-    -moz-animation: translate-down ease 0.6s;
-    -o-animation: translate-down ease 0.6s;
-    -ms-animation: translate-down ease 0.6s;
-}
-
-@keyframes translate-down {
-    0% {
-        bottom: -120px;
-        opacity: 0.5;
-    }
-
-    100% {
-        bottom: 0px;
-        opacity: 1;
-    }
-}
-
-@-moz-keyframes translate-down {
-    0% {
-        bottom: -120px;
-        opacity: 0.5;
-    }
-
-    100% {
-        bottom: 0px;
-        opacity: 1;
-    }
-}
-
-@-webkit-keyframes translate-down {
-    0% {
-        bottom: -120px;
-        opacity: 0.5;
-    }
-
-    100% {
-        bottom: 0px;
-        opacity: 1;
-    }
-}
-
-@-o-keyframes translate-down {
-    0% {
-        bottom: -120px;
-        opacity: 0.5;
-    }
-
-    100% {
-        bottom: 0px;
-        opacity: 1;
-    }
-}
-
-@-ms-keyframes translate-down {
-    0% {
-        bottom: -120px;
-        opacity: 0.5;
-    }
-
-    100% {
-        bottom: 0px;
-        opacity: 1;
-    }
-}
-
-
-.entering-r {
-    animation: translate ease 0.4s;
-    -webkit-animation: translate ease 0.4s;
-    -moz-animation: translate ease 0.4s;
-    -o-animation: translate ease 0.4s;
-    -ms-animation: translate ease 0.4s;
-}
-
-@keyframes translate {
-    0% {
-        right: -20%;
-        opacity: 0.5;
-    }
-
-    100% {
-        right: 4%;
-        opacity: 1;
-    }
-}
-
-@-moz-keyframes translate {
-    0% {
-        right: -20%;
-        opacity: 0.5;
-    }
-
-    100% {
-        right: 4%;
-        opacity: 1;
-    }
-}
-
-@-webkit-keyframes translate {
-    0% {
-        right: -20%;
-        opacity: 0.5;
-    }
-
-    100% {
-        right: 4%;
-        opacity: 1;
-    }
-}
-
-@-o-keyframes translate {
-    0% {
-        right: -20%;
-        opacity: 0.5;
-    }
-
-    100% {
-        right: 4%;
-        opacity: 1;
-    }
-}
-
-@-ms-keyframes translate {
-    0% {
-        right: -20%;
-        opacity: 0.5;
-    }
-
-    100% {
-        right: 4%;
-        opacity: 1;
-    }
-}
-
+.entering-t { animation-name: tn-enter-top; }
+.entering-b { animation-name: tn-enter-bottom; }
+.fade-in { animation-name: tn-fade-in; }
 .fade-out {
-    animation: fadeOut ease 1s;
-    opacity: 0;
-    -webkit-animation: fadeOut ease 1s;
-    -moz-animation: fadeOut ease 1s;
-    -o-animation: fadeOut ease 1s;
-    -ms-animation: fadeOut ease 1s;
+    animation-name: tn-fade-out;
+    pointer-events: none;
+}
+.zoom-in { animation-name: tn-pop; position: relative; }
+
+@keyframes tn-enter-right {
+    from { opacity: 0; transform: translateX(28px) scale(0.96); }
+    to { opacity: 1; transform: translateX(0) scale(1); }
+}
+@keyframes tn-leave-right {
+    from { opacity: 1; transform: translateX(0) scale(1); }
+    to { opacity: 0; transform: translateX(36px) scale(0.96); }
+}
+@keyframes tn-enter-top {
+    from { opacity: 0; transform: translateY(-22px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes tn-enter-bottom {
+    from { opacity: 0; transform: translateY(22px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes tn-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes tn-fade-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+@keyframes tn-rise {
+    from { opacity: 0; transform: translateY(18px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes tn-pop {
+    from { opacity: 0; transform: scale(0.92); }
+    to { opacity: 1; transform: scale(1); }
 }
 
-@keyframes fadeOut {
-    0% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0;
-    }
-}
-
-@-moz-keyframes fadeOut {
-    0% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0;
-    }
-}
-
-@-webkit-keyframes fadeOut {
-    0% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0;
-    }
-}
-
-@-o-keyframes fadeOut {
-    0% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0;
-    }
-}
-
-@-ms-keyframes fadeOut {
-    0% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0;
-    }
-}
-
-.fade-in {
-    animation: fadeIn ease 0.6s;
-    opacity: 1;
-    -webkit-animation: fadeIn ease 0.6s;
-    -moz-animation: fadeIn ease 0.6s;
-    -o-animation: fadeIn ease 0.6s;
-    -ms-animation: fadeIn ease 0.6s;
-}
-
-@keyframes fadeIn {
-    100% {
-        opacity: 1;
-    }
-
-    0% {
-        opacity: 0;
-    }
-}
-
-@-moz-keyframes fadeIn {
-    100% {
-        opacity: 1;
-    }
-
-    0% {
-        opacity: 0;
-    }
-}
-
-@-webkit-keyframes fadeIn {
-    100% {
-        opacity: 1;
-    }
-
-    0% {
-        opacity: 0;
-    }
-}
-
-@-o-keyframes fadeIn {
-    100% {
-        opacity: 1;
-    }
-
-    0% {
-        opacity: 0;
-    }
-}
-
-@-ms-keyframes fadeIn {
-    100% {
-        opacity: 1;
-    }
-
-    0% {
-        opacity: 0;
-    }
-}
 
 @supports (-webkit-touch-callout: none) {
 

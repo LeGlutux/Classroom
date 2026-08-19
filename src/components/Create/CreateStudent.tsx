@@ -102,33 +102,33 @@ export default (props: Props) => {
                 action=""
             >
                 <div className="flex flex-col h-full items-center pb-4">
-                    <div className="flex flex-col h-full justify-around items-center">
+                    <div className="flex flex-col h-full justify-around items-center w-full">
                         <div className="settings-title">
                             Ajoutez vos élèves
                         </div>
-                        <div className="flex flex-row items-center justify-center hover:border-gray-600 xl:w-full">
-                            <img className="w-8 h-8 mt-3" src={solo} alt="" />
-                            <div className="w-9/12 flex flex-col hover:border-gray-600">
-                                <input
-                                    ref={firstInputRef}
-                                    value={surnameInputValue}
-                                    onChange={(e) =>
-                                        setSurnameInputValue(e.target.value)
-                                    }
-                                    className="field-input mt-3 ml-3"
-                                    type="text"
-                                    placeholder="Prénom de l'élève"
-                                />
-                                <input
-                                    className="field-input mt-3 ml-3"
-                                    value={nameInputValue}
-                                    onChange={(e) =>
-                                        setNameInputValue(e.target.value)
-                                    }
-                                    type="text"
-                                    placeholder="Nom de l'élève"
-                                />
-                            </div>
+                        <div className="field">
+                            <img src={solo} alt="" />
+                            <input
+                                ref={firstInputRef}
+                                value={surnameInputValue}
+                                onChange={(e) =>
+                                    setSurnameInputValue(e.target.value)
+                                }
+                                className="field-input"
+                                type="text"
+                                placeholder="Prénom de l'élève"
+                            />
+                        </div>
+                        <div className="field" style={{ marginTop: '0.6rem' }}>
+                            <input
+                                className="field-input"
+                                value={nameInputValue}
+                                onChange={(e) =>
+                                    setNameInputValue(e.target.value)
+                                }
+                                type="text"
+                                placeholder="Nom de l'élève"
+                            />
                         </div>
 
                         <div className="w-full flex flex-wrap flex-row justify-evenly mx-1 mt-6 px-2">

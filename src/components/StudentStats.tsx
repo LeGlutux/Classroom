@@ -193,7 +193,8 @@ const View = ({
                     <textarea
                         value={notesInputValue}
                         onChange={(e) => setNotesInputValue(e.target.value)}
-                        className="flex w-10/12 mr-2 mt-10 h-64 z-50 placeholder-gray-700 bg-transparent border-2 border-gray-200 text-lg align-text-top"
+                        className="field-input"
+                        style={{ minHeight: '14rem', padding: '0.75rem' }}
                         placeholder={notes}
                     />
 

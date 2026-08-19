@@ -169,21 +169,22 @@ export default (props: FileUploaderProps) => {
             <div className="empty-state-text">
                 Fichiers acceptés : csv (export Pronote)
             </div>
-            <input
-                value={classe}
-                onChange={(e) => setClasse(e.target.value)}
-                className="field-input field my-2"
-                type="text"
-                placeholder="Nom de la classe"
-            />
+            <div className="field my-2">
+                <input
+                    value={classe}
+                    onChange={(e) => setClasse(e.target.value)}
+                    className="field-input"
+                    type="text"
+                    placeholder="Nom de la classe"
+                />
+            </div>
 
             <input
-                className="my-6 w-48"
+                className="file-input my-6"
                 type="file"
                 name="file"
                 accept=".csv,.xlsx,.xls"
                 onChange={changeHandler}
-                style={{ display: 'block' }}
             />
 
             <button

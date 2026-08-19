@@ -18,9 +18,6 @@ import calendar from '../images/calendar.png'
 import ConfirmModal from './ConfirmModal'
 import { useHistory } from 'react-router-dom'
 import { cards } from '../classes'
-import openCard from '../images/openCard.png'
-import closeCard from '../images/closeCard.png'
-
 import CardCustomer from './CardCustomization/CardCustomer'
 import FileUploader from './FileUploader'
 
@@ -167,6 +164,9 @@ export default () => {
         }, 5000)
     }, [saveConfirm])
 
+    const lastCard = adminConnected ? 5 : 4
+    const cardCount = lastCard + 1
+
     if (loading) {
         return (
             <LoadingScreen
@@ -208,48 +208,47 @@ export default () => {
                         'En faisant cela, vous supprimez définitivement vos élèves et vos classes'
                     }
                 />
-                <div
-                    className={`flex w-full justify-between px-6 settings-page-arrows z-30 bg-transparent`}
-                >
+                <div className="settings-track">
                     <button
-                        className={`${
-                            actualRef === 0 || hide ? 'invisible' : 'visible'
-                        }
-                    ${groups.length === 0 ? 'invisible' : 'visible'}
-                    xl:hidden`}
+                        type="button"
+                        className={`settings-arrow settings-arrow-left ${
+                            actualRef === 0 || hide || groups.length === 0
+                                ? 'invisible'
+                                : ''
+                        }`}
                         onClick={() => {
                             scrollTo(actualRef - 1)
                             setActualRef(actualRef - 1)
                             setHide(true)
                             setTimeout(() => setHide(false), 400)
                         }}
+                        aria-label="Carte précédente"
                     >
-                        <img className="w-4" src={closeCard} alt="" />
+                        <svg viewBox="0 0 20 20">
+                            <path d="M12.7 15.3a1 1 0 0 1-1.4 0l-4.6-4.6a1 1 0 0 1 0-1.4l4.6-4.6a1 1 0 1 1 1.4 1.4L8.8 10l3.9 3.9a1 1 0 0 1 0 1.4z" />
+                        </svg>
                     </button>
                     <button
-                        className={`${
-                            (actualRef === 4 && !adminConnected) ||
-                            hide ||
-                            actualRef === 5
+                        type="button"
+                        className={`settings-arrow settings-arrow-right ${
+                            actualRef === lastCard || hide || groups.length === 0
                                 ? 'invisible'
-                                : 'visible'
-                        }
-                    ${groups.length === 0 ? 'invisible' : 'visible'} xl:hidden`}
+                                : ''
+                        }`}
                         onClick={() => {
                             scrollTo(actualRef + 1)
                             setActualRef(actualRef + 1)
                             setHide(true)
                             setTimeout(() => setHide(false), 400)
                         }}
+                        aria-label="Carte suivante"
                     >
-                        <img className="w-4" src={openCard} alt="" />
+                        <svg viewBox="0 0 20 20">
+                            <path d="M7.3 4.7a1 1 0 0 1 1.4 0l4.6 4.6a1 1 0 0 1 0 1.4l-4.6 4.6a1 1 0 1 1-1.4-1.4L11.2 10 7.3 6.1a1 1 0 0 1 0-1.4z" />
+                        </svg>
                     </button>
-                </div>
 
-                <div
-                    className={`flex flex-row flex-1 overflow-x-auto py-8 items-center px-8`}
-                    ref={xScroller}
-                >
+                    <div className="settings-scroller" ref={xScroller}>
                     <div className={cards(0, actualRef)} ref={ref0}>
                         {uploader && (
                             <CreateGroups onAddGroup={refreshGroups} />
@@ -313,6 +312,7 @@ export default () => {
                                     periodes={periodes}
                                     currentUser={currentUser.uid}
                                     refresh={refreshRunningPeriode}
+                                    runningPeriode={runningPeriode}
                                 />
                             </div>
                         </div>
@@ -337,42 +337,54 @@ export default () => {
                         </div>
                     </div>
 
-                    <div
-                        className={`flex ${
-                            actualRef === 5 ? 'z-40' : 'z-20'
-                        } flex-col mt-2 h-100 w-64 px-12 overflow-visible shadow-custom mx-6 bg-gray-100 pb-4 rounded xl:mt-12 xl:mx-64 ${
-                            adminConnected ? 'visible' : 'invisible'
-                        }`}
-                        ref={ref5}
-                    >
+                    {adminConnected && (
+                    <div className={cards(5, actualRef)} ref={ref5}>
                         <div className="flex flex-col h-full justify-around items-center">
-                            <div className="flex flex-col h-full justify-around items-center">
-                                <div className="settings-title">
-                                    Si vous voyez ceci, prévenir le développeur
-                                    !
-                                </div>
-                                <div>
-                                    {'version: '} {version}
-                                </div>
-                                <button
-                                    className="flex h-8 w-56 mt-8 self-center bg-green-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap"
-                                    onClick={() =>
-                                        updateUsersProps(allUsersIds)
-                                    }
-                                >
-                                    Setup Postits
-                                </button>
+                            <div className="settings-title">
+                                Si vous voyez ceci, prévenir le développeur
+                                !
                             </div>
+                            <div>
+                                {'version: '} {version}
+                            </div>
+                            <button
+                                type="button"
+                                className="btn-secondary"
+                                onClick={() =>
+                                    updateUsersProps(allUsersIds)
+                                }
+                            >
+                                Setup Postits
+                            </button>
                         </div>
                     </div>
-                </div>
-                <div className="w-full py-3 flex justify-center">
-                    <button
-                        className="btn-ghost"
-                        onClick={() => firebase.auth().signOut()}
-                    >
-                        Se déconnecter
-                    </button>
+                    )}
+                    </div>
+                    <div className="settings-dots">
+                        {Array.from({ length: cardCount }).map((_, index) => (
+                            <button
+                                type="button"
+                                key={index}
+                                className={`settings-dot ${
+                                    actualRef === index ? 'is-active' : ''
+                                }`}
+                                onClick={() => {
+                                    scrollTo(index)
+                                    setActualRef(index)
+                                }}
+                                aria-label={`Aller à la carte ${index + 1}`}
+                            />
+                        ))}
+                    </div>
+                    <div className="w-full py-3 flex justify-center">
+                        <button
+                            className="btn-ghost"
+                            type="button"
+                            onClick={() => firebase.auth().signOut()}
+                        >
+                            Se déconnecter
+                        </button>
+                    </div>
                 </div>
                 <div
                     className={`toast-success ${

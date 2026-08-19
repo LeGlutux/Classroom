@@ -149,12 +149,21 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
             ? props.surname.substring(0, 12).concat('.')
             : props.surname
 
+    const crossTypes = [
+        'behaviour',
+        'homework',
+        'supply',
+        'observation',
+        'calculator',
+        'phone',
+    ]
+
     while (loading) return <div />
 
     return (
         <div
-            className={`flex mt-1 flex-row w-full md:w-1/2 lg:w-1/2 xl:w-1/3 items-center ${
-                hidden ? 'hidden' : 'visible'
+            className={`flex w-full md:w-1/2 lg:w-1/2 xl:w-1/3 items-center ${
+                hidden ? 'hidden' : ''
             } ${
                 props.currentUserId === '26kiVujCgjNpzCkYwugqkrt63Hx1'
                     ? 'iphone-vertical'
@@ -170,232 +179,76 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                         : 'is-archived'
                 }`}
             >
+                <div className="student-card-head">
+                    <button
+                        type="button"
+                        className={`memory-btn ${
+                            selected === false || selected === undefined
+                                ? 'invisible'
+                                : ''
+                        }`}
+                        onClick={handleForget}
+                        aria-label="Oublier l'élève"
+                    >
+                        <img src={brain} alt="" />
+                    </button>
+                    <button
+                        type="button"
+                        className="student-card-names"
+                        onClick={() => {
+                            db.collection('users')
+                                .doc(props.currentUser)
+                                .collection('eleves')
+                                .doc(props.id)
+                                .update({
+                                    highlight: !highlight,
+                                })
+                            setHighlight(!highlight)
+                            props.toggleHighlight(props.id)
+                        }}
+                    >
+                        <span className="student-surname">{shortSurname}</span>
+                        <span className="student-name">{shortName}</span>
+                    </button>
+                    <Link
+                        className="student-info-btn"
+                        to={'/student/'.concat(props.id)}
+                        aria-label="Fiche élève"
+                    >
+                        <img src={info} alt="" />
+                    </Link>
+                </div>
                 <div
-                    className={`flex justify-between flex-col ${
-                        props.icons[5] === 'none' ? '' : 'h-38'
+                    className={`cross-row ${
+                        props.icons[5] === 'none' ? '' : 'is-stacked'
                     }`}
                 >
-                    <div className="flex flex-row items-center">
-                        <div className="flex h-full items-center self-center mt-2 ml-2 xl:pt-6 static">
+                    {crossTypes.map((type, index) =>
+                        props.icons[index] === 'none' ? null : (
                             <button
-                                className={`h-6 w-6 xl:h-10 xl:w-10 ${
-                                    selected === false || selected === undefined
-                                        ? 'invisible'
-                                        : 'visible'
-                                }`}
-                                onClick={handleForget}
+                                key={type}
+                                type="button"
+                                className="cross-stat touch-manipulation tap-target-44"
+                                onClick={() => handleAddCross(type)}
                             >
-                                <img
-                                    className="h-6 w-6 xl:h-10 xl:w-10"
-                                    src={brain}
-                                    alt=""
-                                />
-                            </button>
-                        </div>
-                        <div className="flex flex-row w-full justify-between">
-                            <button
-                                onClick={() => {
-                                    db.collection('users')
-                                        .doc(props.currentUser)
-                                        .collection('eleves')
-                                        .doc(props.id)
-                                        .update({
-                                            highlight: !highlight,
-                                        })
-                                    setHighlight(!highlight)
-                                    props.toggleHighlight(props.id)
-                                }}
-                                className="flex flex-row flex-nowrap mt-2 items-baseline"
-                            >
-                                <div
-                                    className={`student-surname font-studentName ml-2 font-medium text-2xl md:text-3xl whitespace-nowrap ${
-                                        highlight ? 'text-red-600' : ''
+                                <img src={props.icons[index]} alt="" />
+                                <span className="cross-count">
+                                    {
+                                        crossFilter(
+                                            type,
+                                            props.runningPeriode
+                                        ).length
                                     }
-                                `}
-                                >
-                                    {shortSurname}
-                                </div>
-                                <div
-                                    className={`student-name font-studentName ml-2 font-bold text-2xl md:text-3xl whitespace-nowrap ${
-                                        highlight ? 'text-red-600' : ''
-                                    }`}
-                                >
-                                    {shortName}
-                                </div>
+                                </span>
                             </button>
-                            <Link
-                                className="flex mr-4"
-                                to={'/student/'.concat(props.id)}
-                            >
-                                <img
-                                    className="flex w-4 self-center"
-                                    src={info}
-                                    alt=""
-                                />
-                            </Link>
-                        </div>
-                    </div>
-                    <div
-                        className={`w-full h-12 flex p-2 content-center justify-between  pr-6 ${
-                            props.icons[5] === 'none' ? '' : 'mb-6'
-                        }`}
-                    >
-                        <div
-                            className={`flex ${
-                                props.icons[0] === 'none' ? 'hidden' : 'visible'
-                            } ${
-                                props.icons[5] === 'none'
-                                    ? 'flex-row'
-                                    : 'flex-col items-center'
-                            }`}
-                        >
-                            <button
-                                type="button"
-                                onClick={() => handleAddCross('behaviour')}
-                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
-                            >
-                                <img className="" src={props.icons[0]} alt="" />
-                            </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
-                                {
-                                    crossFilter(
-                                        'behaviour',
-                                        props.runningPeriode
-                                    ).length
-                                }
-                            </div>
-                        </div>
-                        <div
-                            className={`flex ${
-                                props.icons[1] === 'none' ? 'hidden' : 'visible'
-                            } ${
-                                props.icons[5] === 'none'
-                                    ? 'flex-row'
-                                    : 'flex-col items-center'
-                            }`}
-                        >
-                            <button
-                                type="button"
-                                onClick={() => handleAddCross('homework')}
-                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
-                            >
-                                <img className="" src={props.icons[1]} alt="" />
-                            </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
-                                {
-                                    crossFilter(
-                                        'homework',
-                                        props.runningPeriode
-                                    ).length
-                                }
-                            </div>
-                        </div>
-                        <div
-                            className={`flex ${
-                                props.icons[2] === 'none' ? 'hidden' : 'visible'
-                            } ${
-                                props.icons[5] === 'none'
-                                    ? 'flex-row'
-                                    : 'flex-col items-center'
-                            }`}
-                        >
-                            <button
-                                type="button"
-                                onClick={() => handleAddCross('supply')}
-                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
-                            >
-                                <img className="" src={props.icons[2]} alt="" />
-                            </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
-                                {
-                                    crossFilter('supply', props.runningPeriode)
-                                        .length
-                                }
-                            </div>
-                        </div>
-                        <div
-                            className={`flex ${
-                                props.icons[3] === 'none' ? 'hidden' : 'visible'
-                            } ${
-                                props.icons[5] === 'none'
-                                    ? 'flex-row'
-                                    : 'flex-col items-center'
-                            }`}
-                        >
-                            <button
-                                type="button"
-                                onClick={() => handleAddCross('observation')}
-                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
-                            >
-                                <img className="" src={props.icons[3]} alt="" />
-                            </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
-                                {
-                                    crossFilter(
-                                        'observation',
-                                        props.runningPeriode
-                                    ).length
-                                }
-                            </div>
-                        </div>
-                        <div
-                            className={`flex ${
-                                props.icons[4] === 'none' ? 'hidden' : 'visible'
-                            } ${
-                                props.icons[5] === 'none'
-                                    ? 'flex-row'
-                                    : 'flex-col items-center'
-                            }`}
-                        >
-                            <button
-                                type="button"
-                                onClick={() => handleAddCross('calculator')}
-                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
-                            >
-                                <img className="" src={props.icons[4]} alt="" />
-                            </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
-                                {
-                                    crossFilter(
-                                        'calculator',
-                                        props.runningPeriode
-                                    ).length
-                                }
-                            </div>
-                        </div>
-                        <div
-                            className={`flex ${
-                                props.icons[5] === 'none' ? 'hidden' : 'visible'
-                            } ${
-                                props.icons[5] === 'none'
-                                    ? 'flex-row'
-                                    : 'flex-col items-center'
-                            }`}
-                        >
-                            <button
-                                type="button"
-                                onClick={() => handleAddCross('phone')}
-                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
-                            >
-                                <img className="" src={props.icons[5]} alt="" />
-                            </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
-                                {
-                                    crossFilter('phone', props.runningPeriode)
-                                        .length
-                                }
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex flex-row lg:mt-3 xl:mt-5">
-                        <StudentComment
-                            currentUserId={props.currentUser}
-                            currentStudentId={props.id}
-                            comment={props.comment ? props.comment : ''}
-                        />
-                    </div>
-                    <div className="border-b border-gray-200 w-2/3 self-center mt-3 mb-2" />
+                        )
+                    )}
                 </div>
+                <StudentComment
+                    currentUserId={props.currentUser}
+                    currentStudentId={props.id}
+                    comment={props.comment ? props.comment : ''}
+                />
             </div>
         </div>
     )

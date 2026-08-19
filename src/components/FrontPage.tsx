@@ -354,7 +354,7 @@ export default () => {
             })}
 
             {displayedGroup !== 'tous' && (
-                <div className="flex-1 min-h-0 flex w-full flex-col pt-2 pb-24 overflow-y-scroll md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start">
+                <div className="student-grid">
                     {students.map(
                             ({
                                 name,
