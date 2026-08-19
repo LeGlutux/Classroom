@@ -121,3 +121,16 @@ export const IconQuestion: React.FC<IconProps> = (props) => (
         <path d="M11.5 17.2h1" />
     </Svg>
 )
+
+export const IconFlag: React.FC<IconProps> = (props) => (
+    <Svg {...props}>
+        <path d="M6 4.5v15" />
+        <path d="M6 5.2h10.5l-1.6 3.4 1.6 3.4H6" />
+    </Svg>
+)
+
+export const IconWrench: React.FC<IconProps> = (props) => (
+    <Svg {...props}>
+        <path d="M14.7 6.3a3.4 3.4 0 0 0-4.7 4.7L5.2 15.8a1.5 1.5 0 0 0 2.1 2.1l4.8-4.8a3.4 3.4 0 0 0 4.7-4.7L15.2 10l-1.5-1.5 1-2.2z" />
+    </Svg>
+)

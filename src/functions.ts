@@ -137,6 +137,33 @@ export const crossTimeValue = (element: { time?: any }) => {
     return Number.isFinite(parsed) ? parsed : 0
 }
 
+export const ADMIN_UID = 'yp8DVglUprVCqM8mTmnoZ8cr2yJ3'
+export const ADMIN_EMAIL = 'lp.bendeks@gmail.com'
+
+export const isAdminUser = (user?: {
+    uid?: string
+    email?: string | null
+} | null) => {
+    if (!user) return false
+    if (user.uid === ADMIN_UID) return true
+    return (user.email || '').toLowerCase() === ADMIN_EMAIL
+}
+
+export const formatDateTime = (value: any) => {
+    if (!value) return '—'
+    const date = value.toDate
+        ? value.toDate()
+        : value instanceof Date
+        ? value
+        : new Date(value)
+    if (!date || Number.isNaN(date.getTime())) return '—'
+    return (
+        date.toLocaleDateString('fr-FR') +
+        ' · ' +
+        date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+    )
+}
+
 export const crossInCurrentPeriod = (
     element: { time?: any },
     periodes: Date[],

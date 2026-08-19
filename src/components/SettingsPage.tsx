@@ -3,12 +3,10 @@ import { Link, Route, Switch, useHistory } from 'react-router-dom'
 import firebase from 'firebase/app'
 import { AuthContext } from '../Auth'
 import {
-    useAllUsersIds,
     useGroups,
     useLists,
     usePeriodes,
     useStudents,
-    useVersion,
 } from '../hooks'
 import SettingsLayout from './SettingsLayout'
 import CreateGroups from './Create/CreateGroups'
@@ -18,9 +16,12 @@ import FileUploader from './FileUploader'
 import PeriodeFilter from './PeriodeFilter'
 import ConfirmModal from './ConfirmModal'
 import Podium from './Podium'
+import ReportProblem from './ReportProblem'
+import AdminTools from './AdminTools'
 import {
     IconCalendar,
     IconChevronRight,
+    IconFlag,
     IconGrid,
     IconLogout,
     IconTrash,
@@ -28,7 +29,9 @@ import {
     IconUser,
     IconUsers,
     IconTrophy,
+    IconWrench,
 } from './Icons'
+import { isAdminUser } from '../functions'
 
 interface SettingsRowProps {
     to?: string
@@ -80,7 +83,7 @@ const SettingsMenu = () => {
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
 
-    const adminConnected = currentUser.uid === 'yp8DVglUprVCqM8mTmnoZ8cr2yJ3'
+    const adminConnected = isAdminUser(currentUser)
     const email = currentUser.email || 'Compte'
     const initial = email.charAt(0).toUpperCase()
 
@@ -148,12 +151,23 @@ const SettingsMenu = () => {
                 />
             </div>
 
+            <div className="settings-group-label">Aide</div>
+            <div className="settings-group">
+                <SettingsRow
+                    to="/create/signaler"
+                    icon={<IconFlag />}
+                    title="Signaler un problème"
+                    subtitle="Un message suffit, Léo le reçoit"
+                />
+            </div>
+
             {adminConnected && (
                 <div className="settings-group">
                     <SettingsRow
                         to="/create/admin"
-                        icon={<IconGrid />}
-                        title="Outils développeur"
+                        icon={<IconWrench />}
+                        title="Maintenance"
+                        subtitle="Signalements et comptes"
                     />
                 </div>
             )}
@@ -527,35 +541,6 @@ const SettingsAnnee = () => {
     )
 }
 
-const SettingsAdmin = () => {
-    const { currentUser } = useContext(AuthContext)
-    const uid = currentUser ? currentUser.uid : ''
-    const { version } = useVersion()
-    const allUsersIds = useAllUsersIds(uid)
-    const updateUsersProps = (_usersIds: string[]) => {
-        // update toutes les props => faire plutôt dans updater
-    }
-    if (currentUser === null) return <div />
-
-    return (
-        <SettingsLayout title="Outils développeur" backTo="/create">
-            <div className="settings-panel">
-                <p className="settings-panel-note">
-                    Si vous voyez ceci, prévenir le développeur.
-                </p>
-                <p className="settings-panel-note">version: {version}</p>
-                <button
-                    type="button"
-                    className="settings-btn"
-                    onClick={() => updateUsersProps(allUsersIds)}
-                >
-                    Setup Postits
-                </button>
-            </div>
-        </SettingsLayout>
-    )
-}
-
 export default () => {
     return (
         <Switch>
@@ -566,7 +551,8 @@ export default () => {
             <Route path="/create/podium" component={Podium} />
             <Route path="/create/periodes" component={SettingsPeriodes} />
             <Route path="/create/annee" component={SettingsAnnee} />
-            <Route path="/create/admin" component={SettingsAdmin} />
+            <Route path="/create/signaler" component={ReportProblem} />
+            <Route path="/create/admin" component={AdminTools} />
             <Route path="/create" component={SettingsMenu} />
         </Switch>
     )
