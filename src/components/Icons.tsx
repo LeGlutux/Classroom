@@ -102,3 +102,22 @@ export const IconTrophy: React.FC<IconProps> = (props) => (
         <path d="M9 20h6M10 16h4v4h-4z" />
     </Svg>
 )
+
+export const IconCheck: React.FC<IconProps> = (props) => (
+    <Svg {...props}>
+        <path d="M5.5 12.2l4.2 4.2L18.5 7.6" />
+    </Svg>
+)
+
+export const IconClose: React.FC<IconProps> = (props) => (
+    <Svg {...props}>
+        <path d="M6.5 6.5l11 11M17.5 6.5l-11 11" />
+    </Svg>
+)
+
+export const IconQuestion: React.FC<IconProps> = (props) => (
+    <Svg {...props}>
+        <path d="M9.4 9.2a2.7 2.7 0 1 1 3.4 2.55c-.75.4-1.3.9-1.3 1.85" />
+        <path d="M11.5 17.2h1" />
+    </Svg>
+)

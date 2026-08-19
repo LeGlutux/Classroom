@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react'
+import React, { useContext, useMemo, useState } from 'react'
 import firebase from 'firebase/app'
 import { useGroups, usePeriodes, useStudents, useCrosses } from '../hooks'
 import { AuthContext } from '../Auth'
@@ -17,6 +17,16 @@ type RankedStudent = {
     positives: number
 }
 
+const readMaxNegatives = () => {
+    try {
+        const n = Number(window.localStorage.getItem('podiumMaxNegatives'))
+        if (Number.isFinite(n) && n >= 0 && n <= 6) return n
+    } catch (e) {
+        // ignore
+    }
+    return 1
+}
+
 export default () => {
     const { currentUser } = useContext(AuthContext)
     const uid = currentUser ? currentUser.uid : ''
@@ -24,6 +34,7 @@ export default () => {
     const { students, loading: studentsLoading, allIds } = useStudents(uid)
     const { crosses } = useCrosses(uid, allIds)
     const { periodes, runningPeriode } = usePeriodes(uid)
+    const [maxNegatives, setMaxNegatives] = useState(readMaxNegatives)
 
     const rankedByClass = useMemo(() => {
         const crossesByStudent: {
@@ -55,7 +66,7 @@ export default () => {
                         positives,
                     } as RankedStudent
                 })
-                .filter((student) => student.negatives <= 2)
+                .filter((student) => student.negatives <= maxNegatives)
                 .sort((a, b) => {
                     if (a.negatives !== b.negatives)
                         return a.negatives - b.negatives
@@ -67,7 +78,7 @@ export default () => {
                 })
             return { group, ranked }
         })
-    }, [groups, students, crosses, periodes, runningPeriode])
+    }, [groups, students, crosses, periodes, runningPeriode, maxNegatives])
 
     if (currentUser === null) return <div />
 
@@ -76,6 +87,13 @@ export default () => {
         studentsLoading ||
         crosses === undefined ||
         (allIds.length > 0 && crosses.length !== allIds.length)
+
+    const emptyLabel =
+        maxNegatives === 0
+            ? 'Aucun élève sans croix négative'
+            : `Aucun élève avec ${maxNegatives} croix négative${
+                  maxNegatives > 1 ? 's' : ''
+              } ou moins`
 
     return (
         <SettingsLayout title="Podium" backTo="/create">
@@ -87,18 +105,42 @@ export default () => {
                 </p>
             ) : (
                 <React.Fragment>
+                    <label className="podium-filter">
+                        <span className="podium-filter-label">
+                            Maximum de croix négatives
+                        </span>
+                        <select
+                            className="modal-select"
+                            value={maxNegatives}
+                            onChange={(event) => {
+                                const next = Number(event.target.value)
+                                setMaxNegatives(next)
+                                try {
+                                    window.localStorage.setItem(
+                                        'podiumMaxNegatives',
+                                        String(next)
+                                    )
+                                } catch (e) {
+                                    // ignore
+                                }
+                            }}
+                        >
+                            {[0, 1, 2, 3, 4, 5, 6].map((n) => (
+                                <option key={n} value={n}>
+                                    {n}
+                                </option>
+                            ))}
+                        </select>
+                    </label>
                     <p className="settings-panel-note">
-                        Élèves avec au plus 2 croix négatives sur la période en
-                        cours. Le rouge compte les croix négatives, le bleu les
-                        positives.
+                        Période en cours. Le rouge compte les croix négatives,
+                        le bleu les positives.
                     </p>
                     {rankedByClass.map(({ group, ranked }) => (
                     <div key={group} className="podium-class">
                         <div className="podium-class-title">{group}</div>
                         {ranked.length === 0 ? (
-                            <div className="podium-empty">
-                                Aucun élève avec 2 croix négatives ou moins
-                            </div>
+                            <div className="podium-empty">{emptyLabel}</div>
                         ) : (
                             ranked.map((student, index) => (
                                 <div key={student.id} className="podium-row">
