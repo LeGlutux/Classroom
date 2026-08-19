@@ -17,7 +17,6 @@ import 'firebase/firestore'
 import MagicStick from './MagicStick'
 import magicStick from '../images/magicStick.png'
 import stickyNoteRed from '../images/stickyNoteRed2.png'
-import brain from '../images/brain.png'
 import stickyNote from '../images/stickyNote.png'
 import burgerMenu from '../images/burgerMenu.png'
 import loader_image from '../images/loader.gif'
@@ -32,7 +31,6 @@ import { StudentInterface } from '../interfaces/Student'
 
 export default () => {
     const db = Firebase.firestore()
-    const [withMemory, setWithMemory] = useState(false)
     const lastConnectionUpdateRef = React.useRef<number>(0)
     const [menuOpened, setMenuOpened] = useState<boolean>(false)
     const [burgerMenuFirstClicked, setBurgerMenuFirstClicked] = useState(false)
@@ -352,11 +350,9 @@ export default () => {
 
             <MagicStick
                 toggleSelected={toggleSelected}
-                allStudents={hardStudents}
                 students={magicStickStudentsList}
                 displayRandomStudent={displayRandomStudent}
                 setDisplayRandomStudent={setDisplayRandomStudent}
-                withMemory={withMemory}
                 onFilter={(group: string) => filterStudents(group)}
                 displayedGroup={displayedGroup}
             />
@@ -457,12 +453,12 @@ export default () => {
             <div ref={ref}>
                 <button
                     onClick={() => {
-                        setTimeout(() => setDisplayRandomStudent(true), 200)
-                        setWithMemory(false)
+                        checkEmpty()
                         setMenuOpened(!menuOpened)
-                        setMagicStickStudentsList(hardStudents)
+                        setMagicStickStudentsList(notYetSelectedStudents)
+                        setTimeout(() => setDisplayRandomStudent(true), 200)
                     }}
-                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 bg-gray-200 rounded-full bottom-right-custom shadow-custom flex items-center justify-center ${
+                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 bg-gray-200 rounded-full bottom-right-custom2 shadow-custom flex items-center justify-center ${
                         burgerMenuFirstClicked
                             ? menuOpened
                                 ? 'entering-r'
@@ -478,32 +474,10 @@ export default () => {
                 </button>
                 <button
                     onClick={() => {
-                        checkEmpty()
-                        setWithMemory(true)
-                        setMenuOpened(!menuOpened)
-                        setMagicStickStudentsList(notYetSelectedStudents)
-                        setTimeout(() => setDisplayRandomStudent(true), 200)
-                    }}
-                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 bg-gray-200 rounded-full bottom-right-custom2 shadow-custom flex items-center justify-center ${
-                        burgerMenuFirstClicked
-                            ? menuOpened
-                                ? 'entering-r'
-                                : 'get-out-r'
-                            : 'invisible'
-                    }`}
-                >
-                    <img
-                        className="w-10 h-10 md:w-12 md:h-12 lg:w-16 lg:h-16 xl:w-16 xl:h-16"
-                        src={brain}
-                        alt="élève aléatoire avec mémoire"
-                    />
-                </button>
-                <button
-                    onClick={() => {
                         setMenuOpened(!menuOpened)
                         setDisplayPostIt(true)
                     }}
-                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 bg-gray-200 rounded-full bottom-right-custom3 shadow-custom flex items-center justify-center ${
+                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 bg-gray-200 rounded-full bottom-right-custom shadow-custom flex items-center justify-center ${
                         burgerMenuFirstClicked
                             ? menuOpened
                                 ? 'entering-r'

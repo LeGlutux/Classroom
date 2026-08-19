@@ -3,7 +3,7 @@ import info from '../images/info.png'
 import Firebase from '../firebase'
 import firebase from 'firebase/app'
 import { Link } from 'react-router-dom'
-import brain from '../images/brain.png'
+import magicStick from '../images/magicStick.png'
 import StudentComment from './StudentComment'
 import { useCross } from '../hooks'
 import { StudentInterface } from '../interfaces/Student'
@@ -187,8 +187,8 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                             >
                                 <img
                                     className="h-6 w-6 xl:h-10 xl:w-10"
-                                    src={brain}
-                                    alt=""
+                                    src={magicStick}
+                                    alt="élève retenu"
                                 />
                             </button>
                         </div>

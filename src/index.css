@@ -84,6 +84,72 @@ body,
     opacity: 0.42;
 }
 
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 80;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(24, 24, 27, 0.36);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+}
+
+.modal-card {
+    width: 92%;
+    max-width: 26rem;
+    background: #fff;
+    border: 1px solid var(--tn-line);
+    border-radius: 12px;
+    box-shadow: 0 16px 40px rgba(24, 24, 27, 0.12);
+    padding: 1.35rem 1.15rem 1.15rem;
+    position: relative;
+    animation: tn-rise 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.modal-empty {
+    font-size: 1.15rem;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.4;
+    color: var(--tn-ink);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1.25rem;
+}
+
+.modal-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.5rem;
+    padding: 0 0.9rem;
+    margin-left: 0.5rem;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    font-family: inherit;
+    font-weight: 500;
+    font-size: 0.875rem;
+    cursor: pointer;
+}
+
+.modal-btn-ghost {
+    background: transparent;
+    color: var(--tn-muted);
+}
+
+.modal-btn-primary {
+    background: var(--tn-ink);
+    color: #fff;
+}
+
 .student-cross-icon {
     width: 1.4rem;
     height: 1.4rem;
