@@ -357,8 +357,16 @@ body,
 .podium-name {
     flex: 1;
     min-width: 0;
-    font-weight: 600;
     color: var(--tn-ink);
+}
+
+.podium-firstname {
+    font-weight: 400;
+}
+
+.podium-lastname {
+    font-weight: 700;
+    margin-left: 0.35rem;
 }
 
 .podium-scores {

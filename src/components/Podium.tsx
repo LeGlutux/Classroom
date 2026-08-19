@@ -148,7 +148,12 @@ export default () => {
                                         {index + 1}
                                     </span>
                                     <span className="podium-name">
-                                        {student.surname} {student.name}
+                                        <span className="podium-firstname">
+                                            {student.surname}
+                                        </span>
+                                        <span className="podium-lastname">
+                                            {student.name}
+                                        </span>
                                     </span>
                                     <span className="podium-scores">
                                         <span className="podium-neg">
