@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import firebase from 'firebase/app'
-import add from '../../images/add.png'
-import delete_cross from '../../images/delete.png'
-import up from '../../images/up.png'
-import down from '../../images/down.png'
 import { handleIcon, maxValue } from '../../functions'
 import { useIcons } from '../../hooks'
+import {
+    IconChevronDown,
+    IconChevronUp,
+    IconMinus,
+    IconPlus,
+} from '../Icons'
 
 interface CardCustomerProps {
     userId: string
@@ -118,295 +120,80 @@ export default (props: CardCustomerProps) => {
 
     return (
         <div className="flex flex-col h-full justify-around items-center">
-            <div className="flex flex-col h-full justify-around items-center">
-                <div className="relative top-0 mt-10 font-title text-3xl text-center">
-                    Personnalisez vos cartes !
+            <div className="settings-title">Personnalisez vos cartes</div>
+            <div className="student-card w-full" style={{ margin: '0.4rem 0' }}>
+                <div className="student-card-head">
+                    <div className="student-card-names" style={{ cursor: 'default' }}>
+                        <span className="student-surname">Alex</span>
+                        <span className="student-name">Daxe</span>
+                    </div>
                 </div>
-                <div className={`flex flex-row w-full items-center`}>
-                    <div
-                        className={`rounded overflow-hidden ml-2 mt-5 pb-1 mx-2 bg-gray-100 w-full shadow-custom`}
-                    >
-                        <div className="flex justify-between flex-col">
-                            <div className="flex flex-row">
-                                <button className={`flex flex-row mt-2`}>
-                                    <div
-                                        className={`font-studentName ml-2 text-gray-900 font-medium h-5 text-2xl xl:text-3xl`}
-                                    >
-                                        {'Alex'}
-                                    </div>
-                                    <div
-                                        className={`font-studentName ml-2 text-gray-900 font-bold text-2xl xl:text-3xl`}
-                                    >
-                                        {'Daxe'}
-                                    </div>
+                <div className="cross-row is-stacked">
+                    {[0, 1, 2, 3, 4, 5].map((index) =>
+                        icons[index] === 0 ? null : (
+                            <div className="icon-picker" key={index}>
+                                <button
+                                    type="button"
+                                    className="icon-picker-nudge"
+                                    onClick={() => handleChangeIcon(index, 1)}
+                                    aria-label="Icône suivante"
+                                >
+                                    <IconChevronUp />
+                                </button>
+                                <div className="cross-stat" style={{ cursor: 'default' }}>
+                                    <img src={iconsDisplay[index]} alt="" />
+                                </div>
+                                <button
+                                    type="button"
+                                    className="icon-picker-nudge"
+                                    onClick={() => handleChangeIcon(index, -1)}
+                                    aria-label="Icône précédente"
+                                >
+                                    <IconChevronDown />
                                 </button>
                             </div>
-
-                            <div
-                                className={`w-full h-24 flex p-2 content-center justify-between pr-6 
-                                `}
-                            >
-                                <div
-                                    className={`flex flex-col ${
-                                        icons[0] === 0 ? 'hidden' : 'visible'
-                                    }`}
-                                >
-                                    <button
-                                        onClick={() => handleChangeIcon(0, 1)}
-                                        className="flex flex-row justify-center mb-1"
-                                    >
-                                        <img
-                                            className="h-5 w-5"
-                                            src={up}
-                                            alt=""
-                                        />
-                                    </button>
-                                    <div className="w-8 h-8 rounded-full">
-                                        <img
-                                            className=""
-                                            src={
-                                                clicked
-                                                    ? iconsDisplay[0]
-                                                    : iconsDisplay[0]
-                                            }
-                                            alt=""
-                                        />
-                                    </div>
-                                    <button
-                                        onClick={() => handleChangeIcon(0, -1)}
-                                        className="flex flex-row justify-center mt-2"
-                                    >
-                                        <img
-                                            className="h-5 w-5"
-                                            src={down}
-                                            alt=""
-                                        />
-                                    </button>
-                                </div>
-
-                                <div
-                                    className={`flex flex-col ${
-                                        icons[1] === 0 ? 'hidden' : 'visible'
-                                    }`}
-                                >
-                                    <button
-                                        onClick={() => handleChangeIcon(1, 1)}
-                                        className="flex flex-row justify-center mb-1"
-                                    >
-                                        <img
-                                            className="h-5 w-5"
-                                            src={up}
-                                            alt=""
-                                        />
-                                    </button>
-                                    <div className="w-8 h-8 rounded-full">
-                                        <img
-                                            className=""
-                                            src={
-                                                clicked
-                                                    ? iconsDisplay[1]
-                                                    : iconsDisplay[1]
-                                            }
-                                            alt=""
-                                        />
-                                    </div>
-                                    <button
-                                        onClick={() => handleChangeIcon(1, -1)}
-                                        className="flex flex-row justify-center mt-2"
-                                    >
-                                        <img
-                                            className="h-5 w-5"
-                                            src={down}
-                                            alt=""
-                                        />
-                                    </button>
-                                </div>
-                                <div
-                                    className={`flex flex-col ${
-                                        icons[2] === 0 ? 'hidden' : 'visible'
-                                    }`}
-                                >
-                                    <button
-                                        onClick={() => handleChangeIcon(2, 1)}
-                                        className="flex flex-row justify-center mb-1"
-                                    >
-                                        <img
-                                            className="h-5 w-5"
-                                            src={up}
-                                            alt=""
-                                        />
-                                    </button>
-                                    <div className="w-8 h-8 rounded-full">
-                                        <img
-                                            className=""
-                                            src={
-                                                clicked
-                                                    ? iconsDisplay[2]
-                                                    : iconsDisplay[2]
-                                            }
-                                            alt=""
-                                        />
-                                    </div>
-                                    <button
-                                        onClick={() => handleChangeIcon(2, -1)}
-                                        className="flex flex-row justify-center mt-2"
-                                    >
-                                        <img
-                                            className="h-5 w-5"
-                                            src={down}
-                                            alt=""
-                                        />
-                                    </button>
-                                </div>
-                                <div
-                                    className={`flex flex-col ${
-                                        icons[3] === 0 ? 'hidden' : 'visible'
-                                    }`}
-                                >
-                                    <button
-                                        onClick={() => handleChangeIcon(3, 1)}
-                                        className="flex flex-row justify-center mb-1"
-                                    >
-                                        <img
-                                            className="h-5 w-5"
-                                            src={up}
-                                            alt=""
-                                        />
-                                    </button>
-                                    <div className="w-8 h-8 rounded-full">
-                                        <img
-                                            className=""
-                                            src={
-                                                clicked
-                                                    ? iconsDisplay[3]
-                                                    : iconsDisplay[3]
-                                            }
-                                            alt=""
-                                        />
-                                    </div>
-                                    <button
-                                        onClick={() => handleChangeIcon(3, -1)}
-                                        className="flex flex-row justify-center mt-2"
-                                    >
-                                        <img
-                                            className="h-5 w-5"
-                                            src={down}
-                                            alt=""
-                                        />
-                                    </button>
-                                </div>
-                                <div
-                                    className={`flex flex-col ${
-                                        icons[4] === 0 ? 'hidden' : 'visible'
-                                    }`}
-                                >
-                                    <button
-                                        onClick={() => handleChangeIcon(4, 1)}
-                                        className="flex flex-row justify-center mb-1"
-                                    >
-                                        <img
-                                            className="h-5 w-5"
-                                            src={up}
-                                            alt=""
-                                        />
-                                    </button>
-                                    <div className="w-8 h-8 rounded-full">
-                                        <img
-                                            className=""
-                                            src={
-                                                clicked
-                                                    ? iconsDisplay[4]
-                                                    : iconsDisplay[4]
-                                            }
-                                            alt=""
-                                        />
-                                    </div>
-                                    <button
-                                        onClick={() => handleChangeIcon(4, -1)}
-                                        className="flex flex-row justify-center mt-2"
-                                    >
-                                        <img
-                                            className="h-5 w-5"
-                                            src={down}
-                                            alt=""
-                                        />
-                                    </button>
-                                </div>
-                                <div
-                                    className={`flex flex-col ${
-                                        icons[5] === 0 ? 'hidden' : 'visible'
-                                    }`}
-                                >
-                                    <button
-                                        onClick={() => handleChangeIcon(5, 1)}
-                                        className="flex flex-row justify-center mb-1"
-                                    >
-                                        <img
-                                            className="h-5 w-5"
-                                            src={up}
-                                            alt=""
-                                        />
-                                    </button>
-                                    <div className="w-8 h-8 rounded-full">
-                                        <img
-                                            className=""
-                                            src={
-                                                clicked
-                                                    ? iconsDisplay[5]
-                                                    : iconsDisplay[5]
-                                            }
-                                            alt=""
-                                        />
-                                    </div>
-                                    <button
-                                        onClick={() => handleChangeIcon(5, -1)}
-                                        className="flex flex-row justify-center mt-2"
-                                    >
-                                        <img
-                                            className="h-5 w-5"
-                                            src={down}
-                                            alt=""
-                                        />
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>{' '}
-                <div className="flex flex-row h-8 w-32 justify-around mt-3">
-                    <button
-                        className={`${
-                            icons.indexOf(0) === 1 ? 'invisible' : 'visible'
-                        }`}
-                        onClick={() => handleChangeIconsNumber(-1)}
-                    >
-                        <img className="h-8 w-8" src={delete_cross} alt="" />
-                    </button>
-                    <button
-                        className={`${
-                            icons.indexOf(0) === -1 ? 'invisible' : 'visible'
-                        }`}
-                        onClick={() => handleChangeIconsNumber(1)}
-                    >
-                        <img className="h-8 w-8" src={add} alt="" />
-                    </button>
+                        )
+                    )}
                 </div>
-                <div
-                    className={`flex h-16 w-56 mt-8 self-center bg-gray-300 rounded text-gray-100 text-lg font-bold text-center justify-center pt-1 mb-5 flex-wrap ${
-                        clickable ? 'hidden' : 'visible'
-                    }`}
-                >
-                    Enregistrer les modifications
-                </div>
+            </div>
+            <div className="flex flex-row h-8 w-32 justify-around mt-3">
                 <button
-                    className={`flex h-16 w-56 mt-8 self-center bg-orange-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap ${
-                        clickable ? 'visible' : 'hidden'
+                    type="button"
+                    className={`${
+                        icons.indexOf(0) === 1 ? 'invisible' : ''
                     }`}
-                    onClick={() => handleSave()}
+                    onClick={() => handleChangeIconsNumber(-1)}
+                    aria-label="Retirer une icône"
                 >
-                    Enregistrer les modifications
+                    <IconMinus />
+                </button>
+                <button
+                    type="button"
+                    className={`${
+                        icons.indexOf(0) === -1 ? 'invisible' : ''
+                    }`}
+                    onClick={() => handleChangeIconsNumber(1)}
+                    aria-label="Ajouter une icône"
+                >
+                    <IconPlus />
                 </button>
             </div>
+            <div
+                className={`btn-disabled mt-8 ${
+                    clickable ? 'hidden' : ''
+                }`}
+            >
+                Enregistrer les modifications
+            </div>
+            <button
+                type="button"
+                className={`btn-primary mt-8 ${
+                    clickable ? '' : 'hidden'
+                }`}
+                onClick={() => handleSave()}
+            >
+                Enregistrer les modifications
+            </button>
         </div>
     )
 }

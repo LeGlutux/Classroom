@@ -1,9 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react'
-import solo from '../../images/solo.png'
 import Firebase from '../../firebase'
 import NewStudentGroups from '../NewStudentGroups'
-import ok from '../../images/ok.png'
 import { useLists } from '../../hooks'
+import { IconCheck, IconUser } from '../Icons'
 
 interface Props {
     groups: string[]
@@ -30,11 +29,12 @@ export default (props: Props) => {
     return (
         <div className="flex flex-col">
             <div
-                className={`absolute sm:ok-position2 w-10 h-10 ${
+                className={`absolute sm:ok-position2 ${
                     sent ? 'fade-out' : 'invisible'
                 }`}
+                style={{ color: 'var(--tn-ink)' }}
             >
-                <img src={ok} alt="ok" />
+                <IconCheck />
             </div>
             <form
                 className="flex flex-col w-full h-full bg-transparent mt-5"
@@ -102,33 +102,33 @@ export default (props: Props) => {
                 action=""
             >
                 <div className="flex flex-col h-full items-center pb-4">
-                    <div className="flex flex-col h-full justify-around items-center">
-                        <div className="relative top-0 font-title text-3xl">
+                    <div className="flex flex-col h-full justify-around items-center w-full">
+                        <div className="settings-title">
                             Ajoutez vos élèves
                         </div>
-                        <div className="flex flex-row items-center justify-center hover:border-gray-600 xl:w-full">
-                            <img className="w-8 h-8 mt-3" src={solo} alt="" />
-                            <div className="w-9/12 flex flex-col hover:border-gray-600">
-                                <input
-                                    ref={firstInputRef}
-                                    value={surnameInputValue}
-                                    onChange={(e) =>
-                                        setSurnameInputValue(e.target.value)
-                                    }
-                                    className="h-10 mt-3 placeholder-gray-700 ml-5 bg-transparent border-b-2 border-gray-600 text-lg xl:text-center"
-                                    type="text"
-                                    placeholder="Prénom de l'élève"
-                                />
-                                <input
-                                    className="h-10 mt-3 placeholder-gray-700 text-lg ml-5 bg-transparent border-b-2 border-gray-600 xl:text-center"
-                                    value={nameInputValue}
-                                    onChange={(e) =>
-                                        setNameInputValue(e.target.value)
-                                    }
-                                    type="text"
-                                    placeholder="Nom de l'élève"
-                                />
-                            </div>
+                        <div className="field">
+                            <IconUser />
+                            <input
+                                ref={firstInputRef}
+                                value={surnameInputValue}
+                                onChange={(e) =>
+                                    setSurnameInputValue(e.target.value)
+                                }
+                                className="field-input"
+                                type="text"
+                                placeholder="Prénom de l'élève"
+                            />
+                        </div>
+                        <div className="field" style={{ marginTop: '0.6rem' }}>
+                            <input
+                                className="field-input"
+                                value={nameInputValue}
+                                onChange={(e) =>
+                                    setNameInputValue(e.target.value)
+                                }
+                                type="text"
+                                placeholder="Nom de l'élève"
+                            />
                         </div>
 
                         <div className="w-full flex flex-wrap flex-row justify-evenly mx-1 mt-6 px-2">
@@ -143,7 +143,7 @@ export default (props: Props) => {
                             })}
                         </div>
                         <div
-                            className={`flex h-12 w-40 self-center pt-2 mt-6 bg-gray-300 rounded text-gray-100 text-lg font-bold justify-center ${
+                            className={`btn-disabled mt-6 ${
                                 clickable ? 'hidden' : 'visible'
                             }`}
                         >
@@ -151,7 +151,7 @@ export default (props: Props) => {
                         </div>
                         <button
                             type="submit"
-                            className={`flex h-12 w-40 self-center pt-2 mt-6 bg-orange-500 rounded text-white text-lg font-bold justify-center ${
+                            className={`btn-primary mt-6 ${
                                 clickable ? 'visible' : 'hidden'
                             }`}
                         >

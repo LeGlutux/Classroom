@@ -2,11 +2,10 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { AuthContext } from '../Auth'
 import Firebase from '../firebase'
 import NavBar from './NavBar'
-import list from '../images/list.png'
-import add from '../images/add.png'
 import NewStudentGroups from './NewStudentGroups'
 import { useGroups, useLists, useStudents } from '../hooks'
 import { useHistory } from 'react-router-dom'
+import { IconList, IconPlus } from './Icons'
 
 export default () => {
     const db = Firebase.firestore()
@@ -118,25 +117,23 @@ export default () => {
     }, [lists, listNameInputValue, item1, itemN, item2, item3, item4])
 
     return (
-        <div className="h-screen w-full flex flex-col bg-gradient-to-b from-gray-50 to-white overflow-hidden">
-            <div className="flex-shrink-0 flex flex-row w-full h-14 border-b-2 border-gray-300 items-center font-title font-bold justify-between text-3xl rounded-b-3xl bg-white shadow-sm xl:text-4xl xl:h-16 px-4">
+        <div className="app-shell overflow-hidden">
+            <header className="page-header">
                 <button
-                    className="cursor-pointer hover:opacity-70 transition-opacity flex items-center justify-center"
+                    className="header-icon-btn"
                     onClick={() => history.goBack()}
                     aria-label="Retour"
+                    type="button"
                 >
-                    <svg
-                        className="h-6 w-6 fill-current text-gray-600 hover:text-gray-800"
-                    >
-                        <title>Retour</title>
+                    <svg viewBox="0 0 20 20">
                         <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
                     </svg>
                 </button>
-                <div className="flex-1 text-center">
-                    Créer une liste
+                <div className="page-header-main">
+                    <h1 className="page-title">Créer une liste</h1>
                 </div>
-                <div className="w-10"></div>
-            </div>
+                <div className="page-header-side" />
+            </header>
 
             <form
                 className="flex flex-col flex-1 min-h-0 w-full bg-transparent overflow-y-auto"
@@ -166,8 +163,8 @@ export default () => {
             >
                 <div className="flex flex-col items-center px-4 pt-4 pb-20">
                     <div className="w-full max-w-2xl mb-4">
-                        <div className="flex flex-row items-center justify-center bg-white rounded-lg shadow-custom p-4 border border-gray-200">
-                            <img className="w-8 h-8 mr-3" src={list} alt="Liste" />
+                        <div className="card p-4 flex flex-row items-center">
+                            <IconList className="icon mr-3" />
                             <div className="w-full flex flex-col">
                                 <label className="text-sm font-studentName text-gray-600 mb-1">
                                     Nom de la liste
@@ -177,7 +174,7 @@ export default () => {
                                     onChange={(e) =>
                                         setListNameInputValue(e.target.value)
                                     }
-                                    className="h-12 bg-transparent border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none text-lg font-studentName transition-colors"
+                                    className="h-12 bg-transparent border-b-2 border-gray-300 focus:border-gray-800 focus:outline-none text-lg font-studentName transition-colors"
                                     type="text"
                                     placeholder="Ex: Devoirs maison, Participation..."
                                 />
@@ -185,14 +182,14 @@ export default () => {
                         </div>
                     </div>
                     <div className="w-full max-w-2xl flex flex-wrap flex-col justify-center mb-4">
-                        <div className="bg-white rounded-lg shadow-custom p-4 border border-gray-200">
+                        <div className="card p-4">
                             <div className="text-lg font-studentName text-gray-800 mb-3 font-semibold">
                                 Classes concernées
                             </div>
                             <div className="w-full flex flex-wrap flex-row gap-2 justify-start">
                                 {groups.map((value, index) => {
                                     return (
-                                        <div key={index} className="bg-gray-50 rounded-lg px-2 py-1.5 border border-gray-200 hover:border-orange-300 transition-colors">
+                                        <div key={index} className="bg-gray-50 rounded-lg px-2 py-1.5 border border-gray-200 hover:border-gray-400 transition-colors">
                                             <NewStudentGroups
                                                 list={defaultList}
                                                 classe={value}
@@ -210,7 +207,7 @@ export default () => {
                         </div>
                     </div>
                     <div className="w-full max-w-2xl">
-                        <div className="bg-white rounded-lg shadow-custom p-4 border border-gray-200 mb-3">
+                        <div className="card p-4 mb-3">
                             <div className="text-lg font-studentName text-gray-800 mb-3 font-semibold">
                                 Items de la liste
                             </div>
@@ -224,7 +221,7 @@ export default () => {
                                             onChange={(e) => {
                                                 setItem1(e.target.value)
                                             }}
-                                            className="h-10 w-full bg-gray-50 border-2 border-gray-200 rounded-lg px-3 text-base font-studentName focus:border-orange-500 focus:outline-none transition-colors"
+                                            className="h-10 w-full bg-gray-50 border-2 border-gray-200 rounded-lg px-3 text-base font-studentName focus:border-gray-800 focus:outline-none transition-colors"
                                             type="text"
                                             placeholder="Item 1 (ex: Fait, À faire...)"
                                         />
@@ -276,7 +273,7 @@ export default () => {
                                             onChange={(e) => {
                                                 setItem2(e.target.value)
                                             }}
-                                            className="h-10 w-full bg-gray-50 border-2 border-gray-200 rounded-lg px-3 text-base font-studentName focus:border-orange-500 focus:outline-none transition-colors"
+                                            className="h-10 w-full bg-gray-50 border-2 border-gray-200 rounded-lg px-3 text-base font-studentName focus:border-gray-800 focus:outline-none transition-colors"
                                             type="text"
                                             placeholder="Item 2"
                                         />
@@ -328,7 +325,7 @@ export default () => {
                                             onChange={(e) => {
                                                 setItem3(e.target.value)
                                             }}
-                                            className="h-10 w-full bg-gray-50 border-2 border-gray-200 rounded-lg px-3 text-base font-studentName focus:border-orange-500 focus:outline-none transition-colors"
+                                            className="h-10 w-full bg-gray-50 border-2 border-gray-200 rounded-lg px-3 text-base font-studentName focus:border-gray-800 focus:outline-none transition-colors"
                                             type="text"
                                             placeholder="Item 3"
                                         />
@@ -380,7 +377,7 @@ export default () => {
                                             onChange={(e) => {
                                                 setItem4(e.target.value)
                                             }}
-                                            className="h-10 w-full bg-gray-50 border-2 border-gray-200 rounded-lg px-3 text-base font-studentName focus:border-orange-500 focus:outline-none transition-colors"
+                                            className="h-10 w-full bg-gray-50 border-2 border-gray-200 rounded-lg px-3 text-base font-studentName focus:border-gray-800 focus:outline-none transition-colors"
                                             type="text"
                                             placeholder="Item 4"
                                         />
@@ -432,7 +429,7 @@ export default () => {
                                             onChange={(e) => {
                                                 setItem5(e.target.value)
                                             }}
-                                            className="h-10 w-full bg-gray-50 border-2 border-gray-200 rounded-lg px-3 text-base font-studentName focus:border-orange-500 focus:outline-none transition-colors"
+                                            className="h-10 w-full bg-gray-50 border-2 border-gray-200 rounded-lg px-3 text-base font-studentName focus:border-gray-800 focus:outline-none transition-colors"
                                             type="text"
                                             placeholder="Item 5"
                                         />
@@ -464,7 +461,7 @@ export default () => {
                         <div className="w-full max-w-2xl flex flex-row justify-center mb-3">
                             <button
                                 type="submit"
-                                className="flex flex-row items-center justify-center gap-2 px-5 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg border-2 border-gray-300 text-gray-700 font-studentName text-sm font-semibold transition-all hover:scale-105 shadow-sm"
+                                className="btn-ghost"
                                 onClick={(e) => {
                                     e.preventDefault()
                                     if (itemN <= 5) setItemN(itemN + 1)
@@ -474,11 +471,7 @@ export default () => {
                                     )
                                 }}
                             >
-                                <img
-                                    className="h-4 w-4"
-                                    src={add}
-                                    alt="ajouter"
-                                />
+                                <IconPlus />
                                 Ajouter un item
                             </button>
                         </div>
@@ -491,24 +484,22 @@ export default () => {
                                 type="submit"
                                 ref={submitButtonRef}
                                 onClick={() => history.goBack()}
-                                className="flex h-11 w-52 items-center justify-center bg-orange-500 hover:bg-orange-600 rounded-lg text-white text-base font-studentName font-bold shadow-custom transition-all hover:scale-105"
+                                className="btn-primary"
                             >
-                                ✓ Créer la liste
+                                Créer la liste
                             </button>
                         ) : (
-                            <div className="flex h-11 w-52 items-center justify-center bg-gray-300 rounded-lg text-gray-500 text-base font-studentName font-bold">
+                            <div className="btn-disabled">
                                 Créer la liste
                             </div>
                         )}
                     </div>
                 </div>
             </form>
-            <div className="flex-shrink-0 w-full h-12 bg-gray-300 border-t-2 border-gray-400">
-                <NavBar 
+            <NavBar 
                 activeMenu="list"
                 onHomeClick={handleHomeClick}
                 />
-            </div>
         </div>
     )
 }

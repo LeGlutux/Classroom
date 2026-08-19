@@ -17,7 +17,7 @@ export default ({
         return word.replace(/ /g, ':')
     }
     return (
-        <div className="flex overflow-x-scroll w-9/12 ml-2 pr-1 bg-tranparent justify-start">
+        <div className="flex overflow-x-scroll w-full pr-1 justify-start">
             {groups.map((group, index) => {
                 return (
                     <button
@@ -26,8 +26,9 @@ export default ({
                             setDisplayedGroup(group)
                             closeMenu(false)
                         }}
-                        className="flex font-studentName h-8 mb-2 mx-1 bg-white text-center rounded-lg px-3 items-center"
+                        className="chip"
                         key={index}
+                        type="button"
                     >
                         {replacer(group)}
                     </button>

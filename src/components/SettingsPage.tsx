@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import CreateGroups from './Create/CreateGroups'
 import CreateStudent from './Create/CreateStudent'
 import NavBar from './NavBar'
+import LoadingScreen from './LoadingScreen'
 import {
     useAllUsersIds,
     useVersion,
@@ -9,20 +10,16 @@ import {
     useLists,
 } from '../hooks'
 import firebase from 'firebase/app'
-import loader_image from '../images/loader.gif'
 import 'react-datepicker/dist/react-datepicker.css'
 import { AuthContext } from '../Auth'
 import { usePeriodes, useStudents } from '../hooks'
 import PeriodeFilter from './PeriodeFilter'
-import calendar from '../images/calendar.png'
 import ConfirmModal from './ConfirmModal'
 import { useHistory } from 'react-router-dom'
 import { cards } from '../classes'
-import openCard from '../images/openCard.png'
-import closeCard from '../images/closeCard.png'
-
 import CardCustomer from './CardCustomization/CardCustomer'
 import FileUploader from './FileUploader'
+import { IconCalendar } from './Icons'
 
 export default () => {
     const [confirm, setConfirm] = useState(false)
@@ -167,32 +164,28 @@ export default () => {
         }, 5000)
     }, [saveConfirm])
 
+    const lastCard = adminConnected ? 5 : 4
+    const cardCount = lastCard + 1
+
     if (loading) {
         return (
-            <div className="w-full h-screen flex flex-col justify-center items-center">
-                <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full xl:text-6xl xl:h-16">
-                    Paramétrez votre année
-                </div>
-                <div className="h-full flex flex-col justify-center items-center">
-                    <div className="font-title text-4xl mb-8 text-bold xl:text-6xl">
-                        Chargement des données
-                    </div>
-                    <div className="w-64 h-64 mt-8 xl:w-64 xl:h-64">
-                        <img src={loader_image} alt="" />
-                    </div>
-                </div>
-
-                <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                    <NavBar activeMenu="addPage" onHomeClick={handleHomeClick} />
-                </div>
-            </div>
+            <LoadingScreen
+                title="Réglages"
+                activeMenu="addPage"
+                onHomeClick={handleHomeClick}
+            />
         )
     } else
         return (
-            <div className={`w-full h-screen flex flex-col`}>
-                <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl xl:text-6xl xl:h-16 rounded-b-full">
-                    Paramétrez votre année
-                </div>
+            <div className="app-shell">
+                <header className="page-header">
+                    <div className="page-header-side" />
+                    <div className="page-header-main">
+                        <h1 className="page-title">Réglages</h1>
+                        <div className="page-subtitle">Paramétrez votre année</div>
+                    </div>
+                    <div className="page-header-side" />
+                </header>
                 <ConfirmModal
                     confirm={confirm}
                     setConfirm={setConfirm}
@@ -215,48 +208,47 @@ export default () => {
                         'En faisant cela, vous supprimez définitivement vos élèves et vos classes'
                     }
                 />
-                <div
-                    className={`flex w-full justify-between px-6 settings-page-arrows z-30 bg-transparent`}
-                >
+                <div className="settings-track">
                     <button
-                        className={`${
-                            actualRef === 0 || hide ? 'invisible' : 'visible'
-                        }
-                    ${groups.length === 0 ? 'invisible' : 'visible'}
-                    xl:hidden`}
+                        type="button"
+                        className={`settings-arrow settings-arrow-left ${
+                            actualRef === 0 || hide || groups.length === 0
+                                ? 'invisible'
+                                : ''
+                        }`}
                         onClick={() => {
                             scrollTo(actualRef - 1)
                             setActualRef(actualRef - 1)
                             setHide(true)
                             setTimeout(() => setHide(false), 400)
                         }}
+                        aria-label="Carte précédente"
                     >
-                        <img className="w-4" src={closeCard} alt="" />
+                        <svg viewBox="0 0 20 20">
+                            <path d="M12.7 15.3a1 1 0 0 1-1.4 0l-4.6-4.6a1 1 0 0 1 0-1.4l4.6-4.6a1 1 0 1 1 1.4 1.4L8.8 10l3.9 3.9a1 1 0 0 1 0 1.4z" />
+                        </svg>
                     </button>
                     <button
-                        className={`${
-                            (actualRef === 4 && !adminConnected) ||
-                            hide ||
-                            actualRef === 5
+                        type="button"
+                        className={`settings-arrow settings-arrow-right ${
+                            actualRef === lastCard || hide || groups.length === 0
                                 ? 'invisible'
-                                : 'visible'
-                        }
-                    ${groups.length === 0 ? 'invisible' : 'visible'} xl:hidden`}
+                                : ''
+                        }`}
                         onClick={() => {
                             scrollTo(actualRef + 1)
                             setActualRef(actualRef + 1)
                             setHide(true)
                             setTimeout(() => setHide(false), 400)
                         }}
+                        aria-label="Carte suivante"
                     >
-                        <img className="w-4" src={openCard} alt="" />
+                        <svg viewBox="0 0 20 20">
+                            <path d="M7.3 4.7a1 1 0 0 1 1.4 0l4.6 4.6a1 1 0 0 1 0 1.4l-4.6 4.6a1 1 0 1 1-1.4-1.4L11.2 10 7.3 6.1a1 1 0 0 1 0-1.4z" />
+                        </svg>
                     </button>
-                </div>
 
-                <div
-                    className={`flex flex-row h-full overflow-x-hidden py-8 items-center px-8`}
-                    ref={xScroller}
-                >
+                    <div className="settings-scroller" ref={xScroller}>
                     <div className={cards(0, actualRef)} ref={ref0}>
                         {uploader && (
                             <CreateGroups onAddGroup={refreshGroups} />
@@ -269,7 +261,7 @@ export default () => {
                         )}
 
                         <button
-                            className="flex justify-end w-auto self-end text-blue-600 justify-items-end place-items-end"
+                            className="auth-link self-end mt-3"
                             onClick={() => setUploader(!uploader)}
                         >
                             {!uploader
@@ -295,22 +287,18 @@ export default () => {
                     <div className={`${cards(3, actualRef)}`} ref={ref3}>
                         <div className="flex flex-col h-full items-center pb-4">
                             <div className="flex flex-col h-full justify-around items-center">
-                                <div className="relative top-0 font-title text-3xl text-center">
+                                <div className="settings-title">
                                     Lancer une nouvelle période
                                 </div>
 
                                 <div className="flex flex-row items-center mb-5">
-                                    <img
-                                        className="w-8 h-8"
-                                        src={calendar}
-                                        alt=""
-                                    />
-                                    <div className="text-gray-800 font-studentName text-lg ml-2">
+                                    <IconCalendar />
+                                    <div className="text-sm ml-2" style={{ color: 'var(--tn-muted)' }}>
                                         En cours : Période {runningPeriode}
                                     </div>
                                 </div>
                                 <button
-                                    className="flex h-16 w-56 self-center bg-orange-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 pb-2 flex-wrap"
+                                    className="btn-primary"
                                     onClick={() => setConfirm(true)}
                                 >
                                     {' '}
@@ -320,6 +308,7 @@ export default () => {
                                     periodes={periodes}
                                     currentUser={currentUser.uid}
                                     refresh={refreshRunningPeriode}
+                                    runningPeriode={runningPeriode}
                                 />
                             </div>
                         </div>
@@ -329,11 +318,11 @@ export default () => {
                         <div className="flex flex-col h-full justify-around items-center">
                             <div className="flex flex-col h-full justify-around items-center">
                                 <div className="flex flex-col h-full justify-around items-center">
-                                    <div className="relative top-0 font-title text-3xl text-center">
+                                    <div className="settings-title">
                                         L'année est finie ?
                                     </div>
                                     <button
-                                        className="flex h-16 w-56 mt-8 self-center bg-red-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap"
+                                        className="btn-danger"
                                         onClick={() => setConfirm2(true)}
                                     >
                                         {' '}
@@ -344,39 +333,49 @@ export default () => {
                         </div>
                     </div>
 
-                    <div
-                        className={`flex ${
-                            actualRef === 5 ? 'z-40' : 'z-20'
-                        } flex-col mt-2 h-100 w-64 px-12 overflow-visible shadow-custom mx-6 bg-gray-100 pb-4 rounded xl:mt-12 xl:mx-64 ${
-                            adminConnected ? 'visible' : 'invisible'
-                        }`}
-                        ref={ref5}
-                    >
+                    {adminConnected && (
+                    <div className={cards(5, actualRef)} ref={ref5}>
                         <div className="flex flex-col h-full justify-around items-center">
-                            <div className="flex flex-col h-full justify-around items-center">
-                                <div className="relative top-0 font-title text-3xl text-center">
-                                    Si vous voyez ceci, prévenir le développeur
-                                    !
-                                </div>
-                                <div>
-                                    {'version: '} {version}
-                                </div>
-                                <button
-                                    className="flex h-8 w-56 mt-8 self-center bg-green-500 rounded text-white text-lg font-bold justify-center pt-1 mb-5 flex-wrap"
-                                    onClick={() =>
-                                        updateUsersProps(allUsersIds)
-                                    }
-                                >
-                                    Setup Postits
-                                </button>
+                            <div className="settings-title">
+                                Si vous voyez ceci, prévenir le développeur
+                                !
                             </div>
+                            <div>
+                                {'version: '} {version}
+                            </div>
+                            <button
+                                type="button"
+                                className="btn-secondary"
+                                onClick={() =>
+                                    updateUsersProps(allUsersIds)
+                                }
+                            >
+                                Setup Postits
+                            </button>
                         </div>
                     </div>
-                </div>
-                <div className="w-full mb-6 h-16 bg-white">
-                    <div className="my-8 flex justify-center bg-white">
+                    )}
+                    </div>
+                    <div className="settings-dots">
+                        {Array.from({ length: cardCount }).map((_, index) => (
+                            <button
+                                type="button"
+                                key={index}
+                                className={`settings-dot ${
+                                    actualRef === index ? 'is-active' : ''
+                                }`}
+                                onClick={() => {
+                                    scrollTo(index)
+                                    setActualRef(index)
+                                }}
+                                aria-label={`Aller à la carte ${index + 1}`}
+                            />
+                        ))}
+                    </div>
+                    <div className="w-full py-3 flex justify-center">
                         <button
-                            className="text-lg text-gray-700 font-bold"
+                            className="btn-ghost"
+                            type="button"
                             onClick={() => firebase.auth().signOut()}
                         >
                             Se déconnecter
@@ -384,8 +383,7 @@ export default () => {
                     </div>
                 </div>
                 <div
-                    className={`flex justify-around absolute bottom-0 w-full h-8 z-50 bg-green-400 items-center text-lg text-bold text-white 
-            ${
+                    className={`toast-success ${
                 count !== 0
                     ? saveConfirm
                         ? 'entering-b'
@@ -396,9 +394,7 @@ export default () => {
                     Les modifications ont été enregistrées
                 </div>
 
-                <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
-                    <NavBar activeMenu="addPage" onHomeClick={handleHomeClick} />
-                </div>
+                <NavBar activeMenu="addPage" onHomeClick={handleHomeClick} />
             </div>
         )
 }

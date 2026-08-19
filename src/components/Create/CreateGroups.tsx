@@ -1,9 +1,8 @@
 import React, { useState, useContext, useRef, useEffect } from 'react'
-import group from '../../images/group.png'
 import Firebase from '../../firebase'
 import firebase from 'firebase/app'
 import { AuthContext } from '../../Auth'
-import ok from '../../images/ok.png'
+import { IconCheck, IconUsers } from '../Icons'
 
 interface Props {
     onAddGroup: () => void
@@ -63,27 +62,25 @@ export default (props: Props) => {
                 action=""
             >
                 <div className="flex flex-col h-full items-center pb-4 justify-center">
-                    <div className="flex flex-col h-full justify-around items-center">
-                        <div className="relative top-0 font-title text-3xl">
+                    <div className="flex flex-col h-full justify-around items-center w-full">
+                        <div className="settings-title">
                             Ajoutez vos classes
                         </div>
-                        <div className="flex flex-row items-center justify-center hover:border-gray-600 xl:w-full">
-                            <img className="w-8 h-8 mt-3" src={group} alt="" />
-                            <div className="w-9/12 flex flex-col hover:border-gray-600">
-                                <input
-                                    ref={inputRef}
-                                    value={inputValue}
-                                    onChange={(e) =>
-                                        setInputValue(e.target.value)
-                                    }
-                                    className="h-10 z-50 placeholder-gray-700 ml-5 bg-transparent border-b-2 border-gray-600 text-lg xl:text-center"
-                                    type="text"
-                                    placeholder="Nom de la classe"
-                                />
-                            </div>
+                        <div className="field">
+                            <IconUsers />
+                            <input
+                                ref={inputRef}
+                                value={inputValue}
+                                onChange={(e) =>
+                                    setInputValue(e.target.value)
+                                }
+                                className="field-input"
+                                type="text"
+                                placeholder="Nom de la classe"
+                            />
                         </div>
                         <div
-                            className={`flex h-12 w-40 self-center pt-2 mt-6 bg-gray-300 rounded text-gray-100 text-lg font-bold justify-center ${
+                            className={`btn-disabled mt-6 ${
                                 clickable ? 'hidden' : 'visible'
                             }`}
                         >
@@ -91,7 +88,7 @@ export default (props: Props) => {
                         </div>
                         <button
                             type="submit"
-                            className={`flex h-12 w-40 self-center pt-2 mt-6 bg-orange-500 rounded text-white text-lg font-bold justify-center ${
+                            className={`btn-primary mt-6 ${
                                 clickable ? 'visible' : 'hidden'
                             }`}
                         >
@@ -99,11 +96,12 @@ export default (props: Props) => {
                         </button>
 
                         <div
-                            className={`absolute sm:ok-position1 w-10 h-10 ${
+                            className={`absolute sm:ok-position1 ${
                                 sent ? 'fade-out' : 'invisible'
                             }`}
+                            style={{ color: 'var(--tn-ink)' }}
                         >
-                            <img src={ok} alt="ok" />
+                            <IconCheck />
                         </div>
                     </div>
                 </div>
