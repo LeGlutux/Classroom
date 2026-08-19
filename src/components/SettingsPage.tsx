@@ -14,7 +14,6 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { AuthContext } from '../Auth'
 import { usePeriodes, useStudents } from '../hooks'
 import PeriodeFilter from './PeriodeFilter'
-import calendar from '../images/calendar.png'
 import ConfirmModal from './ConfirmModal'
 import { useHistory } from 'react-router-dom'
 import { cards } from '../classes'
@@ -23,6 +22,7 @@ import closeCard from '../images/closeCard.png'
 
 import CardCustomer from './CardCustomization/CardCustomer'
 import FileUploader from './FileUploader'
+import { IconCalendar } from './Icons'
 
 export default () => {
     const [confirm, setConfirm] = useState(false)
@@ -169,8 +169,8 @@ export default () => {
 
     if (loading) {
         return (
-            <div className="w-full h-screen flex flex-col justify-center items-center">
-                <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full xl:text-6xl xl:h-16">
+            <div className="w-full h-screen flex flex-col justify-center items-center app-bg">
+                <div className="flex flex-row w-full h-12 page-header items-center font-title font-bold justify-center text-4xl xl:text-6xl xl:h-16">
                     Paramétrez votre année
                 </div>
                 <div className="h-full flex flex-col justify-center items-center">
@@ -182,15 +182,15 @@ export default () => {
                     </div>
                 </div>
 
-                <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
+                <div className={`w-full h-12 nav-wrap sticky bottom-0`}>
                     <NavBar activeMenu="addPage" onHomeClick={handleHomeClick} />
                 </div>
             </div>
         )
     } else
         return (
-            <div className={`w-full h-screen flex flex-col`}>
-                <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl xl:text-6xl xl:h-16 rounded-b-full">
+            <div className={`w-full h-screen flex flex-col app-bg`}>
+                <div className="flex flex-row w-full h-12 page-header items-center font-title font-bold justify-center text-4xl xl:text-6xl xl:h-16">
                     Paramétrez votre année
                 </div>
                 <ConfirmModal
@@ -300,11 +300,7 @@ export default () => {
                                 </div>
 
                                 <div className="flex flex-row items-center mb-5">
-                                    <img
-                                        className="w-8 h-8"
-                                        src={calendar}
-                                        alt=""
-                                    />
+                                    <IconCalendar />
                                     <div className="text-gray-800 font-studentName text-lg ml-2">
                                         En cours : Période {runningPeriode}
                                     </div>
@@ -396,7 +392,7 @@ export default () => {
                     Les modifications ont été enregistrées
                 </div>
 
-                <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
+                <div className={`w-full h-12 nav-wrap sticky bottom-0`}>
                     <NavBar activeMenu="addPage" onHomeClick={handleHomeClick} />
                 </div>
             </div>

@@ -162,10 +162,12 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
             }`}
         >
             <div
-                className={`overflow-hidden ml-3 mr-2 bg-white w-full ${
+                className={`student-card w-full ${
+                    highlight ? 'is-highlight' : ''
+                } ${
                     props.runningPeriode === props.periodes.length
                         ? ''
-                        : 'border-2 border-gray-500'
+                        : 'is-archived'
                 }`}
             >
                 <div
@@ -385,14 +387,11 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                             </div>
                         </div>
                     </div>
-                    <div className="flex flex-row lg:mt-3 xl:mt-5">
-                        <StudentComment
+                    <StudentComment
                             currentUserId={props.currentUser}
                             currentStudentId={props.id}
                             comment={props.comment ? props.comment : ''}
                         />
-                    </div>
-                    <div className="border-b-2 border-gray-400 w-2/3 rounded-full self-center mt-4" />
                 </div>
             </div>
         </div>

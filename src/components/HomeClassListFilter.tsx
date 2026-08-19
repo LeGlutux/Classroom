@@ -25,7 +25,7 @@ export default ({
 
     return (
         <div className="flex flex-col ml-2 mr-6 flex-1 min-h-0 overflow-y-auto px-2">
-            <div className={`flex flex-col py-2 ${shouldCenter ? 'min-h-full justify-center' : ''}`}>
+            <div className={`flex flex-col py-2 home-class-list ${shouldCenter ? 'min-h-full justify-center' : ''}`}>
                 {groups.map((group, index) => {
                     return (
                         <div
@@ -38,7 +38,7 @@ export default ({
                                     setDisplayedGroup(group)
                                     closeMenu(false)
                                 }}
-                                className={`flex relative font-studentName h-16 my-4 bg-gray-300 justify-center shadow-custom rounded-lg pt-1 self-center text-4xl ${
+                                className={`home-class-card flex relative font-studentName h-16 my-4 bg-gray-300 justify-center shadow-custom rounded-lg pt-1 self-center text-4xl ${
                                     longestGroupLength > 4 ? 'w-56' : 'w-32'
                                 }`}
                             >

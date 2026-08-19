@@ -228,8 +228,8 @@ export default () => {
 
     if (studentsLoading || groupsLoading) {
         return (
-            <div className="w-full h-screen flex flex-col justify-center items-center">
-                <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full xl:text-6xl xl:h-16">
+            <div className="w-full h-screen flex flex-col justify-center items-center app-bg">
+                <div className="flex flex-row w-full h-12 page-header items-center font-title font-bold justify-center text-4xl xl:text-6xl xl:h-16">
                     {title}
                 </div>
                 <div className="h-full flex flex-col justify-center items-center">
@@ -241,7 +241,7 @@ export default () => {
                     </div>
                 </div>
 
-                <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
+                <div className={`w-full h-12 nav-wrap sticky bottom-0`}>
                     <NavBar activeMenu="home" onHomeClick={handleHomeClick} />
                 </div>
             </div>
@@ -250,8 +250,8 @@ export default () => {
 
     if (groups.length === 0) {
         return (
-            <div className="w-full h-screen flex flex-col justify-center items-center">
-                <div className="flex flex-col w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full xl:text-6xl xl:h-16">
+            <div className="w-full h-screen flex flex-col justify-center items-center app-bg">
+                <div className="flex flex-col w-full h-12 page-header items-center font-title font-bold justify-center text-4xl xl:text-6xl xl:h-16">
                     {'Accueil'}
                 </div>
                 <div className="h-full flex flex-col justify-center items-center">
@@ -269,7 +269,7 @@ export default () => {
                     </div>
                 </div>
 
-                <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
+                <div className={`w-full h-12 nav-wrap sticky bottom-0`}>
                     <NavBar activeMenu="home" onHomeClick={handleHomeClick} />
                 </div>
             </div>
@@ -278,8 +278,8 @@ export default () => {
 
     if (groups.length !== 0 && students.length === 0) {
         return (
-            <div className="w-full h-screen flex flex-col justify-center items-center">
-                <div className="flex flex-col w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full">
+            <div className="w-full h-screen flex flex-col justify-center items-center app-bg">
+                <div className="flex flex-col w-full h-12 page-header items-center font-title font-bold justify-center text-4xl">
                     {title}
                 </div>
 
@@ -297,7 +297,7 @@ export default () => {
                     </div>
                 </div>
 
-                <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
+                <div className={`w-full h-12 nav-wrap sticky bottom-0`}>
                     <NavBar activeMenu="home" onHomeClick={handleHomeClick} />
                 </div>
             </div>
@@ -306,7 +306,7 @@ export default () => {
 
     if (updating === true) {
         return (
-            <div className="w-full h-screen flex flex-col justify-center items-center">
+            <div className="w-full h-screen flex flex-col justify-center items-center app-bg">
                 <div className="h-full flex flex-col justify-center items-center">
                     <div className="font-title text-4xl mb-8 text-bold">
                         Mise à jour
@@ -320,7 +320,7 @@ export default () => {
     }
 
     return (
-        <div className="w-full h-screen flex flex-col overflow-hidden">
+        <div className="w-full h-screen flex flex-col overflow-hidden app-bg">
             <Updater
                 userId={currentUser.uid}
                 userVersion={user?.version || 0}
@@ -340,7 +340,7 @@ export default () => {
                 </div>
             )}
 
-            <div className="flex-shrink-0 flex flex-col w-full bg-white h-12 border-b-2 p-1 border-gray-400 items-center font-title font-bold justify-around text-4xl rounded-b-full z-10">
+            <div className="flex-shrink-0 flex flex-col w-full bg-white h-12 page-header p-1 items-center font-title font-bold justify-around text-4xl z-10">
                 {title}
                 <img alt=""
                     className={`absolute h-8 w-8 ml-20 mb-1 ${
@@ -383,7 +383,7 @@ export default () => {
             })}
 
             {displayedGroup !== 'tous' && (
-                <div className="flex w-full h-full flex-col pt-18 pb-24 bg-white overflow-y-scroll md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start">
+                <div className="flex w-full h-full flex-col pt-18 pb-24 overflow-y-scroll student-grid md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start">
                     {students.map(
                             ({
                                 name,
@@ -425,7 +425,7 @@ export default () => {
             )}
 
             {displayedGroup === 'tous' && (
-                <div className="flex-1 min-h-0 flex w-full flex-col bg-white overflow-hidden py-2">
+                <div className="flex-1 min-h-0 flex w-full flex-col overflow-hidden py-2">
                     {
                         <HomeClassListFilter
                             setDisplayedGroup={setDisplayedGroup}
@@ -536,7 +536,7 @@ export default () => {
                 </div>
             )}
 
-            <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
+            <div className={`w-full h-12 nav-wrap sticky bottom-0`}>
                 <NavBar activeMenu="home" onHomeClick={handleHomeClick} />
             </div>
         </div>

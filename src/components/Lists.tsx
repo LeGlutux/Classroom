@@ -18,8 +18,8 @@ export default () => {
 
     if (loading) {
         return (
-            <div className="w-full h-screen flex flex-col justify-center items-center">
-                <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full xl:text-6xl xl:h-16">
+            <div className="w-full h-screen flex flex-col justify-center items-center app-bg">
+                <div className="flex flex-row w-full h-12 page-header items-center font-title font-bold justify-center text-4xl xl:text-6xl xl:h-16">
                     Mes listes
                 </div>
                 <div className="h-full flex flex-col justify-center items-center">
@@ -31,7 +31,7 @@ export default () => {
                     </div>
                 </div>
 
-                <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
+                <div className={`w-full h-12 nav-wrap sticky bottom-0`}>
                     <NavBar activeMenu="list" onHomeClick={handleHomeClick} />
                 </div>
             </div>
@@ -40,8 +40,8 @@ export default () => {
 
     if (lists.length === 0) {
         return (
-            <div className="w-full h-screen flex flex-col justify-center items-center">
-                <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full xl:text-6xl xl:h-16">
+            <div className="w-full h-screen flex flex-col justify-center items-center app-bg">
+                <div className="flex flex-row w-full h-12 page-header items-center font-title font-bold justify-center text-4xl xl:text-6xl xl:h-16">
                     Mes listes
                 </div>
                 <div className="h-full flex flex-col justify-center items-center">
@@ -61,7 +61,7 @@ export default () => {
                     </div>
                 </div>
 
-                <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
+                <div className={`w-full h-12 nav-wrap sticky bottom-0`}>
                     <NavBar activeMenu="list" onHomeClick={handleHomeClick} />
                 </div>
             </div>
@@ -69,8 +69,8 @@ export default () => {
     }
 
     return (
-        <div className="h-screen w-full flex flex-col">
-            <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full xl:text-6xl xl:h-16">
+        <div className="h-screen w-full flex flex-col app-bg">
+            <div className="flex flex-row w-full h-12 page-header items-center font-title font-bold justify-center text-4xl xl:text-6xl xl:h-16">
                 Mes listes
             </div>
             <div className="flex flex-col w-full mt-8 border-t-2">
@@ -96,7 +96,7 @@ export default () => {
             >
                 <img className="h-6 w-6" src={add} alt="" />
             </Link>
-            <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
+            <div className={`w-full h-12 nav-wrap sticky bottom-0`}>
                 <NavBar activeMenu="list" onHomeClick={handleHomeClick}/>
             </div>
         </div>

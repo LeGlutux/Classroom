@@ -1,9 +1,9 @@
 import React, { useState, useContext, useRef, useEffect } from 'react'
-import group from '../../images/group.png'
 import Firebase from '../../firebase'
 import firebase from 'firebase/app'
 import { AuthContext } from '../../Auth'
 import ok from '../../images/ok.png'
+import { IconUsers } from '../Icons'
 
 interface Props {
     onAddGroup: () => void
@@ -68,7 +68,7 @@ export default (props: Props) => {
                             Ajoutez vos classes
                         </div>
                         <div className="flex flex-row items-center justify-center hover:border-gray-600 xl:w-full">
-                            <img className="w-8 h-8 mt-3" src={group} alt="" />
+                            <IconUsers />
                             <div className="w-9/12 flex flex-col hover:border-gray-600">
                                 <input
                                     ref={inputRef}

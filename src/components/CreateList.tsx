@@ -119,7 +119,7 @@ export default () => {
 
     return (
         <div className="h-screen w-full flex flex-col bg-gradient-to-b from-gray-50 to-white overflow-hidden">
-            <div className="flex-shrink-0 flex flex-row w-full h-14 border-b-2 border-gray-300 items-center font-title font-bold justify-between text-3xl rounded-b-3xl bg-white shadow-sm xl:text-4xl xl:h-16 px-4">
+            <div className="flex-shrink-0 flex flex-row w-full h-14 page-header items-center font-title font-bold justify-between text-3xl xl:text-4xl xl:h-16 px-4">
                 <button
                     className="cursor-pointer hover:opacity-70 transition-opacity flex items-center justify-center"
                     onClick={() => history.goBack()}
@@ -503,7 +503,7 @@ export default () => {
                     </div>
                 </div>
             </form>
-            <div className="flex-shrink-0 w-full h-12 bg-gray-300 border-t-2 border-gray-400">
+            <div className="flex-shrink-0 w-full h-12 nav-wrap">
                 <NavBar 
                 activeMenu="list"
                 onHomeClick={handleHomeClick}

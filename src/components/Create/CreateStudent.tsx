@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react'
-import solo from '../../images/solo.png'
 import Firebase from '../../firebase'
 import NewStudentGroups from '../NewStudentGroups'
 import ok from '../../images/ok.png'
 import { useLists } from '../../hooks'
+import { IconUser } from '../Icons'
 
 interface Props {
     groups: string[]
@@ -107,7 +107,7 @@ export default (props: Props) => {
                             Ajoutez vos élèves
                         </div>
                         <div className="flex flex-row items-center justify-center hover:border-gray-600 xl:w-full">
-                            <img className="w-8 h-8 mt-3" src={solo} alt="" />
+                            <IconUser />
                             <div className="w-9/12 flex flex-col hover:border-gray-600">
                                 <input
                                     ref={firstInputRef}
