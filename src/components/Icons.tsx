@@ -40,3 +40,15 @@ export const IconCalendar: React.FC<IconProps> = (props) => (
         <path d="M8 3.5v4M16 3.5v4M4 10h16" />
     </Svg>
 )
+
+export const IconPlus: React.FC<IconProps> = (props) => (
+    <Svg {...props}>
+        <path d="M12 5v14M5 12h14" />
+    </Svg>
+)
+
+export const IconMinus: React.FC<IconProps> = (props) => (
+    <Svg {...props}>
+        <path d="M5 12h14" />
+    </Svg>
+)

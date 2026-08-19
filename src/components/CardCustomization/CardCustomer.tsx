@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import firebase from 'firebase/app'
-import add from '../../images/add.png'
-import delete_cross from '../../images/delete.png'
 import up from '../../images/up.png'
 import down from '../../images/down.png'
 import { handleIcon, maxValue } from '../../functions'
 import { useIcons } from '../../hooks'
+import { IconMinus, IconPlus } from '../Icons'
 
 interface CardCustomerProps {
     userId: string
@@ -373,22 +372,26 @@ export default (props: CardCustomerProps) => {
                         </div>
                     </div>
                 </div>{' '}
-                <div className="flex flex-row h-8 w-32 justify-around mt-3">
+                <div className="flex flex-row h-8 w-32 justify-around mt-3 items-center">
                     <button
-                        className={`${
-                            icons.indexOf(0) === 1 ? 'invisible' : 'visible'
+                        type="button"
+                        className={`icon-step ${
+                            icons.indexOf(0) === 1 ? 'invisible' : ''
                         }`}
                         onClick={() => handleChangeIconsNumber(-1)}
+                        aria-label="Retirer une icône"
                     >
-                        <img className="h-8 w-8" src={delete_cross} alt="" />
+                        <IconMinus />
                     </button>
                     <button
-                        className={`${
-                            icons.indexOf(0) === -1 ? 'invisible' : 'visible'
+                        type="button"
+                        className={`icon-step ${
+                            icons.indexOf(0) === -1 ? 'invisible' : ''
                         }`}
                         onClick={() => handleChangeIconsNumber(1)}
+                        aria-label="Ajouter une icône"
                     >
-                        <img className="h-8 w-8" src={add} alt="" />
+                        <IconPlus />
                     </button>
                 </div>
                 <div
