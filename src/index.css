@@ -1693,7 +1693,7 @@ body,
     position: fixed;
     left: 0;
     right: 0;
-    bottom: 3rem;
+    bottom: calc(3rem - 2px);
     z-index: 15;
     pointer-events: none;
     padding: 1.4rem 0 0.45rem;
@@ -1705,13 +1705,14 @@ body,
     left: 0;
     right: 0;
     top: 0;
-    bottom: 0;
+    bottom: -2px;
     pointer-events: none;
     background: linear-gradient(
         to top,
-        rgba(244, 244, 245, 0.92) 0%,
-        rgba(244, 244, 245, 0.62) 48%,
-        rgba(244, 244, 245, 0.18) 78%,
+        var(--tn-bg) 0%,
+        var(--tn-bg) 16%,
+        rgba(244, 244, 245, 0.7) 50%,
+        rgba(244, 244, 245, 0.2) 78%,
         rgba(244, 244, 245, 0) 100%
     );
     backdrop-filter: blur(14px) saturate(1.15);
