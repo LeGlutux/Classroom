@@ -1973,3 +1973,195 @@ body,
         font-size: 8rem;
     }
 }
+
+.v3-welcome {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.5rem;
+    background: #070707;
+    color: #f4efe6;
+    text-align: center;
+    overflow: hidden;
+}
+
+.v3-welcome.is-leaving {
+    animation: v3-welcome-out 0.9s ease forwards;
+}
+
+.v3-welcome-inner {
+    width: 100%;
+    max-width: 22rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.v3-welcome-line,
+.v3-welcome-v3,
+.v3-welcome-rule,
+.v3-welcome-cursive,
+.v3-welcome-sub,
+.v3-welcome-enter {
+    opacity: 0;
+}
+
+.v3-welcome-line {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.35rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    line-height: 1.35;
+}
+
+.v3-welcome-line.is-in {
+    animation: v3-welcome-rise 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.v3-welcome-v3 {
+    margin-top: 1.15rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.4rem;
+    font-weight: 500;
+    letter-spacing: 0.42em;
+    line-height: 1;
+    padding-left: 0.42em;
+}
+
+.v3-welcome-v3.is-in {
+    animation: v3-welcome-rise 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.v3-welcome-rule {
+    width: 0;
+    height: 1px;
+    margin: 1.35rem 0 1.2rem;
+    background: #cbb994;
+}
+
+.v3-welcome-rule.is-in {
+    animation: v3-welcome-rule 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.35s forwards;
+}
+
+.v3-welcome-cursive {
+    margin: 0;
+    min-height: 2.4rem;
+    font-family: 'Great Vibes', cursive;
+    font-size: 2.05rem;
+    line-height: 1.35;
+    color: #f4efe6;
+}
+
+.v3-welcome-cursive.is-in .v3-welcome-letter {
+    animation: v3-welcome-fall 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.v3-welcome-letter,
+.v3-welcome-space {
+    display: inline-block;
+}
+
+.v3-welcome-letter {
+    opacity: 0;
+    padding: 0 0.015em;
+}
+
+.v3-welcome-space {
+    width: 0.35em;
+}
+
+.v3-welcome-sub {
+    margin: 1.15rem 0 0;
+    max-width: 16.5rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.98rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    line-height: 1.45;
+    color: rgba(244, 239, 230, 0.72);
+}
+
+.v3-welcome-sub.is-in {
+    animation: v3-welcome-rise 1.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.v3-welcome-enter {
+    margin-top: 2.1rem;
+    padding: 0.55rem 1.4rem 0.45rem;
+    border: 1px solid rgba(203, 185, 148, 0.7);
+    background: transparent;
+    color: #cbb994;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    cursor: pointer;
+    pointer-events: none;
+}
+
+.v3-welcome-enter.is-in {
+    animation: v3-welcome-rise 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    pointer-events: auto;
+}
+
+@keyframes v3-welcome-rise {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes v3-welcome-fall {
+    from {
+        opacity: 0;
+        transform: translateY(-1.15em);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes v3-welcome-rule {
+    from {
+        width: 0;
+        opacity: 0;
+    }
+    to {
+        width: 4.5rem;
+        opacity: 1;
+    }
+}
+
+@keyframes v3-welcome-out {
+    to {
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .v3-welcome-line,
+    .v3-welcome-v3,
+    .v3-welcome-sub,
+    .v3-welcome-enter,
+    .v3-welcome-cursive.is-in .v3-welcome-letter {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+
+    .v3-welcome-rule {
+        animation: none;
+        opacity: 1;
+        width: 4.5rem;
+    }
+}
