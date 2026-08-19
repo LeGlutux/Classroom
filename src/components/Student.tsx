@@ -1,12 +1,19 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import info from '../images/info.png'
 import Firebase from '../firebase'
 import firebase from 'firebase/app'
 import { Link } from 'react-router-dom'
-import brain from '../images/brain.png'
+import magicStick from '../images/magicStick.png'
 import StudentComment from './StudentComment'
 import { useCross } from '../hooks'
 import { StudentInterface } from '../interfaces/Student'
+import { CrossPolarity } from '../functions'
+
+interface StudentSlot {
+    src: string
+    type: string
+    polarity: CrossPolarity
+}
 
 interface StudentProps {
     displayedStudents: StudentInterface[]
@@ -26,7 +33,58 @@ interface StudentProps {
     currentUser: string
     periodes: Date[]
     runningPeriode: number
-    icons: string[]
+    slots: StudentSlot[]
+}
+
+interface CrossButtonProps {
+    src: string
+    onAdd: () => void
+    onRemove: () => void
+}
+
+const CrossButton: React.FC<CrossButtonProps> = ({ src, onAdd, onRemove }) => {
+    const longPress = useRef(false)
+    const timer = useRef<number | null>(null)
+
+    const start = () => {
+        longPress.current = false
+        timer.current = window.setTimeout(() => {
+            longPress.current = true
+            onRemove()
+            if (typeof navigator !== 'undefined' && navigator.vibrate) {
+                navigator.vibrate(12)
+            }
+        }, 500)
+    }
+
+    const cancel = () => {
+        if (timer.current !== null) {
+            window.clearTimeout(timer.current)
+            timer.current = null
+        }
+    }
+
+    return (
+        <button
+            type="button"
+            className="w-8 h-8 lg:w-10 lg:h-10 xl:w-10 xl:h-10 rounded-full touch-manipulation tap-target-44 flex items-center justify-center student-cross-btn"
+            onPointerDown={start}
+            onPointerUp={cancel}
+            onPointerLeave={cancel}
+            onPointerCancel={cancel}
+            onContextMenu={(event) => event.preventDefault()}
+            onClick={(event) => {
+                if (longPress.current) {
+                    event.preventDefault()
+                    longPress.current = false
+                    return
+                }
+                onAdd()
+            }}
+        >
+            <img className="student-cross-icon" src={src} alt="" />
+        </button>
+    )
 }
 
 const StudentComponent: React.FC<StudentProps> = (props) => {
@@ -96,24 +154,27 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
         if (type === 'observation') return '4'
         if (type === 'calculator') return '5'
         if (type === 'phone') return '6'
+        if (type.indexOf('pos') === 0) return type
         else return '000'
     }
     const newCrossId = (type: string) => {
         return crossIdentifier(type).concat('c').concat(Date.now().toString())
     }
-    const handleAddCross = (crossType: string) => {
+    const handleAddCross = (crossType: string, polarity: CrossPolarity) => {
         if (props.runningPeriode === props.periodes.length) {
             const newDate = new Date()
+            const id = newCrossId(crossType)
             db.collection('users')
                 .doc(props.currentUser)
                 .collection('eleves')
                 .doc(props.id)
                 .collection('crosses')
-                .doc(newCrossId(crossType))
+                .doc(id)
                 .set({
                     type: crossType,
+                    polarity,
                     time: newDate,
-                    id: newCrossId(crossType),
+                    id,
                     student_id: props.id,
                     student_name: props.name,
                     student_surname: props.surname,
@@ -124,16 +185,47 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                 .collection('eleves')
                 .doc(props.id)
                 .update({
-                    crosses: firebase.firestore.FieldValue.arrayUnion(
-                        newCrossId(crossType)
-                    ),
+                    crosses: firebase.firestore.FieldValue.arrayUnion(id),
                 })
 
             const newCross = crosses.concat([
-                { type: crossType, id: newCrossId(crossType), time: newDate },
+                { type: crossType, polarity, id, time: newDate },
             ])
             setCrosses(newCross)
         }
+    }
+
+    const crossTime = (element: firebase.firestore.DocumentData) => {
+        if (!element || !element.time) return 0
+        return element.time.toDate
+            ? element.time.toDate().getTime()
+            : new Date(element.time).getTime()
+    }
+
+    const handleRemoveCross = (crossType: string) => {
+        if (props.runningPeriode !== props.periodes.length) return
+        const current = crossFilter(crossType, props.runningPeriode)
+        if (current.length === 0) return
+        const latest = current.reduce((best, element) =>
+            crossTime(element) >= crossTime(best) ? element : best
+        )
+        if (!latest || !latest.id) return
+
+        db.collection('users')
+            .doc(props.currentUser)
+            .collection('eleves')
+            .doc(props.id)
+            .collection('crosses')
+            .doc(latest.id)
+            .delete()
+        db.collection('users')
+            .doc(props.currentUser)
+            .collection('eleves')
+            .doc(props.id)
+            .update({
+                crosses: firebase.firestore.FieldValue.arrayRemove(latest.id),
+            })
+        setCrosses(crosses.filter((element) => element.id !== latest.id))
     }
 
     const shortName =
@@ -153,7 +245,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
 
     return (
         <div
-            className={`flex mt-1 flex-row w-full md:w-1/2 lg:w-1/2 xl:w-1/3 items-center ${
+            className={`flex flex-row w-full md:w-1/2 lg:w-1/2 xl:w-1/3 items-center ${
                 hidden ? 'hidden' : 'visible'
             } ${
                 props.currentUserId === '26kiVujCgjNpzCkYwugqkrt63Hx1'
@@ -162,19 +254,21 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
             }`}
         >
             <div
-                className={`overflow-hidden ml-3 mr-2 bg-white w-full ${
+                className={`student-card w-full ${
+                    highlight ? 'is-highlight' : ''
+                } ${
                     props.runningPeriode === props.periodes.length
                         ? ''
-                        : 'border-2 border-gray-500'
+                        : 'is-archived'
                 }`}
             >
                 <div
                     className={`flex justify-between flex-col ${
-                        props.icons[5] === 'none' ? '' : 'h-38'
+                        props.slots.length === 6 ? 'h-38' : ''
                     }`}
                 >
                     <div className="flex flex-row items-center">
-                        <div className="flex h-full items-center self-center mt-2 ml-2 xl:pt-6 static">
+                        <div className="flex h-full items-center self-center ml-1 static">
                             <button
                                 className={`h-6 w-6 xl:h-10 xl:w-10 ${
                                     selected === false || selected === undefined
@@ -185,12 +279,12 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                             >
                                 <img
                                     className="h-6 w-6 xl:h-10 xl:w-10"
-                                    src={brain}
-                                    alt=""
+                                    src={magicStick}
+                                    alt="élève retenu"
                                 />
                             </button>
                         </div>
-                        <div className="flex flex-row w-full justify-between">
+                        <div className="flex flex-row w-full justify-between items-center">
                             <button
                                 onClick={() => {
                                     db.collection('users')
@@ -203,10 +297,10 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                                     setHighlight(!highlight)
                                     props.toggleHighlight(props.id)
                                 }}
-                                className="flex flex-row flex-nowrap mt-2 items-baseline"
+                                className="flex flex-row flex-nowrap items-center"
                             >
                                 <div
-                                    className={`font-studentName ml-2 text-gray-900 font-medium text-2xl md:text-3xl lg:text-3x xl:text-3xl xl:pt-4 whitespace-nowrap ${
+                                    className={`student-name ml-2 text-gray-900 font-medium ${
                                         highlight ? 'text-red-600' : ''
                                     }
                                 `}
@@ -214,7 +308,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                                     {shortSurname}
                                 </div>
                                 <div
-                                    className={`font-studentName ml-2 text-gray-900 font-bold text-2xl md:text-3xl lg:text-3x xl:text-3xl xl:pt-4 whitespace-nowrap ${
+                                    className={`student-name ml-2 text-gray-900 font-bold ${
                                         highlight ? 'text-red-600' : ''
                                     }`}
                                 >
@@ -234,165 +328,42 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                         </div>
                     </div>
                     <div
-                        className={`w-full h-12 flex p-2 content-center justify-between  pr-6 ${
-                            props.icons[5] === 'none' ? '' : 'mb-6'
+                        className={`w-full h-12 flex p-2 items-center justify-between pr-6 ${
+                            props.slots.length === 6 ? 'mb-6' : ''
                         }`}
                     >
-                        <div
-                            className={`flex ${
-                                props.icons[0] === 'none' ? 'hidden' : 'visible'
-                            } ${
-                                props.icons[5] === 'none'
-                                    ? 'flex-row'
-                                    : 'flex-col items-center'
-                            }`}
-                        >
-                            <button
-                                type="button"
-                                onClick={() => handleAddCross('behaviour')}
-                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
+                        {props.slots.map((slot) => (
+                            <div
+                                key={slot.type}
+                                className={`flex ${
+                                    props.slots.length === 6
+                                        ? 'flex-col items-center'
+                                        : 'flex-row items-center'
+                                }`}
                             >
-                                <img className="" src={props.icons[0]} alt="" />
-                            </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
-                                {
-                                    crossFilter(
-                                        'behaviour',
-                                        props.runningPeriode
-                                    ).length
-                                }
+                                <CrossButton
+                                    src={slot.src}
+                                    onAdd={() =>
+                                        handleAddCross(slot.type, slot.polarity)
+                                    }
+                                    onRemove={() => handleRemoveCross(slot.type)}
+                                />
+                                <div className="student-cross-count">
+                                    {
+                                        crossFilter(
+                                            slot.type,
+                                            props.runningPeriode
+                                        ).length
+                                    }
+                                </div>
                             </div>
-                        </div>
-                        <div
-                            className={`flex ${
-                                props.icons[1] === 'none' ? 'hidden' : 'visible'
-                            } ${
-                                props.icons[5] === 'none'
-                                    ? 'flex-row'
-                                    : 'flex-col items-center'
-                            }`}
-                        >
-                            <button
-                                type="button"
-                                onClick={() => handleAddCross('homework')}
-                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
-                            >
-                                <img className="" src={props.icons[1]} alt="" />
-                            </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
-                                {
-                                    crossFilter(
-                                        'homework',
-                                        props.runningPeriode
-                                    ).length
-                                }
-                            </div>
-                        </div>
-                        <div
-                            className={`flex ${
-                                props.icons[2] === 'none' ? 'hidden' : 'visible'
-                            } ${
-                                props.icons[5] === 'none'
-                                    ? 'flex-row'
-                                    : 'flex-col items-center'
-                            }`}
-                        >
-                            <button
-                                type="button"
-                                onClick={() => handleAddCross('supply')}
-                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
-                            >
-                                <img className="" src={props.icons[2]} alt="" />
-                            </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
-                                {
-                                    crossFilter('supply', props.runningPeriode)
-                                        .length
-                                }
-                            </div>
-                        </div>
-                        <div
-                            className={`flex ${
-                                props.icons[3] === 'none' ? 'hidden' : 'visible'
-                            } ${
-                                props.icons[5] === 'none'
-                                    ? 'flex-row'
-                                    : 'flex-col items-center'
-                            }`}
-                        >
-                            <button
-                                type="button"
-                                onClick={() => handleAddCross('observation')}
-                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
-                            >
-                                <img className="" src={props.icons[3]} alt="" />
-                            </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
-                                {
-                                    crossFilter(
-                                        'observation',
-                                        props.runningPeriode
-                                    ).length
-                                }
-                            </div>
-                        </div>
-                        <div
-                            className={`flex ${
-                                props.icons[4] === 'none' ? 'hidden' : 'visible'
-                            } ${
-                                props.icons[5] === 'none'
-                                    ? 'flex-row'
-                                    : 'flex-col items-center'
-                            }`}
-                        >
-                            <button
-                                type="button"
-                                onClick={() => handleAddCross('calculator')}
-                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
-                            >
-                                <img className="" src={props.icons[4]} alt="" />
-                            </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
-                                {
-                                    crossFilter(
-                                        'calculator',
-                                        props.runningPeriode
-                                    ).length
-                                }
-                            </div>
-                        </div>
-                        <div
-                            className={`flex ${
-                                props.icons[5] === 'none' ? 'hidden' : 'visible'
-                            } ${
-                                props.icons[5] === 'none'
-                                    ? 'flex-row'
-                                    : 'flex-col items-center'
-                            }`}
-                        >
-                            <button
-                                type="button"
-                                onClick={() => handleAddCross('phone')}
-                                className="w-8 h-8 lg:w-12 lg:h-12 xl:w-12 xl:h-12 rounded-full touch-manipulation tap-target-44 flex items-center justify-center"
-                            >
-                                <img className="" src={props.icons[5]} alt="" />
-                            </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
-                                {
-                                    crossFilter('phone', props.runningPeriode)
-                                        .length
-                                }
-                            </div>
-                        </div>
+                        ))}
                     </div>
-                    <div className="flex flex-row lg:mt-3 xl:mt-5">
-                        <StudentComment
+                    <StudentComment
                             currentUserId={props.currentUser}
                             currentStudentId={props.id}
                             comment={props.comment ? props.comment : ''}
                         />
-                    </div>
-                    <div className="border-b-2 border-gray-400 w-2/3 rounded-full self-center mt-4" />
                 </div>
             </div>
         </div>

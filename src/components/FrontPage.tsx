@@ -16,23 +16,20 @@ import Student from '../components/Student'
 import 'firebase/firestore'
 import MagicStick from './MagicStick'
 import magicStick from '../images/magicStick.png'
-import stickyNoteRed from '../images/stickyNoteRed2.png'
-import brain from '../images/brain.png'
 import stickyNote from '../images/stickyNote.png'
 import burgerMenu from '../images/burgerMenu.png'
-import loader_image from '../images/loader.gif'
 import updater_gif from '../images/updater.gif'
 import addPage from '../images/addPage.png'
 import Firebase from '../firebase'
 import { Link } from 'react-router-dom'
 import Updater from './Updater'
-import { handleIcon } from '../functions'
-import PostIt from './PostIt'
+import { buildCrossSlots, handleIcon } from '../functions'
+import PostIt, { PostItAlert } from './PostIt'
+import Loader from './Loader'
 import { StudentInterface } from '../interfaces/Student'
 
 export default () => {
     const db = Firebase.firestore()
-    const [withMemory, setWithMemory] = useState(false)
     const lastConnectionUpdateRef = React.useRef<number>(0)
     const [menuOpened, setMenuOpened] = useState<boolean>(false)
     const [burgerMenuFirstClicked, setBurgerMenuFirstClicked] = useState(false)
@@ -41,7 +38,7 @@ export default () => {
     if (currentUser === null) return <div />
     const { user, refreshUser } = useUser(currentUser.uid)
     const { students, loading: studentsLoading, filterStudents } = useStudents(currentUser.uid)
-    const { postIts } = usePostIts(currentUser.uid)
+    const { postIts, setPostIts } = usePostIts(currentUser.uid)
     const postIt = (group: string) => {
         if (postIts.find((item) => item.classe === group) === undefined)
             return false
@@ -134,28 +131,13 @@ export default () => {
 
     ///////////////// icons /////////////////
     const userIcons = useIcons(currentUser.uid)
-
-    const [icons, setIcons] = useState([1, 2, 3, 4, 0, 0])
-    const iconsVisualInitialState = (iconsArray: number[]) => {
-        const initialState = [] as string[]
-        icons
-            ? [0, 1, 2, 3, 4, 5].forEach((i) =>
-                  initialState.push(handleIcon(iconsArray[i]))
-              )
-            : db
-                  .collection('users')
-                  .doc(currentUser.uid)
-                  .update({ icons: [1, 2, 3, 4, 0, 0] })
-        return initialState
-    }
-
-    const [iconsDisplay, setIconsDisplay] = useState(['none'])
-
-    useEffect(() => {
-        setIcons(userIcons.icons)
-        setIconsDisplay(iconsVisualInitialState(userIcons.icons))
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [userIcons.icons, userIcons.loading])
+    const crossSlots = buildCrossSlots(
+        userIcons.icons,
+        userIcons.positiveIcons
+    ).map((slot) => ({
+        ...slot,
+        src: handleIcon(slot.icon),
+    }))
 
     // Filtrer les étudiants quand displayedGroup change OU quand les données sont chargées pour la première fois
     useEffect(() => {
@@ -228,20 +210,18 @@ export default () => {
 
     if (studentsLoading || groupsLoading) {
         return (
-            <div className="w-full h-screen flex flex-col justify-center items-center">
-                <div className="flex flex-row w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full xl:text-6xl xl:h-16">
-                    {title}
+            <div className="w-full h-screen flex flex-col justify-center items-center app-bg">
+                <div className="flex flex-row w-full h-12 page-header items-center justify-center">
+                    <span className="page-header-title">{title}</span>
                 </div>
                 <div className="h-full flex flex-col justify-center items-center">
-                    <div className="font-title text-4xl mb-8 text-bold xl:text-6xl">
-                        Chargement des données
+                    <div className="empty-state">
+                        <div className="empty-title">Chargement des données</div>
                     </div>
-                    <div className="w-64 h-64 mt-8 xl:w-64 xl:h-64">
-                        <img src={loader_image} alt="" />
-                    </div>
+                    <Loader />
                 </div>
 
-                <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
+                <div className={`w-full h-12 nav-wrap sticky bottom-0`}>
                     <NavBar activeMenu="home" onHomeClick={handleHomeClick} />
                 </div>
             </div>
@@ -250,26 +230,26 @@ export default () => {
 
     if (groups.length === 0) {
         return (
-            <div className="w-full h-screen flex flex-col justify-center items-center">
-                <div className="flex flex-col w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full xl:text-6xl xl:h-16">
-                    {'Accueil'}
+            <div className="w-full h-screen flex flex-col justify-center items-center app-bg">
+                <div className="flex flex-row w-full h-12 page-header items-center justify-center">
+                    <span className="page-header-title">Accueil</span>
                 </div>
                 <div className="h-full flex flex-col justify-center items-center">
-                    <div className="font-title text-4xl mb-8 text-bold xl:text-6xl">
-                        Bienvenue sur Thòt Note
+                    <div className="empty-state">
+                        <div className="empty-title">Bienvenue sur Thòt Note</div>
+                        <div className="empty-text">
+                            Pour commencer, ajoutez des classes et des élèves
+                            ici :
+                        </div>
                     </div>
-                    <div className="flex w-11/12 justify-center text-center font-title text-3xl mb-8 text-bold xl:text-5xl">
-                        Pour commencer à ajouter des classes et des élèves
-                        rendez-vous sur :
-                    </div>
-                    <div className="font-title text-4xl mb-8 text-bold">
+                    <div>
                         <Link to="/create">
                             <img className="self-center" src={addPage} alt="" />
-                        </Link>{' '}
+                        </Link>
                     </div>
                 </div>
 
-                <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
+                <div className={`w-full h-12 nav-wrap sticky bottom-0`}>
                     <NavBar activeMenu="home" onHomeClick={handleHomeClick} />
                 </div>
             </div>
@@ -278,26 +258,26 @@ export default () => {
 
     if (groups.length !== 0 && students.length === 0) {
         return (
-            <div className="w-full h-screen flex flex-col justify-center items-center">
-                <div className="flex flex-col w-full h-12 border-b-2 border-gray-400 items-center font-title font-bold justify-center text-4xl rounded-b-full">
-                    {title}
+            <div className="w-full h-screen flex flex-col justify-center items-center app-bg">
+                <div className="flex flex-row w-full h-12 page-header items-center justify-center">
+                    <span className="page-header-title">{title}</span>
                 </div>
 
                 <div className="h-full flex flex-col justify-center items-center">
-                    <div className="flex w-11/12 text-center font-title text-4xl mb-8 text-bold">
-                        Les premières classes sont créées, il manque les élèves
+                    <div className="empty-state">
+                        <div className="empty-title">
+                            Les classes sont créées, il manque les élèves
+                        </div>
+                        <div className="empty-text">Rendez-vous ici :</div>
                     </div>
-                    <div className="flex w-11/12 justify-center font-title text-3xl mb-8 text-bold">
-                        rendez-vous sur :
-                    </div>
-                    <div className="font-title text-4xl mb-8 text-bold">
+                    <div>
                         <Link to="/create">
                             <img className="self-center" src={addPage} alt="" />
-                        </Link>{' '}
+                        </Link>
                     </div>
                 </div>
 
-                <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
+                <div className={`w-full h-12 nav-wrap sticky bottom-0`}>
                     <NavBar activeMenu="home" onHomeClick={handleHomeClick} />
                 </div>
             </div>
@@ -306,11 +286,9 @@ export default () => {
 
     if (updating === true) {
         return (
-            <div className="w-full h-screen flex flex-col justify-center items-center">
+            <div className="w-full h-screen flex flex-col justify-center items-center app-bg">
                 <div className="h-full flex flex-col justify-center items-center">
-                    <div className="font-title text-4xl mb-8 text-bold">
-                        Mise à jour
-                    </div>
+                    <div className="empty-title">Mise à jour</div>
                     <div className="w-48 h-48 mt-8">
                         <img src={updater_gif} alt="" />
                     </div>
@@ -320,7 +298,7 @@ export default () => {
     }
 
     return (
-        <div className="w-full h-screen flex flex-col overflow-hidden">
+        <div className="w-full h-screen flex flex-col overflow-hidden app-bg">
             <Updater
                 userId={currentUser.uid}
                 userVersion={user?.version || 0}
@@ -331,36 +309,25 @@ export default () => {
             />
             {!displayed && displayedGroup !== 'tous' && (
                 <div className="flex flex-col items-center justify-center absolute w-full h-full mb-12 bg-white z-10">
-                    <div className="font-title text-4xl mb-8 text-bold xl:text-6xl">
-                        Chargement des données
-                    </div>
-                    <div className="w-64 h-64 mt-8 xl:w-64 xl:h-64">
-                        <img src={loader_image} alt="" />
-                    </div>
+                    <div className="empty-title">Chargement des données</div>
+                    <Loader />
                 </div>
             )}
 
-            <div className="flex-shrink-0 flex flex-col w-full bg-white h-12 border-b-2 p-1 border-gray-400 items-center font-title font-bold justify-around text-4xl rounded-b-full z-10">
-                {title}
-                <img alt=""
-                    className={`absolute h-8 w-8 ml-20 mb-1 ${
-                        postIt(displayedGroup) ? 'visible' : 'invisible'
-                    }`}
-                    src={stickyNoteRed}
-                />
-            </div>
-
-            <div className="flex font-stundentName backdrop-blur bg-transparent rounded-full p-1 px-2 absolute place-self-center mt-12 items-end font-normal text-md">
-                {'P'.concat(runningPeriode.toString())}
+            <div className="flex-shrink-0 relative flex flex-row w-full bg-white h-12 page-header items-center justify-center z-10">
+                <span className="page-header-title">{title}</span>
+                {postIt(displayedGroup) ? (
+                    <span className="postit-alert-header">
+                        <PostItAlert />
+                    </span>
+                ) : null}
             </div>
 
             <MagicStick
                 toggleSelected={toggleSelected}
-                allStudents={hardStudents}
                 students={magicStickStudentsList}
                 displayRandomStudent={displayRandomStudent}
                 setDisplayRandomStudent={setDisplayRandomStudent}
-                withMemory={withMemory}
                 onFilter={(group: string) => filterStudents(group)}
                 displayedGroup={displayedGroup}
             />
@@ -375,6 +342,7 @@ export default () => {
                             currentClasse={postItClasse}
                             setDisplay={setDisplayPostIt}
                             postIts={postIts}
+                            onSave={setPostIts}
                             index={index}
                             key={index}
                         />
@@ -383,7 +351,7 @@ export default () => {
             })}
 
             {displayedGroup !== 'tous' && (
-                <div className="flex w-full h-full flex-col pt-18 pb-24 bg-white overflow-y-scroll md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start">
+                <div className="flex-1 min-h-0 flex w-full flex-col overflow-y-scroll student-grid md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start">
                     {students.map(
                             ({
                                 name,
@@ -416,7 +384,7 @@ export default () => {
                                             filterStudents(group)
                                         }
                                         displayedGroup={displayedGroup}
-                                        icons={iconsDisplay}
+                                        slots={crossSlots}
                                     />
                                 )
                             }
@@ -425,7 +393,7 @@ export default () => {
             )}
 
             {displayedGroup === 'tous' && (
-                <div className="flex-1 min-h-0 flex w-full flex-col bg-white overflow-hidden py-2">
+                <div className="flex-1 min-h-0 flex w-full flex-col overflow-hidden py-2">
                     {
                         <HomeClassListFilter
                             setDisplayedGroup={setDisplayedGroup}
@@ -447,7 +415,7 @@ export default () => {
                         setBurgerMenuFirstClicked(true)
                         filterStudents(displayedGroup)
                     }}
-                    className={`flex flex-col w-16 h-16 xl:w-20 xl:h-20 bg-gray-200 rounded-full bottom-right-custom2 shadow-custom items-center justify-center ${
+                    className={`flex flex-col w-16 h-16 xl:w-20 xl:h-20 fab rounded-full bottom-right-custom2 items-center justify-center ${
                         menuOpened ? 'fade-out' : 'fade-in'
                     } md:w-20 md:h-20}`}
                 >
@@ -461,12 +429,12 @@ export default () => {
             <div ref={ref}>
                 <button
                     onClick={() => {
-                        setTimeout(() => setDisplayRandomStudent(true), 200)
-                        setWithMemory(false)
+                        checkEmpty()
                         setMenuOpened(!menuOpened)
-                        setMagicStickStudentsList(hardStudents)
+                        setMagicStickStudentsList(notYetSelectedStudents)
+                        setTimeout(() => setDisplayRandomStudent(true), 200)
                     }}
-                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 bg-gray-200 rounded-full bottom-right-custom shadow-custom flex items-center justify-center ${
+                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 fab rounded-full bottom-right-custom2 flex items-center justify-center ${
                         burgerMenuFirstClicked
                             ? menuOpened
                                 ? 'entering-r'
@@ -482,32 +450,10 @@ export default () => {
                 </button>
                 <button
                     onClick={() => {
-                        checkEmpty()
-                        setWithMemory(true)
-                        setMenuOpened(!menuOpened)
-                        setMagicStickStudentsList(notYetSelectedStudents)
-                        setTimeout(() => setDisplayRandomStudent(true), 200)
-                    }}
-                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 bg-gray-200 rounded-full bottom-right-custom2 shadow-custom flex items-center justify-center ${
-                        burgerMenuFirstClicked
-                            ? menuOpened
-                                ? 'entering-r'
-                                : 'get-out-r'
-                            : 'invisible'
-                    }`}
-                >
-                    <img
-                        className="w-10 h-10 md:w-12 md:h-12 lg:w-16 lg:h-16 xl:w-16 xl:h-16"
-                        src={brain}
-                        alt="élève aléatoire avec mémoire"
-                    />
-                </button>
-                <button
-                    onClick={() => {
                         setMenuOpened(!menuOpened)
                         setDisplayPostIt(true)
                     }}
-                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 bg-gray-200 rounded-full bottom-right-custom3 shadow-custom flex items-center justify-center ${
+                    className={`w-16 h-16 md:w-20 md:h-20 xl:w-20 xl:h-20 fab rounded-full bottom-right-custom flex items-center justify-center ${
                         burgerMenuFirstClicked
                             ? menuOpened
                                 ? 'entering-r'
@@ -524,19 +470,17 @@ export default () => {
             </div>
 
             {groups.length !== 1 && displayedGroup !== 'tous' && (
-                <div className="flex flex-row justify-start bg-transparent w-full bottom-center-custom">
-                    <ClassListFilter
-                        setDisplayedGroup={setDisplayedGroup}
-                        onFilter={(group) => {
-                            filterStudents(group)
-                        }}
-                        closeMenu={setMenuOpened}
-                        groups={groups}
-                    />
-                </div>
+                <ClassListFilter
+                    setDisplayedGroup={setDisplayedGroup}
+                    onFilter={(group) => {
+                        filterStudents(group)
+                    }}
+                    closeMenu={setMenuOpened}
+                    groups={groups}
+                />
             )}
 
-            <div className={`w-full h-12 bg-gray-300 sticky bottom-0`}>
+            <div className={`flex-shrink-0 w-full h-12 nav-wrap`}>
                 <NavBar activeMenu="home" onHomeClick={handleHomeClick} />
             </div>
         </div>

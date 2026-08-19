@@ -1,10 +1,10 @@
 module.exports = {
     theme: {
       extend: {
-        fontFamily:{
+            fontFamily:{
           studentName:["Open Sans","sans-serif"],
-          title:['Cookie', 'cursive'],
-          title2:['Montez', 'cursive']
+          title:['Open Sans', 'sans-serif'],
+          title2:['Open Sans', 'sans-serif']
         }
       }
     },
