@@ -7,6 +7,7 @@ const CURSIVE = 'libère ta pédagogie.'
 const PRECIOUS = 'pédagogie'
 const PRECIOUS_START = CURSIVE.indexOf(PRECIOUS)
 const SUBTITLE = 'Le plus célèbre cahier de note virtuel vous présente sa V3.'
+const CURSIVE_CHARS = Array.from(CURSIVE)
 
 const hasSeenWelcome = () => {
     try {
@@ -32,13 +33,13 @@ const prefersReducedMotion = () => {
 const isPreciousLetter = (index: number) =>
     index >= PRECIOUS_START && index < PRECIOUS_START + PRECIOUS.length
 
-const letterDelay = (index: number) => {
-    if (index < PRECIOUS_START) return index * 0.09
-    const preciousBase = PRECIOUS_START * 0.09 + 0.34
+const letterDelayMs = (index: number) => {
+    if (index < PRECIOUS_START) return index * 90
+    const preciousBase = PRECIOUS_START * 90 + 340
     if (index >= PRECIOUS_START + PRECIOUS.length) {
-        return preciousBase + (PRECIOUS.length - 1) * 0.2 + 0.38
+        return preciousBase + (PRECIOUS.length - 1) * 200 + 380
     }
-    return preciousBase + (index - PRECIOUS_START) * 0.2
+    return preciousBase + (index - PRECIOUS_START) * 200
 }
 
 export const replayV3Welcome = () => {
@@ -51,11 +52,13 @@ export default () => {
     const [leaving, setLeaving] = useState(false)
     const [step, setStep] = useState(0)
     const [playId, setPlayId] = useState(0)
+    const [dropped, setDropped] = useState(0)
     const dismissGen = useRef(0)
 
     const startPlayback = () => {
         dismissGen.current += 1
         setLeaving(false)
+        setDropped(0)
         setStep(prefersReducedMotion() ? 6 : 0)
         setVisible(true)
         setPlayId((id) => id + 1)
@@ -93,6 +96,28 @@ export default () => {
         }
     }, [playId, visible])
 
+    useEffect(() => {
+        if (!visible) return
+        if (prefersReducedMotion()) {
+            setDropped(CURSIVE_CHARS.length)
+            return
+        }
+        if (step < 4) {
+            setDropped(0)
+            return
+        }
+        const timers = CURSIVE_CHARS.map((_, index) =>
+            window.setTimeout(() => {
+                setDropped((count) => Math.max(count, index + 1))
+            }, letterDelayMs(index))
+        )
+        return () => {
+            timers.forEach((id) => window.clearTimeout(id))
+        }
+        // On ne relance pas la chute quand step passe à 5 ou 6.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [step >= 4, playId, visible])
+
     const dismiss = () => {
         if (step < 5 || leaving) return
         setLeaving(true)
@@ -104,100 +129,64 @@ export default () => {
         }, 900)
     }
 
+    if (!visible) return null
+
     return (
-        <React.Fragment>
-            {process.env.NODE_ENV === 'development' && currentUser ? (
+        <div
+            className={`v3-welcome ${leaving ? 'is-leaving' : ''}`}
+            onClick={dismiss}
+            role="dialog"
+            aria-label="Bienvenue sur Thòt Note V3"
+        >
+            <div className="v3-welcome-grain" aria-hidden="true" />
+            <div className="v3-welcome-inner">
+                <div className={`v3-welcome-maison ${step >= 1 ? 'is-in' : ''}`}>
+                    Maison Thòt — Été 2026
+                </div>
+                <div className={`v3-welcome-line ${step >= 2 ? 'is-in' : ''}`}>
+                    Bienvenue sur Thòt Note
+                </div>
+                <div className={`v3-welcome-v3 ${step >= 3 ? 'is-in' : ''}`}>
+                    V3
+                </div>
+                <div
+                    className={`v3-welcome-rule ${step >= 3 ? 'is-in' : ''}`}
+                    aria-hidden="true"
+                />
+                <p
+                    className={`v3-welcome-cursive ${step >= 4 ? 'is-in' : ''}`}
+                >
+                    {CURSIVE_CHARS.map((char, index) => (
+                        <span
+                            key={index}
+                            className={
+                                char === ' '
+                                    ? 'v3-welcome-space'
+                                    : 'v3-welcome-letter' +
+                                      (isPreciousLetter(index)
+                                          ? ' is-precious'
+                                          : '') +
+                                      (index < dropped ? ' is-dropped' : '')
+                            }
+                        >
+                            {char === ' ' ? '\u00a0' : char}
+                        </span>
+                    ))}
+                </p>
+                <p className={`v3-welcome-sub ${step >= 5 ? 'is-in' : ''}`}>
+                    {SUBTITLE}
+                </p>
                 <button
                     type="button"
-                    className="v3-dev-replay"
-                    onClick={replayV3Welcome}
+                    className={`v3-welcome-enter ${step >= 6 ? 'is-in' : ''}`}
+                    onClick={(event) => {
+                        event.stopPropagation()
+                        dismiss()
+                    }}
                 >
-                    Intro V3
+                    Entrer
                 </button>
-            ) : null}
-            {visible ? (
-                <div
-                    className={`v3-welcome ${leaving ? 'is-leaving' : ''}`}
-                    onClick={dismiss}
-                    role="dialog"
-                    aria-label="Bienvenue sur Thòt Note V3"
-                >
-                    <div className="v3-welcome-grain" aria-hidden="true" />
-                    <div className="v3-welcome-inner">
-                        <div
-                            className={`v3-welcome-maison ${
-                                step >= 1 ? 'is-in' : ''
-                            }`}
-                        >
-                            Maison Thòt — Été 2026
-                        </div>
-                        <div
-                            className={`v3-welcome-line ${
-                                step >= 2 ? 'is-in' : ''
-                            }`}
-                        >
-                            Bienvenue sur Thòt Note
-                        </div>
-                        <div
-                            className={`v3-welcome-v3 ${
-                                step >= 3 ? 'is-in' : ''
-                            }`}
-                        >
-                            V3
-                        </div>
-                        <div
-                            className={`v3-welcome-rule ${
-                                step >= 3 ? 'is-in' : ''
-                            }`}
-                            aria-hidden="true"
-                        />
-                        <p
-                            key={playId}
-                            className={`v3-welcome-cursive ${
-                                step >= 4 ? 'is-in' : ''
-                            }`}
-                        >
-                            {Array.from(CURSIVE).map((char, index) => (
-                                <span
-                                    key={index}
-                                    className={
-                                        char === ' '
-                                            ? 'v3-welcome-space'
-                                            : isPreciousLetter(index)
-                                            ? 'v3-welcome-letter is-precious'
-                                            : 'v3-welcome-letter'
-                                    }
-                                    style={{
-                                        animationDelay:
-                                            letterDelay(index) + 's',
-                                    }}
-                                >
-                                    {char === ' ' ? '\u00a0' : char}
-                                </span>
-                            ))}
-                        </p>
-                        <p
-                            className={`v3-welcome-sub ${
-                                step >= 5 ? 'is-in' : ''
-                            }`}
-                        >
-                            {SUBTITLE}
-                        </p>
-                        <button
-                            type="button"
-                            className={`v3-welcome-enter ${
-                                step >= 6 ? 'is-in' : ''
-                            }`}
-                            onClick={(event) => {
-                                event.stopPropagation()
-                                dismiss()
-                            }}
-                        >
-                            Entrer
-                        </button>
-                    </div>
-                </div>
-            ) : null}
-        </React.Fragment>
+            </div>
+        </div>
     )
 }

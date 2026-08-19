@@ -4,6 +4,7 @@ import { AuthContext } from '../Auth'
 import SettingsLayout from './SettingsLayout'
 import { formatDateTime, isAdminUser } from '../functions'
 import { useVersion } from '../hooks'
+import { replayV3Welcome } from './V3Welcome'
 
 type Report = {
     id: string
@@ -126,6 +127,23 @@ export default () => {
                 <p className="settings-panel-note">Chargement…</p>
             ) : (
                 <React.Fragment>
+                    <div className="settings-group-label">Intro V3</div>
+                    <div className="settings-panel">
+                        <p
+                            className="settings-panel-note"
+                            style={{ textAlign: 'left' }}
+                        >
+                            Relance l’écran de bienvenue luxe, pour le tester.
+                        </p>
+                        <button
+                            type="button"
+                            className="settings-btn"
+                            onClick={replayV3Welcome}
+                        >
+                            Lancer l’intro V3
+                        </button>
+                    </div>
+
                     <div className="settings-group-label">Signalements</div>
                     {reports.length === 0 ? (
                         <p className="settings-panel-note">
