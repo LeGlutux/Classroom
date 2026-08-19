@@ -16,7 +16,6 @@ import Student from '../components/Student'
 import 'firebase/firestore'
 import MagicStick from './MagicStick'
 import magicStick from '../images/magicStick.png'
-import stickyNoteRed from '../images/stickyNoteRed2.png'
 import stickyNote from '../images/stickyNote.png'
 import burgerMenu from '../images/burgerMenu.png'
 import loader_image from '../images/loader.gif'
@@ -26,7 +25,7 @@ import Firebase from '../firebase'
 import { Link } from 'react-router-dom'
 import Updater from './Updater'
 import { buildCrossSlots, handleIcon } from '../functions'
-import PostIt from './PostIt'
+import PostIt, { PostItAlert } from './PostIt'
 import { StudentInterface } from '../interfaces/Student'
 
 export default () => {
@@ -321,13 +320,11 @@ export default () => {
 
             <div className="flex-shrink-0 relative flex flex-row w-full bg-white h-12 page-header items-center justify-center z-10">
                 <span className="page-header-title">{title}</span>
-                <img alt=""
-                    className={`absolute h-7 w-7 ${
-                        postIt(displayedGroup) ? 'visible' : 'invisible'
-                    }`}
-                    style={{ right: '0.85rem' }}
-                    src={stickyNoteRed}
-                />
+                {postIt(displayedGroup) ? (
+                    <span className="postit-alert-header">
+                        <PostItAlert />
+                    </span>
+                ) : null}
             </div>
 
             <MagicStick

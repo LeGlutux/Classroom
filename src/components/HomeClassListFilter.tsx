@@ -1,5 +1,5 @@
 import React from 'react'
-import stickyNoteRed from '../images/stickyNoteRed2.png'
+import { PostItAlert } from './PostIt'
 
 interface HomeClassListFilterProps {
     groups: string[]
@@ -43,17 +43,7 @@ export default ({
                                 }`}
                             >
                                 {group}
-                                <div
-                                    className={`flex justify-center items-center badge h-10 w-10 rounded-full ${
-                                        display(group) ? 'visible' : 'invisible'
-                                    }`}
-                                >
-                                    <img
-                                        className="h-10 w-10"
-                                        src={stickyNoteRed}
-                                        alt=""
-                                    />
-                                </div>
+                                {display(group) ? <PostItAlert /> : null}
                             </button>
                         </div>
                     )
