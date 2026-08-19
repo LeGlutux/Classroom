@@ -1975,6 +1975,23 @@ body,
     }
 }
 
+.v3-dev-replay {
+    position: fixed;
+    left: 0.55rem;
+    bottom: 4.15rem;
+    z-index: 210;
+    padding: 0.28rem 0.55rem;
+    border: 1px dashed var(--tn-line);
+    border-radius: 6px;
+    background: #fff;
+    color: var(--tn-muted);
+    font-family: inherit;
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(24, 24, 27, 0.06);
+}
+
 .v3-welcome {
     position: fixed;
     inset: 0;
