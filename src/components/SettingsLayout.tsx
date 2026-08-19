@@ -23,7 +23,7 @@ export default ({ title, backTo, children, toast }: SettingsLayoutProps) => {
                         <IconChevronLeft />
                     </Link>
                 )}
-                {title}
+                <span className="page-header-title">{title}</span>
             </div>
             <div className="flex-1 min-h-0 overflow-y-scroll settings-body">
                 {children}

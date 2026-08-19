@@ -200,7 +200,7 @@ const View = ({
 
                     <div className="flex flex-row w-full justify-around mt-6">
                         <button
-                            className="bg-red-700 rounded-lg font-bold w-24 h-12 lg:w-32 lg:h-12 xl:w-40 xl:h-16 shadow-xl font-studentName sm:text-lg md:text-xl lg:text-2xl xl:text-3xl"
+                            className="bg-red-700 rounded-lg font-bold w-24 h-10 text-sm shadow-xl font-studentName flex items-center justify-center"
                             onClick={() => {
                                 setEditNotes(false)
                             }}
@@ -208,7 +208,7 @@ const View = ({
                             Annuler
                         </button>
                         <button
-                            className="bg-green-700 rounded-lg font-bold w-24 h-12 lg:w-32 lg:h-12 xl:w-40 xl:h-16 shadow-xl font-studentName sm:text-lg md:text-xl lg:text-2xl xl:text-3xl"
+                            className="bg-green-700 rounded-lg font-bold w-24 h-10 text-sm shadow-xl font-studentName flex items-center justify-center"
                             onClick={() => {
                                 confirmAction()
                                 setEditNotes(false)
@@ -234,23 +234,23 @@ const View = ({
                 }`}
             >
                 <div
-                    className={`w-full text-center mt-4 font-title text-5xl flex items-center`}
+                    className="w-full mt-4 flex items-center px-3"
                 >
-                    <Link to="/">
-                        <img className="h-8 w-4 ml-2" src={closeCard} alt="" />
+                    <Link to="/" className="flex items-center justify-center w-8 h-8 flex-shrink-0">
+                        <img className="h-6 w-3" src={closeCard} alt="" />
                     </Link>
-                    <div className="w-full mr-4 flex flex-row items-baseline justify-center text-4xl">
+                    <div className="flex-1 mr-8 flex flex-row items-center justify-center">
                         <input
                             value={surnameInputValue}
                             onChange={(e) =>
                                 setSurnameInputValue(e.target.value)
                             }
-                            className="h-10 w-32 mt-3 placeholder-gray-700 ml-5 bg-transparent border-b-2 border-gray-600 text-2xl text-center"
+                            className="h-10 w-32 placeholder-gray-700 mx-1 bg-transparent border-b-2 border-gray-600 text-lg text-center"
                             type="text"
                             placeholder={student.surname}
                         />
                         <input
-                            className="h-10 w-32 mt-3 placeholder-gray-700 text-2xl ml-5 bg-transparent border-b-2 border-gray-600 text-center"
+                            className="h-10 w-32 placeholder-gray-700 text-lg mx-1 bg-transparent border-b-2 border-gray-600 text-center"
                             value={nameInputValue}
                             onChange={(e) => setNameInputValue(e.target.value)}
                             type="text"
@@ -259,10 +259,10 @@ const View = ({
                     </div>
                 </div>
                 <div
-                    className={`flex w-full px-8 justify-between mb-4 font-title2 text-3xl items-center `}
+                    className="flex w-full px-6 justify-between mb-4 items-center"
                 >
                     <button
-                        className="bg-red-700 rounded-lg font-bold w-24 h-8 text-sm lg:w-32 lg:h-12 xl:w-40 xl:h-16 shadow-xl font-studentName sm:text-lg md:text-xl lg:text-2xl xl:text-3xl"
+                        className="bg-red-700 rounded-lg font-bold w-24 h-9 text-sm shadow-xl font-studentName flex items-center justify-center"
                         onClick={() => {
                             setEditing(false)
                         }}
@@ -277,7 +277,7 @@ const View = ({
                         placeholder={student.classes}
                     />
                     <button
-                        className="bg-green-700 rounded-lg font-bold w-24 h-8 text-sm lg:w-32 lg:h-12 xl:w-40 xl:h-16 shadow-xl font-studentName sm:text-lg md:text-xl lg:text-2xl xl:text-3xl"
+                        className="bg-green-700 rounded-lg font-bold w-24 h-9 text-sm shadow-xl font-studentName flex items-center justify-center"
                         onClick={() => {
                             handleEdition()
                             setEditing(false)
@@ -293,19 +293,15 @@ const View = ({
                     editing ? 'invisible' : 'visible'
                 }`}
             >
-                <div
-                    className={`w-full text-center mt-4 font-title text-5xl flex items-center`}
-                >
-                    <Link to="/">
-                        <img className="h-8 w-4 ml-2" src={closeCard} alt="" />
+                <div className="w-full mt-4 flex items-center px-3">
+                    <Link to="/" className="flex items-center justify-center w-8 h-8 flex-shrink-0">
+                        <img className="h-6 w-3" src={closeCard} alt="" />
                     </Link>
-                    <div className="w-full mr-4 flex flex-row items-baseline justify-center text-4xl">
+                    <div className="flex-1 mr-8 flex flex-row items-center justify-center font-studentName text-xl font-semibold leading-tight text-center px-2">
                         {student.surname} {student.name}
                     </div>
                 </div>
-                <div
-                    className={`flex w-full mb-4 mr-4 justify-center font-title2 text-3xl items-center `}
-                >
+                <div className="flex w-full mb-4 justify-center items-center text-sm text-gray-600">
                     {student.classes}
                 </div>
                 <button

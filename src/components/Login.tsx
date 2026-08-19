@@ -47,9 +47,7 @@ const Login = () => {
         <div>
             {!displayed && (
                 <div className="flex flex-col items-center justify-center absolute w-full h-full mb-12 bg-white">
-                    <div className="font-title text-4xl mb-8 text-bold xl:text-6xl">
-                        Chargement des données
-                    </div>
+                    <div className="empty-title">Chargement des données</div>
                     <div className="w-64 h-64 mt-8 xl:w-64 xl:h-64">
                         <img src={loader_image} alt="" />
                     </div>
@@ -57,7 +55,7 @@ const Login = () => {
             )}
             <div className="bg-white h-screen w-full flex flex-col items-center">
                 <div className="flex flex-col w-full items-center">
-                    <div className="text-4xl xl:text-5xl font-title font-semibold pt-6 xl:mt-10 tracking-tight">
+                    <div className="text-3xl font-title font-semibold pt-6 xl:mt-10 tracking-tight">
                         Thòt Note
                     </div>
                     <div className="flex w-full flex-col items-center xl:flex-row">
@@ -83,7 +81,7 @@ const Login = () => {
                                                 alt=""
                                             />
                                             <input
-                                                className="h-10 mt-3 w-full placeholder-gray-900 bg-transparent ml-5  xl:text-3xl xl:mb-3"
+                                                className="h-10 mt-3 w-full placeholder-gray-900 bg-transparent ml-5 text-base"
                                                 name="email"
                                                 type="email"
                                                 placeholder="Email"
@@ -96,7 +94,7 @@ const Login = () => {
                                                 alt=""
                                             />
                                             <input
-                                                className="h-10 mt-3 w-full placeholder-gray-900 bg-transparent ml-5  xl:text-3xl xl:mb-3"
+                                                className="h-10 mt-3 w-full placeholder-gray-900 bg-transparent ml-5 text-base"
                                                 name="password"
                                                 type="password"
                                                 placeholder="Mot de Passe"
@@ -104,7 +102,7 @@ const Login = () => {
                                         </div>
                                         <button
                                             type="submit"
-                                            className="flex h-10 w-48 self-center mt-5 bg-orange-500 rounded align-middle text-white text-xl font-bold justify-center shadow xl:h-12 xl:w-56 xl:text-3xl"
+                                            className="flex h-10 w-48 self-center mt-5 bg-orange-500 rounded items-center text-white text-base font-bold justify-center shadow"
                                         >
                                             Se Connecter
                                         </button>

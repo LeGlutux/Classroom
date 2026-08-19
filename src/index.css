@@ -41,10 +41,70 @@ body,
     border-radius: 0 !important;
     box-shadow: none !important;
     font-family: 'Open Sans', sans-serif;
-    font-size: 1.15rem !important;
+    font-size: 1.05rem !important;
     font-weight: 600 !important;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.02em;
     line-height: 1.2;
+}
+
+.page-header-title {
+    display: block;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.settings-back + .page-header-title {
+    padding: 0 2.5rem;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 1.5rem;
+    max-width: 22rem;
+    text-align: center;
+}
+
+.empty-title {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.3;
+    margin: 0 0 0.55rem;
+    color: var(--tn-ink);
+}
+
+.empty-text {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 400;
+    line-height: 1.45;
+    margin: 0 0 1.2rem;
+    color: #52525b;
+}
+
+.student-name {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1.2rem;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+}
+
+.student-cross-count {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    font-size: 1.05rem;
+    line-height: 1;
+    margin-left: 0.2rem;
+    color: var(--tn-ink);
 }
 
 .nav-wrap {
@@ -440,6 +500,16 @@ body,
 
 .home-class-card {
     animation: tn-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.85rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .home-class-list > *:nth-child(1) .home-class-card { animation-delay: 0.02s; }

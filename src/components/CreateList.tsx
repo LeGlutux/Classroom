@@ -119,23 +119,23 @@ export default () => {
 
     return (
         <div className="h-screen w-full flex flex-col bg-gradient-to-b from-gray-50 to-white overflow-hidden">
-            <div className="flex-shrink-0 flex flex-row w-full h-14 page-header items-center font-title font-bold justify-between text-3xl xl:text-4xl xl:h-16 px-4">
+            <div className="flex-shrink-0 flex flex-row w-full h-12 page-header items-center justify-between px-3">
                 <button
-                    className="cursor-pointer hover:opacity-70 transition-opacity flex items-center justify-center"
+                    className="cursor-pointer flex items-center justify-center w-8 h-8"
                     onClick={() => history.goBack()}
                     aria-label="Retour"
                 >
                     <svg
-                        className="h-6 w-6 fill-current text-gray-600 hover:text-gray-800"
+                        className="h-5 w-5 fill-current text-gray-600"
                     >
                         <title>Retour</title>
                         <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
                     </svg>
                 </button>
-                <div className="flex-1 text-center">
+                <div className="flex-1 page-header-title px-2">
                     Créer une liste
                 </div>
-                <div className="w-10"></div>
+                <div className="w-8"></div>
             </div>
 
             <form

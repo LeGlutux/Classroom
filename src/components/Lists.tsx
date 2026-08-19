@@ -19,12 +19,12 @@ export default () => {
     if (loading) {
         return (
             <div className="w-full h-screen flex flex-col justify-center items-center app-bg">
-                <div className="flex flex-row w-full h-12 page-header items-center font-title font-bold justify-center text-4xl xl:text-6xl xl:h-16">
-                    Mes listes
+                <div className="flex flex-row w-full h-12 page-header items-center justify-center">
+                    <span className="page-header-title">Mes listes</span>
                 </div>
                 <div className="h-full flex flex-col justify-center items-center">
-                    <div className="font-title text-4xl mb-8 text-bold">
-                        Chargement des données
+                    <div className="empty-state">
+                        <div className="empty-title">Chargement des données</div>
                     </div>
                     <div className="w-48 h-48 mt-8">
                         <img src={loader_image} alt="" />
@@ -41,17 +41,15 @@ export default () => {
     if (lists.length === 0) {
         return (
             <div className="w-full h-screen flex flex-col justify-center items-center app-bg">
-                <div className="flex flex-row w-full h-12 page-header items-center font-title font-bold justify-center text-4xl xl:text-6xl xl:h-16">
-                    Mes listes
+                <div className="flex flex-row w-full h-12 page-header items-center justify-center">
+                    <span className="page-header-title">Mes listes</span>
                 </div>
                 <div className="h-full flex flex-col justify-center items-center">
-                    <div className="flex w-11/12 text-center font-title text-4xl mb-8 text-bold">
-                        C'est ici pour créer des listes
+                    <div className="empty-state">
+                        <div className="empty-title">Créer des listes</div>
+                        <div className="empty-text">Pour essayer, c’est par ici :</div>
                     </div>
-                    <div className="flex w-11/12 justify-center font-title text-3xl mb-8 text-bold">
-                        Pour essayer, ça se passe ici :
-                    </div>
-                    <div className="font-title text-4xl mb-8 text-bold">
+                    <div>
                         <Link
                             className="flex flex-col w-20 h-20 bg-gray-200 rounded-full shadow-custom items-center justify-center p-2"
                             to="/createlist"
@@ -70,8 +68,8 @@ export default () => {
 
     return (
         <div className="h-screen w-full flex flex-col app-bg">
-            <div className="flex flex-row w-full h-12 page-header items-center font-title font-bold justify-center text-4xl xl:text-6xl xl:h-16">
-                Mes listes
+            <div className="flex flex-row w-full h-12 page-header items-center justify-center">
+                <span className="page-header-title">Mes listes</span>
             </div>
             <div className="flex flex-col w-full mt-8 border-t-2">
                 {lists.map(({ name, group, id, date, itemN }, index) => {

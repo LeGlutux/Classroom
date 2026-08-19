@@ -227,12 +227,12 @@ export default () => {
     if (studentsLoading || groupsLoading) {
         return (
             <div className="w-full h-screen flex flex-col justify-center items-center app-bg">
-                <div className="flex flex-row w-full h-12 page-header items-center font-title font-bold justify-center text-4xl xl:text-6xl xl:h-16">
-                    {title}
+                <div className="flex flex-row w-full h-12 page-header items-center justify-center">
+                    <span className="page-header-title">{title}</span>
                 </div>
                 <div className="h-full flex flex-col justify-center items-center">
-                    <div className="font-title text-4xl mb-8 text-bold xl:text-6xl">
-                        Chargement des données
+                    <div className="empty-state">
+                        <div className="empty-title">Chargement des données</div>
                     </div>
                     <div className="w-64 h-64 mt-8 xl:w-64 xl:h-64">
                         <img src={loader_image} alt="" />
@@ -249,21 +249,21 @@ export default () => {
     if (groups.length === 0) {
         return (
             <div className="w-full h-screen flex flex-col justify-center items-center app-bg">
-                <div className="flex flex-col w-full h-12 page-header items-center font-title font-bold justify-center text-4xl xl:text-6xl xl:h-16">
-                    {'Accueil'}
+                <div className="flex flex-row w-full h-12 page-header items-center justify-center">
+                    <span className="page-header-title">Accueil</span>
                 </div>
                 <div className="h-full flex flex-col justify-center items-center">
-                    <div className="font-title text-4xl mb-8 text-bold xl:text-6xl">
-                        Bienvenue sur Thòt Note
+                    <div className="empty-state">
+                        <div className="empty-title">Bienvenue sur Thòt Note</div>
+                        <div className="empty-text">
+                            Pour commencer, ajoutez des classes et des élèves
+                            ici :
+                        </div>
                     </div>
-                    <div className="flex w-11/12 justify-center text-center font-title text-3xl mb-8 text-bold xl:text-5xl">
-                        Pour commencer à ajouter des classes et des élèves
-                        rendez-vous sur :
-                    </div>
-                    <div className="font-title text-4xl mb-8 text-bold">
+                    <div>
                         <Link to="/create">
                             <img className="self-center" src={addPage} alt="" />
-                        </Link>{' '}
+                        </Link>
                     </div>
                 </div>
 
@@ -277,21 +277,21 @@ export default () => {
     if (groups.length !== 0 && students.length === 0) {
         return (
             <div className="w-full h-screen flex flex-col justify-center items-center app-bg">
-                <div className="flex flex-col w-full h-12 page-header items-center font-title font-bold justify-center text-4xl">
-                    {title}
+                <div className="flex flex-row w-full h-12 page-header items-center justify-center">
+                    <span className="page-header-title">{title}</span>
                 </div>
 
                 <div className="h-full flex flex-col justify-center items-center">
-                    <div className="flex w-11/12 text-center font-title text-4xl mb-8 text-bold">
-                        Les premières classes sont créées, il manque les élèves
+                    <div className="empty-state">
+                        <div className="empty-title">
+                            Les classes sont créées, il manque les élèves
+                        </div>
+                        <div className="empty-text">Rendez-vous ici :</div>
                     </div>
-                    <div className="flex w-11/12 justify-center font-title text-3xl mb-8 text-bold">
-                        rendez-vous sur :
-                    </div>
-                    <div className="font-title text-4xl mb-8 text-bold">
+                    <div>
                         <Link to="/create">
                             <img className="self-center" src={addPage} alt="" />
-                        </Link>{' '}
+                        </Link>
                     </div>
                 </div>
 
@@ -306,9 +306,7 @@ export default () => {
         return (
             <div className="w-full h-screen flex flex-col justify-center items-center app-bg">
                 <div className="h-full flex flex-col justify-center items-center">
-                    <div className="font-title text-4xl mb-8 text-bold">
-                        Mise à jour
-                    </div>
+                    <div className="empty-title">Mise à jour</div>
                     <div className="w-48 h-48 mt-8">
                         <img src={updater_gif} alt="" />
                     </div>
@@ -329,21 +327,20 @@ export default () => {
             />
             {!displayed && displayedGroup !== 'tous' && (
                 <div className="flex flex-col items-center justify-center absolute w-full h-full mb-12 bg-white z-10">
-                    <div className="font-title text-4xl mb-8 text-bold xl:text-6xl">
-                        Chargement des données
-                    </div>
+                    <div className="empty-title">Chargement des données</div>
                     <div className="w-64 h-64 mt-8 xl:w-64 xl:h-64">
                         <img src={loader_image} alt="" />
                     </div>
                 </div>
             )}
 
-            <div className="flex-shrink-0 flex flex-col w-full bg-white h-12 page-header p-1 items-center font-title font-bold justify-around text-4xl z-10">
-                {title}
+            <div className="flex-shrink-0 relative flex flex-row w-full bg-white h-12 page-header items-center justify-center z-10">
+                <span className="page-header-title">{title}</span>
                 <img alt=""
-                    className={`absolute h-8 w-8 ml-20 mb-1 ${
+                    className={`absolute h-7 w-7 ${
                         postIt(displayedGroup) ? 'visible' : 'invisible'
                     }`}
+                    style={{ right: '0.85rem' }}
                     src={stickyNoteRed}
                 />
             </div>

@@ -126,12 +126,12 @@ export default (props: CardCustomerProps) => {
                             <div className="flex flex-row">
                                 <button className={`flex flex-row mt-2`}>
                                     <div
-                                        className={`font-studentName ml-2 text-gray-900 font-medium h-5 text-2xl xl:text-3xl`}
+                                        className={`font-studentName ml-2 text-gray-900 font-medium text-xl leading-none`}
                                     >
                                         {'Alex'}
                                     </div>
                                     <div
-                                        className={`font-studentName ml-2 text-gray-900 font-bold text-2xl xl:text-3xl`}
+                                        className={`font-studentName ml-2 text-gray-900 font-bold text-xl leading-none`}
                                     >
                                         {'Daxe'}
                                     </div>

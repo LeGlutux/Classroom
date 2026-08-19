@@ -47,11 +47,11 @@ export default (props: UpdaterProps) => {
                     updateRequired ? 'entering-t' : 'invisible'
                 }`}
             >
-                <div className="text-xl text-center font-bold mx-2 xl:text-3xl">
-                    Votre version de Thòt Note n'est pas à jour{' '}
+                <div className="empty-title mx-2">
+                    Votre version de Thòt Note n'est pas à jour
                 </div>
 
-                <div className="text-sm text-center mx-2 mt-4 xl:text-xl">
+                <div className="empty-text mx-2 mt-2">
                     Des post-it sont maintenant disponibles pour chaque classe.
                     Un badge de notification apparaîtra lorsque un post-it non
                     vide aura été écrit pour une classe. Pour en créer un, il
@@ -60,7 +60,7 @@ export default (props: UpdaterProps) => {
 
                 <div className="flex flex-col h-40 justify-around mt-12 items-center">
                     <button
-                        className="bg-green-700 rounded-lg font-bold w-32 h-12 lg:w-32 lg:h-12 xl:w-48 xl:h-24 shadow-xl font-studentName sm:text-lg md:text-xl lg:text-2xl xl:text-2xl"
+                        className="bg-green-700 rounded-lg font-bold px-4 h-10 text-sm shadow-xl font-studentName flex items-center justify-center"
                         onClick={() => {
                             onConfirmUpdate()
                             setCheckUpdate(false)

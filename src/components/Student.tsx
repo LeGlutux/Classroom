@@ -176,7 +176,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                     }`}
                 >
                     <div className="flex flex-row items-center">
-                        <div className="flex h-full items-center self-center mt-2 ml-2 xl:pt-6 static">
+                        <div className="flex h-full items-center self-center ml-1 static">
                             <button
                                 className={`h-6 w-6 xl:h-10 xl:w-10 ${
                                     selected === false || selected === undefined
@@ -192,7 +192,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                                 />
                             </button>
                         </div>
-                        <div className="flex flex-row w-full justify-between">
+                        <div className="flex flex-row w-full justify-between items-center">
                             <button
                                 onClick={() => {
                                     db.collection('users')
@@ -205,10 +205,10 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                                     setHighlight(!highlight)
                                     props.toggleHighlight(props.id)
                                 }}
-                                className="flex flex-row flex-nowrap mt-2 items-baseline"
+                                className="flex flex-row flex-nowrap items-center"
                             >
                                 <div
-                                    className={`font-studentName ml-2 text-gray-900 font-medium text-2xl md:text-3xl lg:text-3x xl:text-3xl xl:pt-4 whitespace-nowrap ${
+                                    className={`student-name ml-2 text-gray-900 font-medium ${
                                         highlight ? 'text-red-600' : ''
                                     }
                                 `}
@@ -216,7 +216,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                                     {shortSurname}
                                 </div>
                                 <div
-                                    className={`font-studentName ml-2 text-gray-900 font-bold text-2xl md:text-3xl lg:text-3x xl:text-3xl xl:pt-4 whitespace-nowrap ${
+                                    className={`student-name ml-2 text-gray-900 font-bold ${
                                         highlight ? 'text-red-600' : ''
                                     }`}
                                 >
@@ -236,7 +236,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                         </div>
                     </div>
                     <div
-                        className={`w-full h-12 flex p-2 content-center justify-between  pr-6 ${
+                        className={`w-full h-12 flex p-2 items-center justify-between pr-6 ${
                             props.icons[5] === 'none' ? '' : 'mb-6'
                         }`}
                     >
@@ -245,7 +245,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                                 props.icons[0] === 'none' ? 'hidden' : 'visible'
                             } ${
                                 props.icons[5] === 'none'
-                                    ? 'flex-row'
+                                    ? 'flex-row items-center'
                                     : 'flex-col items-center'
                             }`}
                         >
@@ -256,7 +256,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                             >
                                 <img className="student-cross-icon" src={props.icons[0]} alt="" />
                             </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
+                            <div className="student-cross-count">
                                 {
                                     crossFilter(
                                         'behaviour',
@@ -270,7 +270,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                                 props.icons[1] === 'none' ? 'hidden' : 'visible'
                             } ${
                                 props.icons[5] === 'none'
-                                    ? 'flex-row'
+                                    ? 'flex-row items-center'
                                     : 'flex-col items-center'
                             }`}
                         >
@@ -281,7 +281,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                             >
                                 <img className="student-cross-icon" src={props.icons[1]} alt="" />
                             </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
+                            <div className="student-cross-count">
                                 {
                                     crossFilter(
                                         'homework',
@@ -295,7 +295,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                                 props.icons[2] === 'none' ? 'hidden' : 'visible'
                             } ${
                                 props.icons[5] === 'none'
-                                    ? 'flex-row'
+                                    ? 'flex-row items-center'
                                     : 'flex-col items-center'
                             }`}
                         >
@@ -306,7 +306,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                             >
                                 <img className="student-cross-icon" src={props.icons[2]} alt="" />
                             </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
+                            <div className="student-cross-count">
                                 {
                                     crossFilter('supply', props.runningPeriode)
                                         .length
@@ -318,7 +318,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                                 props.icons[3] === 'none' ? 'hidden' : 'visible'
                             } ${
                                 props.icons[5] === 'none'
-                                    ? 'flex-row'
+                                    ? 'flex-row items-center'
                                     : 'flex-col items-center'
                             }`}
                         >
@@ -329,7 +329,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                             >
                                 <img className="student-cross-icon" src={props.icons[3]} alt="" />
                             </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
+                            <div className="student-cross-count">
                                 {
                                     crossFilter(
                                         'observation',
@@ -343,7 +343,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                                 props.icons[4] === 'none' ? 'hidden' : 'visible'
                             } ${
                                 props.icons[5] === 'none'
-                                    ? 'flex-row'
+                                    ? 'flex-row items-center'
                                     : 'flex-col items-center'
                             }`}
                         >
@@ -354,7 +354,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                             >
                                 <img className="student-cross-icon" src={props.icons[4]} alt="" />
                             </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
+                            <div className="student-cross-count">
                                 {
                                     crossFilter(
                                         'calculator',
@@ -368,7 +368,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                                 props.icons[5] === 'none' ? 'hidden' : 'visible'
                             } ${
                                 props.icons[5] === 'none'
-                                    ? 'flex-row'
+                                    ? 'flex-row items-center'
                                     : 'flex-col items-center'
                             }`}
                         >
@@ -379,7 +379,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                             >
                                 <img className="student-cross-icon" src={props.icons[5]} alt="" />
                             </button>
-                            <div className="font-bold text-black flex text-2xl md:text-3xl lg:text-4xl xl:text-3xl xl:ml-3 xl:pb-8 ">
+                            <div className="student-cross-count">
                                 {
                                     crossFilter('phone', props.runningPeriode)
                                         .length

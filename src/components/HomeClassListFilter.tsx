@@ -38,7 +38,7 @@ export default ({
                                     setDisplayedGroup(group)
                                     closeMenu(false)
                                 }}
-                                className={`home-class-card flex relative font-studentName h-16 my-4 bg-gray-300 justify-center shadow-custom rounded-lg pt-1 self-center text-4xl ${
+                                className={`home-class-card flex relative font-studentName h-16 my-4 bg-gray-300 shadow-custom rounded-lg self-center ${
                                     longestGroupLength > 4 ? 'w-56' : 'w-32'
                                 }`}
                             >

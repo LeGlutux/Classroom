@@ -63,7 +63,7 @@ const SignUp = () => {
             >
                 <div className="flex flex-col w-full">
                     <div className="w-full flex items-center flex-col">
-                        <div className="font-title font-semibold text-4xl xl:text-5xl tracking-tight">
+                        <div className="font-title font-semibold text-3xl tracking-tight">
                             Thòt Note
                         </div>
 
@@ -84,7 +84,7 @@ const SignUp = () => {
                                             name="name"
                                             type="name"
                                             placeholder="Prénom"
-                                            className="h-10 mt-3 xl:mb-3 w-full placeholder-gray-900 xl:text-3xl xl:mt-10 ml-5 bg-transparent"
+                                            className="h-10 mt-3 w-full placeholder-gray-900 text-base ml-5 bg-transparent"
                                         />
                                     </div>
                                     <div className="w-8/12 border-b-2 border-gray-600 flex flex-row items-center hover:border-gray-600">
@@ -97,7 +97,7 @@ const SignUp = () => {
                                             name="email"
                                             type="email"
                                             placeholder="Email"
-                                            className="h-10 mt-3 xl:mb-3 w-full placeholder-gray-900 xl:text-3xl xl:mt-10 ml-5 bg-transparent"
+                                            className="h-10 mt-3 w-full placeholder-gray-900 text-base ml-5 bg-transparent"
                                         />
                                     </div>
                                     <div className="w-8/12 border-b-2 border-gray-600 flex flex-row items-center hover:border-gray-600">
@@ -110,12 +110,12 @@ const SignUp = () => {
                                             name="password"
                                             type="password"
                                             placeholder="Mot de Passe"
-                                            className="h-10 mt-3 xl:mb-3 w-full placeholder-gray-900 xl:text-3xl xl:mt-10 ml-5 bg-transparent"
+                                            className="h-10 mt-3 w-full placeholder-gray-900 text-base ml-5 bg-transparent"
                                         />
                                     </div>
                                     <button
                                         type="submit"
-                                        className="flex h-10 w-48 xl:h-12 xl:w-64 xl:text-3xl self-center mt-5 bg-orange-500 rounded text-white text-xl font-bold justify-center"
+                                        className="flex h-10 px-4 self-center mt-5 bg-orange-500 rounded text-white text-base font-bold items-center justify-center whitespace-nowrap"
                                     >
                                         Créer un Compte
                                     </button>

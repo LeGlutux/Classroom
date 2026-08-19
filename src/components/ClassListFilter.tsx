@@ -26,7 +26,7 @@ export default ({
                             setDisplayedGroup(group)
                             closeMenu(false)
                         }}
-                        className="flex font-studentName h-8 mb-2 mx-1 bg-white text-center rounded-lg px-3 items-center"
+                        className="flex font-studentName h-8 mb-2 mx-1 bg-white text-center rounded-lg px-3 items-center whitespace-nowrap text-sm"
                         key={index}
                     >
                         {replacer(group)}
