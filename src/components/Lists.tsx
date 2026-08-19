@@ -4,8 +4,8 @@ import { AuthContext } from '../Auth'
 import NavBar from './NavBar'
 import { Link } from 'react-router-dom'
 import ListPreview from './ListPreview'
-import loader_image from '../images/loader.gif'
 import { IconPlus } from './Icons'
+import Loader from './Loader'
 
 export default () => {
     const handleHomeClick = () => {
@@ -26,9 +26,7 @@ export default () => {
                     <div className="empty-state">
                         <div className="empty-title">Chargement des données</div>
                     </div>
-                    <div className="w-48 h-48 mt-8">
-                        <img src={loader_image} alt="" />
-                    </div>
+                    <Loader />
                 </div>
 
                 <div className={`w-full h-12 nav-wrap sticky bottom-0`}>

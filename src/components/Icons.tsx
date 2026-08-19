@@ -151,7 +151,8 @@ export const IconLock: React.FC<IconProps> = (props) => (
 
 export const IconNote: React.FC<IconProps> = (props) => (
     <Svg {...props}>
-        <rect x="6.4" y="4.4" width="11.2" height="15.2" rx="1.4" />
-        <path d="M9.1 9.2h5.8M9.1 12.6h5.8M9.1 16h3.4" />
+        <path d="M7.2 5.2h7.1L17.8 8.7v9.1a1.3 1.3 0 0 1-1.3 1.3H7.2A1.3 1.3 0 0 1 5.9 17.8V6.5A1.3 1.3 0 0 1 7.2 5.2z" />
+        <path d="M14.3 5.2v3.5h3.5" />
+        <path d="M8.6 12.2h6.2M8.6 15.3h4" />
     </Svg>
 )

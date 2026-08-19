@@ -89,6 +89,36 @@ body,
     color: #52525b;
 }
 
+.tn-loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1.35rem;
+}
+
+.tn-loader-ring {
+    width: 1.7rem;
+    height: 1.7rem;
+    border: 1.75px solid var(--tn-line);
+    border-top-color: var(--tn-ink);
+    border-radius: 999px;
+    animation: tn-loader-spin 0.7s linear infinite;
+}
+
+@keyframes tn-loader-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tn-loader-ring {
+        animation: none;
+        border-top-color: var(--tn-line);
+        border-right-color: var(--tn-ink);
+    }
+}
+
 .empty-plus {
     display: flex;
     align-items: center;
@@ -1996,20 +2026,19 @@ body,
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 1.35rem;
-    height: 1.35rem;
+    width: 1.55rem;
+    height: 1.55rem;
     border-radius: 999px;
-    background: #dc2626;
-    color: #fff;
-    box-shadow: 0 0 0 2px #fff;
+    background: transparent;
+    color: var(--tn-ink);
     animation: postit-alert-pulse 2.4s ease-in-out infinite;
 }
 
 .postit-alert .tn-icon {
-    width: 0.78rem;
-    height: 0.78rem;
-    color: #fff;
-    stroke-width: 2.1;
+    width: 1.05rem;
+    height: 1.05rem;
+    color: var(--tn-ink);
+    stroke-width: 1.75;
 }
 
 .home-class-card .postit-alert {
@@ -2048,10 +2077,10 @@ body,
 @keyframes postit-alert-pulse {
     0%,
     100% {
-        box-shadow: 0 0 0 2px #fff, 0 0 0 2px rgba(220, 38, 38, 0);
+        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
     }
     50% {
-        box-shadow: 0 0 0 2px #fff, 0 0 0 7px rgba(220, 38, 38, 0.22);
+        box-shadow: 0 0 0 8px rgba(220, 38, 38, 0.28);
     }
 }
 

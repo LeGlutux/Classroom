@@ -2,9 +2,9 @@ import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Redirect, useHistory, Link } from 'react-router-dom'
 import Firebase from '../firebase'
 import { AuthContext } from '../Auth'
-import loader_image from '../images/loader.gif'
 import lucienEtMonstre from '../images/lucienEtMonstre.png'
 import { IconLock, IconMail } from './Icons'
+import Loader from './Loader'
 
 const Login = () => {
     const history = useHistory()
@@ -44,9 +44,7 @@ const Login = () => {
             {!displayed && (
                 <div className="flex flex-col items-center justify-center absolute w-full h-full mb-12 bg-white">
                     <div className="empty-title">Chargement des données</div>
-                    <div className="w-64 h-64 mt-8 xl:w-64 xl:h-64">
-                        <img src={loader_image} alt="" />
-                    </div>
+                    <Loader />
                 </div>
             )}
             <div className="auth-page">

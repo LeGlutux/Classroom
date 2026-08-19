@@ -18,7 +18,6 @@ import MagicStick from './MagicStick'
 import magicStick from '../images/magicStick.png'
 import stickyNote from '../images/stickyNote.png'
 import burgerMenu from '../images/burgerMenu.png'
-import loader_image from '../images/loader.gif'
 import updater_gif from '../images/updater.gif'
 import addPage from '../images/addPage.png'
 import Firebase from '../firebase'
@@ -26,6 +25,7 @@ import { Link } from 'react-router-dom'
 import Updater from './Updater'
 import { buildCrossSlots, handleIcon } from '../functions'
 import PostIt, { PostItAlert } from './PostIt'
+import Loader from './Loader'
 import { StudentInterface } from '../interfaces/Student'
 
 export default () => {
@@ -218,9 +218,7 @@ export default () => {
                     <div className="empty-state">
                         <div className="empty-title">Chargement des données</div>
                     </div>
-                    <div className="w-64 h-64 mt-8 xl:w-64 xl:h-64">
-                        <img src={loader_image} alt="" />
-                    </div>
+                    <Loader />
                 </div>
 
                 <div className={`w-full h-12 nav-wrap sticky bottom-0`}>
@@ -312,9 +310,7 @@ export default () => {
             {!displayed && displayedGroup !== 'tous' && (
                 <div className="flex flex-col items-center justify-center absolute w-full h-full mb-12 bg-white z-10">
                     <div className="empty-title">Chargement des données</div>
-                    <div className="w-64 h-64 mt-8 xl:w-64 xl:h-64">
-                        <img src={loader_image} alt="" />
-                    </div>
+                    <Loader />
                 </div>
             )}
 
