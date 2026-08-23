@@ -9,6 +9,14 @@ import { replayV3Welcome } from './V3Welcome'
 type FeedbackType = 'problem' | 'suggestion'
 type FeedbackStatus = 'pending' | 'seen' | 'resolved'
 
+const normalizeType = (value: any): FeedbackType =>
+    value === 'suggestion' ? 'suggestion' : 'problem'
+
+const normalizeStatus = (value: any): FeedbackStatus => {
+    if (value === 'seen' || value === 'resolved') return value
+    return 'pending'
+}
+
 type Report = {
     id: string
     message: string
@@ -48,7 +56,8 @@ export default () => {
                 db.collection('users').get(),
             ])
             if (cancelled) return
-            const nextReports = propsSnap.docs
+            const nextReports: Report[] = propsSnap.docs
+                .filter((doc) => doc.data().kind === 'report')
                 .map((doc) => {
                     const data = doc.data()
                     return {
@@ -59,18 +68,10 @@ export default () => {
                         userName: data.userName || '',
                         createdAt: data.createdAt,
                         userAgent: data.userAgent || '',
-                        kind: data.kind,
-                        type:
-                            data.type === 'suggestion'
-                                ? 'suggestion'
-                                : 'problem',
-                        status:
-                            data.status === 'seen' || data.status === 'resolved'
-                                ? data.status
-                                : 'pending',
+                        type: normalizeType(data.type),
+                        status: normalizeStatus(data.status),
                     }
                 })
-                .filter((doc) => doc.kind === 'report')
                 .sort((a, b) => {
                     const timeA = a.createdAt && a.createdAt.toMillis
                         ? a.createdAt.toMillis()
