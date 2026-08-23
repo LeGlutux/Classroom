@@ -2149,17 +2149,34 @@ body,
 }
 
 .postit-alert {
+    display: block;
     position: absolute;
     top: -5px;
     right: -5px;
     z-index: 2;
     width: 0.72rem;
     height: 0.72rem;
+    border: 0;
+    padding: 0;
     border-radius: 999px;
     background: #dc2626;
     box-shadow: 0 0 0 2px #fff;
     pointer-events: none;
     animation: postit-alert-pulse 2.4s ease-in-out infinite;
+}
+
+.postit-alert.is-clickable {
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.postit-alert.is-clickable::after {
+    content: '';
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    bottom: -12px;
+    left: -12px;
 }
 
 .postit-alert-header {

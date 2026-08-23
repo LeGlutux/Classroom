@@ -318,7 +318,7 @@ export default () => {
                 <span className="page-header-title">{title}</span>
                 {postIt(displayedGroup) ? (
                     <span className="postit-alert-header">
-                        <PostItAlert />
+                        <PostItAlert onClick={() => setDisplayPostIt(true)} />
                     </span>
                 ) : null}
             </div>

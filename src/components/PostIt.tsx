@@ -12,9 +12,19 @@ interface PostItProps {
     index: number
 }
 
-export const PostItAlert = () => (
-    <span className="postit-alert" aria-label="Pense-bête" />
-)
+export const PostItAlert = (props: { onClick?: () => void }) => {
+    if (props.onClick) {
+        return (
+            <button
+                type="button"
+                className="postit-alert is-clickable"
+                aria-label="Ouvrir le pense-bête"
+                onClick={props.onClick}
+            />
+        )
+    }
+    return <span className="postit-alert" aria-label="Pense-bête" />
+}
 
 export default (props: PostItProps) => {
     const db = Firebase.firestore()
