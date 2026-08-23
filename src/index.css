@@ -2151,17 +2151,27 @@ body,
 .postit-alert {
     display: block;
     position: absolute;
-    top: -5px;
-    right: -5px;
+    top: -6px;
+    right: -6px;
     z-index: 2;
-    width: 0.72rem;
-    height: 0.72rem;
-    border: 0;
+    width: 10px;
+    height: 10px;
+    margin: 0;
     padding: 0;
-    border-radius: 999px;
-    background: #dc2626;
-    box-shadow: 0 0 0 2px #fff;
+    border: 0;
+    background: transparent;
+    appearance: none;
+    -webkit-appearance: none;
     pointer-events: none;
+}
+
+.postit-alert-dot {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background-color: #dc2626;
+    box-shadow: 0 0 0 2px #fff;
     animation: postit-alert-pulse 2.4s ease-in-out infinite;
 }
 
@@ -2173,19 +2183,26 @@ body,
 .postit-alert.is-clickable::after {
     content: '';
     position: absolute;
-    top: -12px;
-    right: -12px;
-    bottom: -12px;
-    left: -12px;
+    top: -14px;
+    right: -14px;
+    bottom: -14px;
+    left: -14px;
 }
 
 .postit-alert-header {
     position: absolute;
-    top: 0;
+    top: 50%;
     right: 0.85rem;
-    width: 0;
-    height: 0;
     z-index: 12;
+    width: 10px;
+    height: 10px;
+    transform: translateY(-50%);
+}
+
+.postit-alert-header .postit-alert {
+    position: relative;
+    top: 0;
+    right: 0;
 }
 
 @keyframes postit-overlay-in {
@@ -2221,7 +2238,7 @@ body,
 @media (prefers-reduced-motion: reduce) {
     .postit-overlay,
     .postit-card,
-    .postit-alert {
+    .postit-alert-dot {
         animation: none;
     }
 }

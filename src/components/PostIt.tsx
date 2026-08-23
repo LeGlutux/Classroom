@@ -13,6 +13,7 @@ interface PostItProps {
 }
 
 export const PostItAlert = (props: { onClick?: () => void }) => {
+    const dot = <span className="postit-alert-dot" aria-hidden="true" />
     if (props.onClick) {
         return (
             <button
@@ -20,10 +21,16 @@ export const PostItAlert = (props: { onClick?: () => void }) => {
                 className="postit-alert is-clickable"
                 aria-label="Ouvrir le pense-bête"
                 onClick={props.onClick}
-            />
+            >
+                {dot}
+            </button>
         )
     }
-    return <span className="postit-alert" aria-label="Pense-bête" />
+    return (
+        <span className="postit-alert" aria-label="Pense-bête">
+            {dot}
+        </span>
+    )
 }
 
 export default (props: PostItProps) => {
