@@ -167,7 +167,7 @@ const SettingsMenu = () => {
                         to="/create/admin"
                         icon={<IconWrench />}
                         title="Maintenance"
-                        subtitle="Signalements et comptes"
+                        subtitle="Problèmes, suggestions et comptes"
                     />
                 </div>
             )}

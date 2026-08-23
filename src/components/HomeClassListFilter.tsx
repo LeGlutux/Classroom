@@ -25,26 +25,34 @@ export default ({
 
     return (
         <div className="flex flex-col ml-2 mr-6 flex-1 min-h-0 overflow-y-auto px-2">
-            <div className={`flex flex-col py-2 home-class-list ${shouldCenter ? 'min-h-full justify-center' : ''}`}>
+            <div
+                className={`flex flex-col py-2 home-class-list ${
+                    shouldCenter ? 'min-h-full justify-center' : ''
+                }`}
+            >
                 {groups.map((group, index) => {
                     return (
                         <div
-                            className="flex flex-row justify-center items-center w-auto"
+                            className="flex flex-row justify-center items-center w-auto my-4"
                             key={index}
                         >
-                            <button
-                                onClick={() => {
-                                    onFilter(group)
-                                    setDisplayedGroup(group)
-                                    closeMenu(false)
-                                }}
-                                className={`home-class-card flex relative font-studentName h-16 my-4 self-center ${
+                            <div
+                                className={`home-class-card-wrap ${
                                     longestGroupLength > 4 ? 'w-56' : 'w-32'
                                 }`}
                             >
-                                {group}
+                                <button
+                                    onClick={() => {
+                                        onFilter(group)
+                                        setDisplayedGroup(group)
+                                        closeMenu(false)
+                                    }}
+                                    className="home-class-card flex font-studentName h-16 w-full"
+                                >
+                                    {group}
+                                </button>
                                 {display(group) ? <PostItAlert /> : null}
-                            </button>
+                            </div>
                         </div>
                     )
                 })}

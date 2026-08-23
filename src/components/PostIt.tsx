@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react'
 import Firebase from '../firebase'
-import { IconNote } from './Icons'
 
 interface PostItProps {
     currentUserId: string
@@ -14,9 +13,7 @@ interface PostItProps {
 }
 
 export const PostItAlert = () => (
-    <span className="postit-alert" aria-label="Pense-bête">
-        <IconNote />
-    </span>
+    <span className="postit-alert" aria-label="Pense-bête" />
 )
 
 export default (props: PostItProps) => {

@@ -6,6 +6,9 @@ import { formatDateTime, isAdminUser } from '../functions'
 import { useVersion } from '../hooks'
 import { replayV3Welcome } from './V3Welcome'
 
+type FeedbackType = 'problem' | 'suggestion'
+type FeedbackStatus = 'pending' | 'seen' | 'resolved'
+
 type Report = {
     id: string
     message: string
@@ -14,6 +17,8 @@ type Report = {
     userName: string
     createdAt: any
     userAgent: string
+    type: FeedbackType
+    status: FeedbackStatus
 }
 
 type Account = {
@@ -55,6 +60,14 @@ export default () => {
                         createdAt: data.createdAt,
                         userAgent: data.userAgent || '',
                         kind: data.kind,
+                        type:
+                            data.type === 'suggestion'
+                                ? 'suggestion'
+                                : 'problem',
+                        status:
+                            data.status === 'seen' || data.status === 'resolved'
+                                ? data.status
+                                : 'pending',
                     }
                 })
                 .filter((doc) => doc.kind === 'report')
@@ -101,13 +114,17 @@ export default () => {
 
     if (currentUser === null || !isAdminUser(currentUser)) return <div />
 
-    const resolveReport = async (id: string) => {
+    const setReportStatus = async (id: string, status: FeedbackStatus) => {
         await firebase
             .firestore()
             .collection('props')
             .doc(id)
-            .delete()
-        setReports((previous) => previous.filter((report) => report.id !== id))
+            .update({ status })
+        setReports((previous) =>
+            previous.map((report) =>
+                report.id === id ? { ...report, status } : report
+            )
+        )
     }
 
     const filteredAccounts = accounts.filter((account) => {
@@ -120,6 +137,80 @@ export default () => {
         ).toLowerCase()
         return haystack.indexOf(query.trim().toLowerCase()) !== -1
     })
+
+    const renderFeedbackList = (title: string, type: FeedbackType) => {
+        const list = reports.filter((report) => report.type === type)
+        return (
+            <React.Fragment>
+                <div className="settings-group-label">{title}</div>
+                {list.length === 0 ? (
+                    <p className="settings-panel-note">Aucun pour le moment.</p>
+                ) : (
+                    list.map((report) => (
+                        <div
+                            key={report.id}
+                            className={`report-card is-${report.type}`}
+                        >
+                            <div className="report-card-top">
+                                <div className="report-meta">
+                                    {report.userName
+                                        ? report.userName + ' · '
+                                        : ''}
+                                    {report.email || report.uid}
+                                </div>
+                                <span
+                                    className={`report-status is-${report.status}`}
+                                >
+                                    {report.status === 'seen'
+                                        ? 'Vu'
+                                        : report.status === 'resolved'
+                                        ? 'Réglé'
+                                        : 'En attente'}
+                                </span>
+                            </div>
+                            <div className="report-date">
+                                {formatDateTime(report.createdAt)}
+                            </div>
+                            <div className="report-message">
+                                {report.message}
+                            </div>
+                            {report.userAgent ? (
+                                <div className="report-agent">
+                                    {report.userAgent}
+                                </div>
+                            ) : null}
+                            <div className="report-actions">
+                                <button
+                                    type="button"
+                                    className={`report-resolve ${
+                                        report.status === 'seen' ? 'is-on' : ''
+                                    }`}
+                                    onClick={() =>
+                                        setReportStatus(report.id, 'seen')
+                                    }
+                                >
+                                    Vu
+                                </button>
+                                <button
+                                    type="button"
+                                    className={`report-resolve ${
+                                        report.status === 'resolved'
+                                            ? 'is-on'
+                                            : ''
+                                    }`}
+                                    onClick={() =>
+                                        setReportStatus(report.id, 'resolved')
+                                    }
+                                >
+                                    Réglé
+                                </button>
+                            </div>
+                        </div>
+                    ))
+                )}
+            </React.Fragment>
+        )
+    }
 
     return (
         <SettingsLayout title="Maintenance" backTo="/create">
@@ -144,39 +235,8 @@ export default () => {
                         </button>
                     </div>
 
-                    <div className="settings-group-label">Signalements</div>
-                    {reports.length === 0 ? (
-                        <p className="settings-panel-note">
-                            Aucun problème en attente.
-                        </p>
-                    ) : (
-                        reports.map((report) => (
-                            <div key={report.id} className="report-card">
-                                <div className="report-meta">
-                                    {report.userName ? report.userName + ' · ' : ''}
-                                    {report.email || report.uid}
-                                </div>
-                                <div className="report-date">
-                                    {formatDateTime(report.createdAt)}
-                                </div>
-                                <div className="report-message">
-                                    {report.message}
-                                </div>
-                                {report.userAgent ? (
-                                    <div className="report-agent">
-                                        {report.userAgent}
-                                    </div>
-                                ) : null}
-                                <button
-                                    type="button"
-                                    className="report-resolve"
-                                    onClick={() => resolveReport(report.id)}
-                                >
-                                    Réglé
-                                </button>
-                            </div>
-                        ))
-                    )}
+                    {renderFeedbackList('Problèmes', 'problem')}
+                    {renderFeedbackList('Suggestions', 'suggestion')}
 
                     <div className="settings-group-label">Comptes</div>
                     <div className="settings-panel">
