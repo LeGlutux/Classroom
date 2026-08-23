@@ -13,7 +13,13 @@ interface PostItProps {
 }
 
 export const PostItAlert = (props: { onClick?: () => void }) => {
-    const dot = <span className="postit-alert-dot" aria-hidden="true" />
+    const dot = (
+        <span className="postit-alert-dot" aria-hidden="true">
+            <svg viewBox="0 0 12 12" width="12" height="12" focusable="false">
+                <circle cx="6" cy="6" r="5" fill="#dc2626" />
+            </svg>
+        </span>
+    )
     if (props.onClick) {
         return (
             <button
