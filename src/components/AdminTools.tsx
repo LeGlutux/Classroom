@@ -2,7 +2,12 @@ import React, { useContext, useEffect, useState } from 'react'
 import firebase from 'firebase/app'
 import { AuthContext } from '../Auth'
 import SettingsLayout from './SettingsLayout'
-import { formatDateTime, isAdminUser } from '../functions'
+import {
+    formatDateTime,
+    isAdminUser,
+    isDeletedReportExpired,
+} from '../functions'
+import ConfirmModal from './ConfirmModal'
 import { useVersion } from '../hooks'
 
 type FeedbackType = 'problem' | 'suggestion'
@@ -23,6 +28,7 @@ type Report = {
     uid: string
     userName: string
     createdAt: any
+    deletedAt: any
     userAgent: string
     type: FeedbackType
     status: FeedbackStatus
@@ -43,6 +49,7 @@ export default () => {
     const [accounts, setAccounts] = useState<Account[]>([])
     const [query, setQuery] = useState('')
     const [loading, setLoading] = useState(true)
+    const [pendingDelete, setPendingDelete] = useState<Report | null>(null)
 
     useEffect(() => {
         if (!isAdminUser(currentUser)) return
@@ -55,31 +62,48 @@ export default () => {
                 db.collection('users').get(),
             ])
             if (cancelled) return
-            const nextReports: Report[] = propsSnap.docs
-                .filter((doc) => doc.data().kind === 'report')
-                .map((doc) => {
-                    const data = doc.data()
-                    return {
-                        id: doc.id,
-                        message: data.message || '',
-                        email: data.email || '',
-                        uid: data.uid || '',
-                        userName: data.userName || '',
-                        createdAt: data.createdAt,
-                        userAgent: data.userAgent || '',
-                        type: normalizeType(data.type),
-                        status: normalizeStatus(data.status),
-                    }
+            const expiredIds: string[] = []
+            const nextReports: Report[] = []
+            propsSnap.docs.forEach((doc) => {
+                const data = doc.data()
+                if (data.kind !== 'report') return
+                if (isDeletedReportExpired(data.deletedAt)) {
+                    expiredIds.push(doc.id)
+                    return
+                }
+                if (data.deletedAt) return
+                nextReports.push({
+                    id: doc.id,
+                    message: data.message || '',
+                    email: data.email || '',
+                    uid: data.uid || '',
+                    userName: data.userName || '',
+                    createdAt: data.createdAt,
+                    deletedAt: data.deletedAt || null,
+                    userAgent: data.userAgent || '',
+                    type: normalizeType(data.type),
+                    status: normalizeStatus(data.status),
                 })
-                .sort((a, b) => {
-                    const timeA = a.createdAt && a.createdAt.toMillis
+            })
+            nextReports.sort((a, b) => {
+                const timeA =
+                    a.createdAt && a.createdAt.toMillis
                         ? a.createdAt.toMillis()
                         : 0
-                    const timeB = b.createdAt && b.createdAt.toMillis
+                const timeB =
+                    b.createdAt && b.createdAt.toMillis
                         ? b.createdAt.toMillis()
                         : 0
-                    return timeB - timeA
-                })
+                return timeB - timeA
+            })
+            if (expiredIds.length) {
+                await Promise.all(
+                    expiredIds.map((id) =>
+                        db.collection('props').doc(id).delete()
+                    )
+                )
+            }
+            if (cancelled) return
             setReports(nextReports)
             const nextAccounts = usersSnap.docs
                 .map((doc) => {
@@ -125,6 +149,21 @@ export default () => {
                 report.id === id ? { ...report, status } : report
             )
         )
+    }
+
+    const deleteReport = async (report: Report) => {
+        await firebase
+            .firestore()
+            .collection('props')
+            .doc(report.id)
+            .update({
+                status: 'resolved',
+                deletedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            })
+        setReports((previous) =>
+            previous.filter((item) => item.id !== report.id)
+        )
+        setPendingDelete(null)
     }
 
     const filteredAccounts = accounts.filter((account) => {
@@ -204,6 +243,13 @@ export default () => {
                                 >
                                     Réglé
                                 </button>
+                                <button
+                                    type="button"
+                                    className="report-resolve report-delete"
+                                    onClick={() => setPendingDelete(report)}
+                                >
+                                    Supprimer
+                                </button>
                             </div>
                         </div>
                     ))
@@ -214,6 +260,22 @@ export default () => {
 
     return (
         <SettingsLayout title="Maintenance" backTo="/create">
+            <ConfirmModal
+                confirm={pendingDelete !== null}
+                setConfirm={(value) => {
+                    const next =
+                        typeof value === 'function'
+                            ? value(pendingDelete !== null)
+                            : value
+                    if (!next) setPendingDelete(null)
+                }}
+                confirmAction={() => {
+                    if (pendingDelete) deleteReport(pendingDelete)
+                }}
+                danger
+                textBox="Supprimer ce signalement ?"
+                subTextBox="La personne le verra comme réglé. Il disparaîtra de son côté au bout d’un mois."
+            />
             {loading ? (
                 <p className="settings-panel-note">Chargement…</p>
             ) : (

@@ -3,7 +3,7 @@ import firebase from 'firebase/app'
 import { AuthContext } from '../Auth'
 import SettingsLayout from './SettingsLayout'
 import { useUser } from '../hooks'
-import { formatDateTime } from '../functions'
+import { formatDateTime, isDeletedReportExpired } from '../functions'
 
 type FeedbackType = 'problem' | 'suggestion'
 type FeedbackStatus = 'pending' | 'seen' | 'resolved'
@@ -15,6 +15,7 @@ type Feedback = {
     status: FeedbackStatus
     hiddenByUser: boolean
     createdAt: any
+    deletedAt: any
 }
 
 const statusLabel = (status: FeedbackStatus) => {
@@ -48,6 +49,7 @@ export default () => {
             .firestore()
             .collection('props')
             .get()
+        const expiredIds: string[] = []
         const next = snap.docs
             .map((doc) => {
                 const data = doc.data()
@@ -58,16 +60,21 @@ export default () => {
                     status: normalizeStatus(data.status),
                     hiddenByUser: !!data.hiddenByUser,
                     createdAt: data.createdAt,
+                    deletedAt: data.deletedAt || null,
                     uid: data.uid || '',
                     kind: data.kind,
                 }
             })
-            .filter(
-                (doc) =>
-                    doc.kind === 'report' &&
-                    doc.uid === currentUser.uid &&
-                    !doc.hiddenByUser
-            )
+            .filter((doc) => {
+                if (doc.kind !== 'report' || doc.uid !== currentUser.uid) {
+                    return false
+                }
+                if (isDeletedReportExpired(doc.deletedAt)) {
+                    expiredIds.push(doc.id)
+                    return false
+                }
+                return !doc.hiddenByUser
+            })
             .sort((a, b) => {
                 const timeA =
                     a.createdAt && a.createdAt.toMillis
@@ -79,6 +86,26 @@ export default () => {
                         : 0
                 return timeB - timeA
             })
+            .map((doc) => ({
+                id: doc.id,
+                message: doc.message,
+                type: doc.type,
+                status: doc.deletedAt ? ('resolved' as FeedbackStatus) : doc.status,
+                hiddenByUser: doc.hiddenByUser,
+                createdAt: doc.createdAt,
+                deletedAt: doc.deletedAt,
+            }))
+        if (expiredIds.length) {
+            await Promise.all(
+                expiredIds.map((id) =>
+                    firebase
+                        .firestore()
+                        .collection('props')
+                        .doc(id)
+                        .delete()
+                )
+            )
+        }
         setMine(next)
         setLoadingMine(false)
     }
@@ -224,13 +251,15 @@ export default () => {
                             {formatDateTime(item.createdAt)}
                         </div>
                         <div className="report-message">{item.message}</div>
-                        <label className="report-check">
-                            <input
-                                type="checkbox"
-                                onChange={() => markMineResolved(item.id)}
-                            />
-                            Réglé
-                        </label>
+                        {item.deletedAt ? null : (
+                            <label className="report-check">
+                                <input
+                                    type="checkbox"
+                                    onChange={() => markMineResolved(item.id)}
+                                />
+                                Réglé
+                            </label>
+                        )}
                     </div>
                 ))
             )}

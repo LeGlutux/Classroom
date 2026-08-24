@@ -839,6 +839,11 @@ body,
     margin-left: 0.9rem;
 }
 
+.report-actions .report-delete {
+    margin-left: auto;
+    color: #b91c1c;
+}
+
 .report-check {
     display: flex;
     align-items: center;

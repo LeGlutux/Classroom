@@ -164,6 +164,21 @@ export const formatDateTime = (value: any) => {
     )
 }
 
+export const MONTH_MS = 30 * 24 * 60 * 60 * 1000
+
+export const firestoreTimeMs = (value: any): number => {
+    if (!value) return 0
+    if (typeof value.toMillis === 'function') return value.toMillis()
+    if (value instanceof Date) return value.getTime()
+    const parsed = new Date(value).getTime()
+    return Number.isNaN(parsed) ? 0 : parsed
+}
+
+export const isDeletedReportExpired = (deletedAt: any): boolean => {
+    const ms = firestoreTimeMs(deletedAt)
+    return ms > 0 && Date.now() - ms >= MONTH_MS
+}
+
 export const PERIOD_YEAR = 0
 
 export const crossInCurrentPeriod = (
