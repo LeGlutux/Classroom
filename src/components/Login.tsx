@@ -5,6 +5,7 @@ import { AuthContext } from '../Auth'
 import lucienEtMonstre from '../images/lucienEtMonstre.png'
 import { IconLock, IconMail } from './Icons'
 import Loader from './Loader'
+import { openInstallApp } from './InstallApp'
 
 const Login = () => {
     const history = useHistory()
@@ -81,6 +82,15 @@ const Login = () => {
                             <div className="auth-alt">
                                 <Link to="/signup">Créer un compte</Link>
                             </div>
+                            <button
+                                type="button"
+                                className="auth-install"
+                                onClick={() => {
+                                    openInstallApp()
+                                }}
+                            >
+                                Télécharger l’app
+                            </button>
                         </form>
                     </div>
                 </div>

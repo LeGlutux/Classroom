@@ -30,8 +30,10 @@ import {
     IconUsers,
     IconTrophy,
     IconWrench,
+    IconDownload,
 } from './Icons'
 import { isAdminUser } from '../functions'
+import { openInstallApp } from './InstallApp'
 
 interface SettingsRowProps {
     to?: string
@@ -148,6 +150,18 @@ const SettingsMenu = () => {
                     icon={<IconTrash />}
                     title="Réinitialiser l’année"
                     subtitle="Supprimer classes, élèves et listes"
+                />
+            </div>
+
+            <div className="settings-group-label">Application</div>
+            <div className="settings-group">
+                <SettingsRow
+                    icon={<IconDownload />}
+                    title="Télécharger l’app"
+                    subtitle="Ajouter à l’écran d’accueil du téléphone"
+                    onClick={() => {
+                        openInstallApp()
+                    }}
                 />
             </div>
 

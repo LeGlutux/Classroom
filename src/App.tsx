@@ -11,6 +11,7 @@ import Lists from './components/Lists'
 import CreateList from './components/CreateList'
 import List from './components/List'
 import V3Welcome from './components/V3Welcome'
+import InstallAppHost from './components/InstallApp'
 
 export default () => {
     return (
@@ -18,6 +19,7 @@ export default () => {
             <div className={`flex w-full flex-col`}>
                 <AuthProvider>
                     <V3Welcome />
+                    <InstallAppHost />
                     <div>
                         <Router>
                             <Switch>
