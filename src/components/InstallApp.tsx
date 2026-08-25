@@ -8,7 +8,12 @@ interface BeforeInstallPromptEvent extends Event {
 type Platform = 'ios-safari' | 'ios-other' | 'android' | 'desktop'
 
 let deferredPrompt: BeforeInstallPromptEvent | null = null
-let openSheet: (() => void) | null = null
+let openSheet: ((alreadyInstalled: boolean) => void) | null = null
+const promptListeners: Array<() => void> = []
+
+const notifyPrompt = () => {
+    promptListeners.forEach((listener) => listener())
+}
 
 const isStandaloneApp = () => {
     if (typeof window === 'undefined') return false
@@ -36,34 +41,59 @@ const detectPlatform = (): Platform => {
     return 'desktop'
 }
 
+const isBraveBrowser = () => {
+    const nav = window.navigator as Navigator & { brave?: { isBrave?: unknown } }
+    return !!(nav.brave && nav.brave.isBrave)
+}
+
+const isPwaAlreadyInstalled = async () => {
+    if (isStandaloneApp()) return true
+    const nav = window.navigator as Navigator & {
+        getInstalledRelatedApps?: () => Promise<Array<{ platform?: string }>>
+    }
+    if (typeof nav.getInstalledRelatedApps !== 'function') return false
+    try {
+        const apps = await nav.getInstalledRelatedApps()
+        return Array.isArray(apps) && apps.length > 0
+    } catch (error) {
+        return false
+    }
+}
+
+const launchNativePrompt = async () => {
+    if (!deferredPrompt) return false
+    const promptEvent = deferredPrompt
+    deferredPrompt = null
+    notifyPrompt()
+    await promptEvent.prompt()
+    await promptEvent.userChoice
+    return true
+}
+
 export const listenForInstallPrompt = () => {
     if (typeof window === 'undefined') return
     window.addEventListener('beforeinstallprompt', (event) => {
         event.preventDefault()
         deferredPrompt = event as BeforeInstallPromptEvent
+        notifyPrompt()
     })
     window.addEventListener('appinstalled', () => {
         deferredPrompt = null
+        notifyPrompt()
     })
 }
 
 export const openInstallApp = async () => {
-    if (isStandaloneApp()) {
-        if (openSheet) openSheet()
-        return
-    }
     if (deferredPrompt) {
-        const promptEvent = deferredPrompt
-        deferredPrompt = null
         try {
-            await promptEvent.prompt()
-            await promptEvent.userChoice
+            await launchNativePrompt()
             return
         } catch (error) {
-            // The native prompt needs a direct tap. Show the steps instead.
+            // Fall through to the instructions sheet.
         }
     }
-    if (openSheet) openSheet()
+    const alreadyInstalled = await isPwaAlreadyInstalled()
+    if (openSheet) openSheet(alreadyInstalled)
 }
 
 const ShareIcon = () => (
@@ -83,12 +113,16 @@ const ShareIcon = () => (
     </svg>
 )
 
-const sheetCopy = (platform: Platform, standalone: boolean) => {
-    if (standalone) {
+const sheetCopy = (
+    platform: Platform,
+    alreadyInstalled: boolean,
+    brave: boolean
+) => {
+    if (alreadyInstalled) {
         return {
-            title: 'Déjà sur l’écran d’accueil',
+            title: 'Déjà installée',
             body:
-                'Thòt Note est ouverte comme une app sur cet appareil. Rien de plus à installer.',
+                'Thòt Note est déjà sur cet appareil (écran d’accueil ou liste d’apps). Chrome et Brave ne relancent pas le téléchargement tant que cette icône est là. Pour revoir le menu automatique, désinstalle l’app, puis reviens ici.',
             steps: [] as string[],
         }
     }
@@ -119,12 +153,15 @@ const sheetCopy = (platform: Platform, standalone: boolean) => {
     if (platform === 'android') {
         return {
             title: 'Installer l’app',
-            body:
-                'Si le menu d’installation ne s’est pas ouvert tout seul, tu peux le faire depuis le navigateur :',
+            body: brave
+                ? 'Brave n’ouvre pas toujours le menu tout seul. Tu peux installer depuis le navigateur :'
+                : 'Le menu automatique n’est pas encore prêt (souvent au premier chargement, ou si l’app est déjà installée). Tu peux aussi le faire à la main :',
             steps: [
-                'Appuie sur le menu (⋮) en haut à droite.',
+                brave
+                    ? 'Appuie sur le menu (⋮) de Brave.'
+                    : 'Appuie sur le menu (⋮) en haut à droite de Chrome.',
                 'Choisis « Installer l’application » ou « Ajouter à l’écran d’accueil ».',
-                'Valide. Thòt Note s’ouvre ensuite comme une app, sans barre d’adresse.',
+                'Si tu vois seulement « Créer un raccourci », c’est que l’app est déjà installée : cherche Thòt Note dans tes applications.',
             ],
         }
     }
@@ -143,22 +180,31 @@ const sheetCopy = (platform: Platform, standalone: boolean) => {
 export const InstallAppHost = () => {
     const [open, setOpen] = useState(false)
     const [platform, setPlatform] = useState<Platform>('desktop')
-    const [standalone, setStandalone] = useState(false)
+    const [alreadyInstalled, setAlreadyInstalled] = useState(false)
+    const [brave, setBrave] = useState(false)
+    const [canPrompt, setCanPrompt] = useState(false)
 
     useEffect(() => {
-        openSheet = () => {
+        openSheet = (installed: boolean) => {
             setPlatform(detectPlatform())
-            setStandalone(isStandaloneApp())
+            setAlreadyInstalled(installed)
+            setBrave(isBraveBrowser())
+            setCanPrompt(!!deferredPrompt)
             setOpen(true)
         }
+        const onPrompt = () => setCanPrompt(!!deferredPrompt)
+        promptListeners.push(onPrompt)
         return () => {
             openSheet = null
+            const index = promptListeners.indexOf(onPrompt)
+            if (index !== -1) promptListeners.splice(index, 1)
         }
     }, [])
 
     if (!open) return null
 
-    const copy = sheetCopy(platform, standalone)
+    const copy = sheetCopy(platform, alreadyInstalled, brave)
+    const showNativeButton = canPrompt && !alreadyInstalled
 
     return (
         <div className="modal-overlay" onClick={() => setOpen(false)}>
@@ -168,7 +214,7 @@ export const InstallAppHost = () => {
             >
                 <div className="modal-empty">{copy.title}</div>
                 <div className="modal-sub">{copy.body}</div>
-                {platform === 'ios-safari' && !standalone ? (
+                {platform === 'ios-safari' && !alreadyInstalled ? (
                     <div className="install-share-hint">
                         <ShareIcon />
                         <span>C’est cette icône Partager, en bas de Safari.</span>
@@ -182,13 +228,30 @@ export const InstallAppHost = () => {
                     </ol>
                 ) : null}
                 <div className="modal-actions">
-                    <button
-                        type="button"
-                        className="modal-btn modal-btn-primary"
-                        onClick={() => setOpen(false)}
-                    >
-                        OK
-                    </button>
+                    {showNativeButton ? (
+                        <button
+                            type="button"
+                            className="modal-btn modal-btn-primary"
+                            onClick={async () => {
+                                try {
+                                    const launched = await launchNativePrompt()
+                                    if (launched) setOpen(false)
+                                } catch (error) {
+                                    setCanPrompt(false)
+                                }
+                            }}
+                        >
+                            Installer
+                        </button>
+                    ) : (
+                        <button
+                            type="button"
+                            className="modal-btn modal-btn-primary"
+                            onClick={() => setOpen(false)}
+                        >
+                            OK
+                        </button>
+                    )}
                 </div>
             </div>
         </div>
