@@ -84,6 +84,32 @@ export const normalizeSmsTemplates = (raw: unknown): SmsTemplate[] => {
     return next
 }
 
+export type SmsConfig = {
+    smsEnabled: boolean
+    defaultTemplates: SmsTemplate[]
+}
+
+export const parseSmsConfig = (raw: any): SmsConfig => ({
+    smsEnabled: !!(raw && raw.smsEnabled),
+    defaultTemplates: normalizeSmsTemplates(
+        raw && raw.defaultTemplates !== undefined
+            ? raw.defaultTemplates
+            : undefined
+    ),
+})
+
+export const resolveUserSmsTemplates = (
+    userRaw: unknown,
+    remoteDefaults?: unknown
+) => {
+    if (userRaw == null) {
+        return normalizeSmsTemplates(
+            remoteDefaults === undefined ? undefined : remoteDefaults
+        )
+    }
+    return normalizeSmsTemplates(userRaw)
+}
+
 export const fillSmsTemplate = (
     body: string,
     student: SmsStudent,

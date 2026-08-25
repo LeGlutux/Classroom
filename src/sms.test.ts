@@ -7,7 +7,46 @@ import {
     formatSmsDate,
     insertSmsToken,
     normalizeSmsTemplates,
+    parseSmsConfig,
+    resolveUserSmsTemplates,
 } from './sms'
+
+describe('parseSmsConfig', () => {
+    it('désactive le SMS si le document est absent', () => {
+        expect(parseSmsConfig(undefined).smsEnabled).toBe(false)
+        expect(parseSmsConfig({}).smsEnabled).toBe(false)
+    })
+
+    it('lit l’interrupteur et les modèles distants', () => {
+        const parsed = parseSmsConfig({
+            smsEnabled: true,
+            defaultTemplates: [{ id: 'a', title: 'A', body: 'B' }],
+        })
+        expect(parsed.smsEnabled).toBe(true)
+        expect(parsed.defaultTemplates).toEqual([
+            { id: 'a', title: 'A', body: 'B' },
+        ])
+    })
+})
+
+describe('resolveUserSmsTemplates', () => {
+    it('utilise les modèles distants si l’utilisateur n’a rien enregistré', () => {
+        expect(
+            resolveUserSmsTemplates(undefined, [
+                { id: 'd', title: 'Défaut', body: 'X' },
+            ])
+        ).toEqual([{ id: 'd', title: 'Défaut', body: 'X' }])
+    })
+
+    it('préfère les modèles personnels', () => {
+        expect(
+            resolveUserSmsTemplates(
+                [{ id: 'u', title: 'Perso', body: 'Y' }],
+                [{ id: 'd', title: 'Défaut', body: 'X' }]
+            )
+        ).toEqual([{ id: 'u', title: 'Perso', body: 'Y' }])
+    })
+})
 
 describe('fillSmsTemplate', () => {
     const student = {

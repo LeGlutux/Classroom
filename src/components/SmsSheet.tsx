@@ -7,8 +7,9 @@ import {
     SmsTemplate,
     canPickContacts,
     fillSmsTemplate,
-    normalizeSmsTemplates,
+    parseSmsConfig,
     pickContactPhone,
+    resolveUserSmsTemplates,
     sendParentSms,
 } from '../sms'
 
@@ -41,14 +42,16 @@ export default () => {
         if (!student || !currentUser) return
         let cancelled = false
         const load = async () => {
-            const snap = await firebase
-                .firestore()
-                .collection('users')
-                .doc(currentUser.uid)
-                .get()
+            const db = firebase.firestore()
+            const [userSnap, configSnap] = await Promise.all([
+                db.collection('users').doc(currentUser.uid).get(),
+                db.collection('props').doc('sms-config').get(),
+            ])
             if (cancelled) return
-            const next = normalizeSmsTemplates(
-                snap.data() ? snap.data()!.smsTemplates : undefined
+            const config = parseSmsConfig(configSnap.data())
+            const next = resolveUserSmsTemplates(
+                userSnap.data() ? userSnap.data()!.smsTemplates : undefined,
+                config.defaultTemplates
             )
             setTemplates(next)
             setSelectedId(next[0] ? next[0].id : '')

@@ -6,6 +6,7 @@ import {
     useGroups,
     useLists,
     usePeriodes,
+    useSmsConfig,
     useStudents,
 } from '../hooks'
 import SettingsLayout from './SettingsLayout'
@@ -17,7 +18,11 @@ import PeriodeFilter from './PeriodeFilter'
 import ConfirmModal from './ConfirmModal'
 import Podium from './Podium'
 import ReportProblem from './ReportProblem'
-import AdminTools from './AdminTools'
+import AdminTools, {
+    AdminAccounts,
+    AdminReports,
+    AdminSms,
+} from './AdminTools'
 import {
     IconCalendar,
     IconChevronRight,
@@ -85,9 +90,11 @@ const SettingsRow = ({
 
 const SettingsMenu = () => {
     const { currentUser } = useContext(AuthContext)
+    const { smsEnabled } = useSmsConfig()
     if (currentUser === null) return <div />
 
     const adminConnected = isAdminUser(currentUser)
+    const smsAvailable = smsEnabled || adminConnected
     const email = currentUser.email || 'Compte'
     const initial = email.charAt(0).toUpperCase()
 
@@ -157,12 +164,14 @@ const SettingsMenu = () => {
 
             <div className="settings-group-label">Application</div>
             <div className="settings-group">
-                <SettingsRow
-                    to="/create/sms"
-                    icon={<IconChat />}
-                    title="Modèles SMS"
-                    subtitle="Textes et jetons envoyés aux parents"
-                />
+                {smsAvailable ? (
+                    <SettingsRow
+                        to="/create/sms"
+                        icon={<IconChat />}
+                        title="Modèles SMS"
+                        subtitle="Textes et jetons envoyés aux parents"
+                    />
+                ) : null}
                 <SettingsRow
                     icon={<IconDownload />}
                     title="Télécharger l’app"
@@ -189,7 +198,7 @@ const SettingsMenu = () => {
                         to="/create/admin"
                         icon={<IconWrench />}
                         title="Maintenance"
-                        subtitle="Problèmes, suggestions et comptes"
+                        subtitle="Signalements, comptes et SMS"
                     />
                 </div>
             )}
@@ -575,6 +584,9 @@ export default () => {
             <Route path="/create/annee" component={SettingsAnnee} />
             <Route path="/create/sms" component={SmsTemplates} />
             <Route path="/create/signaler" component={ReportProblem} />
+            <Route path="/create/admin/signalements" component={AdminReports} />
+            <Route path="/create/admin/utilisateurs" component={AdminAccounts} />
+            <Route path="/create/admin/sms" component={AdminSms} />
             <Route path="/create/admin" component={AdminTools} />
             <Route path="/create" component={SettingsMenu} />
         </Switch>

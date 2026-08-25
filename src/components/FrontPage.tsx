@@ -10,9 +10,11 @@ import useOnClickOutside, {
     useStudents,
     useUser,
     usePostIts,
+    useSmsConfig,
 } from '../hooks'
 import { AuthContext } from '../Auth'
 import Student from '../components/Student'
+import { buildCrossSlots, handleIcon, isAdminUser } from '../functions'
 import 'firebase/firestore'
 import MagicStick from './MagicStick'
 import magicStick from '../images/magicStick.png'
@@ -23,7 +25,6 @@ import addPage from '../images/addPage.png'
 import Firebase from '../firebase'
 import { Link } from 'react-router-dom'
 import Updater from './Updater'
-import { buildCrossSlots, handleIcon } from '../functions'
 import PostIt, { PostItAlert } from './PostIt'
 import Loader from './Loader'
 import { StudentInterface } from '../interfaces/Student'
@@ -47,6 +48,8 @@ export default () => {
     }
     const { groups, loading: groupsLoading } = useGroups(currentUser.uid)
     const { periodes, runningPeriode } = usePeriodes(currentUser.uid)
+    const { smsEnabled } = useSmsConfig()
+    const smsAvailable = smsEnabled || isAdminUser(currentUser)
     const [updating, setUpdating] = useState(false)
     const [displayed, setDisplayed] = useState(false)
 
@@ -385,6 +388,7 @@ export default () => {
                                         }
                                         displayedGroup={displayedGroup}
                                         slots={crossSlots}
+                                        smsAvailable={smsAvailable}
                                     />
                                 )
                             }

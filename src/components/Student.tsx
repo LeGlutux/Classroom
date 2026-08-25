@@ -35,6 +35,7 @@ interface StudentProps {
     periodes: Date[]
     runningPeriode: number
     slots: StudentSlot[]
+    smsAvailable?: boolean
 }
 
 interface CrossButtonProps {
@@ -345,6 +346,8 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
             ? props.surname.substring(0, 12).concat('.')
             : props.surname
 
+    const smsAvailable = !!props.smsAvailable
+
     while (loading) return <div />
 
     return (
@@ -360,20 +363,26 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
             <div
                 ref={swipeWrapRef}
                 className="sms-swipe w-full"
-                onPointerDown={onPointerDown}
-                onPointerMove={onPointerMove}
-                onPointerUp={finishSwipe}
-                onPointerCancel={finishSwipe}
-                onClickCapture={(event) => {
-                    if (!ignoreClick.current) return
-                    event.preventDefault()
-                    event.stopPropagation()
-                    ignoreClick.current = false
-                }}
+                onPointerDown={smsAvailable ? onPointerDown : undefined}
+                onPointerMove={smsAvailable ? onPointerMove : undefined}
+                onPointerUp={smsAvailable ? finishSwipe : undefined}
+                onPointerCancel={smsAvailable ? finishSwipe : undefined}
+                onClickCapture={
+                    smsAvailable
+                        ? (event) => {
+                              if (!ignoreClick.current) return
+                              event.preventDefault()
+                              event.stopPropagation()
+                              ignoreClick.current = false
+                          }
+                        : undefined
+                }
             >
-                <div className="sms-swipe-rail" aria-hidden="true">
-                    SMS
-                </div>
+                {smsAvailable ? (
+                    <div className="sms-swipe-rail" aria-hidden="true">
+                        SMS
+                    </div>
+                ) : null}
             <div
                 ref={swipeCardRef}
                 className={`student-card w-full ${

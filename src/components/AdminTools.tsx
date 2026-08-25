@@ -1,14 +1,28 @@
 import React, { useContext, useEffect, useState } from 'react'
 import firebase from 'firebase/app'
+import { Link } from 'react-router-dom'
 import { AuthContext } from '../Auth'
 import SettingsLayout from './SettingsLayout'
+import ConfirmModal from './ConfirmModal'
+import { useIcons, useSmsConfig, useVersion } from '../hooks'
 import {
+    buildCrossSlots,
     formatDateTime,
     isAdminUser,
     isDeletedReportExpired,
 } from '../functions'
-import ConfirmModal from './ConfirmModal'
-import { useVersion } from '../hooks'
+import {
+    DEFAULT_SMS_TEMPLATES,
+    SmsTemplate,
+} from '../sms'
+import { saveSmsConfig } from '../database'
+import SmsEditor from './SmsEditor'
+import {
+    IconChat,
+    IconChevronRight,
+    IconFlag,
+    IconUsers,
+} from './Icons'
 
 type FeedbackType = 'problem' | 'suggestion'
 type FeedbackStatus = 'pending' | 'seen' | 'resolved'
@@ -42,12 +56,63 @@ type Account = {
     classes: string[]
 }
 
-export default () => {
+const AdminMenu = () => {
     const { currentUser } = useContext(AuthContext)
     const { version } = useVersion()
+    if (currentUser === null || !isAdminUser(currentUser)) return <div />
+
+    return (
+        <SettingsLayout title="Maintenance" backTo="/create">
+            <div className="settings-group">
+                <Link to="/create/admin/signalements" className="settings-row">
+                    <span className="settings-row-icon">
+                        <IconFlag />
+                    </span>
+                    <span className="settings-row-body">
+                        <span className="settings-row-title">
+                            Suggestions / signalements
+                        </span>
+                        <span className="settings-row-sub">
+                            Problèmes et idées envoyés par les profs
+                        </span>
+                    </span>
+                    <IconChevronRight className="settings-row-chevron" />
+                </Link>
+                <Link to="/create/admin/utilisateurs" className="settings-row">
+                    <span className="settings-row-icon">
+                        <IconUsers />
+                    </span>
+                    <span className="settings-row-body">
+                        <span className="settings-row-title">
+                            Utilisateurices
+                        </span>
+                        <span className="settings-row-sub">
+                            Comptes et dernière connexion
+                        </span>
+                    </span>
+                    <IconChevronRight className="settings-row-chevron" />
+                </Link>
+                <Link to="/create/admin/sms" className="settings-row">
+                    <span className="settings-row-icon">
+                        <IconChat />
+                    </span>
+                    <span className="settings-row-body">
+                        <span className="settings-row-title">Modèles SMS</span>
+                        <span className="settings-row-sub">
+                            Modèles par défaut et activation de la fonction
+                        </span>
+                    </span>
+                    <IconChevronRight className="settings-row-chevron" />
+                </Link>
+            </div>
+            <p className="settings-panel-note">Version de l’app : {version}</p>
+        </SettingsLayout>
+    )
+}
+
+export const AdminReports = () => {
+    const { currentUser } = useContext(AuthContext)
     const [reports, setReports] = useState<Report[]>([])
-    const [accounts, setAccounts] = useState<Account[]>([])
-    const [query, setQuery] = useState('')
     const [loading, setLoading] = useState(true)
     const [pendingDelete, setPendingDelete] = useState<Report | null>(null)
 
@@ -56,11 +121,7 @@ export default () => {
         let cancelled = false
         const load = async () => {
             setLoading(true)
-            const db = firebase.firestore()
-            const [propsSnap, usersSnap] = await Promise.all([
-                db.collection('props').get(),
-                db.collection('users').get(),
-            ])
+            const propsSnap = await firebase.firestore().collection('props').get()
             if (cancelled) return
             const expiredIds: string[] = []
             const nextReports: Report[] = []
@@ -99,35 +160,16 @@ export default () => {
             if (expiredIds.length) {
                 await Promise.all(
                     expiredIds.map((id) =>
-                        db.collection('props').doc(id).delete()
+                        firebase
+                            .firestore()
+                            .collection('props')
+                            .doc(id)
+                            .delete()
                     )
                 )
             }
             if (cancelled) return
             setReports(nextReports)
-            const nextAccounts = usersSnap.docs
-                .map((doc) => {
-                    const data = doc.data()
-                    return {
-                        id: doc.id,
-                        email: data.email || '',
-                        userName: data.userName || '',
-                        lastConnection: data.lastConnection,
-                        classes: Array.isArray(data.classes) ? data.classes : [],
-                    } as Account
-                })
-                .sort((a, b) => {
-                    const timeA =
-                        a.lastConnection && a.lastConnection.toMillis
-                            ? a.lastConnection.toMillis()
-                            : 0
-                    const timeB =
-                        b.lastConnection && b.lastConnection.toMillis
-                            ? b.lastConnection.toMillis()
-                            : 0
-                    return timeB - timeA
-                })
-            setAccounts(nextAccounts)
             setLoading(false)
         }
         load()
@@ -165,17 +207,6 @@ export default () => {
         )
         setPendingDelete(null)
     }
-
-    const filteredAccounts = accounts.filter((account) => {
-        const haystack = (
-            account.email +
-            ' ' +
-            account.userName +
-            ' ' +
-            account.classes.join(' ')
-        ).toLowerCase()
-        return haystack.indexOf(query.trim().toLowerCase()) !== -1
-    })
 
     const renderFeedbackList = (title: string, type: FeedbackType) => {
         const list = reports.filter((report) => report.type === type)
@@ -259,7 +290,7 @@ export default () => {
     }
 
     return (
-        <SettingsLayout title="Maintenance" backTo="/create">
+        <SettingsLayout title="Signalements" backTo="/create/admin">
             <ConfirmModal
                 confirm={pendingDelete !== null}
                 setConfirm={(value) => {
@@ -282,13 +313,83 @@ export default () => {
                 <React.Fragment>
                     {renderFeedbackList('Problèmes', 'problem')}
                     {renderFeedbackList('Suggestions', 'suggestion')}
+                </React.Fragment>
+            )}
+        </SettingsLayout>
+    )
+}
 
-                    <div className="settings-group-label">Comptes</div>
+export const AdminAccounts = () => {
+    const { currentUser } = useContext(AuthContext)
+    const [accounts, setAccounts] = useState<Account[]>([])
+    const [query, setQuery] = useState('')
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        if (!isAdminUser(currentUser)) return
+        let cancelled = false
+        const load = async () => {
+            setLoading(true)
+            const usersSnap = await firebase.firestore().collection('users').get()
+            if (cancelled) return
+            const nextAccounts = usersSnap.docs
+                .map((doc) => {
+                    const data = doc.data()
+                    return {
+                        id: doc.id,
+                        email: data.email || '',
+                        userName: data.userName || '',
+                        lastConnection: data.lastConnection,
+                        classes: Array.isArray(data.classes) ? data.classes : [],
+                    } as Account
+                })
+                .sort((a, b) => {
+                    const timeA =
+                        a.lastConnection && a.lastConnection.toMillis
+                            ? a.lastConnection.toMillis()
+                            : 0
+                    const timeB =
+                        b.lastConnection && b.lastConnection.toMillis
+                            ? b.lastConnection.toMillis()
+                            : 0
+                    return timeB - timeA
+                })
+            setAccounts(nextAccounts)
+            setLoading(false)
+        }
+        load()
+        return () => {
+            cancelled = true
+        }
+    }, [currentUser])
+
+    if (currentUser === null || !isAdminUser(currentUser)) return <div />
+
+    const filteredAccounts = accounts.filter((account) => {
+        const haystack = (
+            account.email +
+            ' ' +
+            account.userName +
+            ' ' +
+            account.classes.join(' ')
+        ).toLowerCase()
+        return haystack.indexOf(query.trim().toLowerCase()) !== -1
+    })
+
+    return (
+        <SettingsLayout title="Utilisateurices" backTo="/create/admin">
+            {loading ? (
+                <p className="settings-panel-note">Chargement…</p>
+            ) : (
+                <React.Fragment>
                     <div className="settings-panel">
-                        <p className="settings-panel-note" style={{ textAlign: 'left' }}>
+                        <p
+                            className="settings-panel-note"
+                            style={{ textAlign: 'left' }}
+                        >
                             {accounts.length} compte
-                            {accounts.length > 1 ? 's' : ''} · triés par dernière
-                            connexion
+                            {accounts.length > 1 ? 's' : ''} · triés par
+                            dernière connexion
                         </p>
                         <input
                             className="modal-input"
@@ -304,7 +405,9 @@ export default () => {
                                     {account.email || account.id}
                                 </div>
                                 <div className="account-sub">
-                                    {account.userName ? account.userName + ' · ' : ''}
+                                    {account.userName
+                                        ? account.userName + ' · '
+                                        : ''}
                                     {account.classes.length} classe
                                     {account.classes.length > 1 ? 's' : ''}
                                     {account.classes.length
@@ -317,12 +420,136 @@ export default () => {
                             </div>
                         </div>
                     ))}
-
-                    <p className="settings-panel-note">
-                        Version de l’app : {version}
-                    </p>
                 </React.Fragment>
             )}
         </SettingsLayout>
     )
 }
+
+export const AdminSms = () => {
+    const { currentUser } = useContext(AuthContext)
+    const uid = currentUser ? currentUser.uid : ''
+    const {
+        smsEnabled,
+        defaultTemplates,
+        loading: configLoading,
+    } = useSmsConfig()
+    const { icons, positiveIcons } = useIcons(uid)
+    const slots = buildCrossSlots(icons, positiveIcons)
+    const [templates, setTemplates] = useState<SmsTemplate[]>([])
+    const [enabled, setEnabled] = useState(false)
+    const [saving, setSaving] = useState(false)
+    const [toggling, setToggling] = useState(false)
+    const [toast, setToast] = useState('')
+    const [confirmReset, setConfirmReset] = useState(false)
+    const hydrated = React.useRef(false)
+
+    useEffect(() => {
+        if (configLoading || hydrated.current) return
+        setTemplates(defaultTemplates)
+        setEnabled(smsEnabled)
+        hydrated.current = true
+    }, [configLoading, smsEnabled, defaultTemplates])
+
+    if (currentUser === null || !isAdminUser(currentUser)) return <div />
+
+    const saveTemplates = async (next: SmsTemplate[]) => {
+        setSaving(true)
+        await saveSmsConfig({ defaultTemplates: next })
+        setTemplates(next)
+        setSaving(false)
+        setToast('Modèles par défaut enregistrés')
+        window.setTimeout(() => setToast(''), 2500)
+    }
+
+    const toggleEnabled = async () => {
+        const next = !enabled
+        setEnabled(next)
+        setToggling(true)
+        try {
+            await saveSmsConfig({ smsEnabled: next })
+            setToast(
+                next
+                    ? 'SMS activé pour tout le monde'
+                    : 'SMS réservé à l’admin'
+            )
+            window.setTimeout(() => setToast(''), 2500)
+        } catch (error) {
+            setEnabled(!next)
+            setToast('L’enregistrement a échoué')
+            window.setTimeout(() => setToast(''), 2500)
+        }
+        setToggling(false)
+    }
+
+    const resetDefaults = () =>
+        DEFAULT_SMS_TEMPLATES.map((template) => ({
+            id: template.id,
+            title: template.title,
+            body: template.body,
+        }))
+
+    return (
+        <SettingsLayout
+            title="Modèles SMS"
+            backTo="/create/admin"
+            toast={toast}
+        >
+            <ConfirmModal
+                confirm={confirmReset}
+                setConfirm={setConfirmReset}
+                confirmAction={() => saveTemplates(resetDefaults())}
+                textBox="Revenir aux modèles de base ?"
+                subTextBox="Les modèles par défaut proposés aux profs seront remplacés."
+            />
+            <div className="settings-panel">
+                <button
+                    type="button"
+                    className="sms-switch"
+                    disabled={toggling}
+                    onClick={toggleEnabled}
+                >
+                    <span className="sms-switch-copy">
+                        <span className="sms-switch-title">
+                            SMS pour tout le monde
+                        </span>
+                        <span className="sms-switch-sub">
+                            {enabled
+                                ? 'Les profs peuvent swiper et envoyer un SMS. Toi tu peux toujours le faire.'
+                                : 'Fonction bloquée pour les autres. Toi tu peux toujours tester.'}
+                        </span>
+                    </span>
+                    <span
+                        className={`sms-switch-track${
+                            enabled ? ' is-on' : ''
+                        }`}
+                    >
+                        <span className="sms-switch-knob" />
+                    </span>
+                </button>
+            </div>
+            <div className="settings-panel">
+                <p className="settings-panel-note" style={{ textAlign: 'left' }}>
+                    Ces modèles s’affichent chez les profs qui n’ont pas encore
+                    personnalisé les leurs. Jetons : #prénom, #nom, #classe,
+                    #date, nombre de croix.
+                </p>
+            </div>
+            {configLoading ? (
+                <p className="settings-panel-note">Chargement…</p>
+            ) : (
+                <SmsEditor
+                    templates={templates}
+                    setTemplates={setTemplates}
+                    slots={slots}
+                    saving={saving}
+                    onSave={() => saveTemplates(templates)}
+                    resetLabel="Revenir aux modèles de base"
+                    onReset={() => setConfirmReset(true)}
+                />
+            )}
+        </SettingsLayout>
+    )
+}
+
+export default AdminMenu

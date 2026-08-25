@@ -6,6 +6,7 @@ import {
     DEFAULT_POSITIVE_ICONS,
     padIconList,
 } from './functions'
+import { parseSmsConfig, SmsTemplate } from './sms'
 
 
 export const fetchPostIts = async (currentUserId: string) => {
@@ -238,6 +239,28 @@ export const fetchVersion = async () => {
     const version = querySnapshot.data()?.version
 
     return version
+}
+
+export const fetchSmsConfig = async () => {
+    const db = Firebase.firestore()
+    const snap = await db.collection('props').doc('sms-config').get()
+    return parseSmsConfig(snap.data())
+}
+
+export const saveSmsConfig = async (patch: {
+    smsEnabled?: boolean
+    defaultTemplates?: SmsTemplate[]
+}) => {
+    const db = Firebase.firestore()
+    const payload: { [key: string]: unknown } = { kind: 'sms-config' }
+    if (patch.smsEnabled !== undefined) payload.smsEnabled = patch.smsEnabled
+    if (patch.defaultTemplates !== undefined) {
+        payload.defaultTemplates = patch.defaultTemplates
+    }
+    await db
+        .collection('props')
+        .doc('sms-config')
+        .set(payload, { merge: true })
 }
 
 export const fetchIcons = async (currentUserId: string) => {

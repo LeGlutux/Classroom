@@ -19,6 +19,7 @@ import {
     fetchIcons,
     fetchPostIts,
 } from './database'
+import { parseSmsConfig, SmsTemplate } from './sms'
 import Firebase from './firebase'
 import { getCachedData, setCachedData, getCacheKey, invalidateCache } from './utils/cache'
 
@@ -639,6 +640,32 @@ export const useVersion = () => {
     }, [])
 
     return { version, loading }
+}
+
+export const useSmsConfig = () => {
+    const [smsEnabled, setSmsEnabled] = useState(false)
+    const [defaultTemplates, setDefaultTemplates] = useState<SmsTemplate[]>([])
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        const unsub = Firebase.firestore()
+            .collection('props')
+            .doc('sms-config')
+            .onSnapshot(
+                (snap) => {
+                    const parsed = parseSmsConfig(snap.data())
+                    setSmsEnabled(parsed.smsEnabled)
+                    setDefaultTemplates(parsed.defaultTemplates)
+                    setLoading(false)
+                },
+                () => {
+                    setLoading(false)
+                }
+            )
+        return () => unsub()
+    }, [])
+
+    return { smsEnabled, defaultTemplates, loading }
 }
 
 export const useIcons = (currentUserId: string) => {

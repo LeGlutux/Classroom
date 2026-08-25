@@ -2851,3 +2851,69 @@ body,
     margin-left: 0.28rem;
     object-fit: contain;
 }
+
+.sms-switch {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.sms-switch:disabled {
+    opacity: 0.6;
+}
+
+.sms-switch-copy {
+    flex: 1;
+    min-width: 0;
+    margin-right: 0.8rem;
+}
+
+.sms-switch-title {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--tn-ink);
+}
+
+.sms-switch-sub {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.82rem;
+    line-height: 1.4;
+    color: var(--tn-muted);
+}
+
+.sms-switch-track {
+    position: relative;
+    width: 2.55rem;
+    height: 1.5rem;
+    border-radius: 99px;
+    background: #e4e4e7;
+    flex-shrink: 0;
+}
+
+.sms-switch-track.is-on {
+    background: var(--tn-ink);
+}
+
+.sms-switch-knob {
+    position: absolute;
+    top: 0.15rem;
+    left: 0.15rem;
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 99px;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(24, 24, 27, 0.2);
+}
+
+.sms-switch-track.is-on .sms-switch-knob {
+    left: auto;
+    right: 0.15rem;
+}
