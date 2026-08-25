@@ -2819,3 +2819,35 @@ body,
 .sms-toast {
     z-index: 90;
 }
+
+.sms-token-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0.55rem -0.18rem 0.15rem;
+}
+
+.sms-token-btn {
+    display: inline-flex;
+    align-items: center;
+    margin: 0.18rem;
+    padding: 0.28rem 0.55rem;
+    border: 1px solid var(--tn-line);
+    border-radius: 999px;
+    background: #fafafa;
+    color: var(--tn-ink);
+    font-family: inherit;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.sms-token-btn:active {
+    background: #f4f4f5;
+}
+
+.sms-token-btn img {
+    width: 1.05rem;
+    height: 1.05rem;
+    margin-left: 0.28rem;
+    object-fit: contain;
+}

@@ -1,25 +1,56 @@
 import {
+    SMS_TOKEN,
     buildSmsUrl,
     cleanPhoneNumber,
     DEFAULT_SMS_TEMPLATES,
     fillSmsTemplate,
+    formatSmsDate,
+    insertSmsToken,
     normalizeSmsTemplates,
 } from './sms'
 
 describe('fillSmsTemplate', () => {
-    const student = { prenom: 'Léa', nom: 'Dupont', classe: '6A' }
+    const student = {
+        prenom: 'Léa',
+        nom: 'Dupont',
+        classe: '6A',
+        crossCounts: { homework: 3, behaviour: 0 },
+    }
+    const now = new Date(2026, 7, 25)
 
-    it('remplace prénom, nom et classe', () => {
+    it('remplace les jetons #', () => {
         expect(
             fillSmsTemplate(
-                'Bonjour, {prénom} {nom} en {classe}.',
-                student
+                'Bonjour, #prénom #nom en #classe, #x-homework croix.',
+                student,
+                now
             )
+        ).toBe('Bonjour, Léa Dupont en 6A, 3 croix.')
+    })
+
+    it('accepte encore les anciens {prénom}', () => {
+        expect(
+            fillSmsTemplate('Bonjour, {prénom} {nom} en {classe}.', student)
         ).toBe('Bonjour, Léa Dupont en 6A.')
     })
 
-    it('accepte prenom sans accent', () => {
-        expect(fillSmsTemplate('{prenom}', student)).toBe('Léa')
+    it('remplace #date', () => {
+        expect(fillSmsTemplate('Le #date', student, now)).toBe(
+            'Le ' + formatSmsDate(now)
+        )
+    })
+
+    it('met 0 si la croix n’est pas dans les compteurs', () => {
+        expect(fillSmsTemplate('#x-phone', student)).toBe('0')
+    })
+})
+
+describe('insertSmsToken', () => {
+    it('insère au curseur', () => {
+        expect(insertSmsToken('Hello  !', SMS_TOKEN.prenom, 6, 6)).toEqual({
+            body: 'Hello #prénom !',
+            cursor: 6 + SMS_TOKEN.prenom.length,
+        })
     })
 })
 

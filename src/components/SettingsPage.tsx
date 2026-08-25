@@ -161,7 +161,7 @@ const SettingsMenu = () => {
                     to="/create/sms"
                     icon={<IconChat />}
                     title="Modèles SMS"
-                    subtitle="Textes envoyés aux parents depuis une carte élève"
+                    subtitle="Textes et jetons envoyés aux parents"
                 />
                 <SettingsRow
                     icon={<IconDownload />}

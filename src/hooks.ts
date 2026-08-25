@@ -652,6 +652,10 @@ export const useIcons = (currentUserId: string) => {
     useEffect(() => {
         isMountedRef.current = true
         const fetch = async () => {
+            if (!currentUserId) {
+                if (isMountedRef.current) setLoading(false)
+                return
+            }
             setLoading(true)
             const data = await fetchIcons(currentUserId)
             if (isMountedRef.current) {

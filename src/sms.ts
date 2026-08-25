@@ -8,6 +8,33 @@ export type SmsStudent = {
     prenom: string
     nom: string
     classe: string
+    crossCounts?: { [type: string]: number }
+}
+
+export const SMS_TOKEN = {
+    prenom: '#prénom',
+    nom: '#nom',
+    classe: '#classe',
+    date: '#date',
+    cross: (type: string) => '#x-' + type,
+}
+
+export const formatSmsDate = (date?: Date) =>
+    (date || new Date()).toLocaleDateString('fr-FR')
+
+export const insertSmsToken = (
+    body: string,
+    token: string,
+    start: number,
+    end: number
+) => {
+    const text = String(body || '')
+    const from = Math.max(0, Math.min(start, text.length))
+    const to = Math.max(from, Math.min(end, text.length))
+    return {
+        body: text.slice(0, from) + token + text.slice(to),
+        cursor: from + token.length,
+    }
 }
 
 export const DEFAULT_SMS_TEMPLATES: SmsTemplate[] = [
@@ -15,19 +42,19 @@ export const DEFAULT_SMS_TEMPLATES: SmsTemplate[] = [
         id: 'travail',
         title: 'Travail non rendu',
         body:
-            'Bonjour,\nJe vous contacte au sujet de {prénom} ({classe}) : le travail n’a pas été rendu. Merci de me tenir informé·e.\nCordialement',
+            'Bonjour,\nJe vous contacte au sujet de #prénom (#classe) : le travail n’a pas été rendu. Merci de me tenir informé·e.\nCordialement',
     },
     {
         id: 'comportement',
         title: 'Comportement',
         body:
-            'Bonjour,\nJe souhaite vous parler du comportement de {prénom} ({classe}) aujourd’hui. N’hésitez pas à me répondre.\nCordialement',
+            'Bonjour,\nJe souhaite vous parler du comportement de #prénom (#classe) aujourd’hui. N’hésitez pas à me répondre.\nCordialement',
     },
     {
         id: 'positif',
         title: 'Point positif',
         body:
-            'Bonjour,\nPetite note positive concernant {prénom} ({classe}) : la séance s’est très bien passée.\nCordialement',
+            'Bonjour,\nPetite note positive concernant #prénom (#classe) : la séance s’est très bien passée.\nCordialement',
     },
 ]
 
@@ -57,11 +84,29 @@ export const normalizeSmsTemplates = (raw: unknown): SmsTemplate[] => {
     return next
 }
 
-export const fillSmsTemplate = (body: string, student: SmsStudent) => {
+export const fillSmsTemplate = (
+    body: string,
+    student: SmsStudent,
+    now?: Date
+) => {
+    const prenom = student.prenom || ''
+    const nom = student.nom || ''
+    const classe = student.classe || ''
+    const date = formatSmsDate(now)
+    const counts = student.crossCounts || {}
     return String(body || '')
-        .replace(/\{pr[eé]nom\}/gi, student.prenom || '')
-        .replace(/\{nom\}/gi, student.nom || '')
-        .replace(/\{classe\}/gi, student.classe || '')
+        .replace(/#pr[eé]nom/gi, prenom)
+        .replace(/\{pr[eé]nom\}/gi, prenom)
+        .replace(/#nom/gi, nom)
+        .replace(/\{nom\}/gi, nom)
+        .replace(/#classe/gi, classe)
+        .replace(/\{classe\}/gi, classe)
+        .replace(/#date/gi, date)
+        .replace(/\{date\}/gi, date)
+        .replace(/#x-([a-z0-9]+)/gi, (_all, type: string) => {
+            const count = counts[type]
+            return count == null ? '0' : String(count)
+        })
 }
 
 export const cleanPhoneNumber = (value: string) =>

@@ -121,9 +121,9 @@ export default () => {
                             Le prénom sera copié. Colle-le dans la recherche
                             pour retrouver le contact
                             {student.classe
-                                ? ' (ex. TN ' +
+                                ? ' (ex. ' +
                                   student.classe +
-                                  ' ' +
+                                  ' - ' +
                                   student.prenom +
                                   ' ' +
                                   student.nom +

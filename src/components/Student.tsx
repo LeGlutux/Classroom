@@ -189,6 +189,16 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                 prenom: props.surname,
                 nom: props.name,
                 classe: props.displayedGroup || String(props.classes || ''),
+                crossCounts: props.slots.reduce(
+                    (counts, slot) => {
+                        counts[slot.type] = crossFilter(
+                            slot.type,
+                            props.runningPeriode
+                        ).length
+                        return counts
+                    },
+                    {} as { [type: string]: number }
+                ),
             })
         }
     }
