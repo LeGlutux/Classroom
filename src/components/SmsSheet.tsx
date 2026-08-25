@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import firebase from 'firebase/app'
 import { AuthContext } from '../Auth'
@@ -27,6 +27,15 @@ export default () => {
     const [toast, setToast] = useState('')
     const [busy, setBusy] = useState(false)
     const pickerAvailable = canPickContacts()
+    const overlayRef = useRef<HTMLDivElement>(null)
+    const sheetRef = useRef<HTMLDivElement>(null)
+    const grabRef = useRef<HTMLDivElement>(null)
+    const dragging = useRef(false)
+    const startY = useRef(0)
+    const dragY = useRef(0)
+    const lastY = useRef(0)
+    const lastT = useRef(0)
+    const velocity = useRef(0)
 
     useEffect(() => {
         openSheet = (next) => {
@@ -74,7 +83,101 @@ export default () => {
     const close = () => {
         setStudent(null)
         setBusy(false)
+        dragY.current = 0
     }
+
+    const resetSheetStyle = () => {
+        const sheet = sheetRef.current
+        const overlay = overlayRef.current
+        if (sheet) {
+            sheet.style.transition = ''
+            sheet.style.transform = ''
+        }
+        if (overlay) overlay.style.background = ''
+    }
+
+    const applyDrag = (y: number, animate: boolean) => {
+        const dy = Math.max(0, y)
+        dragY.current = dy
+        const sheet = sheetRef.current
+        const overlay = overlayRef.current
+        if (sheet) {
+            sheet.style.transition = animate ? 'transform 0.22s ease' : 'none'
+            sheet.style.transform = dy ? 'translateY(' + dy + 'px)' : ''
+        }
+        if (overlay) {
+            overlay.style.transition = animate ? 'background 0.22s ease' : 'none'
+            const dim = Math.max(0, 1 - dy / 360)
+            overlay.style.background =
+                'rgba(24, 24, 27, ' + (0.36 * dim).toFixed(3) + ')'
+        }
+    }
+
+    const dismiss = () => {
+        const sheet = sheetRef.current
+        if (sheet) {
+            sheet.style.transition = 'transform 0.2s ease'
+            sheet.style.transform = 'translateY(110%)'
+        }
+        if (overlayRef.current) {
+            overlayRef.current.style.transition = 'background 0.2s ease'
+            overlayRef.current.style.background = 'rgba(24, 24, 27, 0)'
+        }
+        window.setTimeout(() => close(), 180)
+    }
+
+    const onGrabDown = (event: React.PointerEvent<HTMLDivElement>) => {
+        dragging.current = true
+        startY.current = event.clientY
+        lastY.current = event.clientY
+        lastT.current = Date.now()
+        velocity.current = 0
+        try {
+            event.currentTarget.setPointerCapture(event.pointerId)
+        } catch (error) {
+            // Older browsers.
+        }
+        applyDrag(0, false)
+    }
+
+    const onGrabMove = (event: React.PointerEvent<HTMLDivElement>) => {
+        if (!dragging.current) return
+        const now = Date.now()
+        const dy = event.clientY - startY.current
+        const dt = Math.max(1, now - lastT.current)
+        velocity.current = (event.clientY - lastY.current) / dt
+        lastY.current = event.clientY
+        lastT.current = now
+        applyDrag(dy, false)
+    }
+
+    const onGrabUp = () => {
+        if (!dragging.current) return
+        dragging.current = false
+        const shouldClose =
+            dragY.current > 88 || velocity.current > 0.65
+        if (shouldClose) {
+            dismiss()
+            return
+        }
+        applyDrag(0, true)
+    }
+
+    useEffect(() => {
+        if (!student) {
+            resetSheetStyle()
+            return
+        }
+        const grab = grabRef.current
+        if (!grab) return
+        const onTouchMove = (event: Event) => {
+            if (dragging.current) event.preventDefault()
+        }
+        grab.addEventListener('touchmove', onTouchMove, { passive: false })
+        return () => {
+            grab.removeEventListener('touchmove', onTouchMove)
+        }
+    }, [student])
 
     const send = async (tel?: string) => {
         if (!student || !selected) return
@@ -112,14 +215,33 @@ export default () => {
     return (
         <React.Fragment>
             {student ? (
-                <div className="sms-overlay" onClick={close}>
+                <div
+                    ref={overlayRef}
+                    className="sms-overlay"
+                    onClick={dismiss}
+                >
                     <div
+                        ref={sheetRef}
                         className="sms-sheet"
                         onClick={(event) => event.stopPropagation()}
                     >
-                        <div className="sms-sheet-handle" />
-                        <div className="sms-sheet-kicker">SMS aux parents</div>
-                        <div className="sms-sheet-title">{student.prenom}</div>
+                        <div
+                            ref={grabRef}
+                            className="sms-sheet-grab"
+                            onPointerDown={onGrabDown}
+                            onPointerMove={onGrabMove}
+                            onPointerUp={onGrabUp}
+                            onPointerCancel={onGrabUp}
+                        >
+                            <div className="sms-sheet-handle" />
+                            <div className="sms-sheet-kicker">
+                                SMS aux parents
+                            </div>
+                            <div className="sms-sheet-title">
+                                {student.prenom}
+                            </div>
+                        </div>
+                        <div className="sms-sheet-body">
                         <p className="sms-sheet-note">
                             Le prénom sera copié. Colle-le dans la recherche
                             pour retrouver le contact
@@ -196,6 +318,7 @@ export default () => {
                             >
                                 Modifier les modèles
                             </Link>
+                        </div>
                         </div>
                     </div>
                 </div>

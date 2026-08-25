@@ -2703,20 +2703,37 @@ body,
     width: 100%;
     max-width: 28rem;
     max-height: 88vh;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
     background: #fff;
     border: 1px solid var(--tn-line);
     border-radius: 16px 16px 0 0;
-    padding: 0.45rem 1rem 1.2rem;
     box-shadow: 0 -12px 32px rgba(24, 24, 27, 0.12);
+    will-change: transform;
+}
+
+.sms-sheet-grab {
+    flex-shrink: 0;
+    padding: 0.2rem 1rem 0.55rem;
+    touch-action: none;
+    cursor: grab;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .sms-sheet-handle {
     width: 2.4rem;
     height: 0.28rem;
     border-radius: 99px;
-    background: #e4e4e7;
-    margin: 0.25rem auto 0.85rem;
+    background: #d4d4d8;
+    margin: 0.45rem auto 0.7rem;
+}
+
+.sms-sheet-body {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 1rem 1.2rem;
 }
 
 .sms-sheet-kicker {
