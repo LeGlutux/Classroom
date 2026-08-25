@@ -11,6 +11,7 @@ import Lists from './components/Lists'
 import CreateList from './components/CreateList'
 import List from './components/List'
 import InstallAppHost from './components/InstallApp'
+import SmsHost from './components/SmsSheet'
 
 export default () => {
     return (
@@ -20,6 +21,7 @@ export default () => {
                     <InstallAppHost />
                     <div>
                         <Router>
+                            <SmsHost />
                             <Switch>
                                 <PrivateRoute
                                     path="/create"

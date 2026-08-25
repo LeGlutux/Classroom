@@ -8,6 +8,7 @@ import StudentComment from './StudentComment'
 import { useCross } from '../hooks'
 import { StudentInterface } from '../interfaces/Student'
 import { CrossPolarity } from '../functions'
+import { openStudentSms } from './SmsSheet'
 
 interface StudentSlot {
     src: string
@@ -110,6 +111,99 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
     useEffect(() => {
         setCrosses(cross)
     }, [cross, loading])
+
+    const swipeWrapRef = useRef<HTMLDivElement>(null)
+    const swipeCardRef = useRef<HTMLDivElement>(null)
+    const startX = useRef(0)
+    const startY = useRef(0)
+    const shift = useRef(0)
+    const tracking = useRef(false)
+    const axis = useRef<'h' | 'v' | null>(null)
+    const ignoreClick = useRef(false)
+    const SWIPE_OPEN = 72
+    const SWIPE_MAX = 88
+
+    const applyShift = (x: number, animate: boolean) => {
+        const card = swipeCardRef.current
+        if (!card) return
+        card.style.transition = animate ? 'transform 0.22s ease' : 'none'
+        card.style.transform = x ? 'translateX(' + x + 'px)' : ''
+    }
+
+    const shouldIgnoreSwipe = (target: EventTarget | null) => {
+        if (!(target instanceof Element)) return true
+        return !!target.closest(
+            'a, input, textarea, .student-cross-btn, .student-note'
+        )
+    }
+
+    const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+        if (shouldIgnoreSwipe(event.target)) return
+        tracking.current = true
+        axis.current = null
+        startX.current = event.clientX
+        startY.current = event.clientY
+        shift.current = 0
+        ignoreClick.current = false
+        try {
+            event.currentTarget.setPointerCapture(event.pointerId)
+        } catch (error) {
+            // Older browsers without setPointerCapture.
+        }
+    }
+
+    const onPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+        if (!tracking.current) return
+        const dx = event.clientX - startX.current
+        const dy = event.clientY - startY.current
+        if (!axis.current) {
+            if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return
+            axis.current = Math.abs(dx) > Math.abs(dy) * 1.15 ? 'h' : 'v'
+            if (axis.current !== 'h') {
+                tracking.current = false
+                return
+            }
+        }
+        if (axis.current !== 'h') return
+        const next = Math.max(0, Math.min(SWIPE_MAX, dx))
+        shift.current = next
+        applyShift(next, false)
+    }
+
+    const finishSwipe = () => {
+        if (!tracking.current && shift.current === 0) {
+            axis.current = null
+            return
+        }
+        tracking.current = false
+        const opened = axis.current === 'h' && shift.current >= SWIPE_OPEN
+        if (opened) ignoreClick.current = true
+        axis.current = null
+        applyShift(0, true)
+        shift.current = 0
+        if (opened) {
+            if (typeof navigator !== 'undefined' && navigator.vibrate) {
+                navigator.vibrate(10)
+            }
+            openStudentSms({
+                prenom: props.surname,
+                nom: props.name,
+                classe: props.displayedGroup || String(props.classes || ''),
+            })
+        }
+    }
+
+    useEffect(() => {
+        const el = swipeWrapRef.current
+        if (!el) return
+        const onTouchMove = (event: TouchEvent) => {
+            if (axis.current === 'h') event.preventDefault()
+        }
+        el.addEventListener('touchmove', onTouchMove, { passive: false })
+        return () => {
+            el.removeEventListener('touchmove', onTouchMove)
+        }
+    }, [loading])
 
     const handleForget = () => {
         db.collection('users')
@@ -254,6 +348,24 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
             }`}
         >
             <div
+                ref={swipeWrapRef}
+                className="sms-swipe w-full"
+                onPointerDown={onPointerDown}
+                onPointerMove={onPointerMove}
+                onPointerUp={finishSwipe}
+                onPointerCancel={finishSwipe}
+                onClickCapture={(event) => {
+                    if (!ignoreClick.current) return
+                    event.preventDefault()
+                    event.stopPropagation()
+                    ignoreClick.current = false
+                }}
+            >
+                <div className="sms-swipe-rail" aria-hidden="true">
+                    SMS
+                </div>
+            <div
+                ref={swipeCardRef}
                 className={`student-card w-full ${
                     highlight ? 'is-highlight' : ''
                 } ${
@@ -287,6 +399,10 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                         <div className="flex flex-row w-full justify-between items-center">
                             <button
                                 onClick={() => {
+                                    if (ignoreClick.current) {
+                                        ignoreClick.current = false
+                                        return
+                                    }
                                     db.collection('users')
                                         .doc(props.currentUser)
                                         .collection('eleves')
@@ -365,6 +481,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                             comment={props.comment ? props.comment : ''}
                         />
                 </div>
+            </div>
             </div>
         </div>
     )

@@ -164,3 +164,10 @@ export const IconNote: React.FC<IconProps> = (props) => (
         <path d="M8.6 12.2h6.2M8.6 15.3h4" />
     </Svg>
 )
+
+export const IconChat: React.FC<IconProps> = (props) => (
+    <Svg {...props}>
+        <path d="M5.2 6.2h13.6A1.6 1.6 0 0 1 20.4 7.8v7.4a1.6 1.6 0 0 1-1.6 1.6H11L7 19.6v-2.8H5.2A1.6 1.6 0 0 1 3.6 15.2V7.8A1.6 1.6 0 0 1 5.2 6.2z" />
+        <path d="M8 10.4h8M8 13.2h5" />
+    </Svg>
+)

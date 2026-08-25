@@ -31,9 +31,11 @@ import {
     IconTrophy,
     IconWrench,
     IconDownload,
+    IconChat,
 } from './Icons'
 import { isAdminUser } from '../functions'
 import { openInstallApp } from './InstallApp'
+import SmsTemplates from './SmsTemplates'
 
 interface SettingsRowProps {
     to?: string
@@ -155,6 +157,12 @@ const SettingsMenu = () => {
 
             <div className="settings-group-label">Application</div>
             <div className="settings-group">
+                <SettingsRow
+                    to="/create/sms"
+                    icon={<IconChat />}
+                    title="Modèles SMS"
+                    subtitle="Textes envoyés aux parents depuis une carte élève"
+                />
                 <SettingsRow
                     icon={<IconDownload />}
                     title="Télécharger l’app"
@@ -565,6 +573,7 @@ export default () => {
             <Route path="/create/podium" component={Podium} />
             <Route path="/create/periodes" component={SettingsPeriodes} />
             <Route path="/create/annee" component={SettingsAnnee} />
+            <Route path="/create/sms" component={SmsTemplates} />
             <Route path="/create/signaler" component={ReportProblem} />
             <Route path="/create/admin" component={AdminTools} />
             <Route path="/create" component={SettingsMenu} />
