@@ -44,6 +44,9 @@ type Account = {
     classes: string[]
 }
 
+const hasClasses = (account: Account) =>
+    account.classes.some((name) => String(name).trim() !== '')
+
 export default () => {
     const { currentUser } = useContext(AuthContext)
     const { version } = useVersion()
@@ -119,9 +122,12 @@ export default () => {
                         email: data.email || '',
                         userName: data.userName || '',
                         lastConnection: data.lastConnection,
-                        classes: Array.isArray(data.classes) ? data.classes : [],
+                        classes: Array.isArray(data.classes)
+                            ? data.classes
+                            : [],
                     } as Account
                 })
+                .filter(hasClasses)
                 .sort((a, b) => {
                     const timeA =
                         a.lastConnection && a.lastConnection.toMillis

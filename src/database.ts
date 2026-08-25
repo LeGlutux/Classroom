@@ -269,6 +269,8 @@ const deleteRefs = async (
 export const wipeUserData = async (uid: string) => {
     const db = Firebase.firestore()
     const userRef = db.collection('users').doc(uid)
+    const userSnap = await userRef.get()
+    const previous = userSnap.data() || {}
     const toDelete: firebase.firestore.DocumentReference[] = []
 
     const elevesSnap = await userRef.collection('eleves').get()
@@ -285,8 +287,18 @@ export const wipeUserData = async (uid: string) => {
 
     const listsSnap = await userRef.collection('lists').get()
     listsSnap.forEach((doc) => toDelete.push(doc.ref))
-    toDelete.push(userRef)
     await deleteRefs(toDelete)
+
+    await userRef.set({
+        id: uid,
+        email: previous.email || '',
+        userName: previous.userName || '',
+        classes: [],
+        periodes: [],
+        postIt: [],
+        wiped: true,
+        wipedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    })
 
     const propsSnap = await db.collection('props').get()
     const reportRefs: firebase.firestore.DocumentReference[] = []

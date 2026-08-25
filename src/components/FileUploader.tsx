@@ -50,6 +50,7 @@ export default (props: FileUploaderProps) => {
                 .doc(props.currentUserId)
                 .update({
                     classes: firebase.firestore.FieldValue.arrayUnion(group),
+                    wiped: false,
                 })
         })
     }
