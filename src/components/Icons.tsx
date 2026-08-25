@@ -171,3 +171,10 @@ export const IconChat: React.FC<IconProps> = (props) => (
         <path d="M8 10.4h8M8 13.2h5" />
     </Svg>
 )
+
+export const IconPlay: React.FC<IconProps> = (props) => (
+    <Svg {...props}>
+        <circle cx="12" cy="12" r="8.25" />
+        <path d="M10.2 8.8v6.4L16.2 12z" />
+    </Svg>
+)

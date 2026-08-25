@@ -2934,3 +2934,123 @@ body,
     left: auto;
     right: 0.15rem;
 }
+
+.tutorial-overlay {
+    z-index: 95;
+}
+
+.tutorial-card {
+    max-height: 88vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.tutorial-kicker {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--tn-muted);
+    text-align: center;
+}
+
+.tutorial-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    margin: 0.7rem auto 0.85rem;
+    border: 1px solid var(--tn-line);
+    border-radius: 10px;
+    background: var(--tn-bg);
+    color: var(--tn-ink);
+}
+
+.tutorial-icon .tn-icon {
+    width: 1.55rem;
+    height: 1.55rem;
+}
+
+.tutorial-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    text-align: center;
+    color: var(--tn-ink);
+    line-height: 1.25;
+}
+
+.tutorial-body {
+    margin: 0.55rem 0 0;
+    font-size: 0.92rem;
+    line-height: 1.45;
+    text-align: center;
+    color: var(--tn-ink);
+}
+
+.tutorial-hint {
+    margin-top: 0.7rem;
+    padding: 0.65rem 0.75rem;
+    background: var(--tn-bg);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    text-align: center;
+    color: var(--tn-ink);
+}
+
+.tutorial-nav-hint {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 0.75rem;
+    padding: 0.55rem 0.75rem;
+    background: var(--tn-bg);
+    border-radius: 10px;
+}
+
+.tutorial-nav-hint img {
+    width: 1.75rem;
+    height: 1.75rem;
+    margin: 0 0.85rem;
+}
+
+.tutorial-dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.tutorial-dot {
+    width: 0.42rem;
+    height: 0.42rem;
+    border-radius: 99px;
+    background: #d4d4d8;
+    margin: 0 0.16rem;
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+}
+
+.tutorial-dot.is-on {
+    background: var(--tn-ink);
+    width: 0.95rem;
+}
+
+.tutorial-actions {
+    display: flex;
+    align-items: center;
+    margin-top: 1.15rem;
+}
+
+.tutorial-actions .modal-btn-ghost {
+    margin-left: 0;
+}
+
+.tutorial-actions-end {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}

@@ -247,6 +247,14 @@ export const fetchSmsConfig = async () => {
     return parseSmsConfig(snap.data())
 }
 
+export const markTutorialCompleted = async (currentUserId: string) => {
+    const db = Firebase.firestore()
+    await db
+        .collection('users')
+        .doc(currentUserId)
+        .set({ tutorialCompleted: true }, { merge: true })
+}
+
 export const saveSmsConfig = async (patch: {
     smsEnabled?: boolean
     defaultTemplates?: SmsTemplate[]

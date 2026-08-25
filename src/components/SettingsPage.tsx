@@ -37,9 +37,11 @@ import {
     IconWrench,
     IconDownload,
     IconChat,
+    IconPlay,
 } from './Icons'
 import { isAdminUser } from '../functions'
 import { openInstallApp } from './InstallApp'
+import { replayTutorial } from '../tutorial'
 import SmsTemplates from './SmsTemplates'
 
 interface SettingsRowProps {
@@ -184,6 +186,14 @@ const SettingsMenu = () => {
 
             <div className="settings-group-label">Aide</div>
             <div className="settings-group">
+                <SettingsRow
+                    icon={<IconPlay />}
+                    title="Rejouer le tutoriel"
+                    subtitle="Le tour guidé des classes, cartes et listes"
+                    onClick={() => {
+                        replayTutorial()
+                    }}
+                />
                 <SettingsRow
                     to="/create/signaler"
                     icon={<IconFlag />}

@@ -34,6 +34,7 @@ const SignUp = () => {
                         icons: [1, 2, 3, 4, 0, 0],
                         positiveIcons: [0, 0, 0, 0, 0, 0],
                         postIt: [],
+                        tutorialCompleted: false,
                     })
 
                 history.push('/')

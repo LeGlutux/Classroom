@@ -12,6 +12,7 @@ import CreateList from './components/CreateList'
 import List from './components/List'
 import InstallAppHost from './components/InstallApp'
 import SmsHost from './components/SmsSheet'
+import AppTutorialHost from './components/AppTutorial'
 
 export default () => {
     return (
@@ -22,6 +23,7 @@ export default () => {
                     <div>
                         <Router>
                             <SmsHost />
+                            <AppTutorialHost />
                             <Switch>
                                 <PrivateRoute
                                     path="/create"
