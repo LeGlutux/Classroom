@@ -9,6 +9,8 @@ import {
 } from '../functions'
 import ConfirmModal from './ConfirmModal'
 import { useVersion } from '../hooks'
+import Firebase from '../firebase'
+import { wipeUserData } from '../database'
 
 type FeedbackType = 'problem' | 'suggestion'
 type FeedbackStatus = 'pending' | 'seen' | 'resolved'
@@ -50,6 +52,10 @@ export default () => {
     const [query, setQuery] = useState('')
     const [loading, setLoading] = useState(true)
     const [pendingDelete, setPendingDelete] = useState<Report | null>(null)
+    const [pendingReset, setPendingReset] = useState<Account | null>(null)
+    const [pendingWipe, setPendingWipe] = useState<Account | null>(null)
+    const [busyId, setBusyId] = useState('')
+    const [toast, setToast] = useState('')
 
     useEffect(() => {
         if (!isAdminUser(currentUser)) return
@@ -166,6 +172,48 @@ export default () => {
         setPendingDelete(null)
     }
 
+    const sendPasswordReset = async (account: Account) => {
+        if (!account.email) {
+            alert('Pas d’email sur ce compte.')
+            setPendingReset(null)
+            return
+        }
+        setBusyId(account.id)
+        try {
+            await Firebase.auth().sendPasswordResetEmail(account.email)
+            setToast('Email de réinitialisation envoyé à ' + account.email)
+            setTimeout(() => setToast(''), 4000)
+        } catch (error) {
+            alert("L’envoi de l’email a échoué. Vérifie l’adresse.")
+        }
+        setBusyId('')
+        setPendingReset(null)
+    }
+
+    const wipeAccount = async (account: Account) => {
+        if (currentUser && account.id === currentUser.uid) {
+            alert('Tu ne peux pas supprimer ton propre compte.')
+            setPendingWipe(null)
+            return
+        }
+        setBusyId(account.id)
+        try {
+            await wipeUserData(account.id)
+            setAccounts((previous) =>
+                previous.filter((item) => item.id !== account.id)
+            )
+            setReports((previous) =>
+                previous.filter((item) => item.uid !== account.id)
+            )
+            setToast('Compte et données supprimés')
+            setTimeout(() => setToast(''), 4000)
+        } catch (error) {
+            alert('La suppression a échoué. Réessaie dans un instant.')
+        }
+        setBusyId('')
+        setPendingWipe(null)
+    }
+
     const filteredAccounts = accounts.filter((account) => {
         const haystack = (
             account.email +
@@ -259,7 +307,11 @@ export default () => {
     }
 
     return (
-        <SettingsLayout title="Maintenance" backTo="/create">
+        <SettingsLayout
+            title="Maintenance"
+            backTo="/create"
+            toast={toast || undefined}
+        >
             <ConfirmModal
                 confirm={pendingDelete !== null}
                 setConfirm={(value) => {
@@ -275,6 +327,49 @@ export default () => {
                 danger
                 textBox="Supprimer ce signalement ?"
                 subTextBox="La personne le verra comme réglé. Il disparaîtra de son côté au bout d’un mois."
+            />
+            <ConfirmModal
+                confirm={pendingReset !== null}
+                setConfirm={(value) => {
+                    const next =
+                        typeof value === 'function'
+                            ? value(pendingReset !== null)
+                            : value
+                    if (!next) setPendingReset(null)
+                }}
+                confirmAction={() => {
+                    if (pendingReset) sendPasswordReset(pendingReset)
+                }}
+                textBox="Réinitialiser le mot de passe ?"
+                subTextBox={
+                    pendingReset && pendingReset.email
+                        ? 'Un email sera envoyé à ' +
+                          pendingReset.email +
+                          ' avec un lien pour choisir un nouveau mot de passe.'
+                        : 'Ce compte n’a pas d’email.'
+                }
+            />
+            <ConfirmModal
+                confirm={pendingWipe !== null}
+                setConfirm={(value) => {
+                    const next =
+                        typeof value === 'function'
+                            ? value(pendingWipe !== null)
+                            : value
+                    if (!next) setPendingWipe(null)
+                }}
+                confirmAction={() => {
+                    if (pendingWipe) wipeAccount(pendingWipe)
+                }}
+                danger
+                textBox={
+                    pendingWipe
+                        ? 'Supprimer ' +
+                          (pendingWipe.email || pendingWipe.id) +
+                          ' et toutes ses données ?'
+                        : 'Supprimer ce compte ?'
+                }
+                subTextBox="Classes, élèves, croix, listes et notes seront effacés. Le login email restera (Firebase ne permet pas de le supprimer depuis l’app) : iel pourra se reconnecter sur un compte vide."
             />
             {loading ? (
                 <p className="settings-panel-note">Chargement…</p>
@@ -299,21 +394,50 @@ export default () => {
                     </div>
                     {filteredAccounts.map((account) => (
                         <div key={account.id} className="account-row">
-                            <div className="account-main">
-                                <div className="account-email">
-                                    {account.email || account.id}
+                            <div className="account-top">
+                                <div className="account-main">
+                                    <div className="account-email">
+                                        {account.email || account.id}
+                                    </div>
+                                    <div className="account-sub">
+                                        {account.userName
+                                            ? account.userName + ' · '
+                                            : ''}
+                                        {account.classes.length} classe
+                                        {account.classes.length > 1 ? 's' : ''}
+                                        {account.classes.length
+                                            ? ' · ' + account.classes.join(', ')
+                                            : ''}
+                                    </div>
                                 </div>
-                                <div className="account-sub">
-                                    {account.userName ? account.userName + ' · ' : ''}
-                                    {account.classes.length} classe
-                                    {account.classes.length > 1 ? 's' : ''}
-                                    {account.classes.length
-                                        ? ' · ' + account.classes.join(', ')
-                                        : ''}
+                                <div className="account-seen">
+                                    {formatDateTime(account.lastConnection)}
                                 </div>
                             </div>
-                            <div className="account-seen">
-                                {formatDateTime(account.lastConnection)}
+                            <div className="account-actions">
+                                <button
+                                    type="button"
+                                    className="report-resolve"
+                                    disabled={
+                                        busyId === account.id || !account.email
+                                    }
+                                    onClick={() => setPendingReset(account)}
+                                >
+                                    Mot de passe
+                                </button>
+                                {currentUser &&
+                                account.id === currentUser.uid ? null : (
+                                    <button
+                                        type="button"
+                                        className="report-resolve account-delete"
+                                        disabled={busyId === account.id}
+                                        onClick={() => setPendingWipe(account)}
+                                    >
+                                        {busyId === account.id
+                                            ? 'Suppression…'
+                                            : 'Supprimer le compte'}
+                                    </button>
+                                )}
                             </div>
                         </div>
                     ))}
