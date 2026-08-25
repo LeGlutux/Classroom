@@ -357,6 +357,64 @@ body,
     font-weight: 400;
 }
 
+.install-card .modal-actions {
+    justify-content: stretch;
+}
+
+.install-card .modal-btn {
+    width: 100%;
+    margin-left: 0;
+}
+
+.install-share-hint {
+    display: flex;
+    align-items: center;
+    margin-top: 0.9rem;
+    padding: 0.7rem 0.75rem;
+    background: var(--tn-bg);
+    border-radius: 8px;
+    font-size: 0.88rem;
+    line-height: 1.4;
+    color: var(--tn-ink);
+    text-align: left;
+}
+
+.install-share-icon {
+    width: 1.35rem;
+    height: 1.35rem;
+    margin-right: 0.65rem;
+    flex-shrink: 0;
+    color: #2563eb;
+}
+
+.install-steps {
+    margin: 0.9rem 0 0 1.15rem;
+    padding: 0;
+    text-align: left;
+    color: var(--tn-ink);
+    font-size: 0.9rem;
+    line-height: 1.45;
+}
+
+.install-steps li {
+    margin-top: 0.45rem;
+}
+
+.auth-install {
+    display: block;
+    width: 100%;
+    margin-top: 0.85rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--tn-ink);
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .modal-field {
     display: flex;
     flex-direction: column;

@@ -135,6 +135,14 @@ export const IconWrench: React.FC<IconProps> = (props) => (
     </Svg>
 )
 
+export const IconDownload: React.FC<IconProps> = (props) => (
+    <Svg {...props}>
+        <path d="M12 4v11" />
+        <path d="M8 11l4 4 4-4" />
+        <path d="M5 19h14" />
+    </Svg>
+)
+
 export const IconMail: React.FC<IconProps> = (props) => (
     <Svg {...props}>
         <rect x="3.5" y="5.5" width="17" height="13" rx="1.6" />

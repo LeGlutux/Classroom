@@ -10,12 +10,14 @@ import SignUp from './components/SignUp'
 import Lists from './components/Lists'
 import CreateList from './components/CreateList'
 import List from './components/List'
+import InstallAppHost from './components/InstallApp'
 
 export default () => {
     return (
         <div>
             <div className={`flex w-full flex-col`}>
                 <AuthProvider>
+                    <InstallAppHost />
                     <div>
                         <Router>
                             <Switch>
