@@ -39,6 +39,7 @@ export default (props: Props) => {
                             }),
                             classes:
                                 firebase.firestore.FieldValue.arrayUnion(name),
+                            wiped: false,
                         })
                     props.onAddGroup()
                 } else if (inputValue === '') {

@@ -836,6 +836,11 @@ body,
     color: var(--tn-ink);
 }
 
+.report-resolve:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
 .report-card.is-problem {
     border-left: 3px solid #dc2626;
 }
@@ -956,6 +961,12 @@ body,
 
 .account-row {
     display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.account-top {
+    display: flex;
     align-items: flex-start;
     justify-content: space-between;
 }
@@ -969,6 +980,21 @@ body,
     flex-shrink: 0;
     text-align: right;
     margin-top: 0;
+}
+
+.account-actions {
+    display: flex;
+    align-items: center;
+    margin-top: 0.65rem;
+}
+
+.account-actions .report-resolve + .report-resolve {
+    margin-left: 0.9rem;
+}
+
+.account-delete {
+    margin-left: auto;
+    color: #b91c1c;
 }
 
 .settings-back {

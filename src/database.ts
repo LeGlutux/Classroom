@@ -250,3 +250,63 @@ export const fetchIcons = async (currentUserId: string) => {
         positiveIcons: padIconList(data?.positiveIcons, DEFAULT_POSITIVE_ICONS),
     }
 }
+
+const BATCH_LIMIT = 400
+
+const deleteRefs = async (
+    refs: firebase.firestore.DocumentReference[]
+) => {
+    const db = Firebase.firestore()
+    for (let index = 0; index < refs.length; index += BATCH_LIMIT) {
+        const batch = db.batch()
+        refs.slice(index, index + BATCH_LIMIT).forEach((ref) =>
+            batch.delete(ref)
+        )
+        await batch.commit()
+    }
+}
+
+export const wipeUserData = async (uid: string) => {
+    const db = Firebase.firestore()
+    const userRef = db.collection('users').doc(uid)
+    const userSnap = await userRef.get()
+    const previous = userSnap.data() || {}
+    const toDelete: firebase.firestore.DocumentReference[] = []
+
+    const elevesSnap = await userRef.collection('eleves').get()
+    for (let i = 0; i < elevesSnap.docs.length; i++) {
+        const eleveRef = elevesSnap.docs[i].ref
+        const [crossesSnap, listesSnap] = await Promise.all([
+            eleveRef.collection('crosses').get(),
+            eleveRef.collection('listes').get(),
+        ])
+        crossesSnap.forEach((doc) => toDelete.push(doc.ref))
+        listesSnap.forEach((doc) => toDelete.push(doc.ref))
+        toDelete.push(eleveRef)
+    }
+
+    const listsSnap = await userRef.collection('lists').get()
+    listsSnap.forEach((doc) => toDelete.push(doc.ref))
+    await deleteRefs(toDelete)
+
+    await userRef.set({
+        id: uid,
+        email: previous.email || '',
+        userName: previous.userName || '',
+        classes: [],
+        periodes: [],
+        postIt: [],
+        wiped: true,
+        wipedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    })
+
+    const propsSnap = await db.collection('props').get()
+    const reportRefs: firebase.firestore.DocumentReference[] = []
+    propsSnap.docs.forEach((doc) => {
+        const data = doc.data()
+        if (data.kind === 'report' && data.uid === uid) {
+            reportRefs.push(doc.ref)
+        }
+    })
+    if (reportRefs.length) await deleteRefs(reportRefs)
+}
