@@ -82,7 +82,7 @@ export const getTutorialSteps = (showSms: boolean): TutorialStep[] => {
             id: 'sms',
             title: 'SMS aux parents',
             body:
-                'Glissez une carte vers la gauche pour choisir un modèle. Le prénom se copie : cherchez le contact sous la forme « 6A - Léa Dupont ». Aucun numéro n’est enregistré dans Thòt Note.',
+                'Glissez une carte vers la droite pour choisir un modèle. Le prénom se copie : cherchez le contact sous la forme « 6A - Léa Dupont ». Aucun numéro n’est enregistré dans Thòt Note.',
             nav: 'home',
         })
     }

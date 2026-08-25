@@ -176,7 +176,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
         if (!axis.current) {
             if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return
             axis.current = Math.abs(dx) > Math.abs(dy) * 1.15 ? 'h' : 'v'
-            if (axis.current !== 'h' || dx >= 0) {
+            if (axis.current !== 'h' || dx <= 0) {
                 tracking.current = false
                 axis.current = null
                 return
@@ -188,7 +188,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
             }
         }
         if (axis.current !== 'h') return
-        const next = Math.max(-SWIPE_MAX, Math.min(0, dx))
+        const next = Math.max(0, Math.min(SWIPE_MAX, dx))
         shift.current = next
         applyShift(next, false)
     }
@@ -200,7 +200,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
             return
         }
         tracking.current = false
-        const opened = axis.current === 'h' && shift.current <= -SWIPE_OPEN
+        const opened = axis.current === 'h' && shift.current >= SWIPE_OPEN
         if (opened) ignoreClick.current = true
         axis.current = null
         applyShift(0, true)

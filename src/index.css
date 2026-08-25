@@ -2683,8 +2683,7 @@ body,
     color: #fff;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    padding-right: 1.05rem;
+    padding-left: 1.05rem;
     font-size: 0.78rem;
     font-weight: 700;
     letter-spacing: 0.08em;

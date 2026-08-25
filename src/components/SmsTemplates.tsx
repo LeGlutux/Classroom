@@ -89,7 +89,7 @@ export default () => {
             />
             <div className="settings-panel">
                 <p className="settings-panel-note" style={{ textAlign: 'left' }}>
-                    Swipe une carte élève vers la gauche pour envoyer un SMS.
+                    Swipe une carte élève vers la droite pour envoyer un SMS.
                     Les boutons ci-dessous insèrent un jeton (#prénom, #nom…)
                     remplacé à l’envoi. Aucun numéro n’est enregistré. Pour
                     retrouver vite les parents, nomme les contacts du type

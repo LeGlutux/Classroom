@@ -72,10 +72,10 @@ describe('getTutorialSteps', () => {
         expect(welcome.body).not.toMatch(/\btour\b/)
     })
 
-    it('indique un swipe vers la gauche pour le SMS', () => {
+    it('indique un swipe vers la droite pour le SMS', () => {
         const sms = getTutorialSteps(true).find((step) => step.id === 'sms')
-        expect(sms && sms.body).toMatch(/gauche/)
-        expect(sms && sms.body).not.toMatch(/droite/)
+        expect(sms && sms.body).toMatch(/droite/)
+        expect(sms && sms.body).not.toMatch(/gauche/)
     })
 
     it('garde un titre et un texte sur chaque écran', () => {
