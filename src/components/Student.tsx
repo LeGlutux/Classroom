@@ -9,6 +9,7 @@ import { useCross } from '../hooks'
 import { StudentInterface } from '../interfaces/Student'
 import { CrossPolarity } from '../functions'
 import { openStudentSms } from './SmsSheet'
+import { lockPageTouch, unlockPageTouch } from '../touchLock'
 
 interface StudentSlot {
     src: string
@@ -121,8 +122,23 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
     const tracking = useRef(false)
     const axis = useRef<'h' | 'v' | null>(null)
     const ignoreClick = useRef(false)
+    const locked = useRef(false)
     const SWIPE_OPEN = 72
     const SWIPE_MAX = 88
+
+    const setSwipingClass = (on: boolean) => {
+        const wrap = swipeWrapRef.current
+        if (!wrap) return
+        if (on) wrap.classList.add('is-swiping')
+        else wrap.classList.remove('is-swiping')
+    }
+
+    const releaseSwipeLock = () => {
+        if (!locked.current) return
+        locked.current = false
+        unlockPageTouch()
+        setSwipingClass(false)
+    }
 
     const applyShift = (x: number, animate: boolean) => {
         const card = swipeCardRef.current
@@ -160,13 +176,19 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
         if (!axis.current) {
             if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return
             axis.current = Math.abs(dx) > Math.abs(dy) * 1.15 ? 'h' : 'v'
-            if (axis.current !== 'h') {
+            if (axis.current !== 'h' || dx >= 0) {
                 tracking.current = false
+                axis.current = null
                 return
+            }
+            if (!locked.current) {
+                locked.current = true
+                lockPageTouch()
+                setSwipingClass(true)
             }
         }
         if (axis.current !== 'h') return
-        const next = Math.max(0, Math.min(SWIPE_MAX, dx))
+        const next = Math.max(-SWIPE_MAX, Math.min(0, dx))
         shift.current = next
         applyShift(next, false)
     }
@@ -174,14 +196,16 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
     const finishSwipe = () => {
         if (!tracking.current && shift.current === 0) {
             axis.current = null
+            releaseSwipeLock()
             return
         }
         tracking.current = false
-        const opened = axis.current === 'h' && shift.current >= SWIPE_OPEN
+        const opened = axis.current === 'h' && shift.current <= -SWIPE_OPEN
         if (opened) ignoreClick.current = true
         axis.current = null
         applyShift(0, true)
         shift.current = 0
+        releaseSwipeLock()
         if (opened) {
             if (typeof navigator !== 'undefined' && navigator.vibrate) {
                 navigator.vibrate(10)
@@ -205,16 +229,8 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
     }
 
     useEffect(() => {
-        const el = swipeWrapRef.current
-        if (!el) return
-        const onTouchMove = (event: TouchEvent) => {
-            if (axis.current === 'h') event.preventDefault()
-        }
-        el.addEventListener('touchmove', onTouchMove, { passive: false })
-        return () => {
-            el.removeEventListener('touchmove', onTouchMove)
-        }
-    }, [loading])
+        return () => releaseSwipeLock()
+    }, [])
 
     const handleForget = () => {
         db.collection('users')

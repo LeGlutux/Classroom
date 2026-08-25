@@ -17,6 +17,7 @@ import {
     IconGrid,
     IconNote,
     IconPlay,
+    IconUser,
     IconUsers,
 } from './Icons'
 import addPage from '../images/addPage.png'
@@ -27,7 +28,8 @@ const AUTH_PATHS = ['/login', '/signup']
 
 const stepIcon = (id: TutorialStep['id']) => {
     if (id === 'classes') return <IconUsers />
-    if (id === 'cards') return <IconGrid />
+    if (id === 'crosses') return <IconGrid />
+    if (id === 'cards') return <IconUser />
     if (id === 'lists') return <IconNote />
     if (id === 'sms') return <IconChat />
     if (id === 'ready') return <IconCheck />
@@ -36,23 +38,31 @@ const stepIcon = (id: TutorialStep['id']) => {
 
 const NavHint = ({ active }: { active?: TutorialStep['nav'] }) => {
     if (!active) return null
+    const slotClass = (id: TutorialStep['nav']) =>
+        `tutorial-nav-slot${active === id ? ' is-target' : ''}`
     return (
         <div className="tutorial-nav-hint" aria-hidden="true">
-            <img
-                className={active === 'settings' ? '' : 'nav-icon-inactive'}
-                src={addPage}
-                alt=""
-            />
-            <img
-                className={active === 'home' ? '' : 'nav-icon-inactive'}
-                src={home}
-                alt=""
-            />
-            <img
-                className={active === 'lists' ? '' : 'nav-icon-inactive'}
-                src={list}
-                alt=""
-            />
+            <span className={slotClass('settings')}>
+                <img
+                    className={active === 'settings' ? '' : 'nav-icon-inactive'}
+                    src={addPage}
+                    alt=""
+                />
+            </span>
+            <span className={slotClass('home')}>
+                <img
+                    className={active === 'home' ? '' : 'nav-icon-inactive'}
+                    src={home}
+                    alt=""
+                />
+            </span>
+            <span className={slotClass('lists')}>
+                <img
+                    className={active === 'lists' ? '' : 'nav-icon-inactive'}
+                    src={list}
+                    alt=""
+                />
+            </span>
         </div>
     )
 }
@@ -195,7 +205,7 @@ const AppTutorialHost = () => {
                 aria-labelledby="tutorial-title"
             >
                 <div className="tutorial-kicker">
-                    Tutoriel {index + 1} / {steps.length}
+                    Visite guidée {index + 1} / {steps.length}
                 </div>
                 <div className="tutorial-icon">{stepIcon(current.id)}</div>
                 <div className="tutorial-title" id="tutorial-title">

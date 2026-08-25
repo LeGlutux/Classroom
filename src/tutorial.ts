@@ -5,6 +5,7 @@ export type TutorialNav = 'settings' | 'home' | 'lists'
 export type TutorialStepId =
     | 'welcome'
     | 'classes'
+    | 'crosses'
     | 'cards'
     | 'lists'
     | 'sms'
@@ -41,21 +42,29 @@ export const getTutorialSteps = (showSms: boolean): TutorialStep[] => {
             id: 'welcome',
             title: 'Bienvenue sur Thòt Note',
             body:
-                'Votre cahier de classe, dans la poche. Quelques écrans suffisent pour le tour. Vous pourrez le rejouer plus tard depuis Paramètres.',
+                'Votre cahier de classe, dans la poche. Quelques écrans suffisent pour la visite guidée. Vous pourrez la rejouer plus tard depuis Paramètres.',
         },
         {
             id: 'classes',
             title: 'Ajouter des classes',
             body:
                 'L’icône de gauche, en bas, ouvre Paramètres. Importez un export Pronote, ou créez une classe puis des élèves à la main.',
-            hint: 'C’est l’icône de gauche, en bas de l’écran.',
+            hint: 'C’est l’icône entourée en vert, en bas à gauche.',
+            nav: 'settings',
+        },
+        {
+            id: 'crosses',
+            title: 'Personnaliser les croix',
+            body:
+                'Toujours dans Paramètres, ouvrez « Personnaliser les croix ». Choisissez les icônes (travail, comportement, positif…) : c’est le geste du quotidien. Un appui pose une croix, un appui long la retire.',
+            hint: 'Paramètres, puis Personnaliser les croix.',
             nav: 'settings',
         },
         {
             id: 'cards',
             title: 'Les cartes élèves',
             body:
-                'Sur l’accueil, chaque élève a une carte. Appuyez sur une icône de croix pour noter le jour. Un appui long retire une croix. Le crayon sous la carte sert à une note courte.',
+                'Sur l’accueil, chaque élève a une carte avec vos croix. Le crayon sous la carte sert à une note courte. L’icône « i » ouvre le détail de l’élève.',
             nav: 'home',
         },
         {
@@ -63,7 +72,7 @@ export const getTutorialSteps = (showSms: boolean): TutorialStep[] => {
             title: 'Les listes',
             body:
                 'L’icône de droite, en bas, ouvre les listes : absents, oubli de travail, etc. Créez une liste, puis cochez les élèves concernés.',
-            hint: 'C’est l’icône de droite, en bas de l’écran.',
+            hint: 'C’est l’icône entourée en vert, en bas à droite.',
             nav: 'lists',
         },
     ]
@@ -73,7 +82,7 @@ export const getTutorialSteps = (showSms: boolean): TutorialStep[] => {
             id: 'sms',
             title: 'SMS aux parents',
             body:
-                'Glissez une carte vers la droite pour choisir un modèle. Le prénom se copie : cherchez le contact sous la forme « 6A - Léa Dupont ». Aucun numéro n’est enregistré dans Thòt Note.',
+                'Glissez une carte vers la gauche pour choisir un modèle. Le prénom se copie : cherchez le contact sous la forme « 6A - Léa Dupont ». Aucun numéro n’est enregistré dans Thòt Note.',
             nav: 'home',
         })
     }
@@ -82,7 +91,7 @@ export const getTutorialSteps = (showSms: boolean): TutorialStep[] => {
         id: 'ready',
         title: 'C’est à vous',
         body:
-            'Quand vous êtes prêt, commencez par une classe. Le tutoriel reste disponible dans Paramètres, groupe Aide.',
+            'Quand vous êtes prêt, commencez par une classe, puis personnalisez vos croix. La visite guidée reste disponible dans Paramètres, groupe Aide.',
         nav: 'settings',
     })
 

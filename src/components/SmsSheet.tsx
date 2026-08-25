@@ -12,6 +12,7 @@ import {
     resolveUserSmsTemplates,
     sendParentSms,
 } from '../sms'
+import { lockPageTouch, unlockPageTouch } from '../touchLock'
 
 let openSheet: ((student: SmsStudent) => void) | null = null
 
@@ -36,6 +37,13 @@ export default () => {
     const lastY = useRef(0)
     const lastT = useRef(0)
     const velocity = useRef(0)
+    const locked = useRef(false)
+
+    const releaseDragLock = () => {
+        if (!locked.current) return
+        locked.current = false
+        unlockPageTouch()
+    }
 
     useEffect(() => {
         openSheet = (next) => {
@@ -81,6 +89,7 @@ export default () => {
         templates.find((template) => template.id === selectedId) || null
 
     const close = () => {
+        releaseDragLock()
         setStudent(null)
         setBusy(false)
         dragY.current = 0
@@ -132,6 +141,10 @@ export default () => {
         lastY.current = event.clientY
         lastT.current = Date.now()
         velocity.current = 0
+        if (!locked.current) {
+            locked.current = true
+            lockPageTouch()
+        }
         try {
             event.currentTarget.setPointerCapture(event.pointerId)
         } catch (error) {
@@ -154,6 +167,7 @@ export default () => {
     const onGrabUp = () => {
         if (!dragging.current) return
         dragging.current = false
+        releaseDragLock()
         const shouldClose =
             dragY.current > 88 || velocity.current > 0.65
         if (shouldClose) {
@@ -166,17 +180,9 @@ export default () => {
     useEffect(() => {
         if (!student) {
             resetSheetStyle()
-            return
+            releaseDragLock()
         }
-        const grab = grabRef.current
-        if (!grab) return
-        const onTouchMove = (event: Event) => {
-            if (dragging.current) event.preventDefault()
-        }
-        grab.addEventListener('touchmove', onTouchMove, { passive: false })
-        return () => {
-            grab.removeEventListener('touchmove', onTouchMove)
-        }
+        return () => releaseDragLock()
     }, [student])
 
     const send = async (tel?: string) => {

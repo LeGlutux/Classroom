@@ -29,6 +29,7 @@ body,
 #root {
     min-height: 100%;
     background: var(--tn-bg);
+    overscroll-behavior: none;
 }
 
 .app-bg {
@@ -1325,6 +1326,7 @@ body,
 .student-grid {
     padding-top: 0.2rem;
     padding-bottom: 5rem;
+    overscroll-behavior: contain;
 }
 
 .student-grid > *:nth-child(1) .student-card,
@@ -2660,6 +2662,10 @@ body,
     touch-action: pan-y;
 }
 
+.sms-swipe.is-swiping {
+    touch-action: none;
+}
+
 .sms-swipe .student-card {
     margin: 0;
     animation: none;
@@ -2677,7 +2683,8 @@ body,
     color: #fff;
     display: flex;
     align-items: center;
-    padding-left: 1.05rem;
+    justify-content: flex-end;
+    padding-right: 1.05rem;
     font-size: 0.78rem;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -2697,6 +2704,8 @@ body,
     background: rgba(24, 24, 27, 0.36);
     -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
+    overscroll-behavior: none;
+    touch-action: none;
 }
 
 .sms-sheet {
@@ -2733,6 +2742,8 @@ body,
 .sms-sheet-body {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
     padding: 0 1rem 1.2rem;
 }
 
@@ -3005,15 +3016,34 @@ body,
     justify-content: center;
     align-items: center;
     margin-top: 0.75rem;
-    padding: 0.55rem 0.75rem;
+    padding: 0.55rem 0.45rem;
     background: var(--tn-bg);
     border-radius: 10px;
 }
 
-.tutorial-nav-hint img {
+.tutorial-nav-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.7rem;
+    height: 2.7rem;
+    margin: 0 0.35rem;
+    border-radius: 999px;
+}
+
+.tutorial-nav-slot img {
     width: 1.75rem;
     height: 1.75rem;
-    margin: 0 0.85rem;
+    margin: 0;
+}
+
+.tutorial-nav-slot.is-target {
+    background: #dcfce7;
+    box-shadow: 0 0 0 3px #86efac;
+}
+
+.tutorial-nav-slot.is-target img {
+    filter: none;
 }
 
 .tutorial-dots {

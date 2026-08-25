@@ -44,6 +44,7 @@ describe('getTutorialSteps', () => {
         expect(withoutSms).toEqual([
             'welcome',
             'classes',
+            'crosses',
             'cards',
             'lists',
             'ready',
@@ -51,11 +52,30 @@ describe('getTutorialSteps', () => {
         expect(withSms).toEqual([
             'welcome',
             'classes',
+            'crosses',
             'cards',
             'lists',
             'sms',
             'ready',
         ])
+    })
+
+    it('place la personnalisation des croix avant les cartes élèves', () => {
+        const ids = getTutorialSteps(false).map((step) => step.id)
+        expect(ids.indexOf('crosses')).toBeLessThan(ids.indexOf('cards'))
+        expect(getTutorialSteps(false)[2].title).toMatch(/croix/i)
+    })
+
+    it('parle de visite guidée, pas de tour', () => {
+        const welcome = getTutorialSteps(false)[0]
+        expect(welcome.body).toMatch(/visite guidée/)
+        expect(welcome.body).not.toMatch(/\btour\b/)
+    })
+
+    it('indique un swipe vers la gauche pour le SMS', () => {
+        const sms = getTutorialSteps(true).find((step) => step.id === 'sms')
+        expect(sms && sms.body).toMatch(/gauche/)
+        expect(sms && sms.body).not.toMatch(/droite/)
     })
 
     it('garde un titre et un texte sur chaque écran', () => {

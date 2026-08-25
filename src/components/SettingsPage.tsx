@@ -188,8 +188,8 @@ const SettingsMenu = () => {
             <div className="settings-group">
                 <SettingsRow
                     icon={<IconPlay />}
-                    title="Rejouer le tutoriel"
-                    subtitle="Le tour guidé des classes, cartes et listes"
+                    title="Rejouer la visite guidée"
+                    subtitle="Classes, croix, cartes et listes"
                     onClick={() => {
                         replayTutorial()
                     }}
