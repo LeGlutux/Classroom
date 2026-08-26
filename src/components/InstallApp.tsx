@@ -70,8 +70,11 @@ const launchNativePrompt = async () => {
     return true
 }
 
+let listeningForInstallPrompt = false
+
 export const listenForInstallPrompt = () => {
-    if (typeof window === 'undefined') return
+    if (typeof window === 'undefined' || listeningForInstallPrompt) return
+    listeningForInstallPrompt = true
     window.addEventListener('beforeinstallprompt', (event) => {
         event.preventDefault()
         deferredPrompt = event as BeforeInstallPromptEvent

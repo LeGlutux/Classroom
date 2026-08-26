@@ -1,6 +1,7 @@
 import firebase from 'firebase/app'
 import 'firebase/auth'
-import "firebase/firestore"
+import 'firebase/firestore'
+import 'firebase/analytics'
 
 // Fallback vers les valeurs d'origine si les variables d'environnement ne sont pas définies
 const config = {
@@ -16,6 +17,12 @@ const config = {
 
 
 const Firebase = firebase.initializeApp(config)
+
+try {
+  Firebase.analytics()
+} catch (error) {
+  // Analytics peut être bloqué (extensions, tests, hors navigateur).
+}
 
 // connects to firebase emulators
 
