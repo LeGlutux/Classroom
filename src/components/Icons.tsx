@@ -178,3 +178,10 @@ export const IconPlay: React.FC<IconProps> = (props) => (
         <path d="M10.2 8.8v6.4L16.2 12z" />
     </Svg>
 )
+
+export const IconSearch: React.FC<IconProps> = (props) => (
+    <Svg {...props}>
+        <circle cx="11" cy="11" r="6.25" />
+        <path d="M16.2 16.2L20 20" />
+    </Svg>
+)

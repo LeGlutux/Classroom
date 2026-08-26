@@ -45,7 +45,7 @@ export default () => {
         return () => {
             cancelled = true
         }
-    }, [currentUser, configLoading])
+    }, [currentUser, configLoading, defaultTemplates])
 
     if (currentUser === null) return <div />
     if (configLoading) {
