@@ -1,5 +1,7 @@
 import {
+    TUTORIAL_REPLAY_EVENT,
     getTutorialSteps,
+    replayTutorial,
     shouldAutoStartTutorial,
 } from './tutorial'
 
@@ -34,6 +36,16 @@ describe('shouldAutoStartTutorial', () => {
                 tutorialCompleted: false,
             })
         ).toBe(false)
+    })
+})
+
+describe('replayTutorial', () => {
+    it('envoie l’événement qui ouvre la visite guidée', () => {
+        const onReplay = jest.fn()
+        window.addEventListener(TUTORIAL_REPLAY_EVENT, onReplay)
+        replayTutorial()
+        expect(onReplay).toHaveBeenCalledTimes(1)
+        window.removeEventListener(TUTORIAL_REPLAY_EVENT, onReplay)
     })
 })
 

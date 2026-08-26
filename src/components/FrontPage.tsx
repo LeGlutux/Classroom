@@ -24,6 +24,7 @@ import updater_gif from '../images/updater.gif'
 import addPage from '../images/addPage.png'
 import Firebase from '../firebase'
 import { Link } from 'react-router-dom'
+import { replayTutorial } from '../tutorial'
 import Updater from './Updater'
 import PostIt, { PostItAlert } from './PostIt'
 import Loader from './Loader'
@@ -250,6 +251,13 @@ export default () => {
                             <img className="self-center" src={addPage} alt="" />
                         </Link>
                     </div>
+                    <button
+                        type="button"
+                        className="empty-tutorial-btn"
+                        onClick={replayTutorial}
+                    >
+                        Lancer le tutoriel
+                    </button>
                 </div>
 
                 <div className={`w-full h-12 nav-wrap sticky bottom-0`}>
