@@ -135,6 +135,29 @@ body,
     height: 1.55rem;
 }
 
+.empty-tutorial-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.75rem;
+    padding: 0 1.15rem;
+    margin-top: 1.75rem;
+    border-radius: 8px;
+    border: 1px solid var(--tn-ink);
+    background: #fff;
+    color: var(--tn-ink);
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.empty-tutorial-btn:active {
+    background: var(--tn-bg);
+}
+
 .lists-plus {
     position: fixed;
     bottom: 4.5rem;
