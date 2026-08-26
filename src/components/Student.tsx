@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import info from '../images/info.png'
 import Firebase from '../firebase'
 import firebase from 'firebase/app'
@@ -133,12 +133,12 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
         else wrap.classList.remove('is-swiping')
     }
 
-    const releaseSwipeLock = () => {
+    const releaseSwipeLock = useCallback(() => {
         if (!locked.current) return
         locked.current = false
         unlockPageTouch()
         setSwipingClass(false)
-    }
+    }, [])
 
     const applyShift = (x: number, animate: boolean) => {
         const card = swipeCardRef.current
@@ -230,7 +230,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
 
     useEffect(() => {
         return () => releaseSwipeLock()
-    }, [])
+    }, [releaseSwipeLock])
 
     const handleForget = () => {
         db.collection('users')
