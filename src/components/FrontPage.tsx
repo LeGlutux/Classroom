@@ -65,8 +65,7 @@ export default () => {
 
     const [displayedGroup, setDisplayedGroup] = useState('tous')
     const [studentQuery, setStudentQuery] = useState('')
-    const [searchAway, setSearchAway] = useState(false)
-    const [searchStuck, setSearchStuck] = useState(false)
+    const [searchAway, setSearchAway] = useState(true)
     const [hardStudents, setHardStudents] = useState<StudentInterface[]>([])
     const [magicStickStudentsList, setMagicStickStudentsList] =
         useState(hardStudents)
@@ -74,6 +73,8 @@ export default () => {
     const studentListRef = useRef<HTMLDivElement>(null)
     const lastListScrollRef = useRef(0)
     const searchFocusedRef = useRef(false)
+    const searchQueryRef = useRef('')
+    const pullStartYRef = useRef<number | null>(null)
 
     useEffect(() => {
         setDisplayed(false)
@@ -136,9 +137,10 @@ export default () => {
 
     useEffect(() => {
         setStudentQuery('')
-        setSearchAway(false)
-        setSearchStuck(false)
+        searchQueryRef.current = ''
+        setSearchAway(true)
         lastListScrollRef.current = 0
+        pullStartYRef.current = null
         if (studentListRef.current) {
             studentListRef.current.scrollTop = 0
         }
@@ -191,19 +193,66 @@ export default () => {
         [students, studentQuery]
     )
 
+    const keepSearchOpen = () =>
+        searchFocusedRef.current || searchQueryRef.current.trim().length > 0
+
+    const revealSearch = () => {
+        setSearchAway(false)
+    }
+
+    const hideSearch = () => {
+        if (keepSearchOpen()) return
+        setSearchAway(true)
+    }
+
     const onStudentListScroll = (
         event: React.UIEvent<HTMLDivElement>
     ) => {
         const y = event.currentTarget.scrollTop
         const dy = y - lastListScrollRef.current
         lastListScrollRef.current = y
-        setSearchStuck(y > 8)
-        if (searchFocusedRef.current || y < 16) {
-            setSearchAway(false)
+        if (keepSearchOpen()) {
+            revealSearch()
             return
         }
-        if (dy > 10) setSearchAway(true)
-        else if (dy < -10) setSearchAway(false)
+        // iOS rubber-band : tirer vers le bas en haut de liste.
+        if (y < -8) {
+            revealSearch()
+            return
+        }
+        // Ne pas recacher au relâché du rubber-band (retour vers 0).
+        if (dy > 10 && y > 24) hideSearch()
+        else if (dy < -10 && y > 8) revealSearch()
+    }
+
+    const onStudentListTouchStart = (
+        event: React.TouchEvent<HTMLDivElement>
+    ) => {
+        const list = studentListRef.current
+        if (!list || list.scrollTop > 2) {
+            pullStartYRef.current = null
+            return
+        }
+        pullStartYRef.current = event.touches[0].clientY
+    }
+
+    const onStudentListTouchMove = (
+        event: React.TouchEvent<HTMLDivElement>
+    ) => {
+        if (pullStartYRef.current == null) return
+        const pull = event.touches[0].clientY - pullStartYRef.current
+        if (pull > 28) {
+            revealSearch()
+            pullStartYRef.current = null
+        }
+    }
+
+    const onStudentListWheel = (
+        event: React.WheelEvent<HTMLDivElement>
+    ) => {
+        const list = studentListRef.current
+        if (!list || list.scrollTop > 2) return
+        if (event.deltaY < -8) revealSearch()
     }
 
     const toggleHighlight = (studentId: string) => {
@@ -408,10 +457,11 @@ export default () => {
                 <div className="student-list-shell">
                     <div
                         ref={studentListRef}
-                        className={`flex-1 min-h-0 flex w-full flex-col overflow-y-scroll student-list-scroll student-grid md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start${
-                            searchAway ? ' search-away' : ''
-                        }`}
+                        className="flex-1 min-h-0 flex w-full flex-col overflow-y-scroll student-list-scroll student-grid md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start"
                         onScroll={onStudentListScroll}
+                        onTouchStart={onStudentListTouchStart}
+                        onTouchMove={onStudentListTouchMove}
+                        onWheel={onStudentListWheel}
                     >
                         {visibleStudents.length === 0 ? (
                             <div className="student-search-empty">
@@ -461,14 +511,18 @@ export default () => {
                     <div
                         className={`student-search-overlay${
                             searchAway ? ' is-away' : ''
-                        }${searchStuck ? ' is-stuck' : ''}`}
+                        }`}
                     >
                         <StudentSearchBar
                             value={studentQuery}
-                            onChange={setStudentQuery}
+                            onChange={(value) => {
+                                searchQueryRef.current = value
+                                setStudentQuery(value)
+                                if (value.trim()) revealSearch()
+                            }}
                             onFocus={() => {
                                 searchFocusedRef.current = true
-                                setSearchAway(false)
+                                revealSearch()
                             }}
                             onBlur={() => {
                                 searchFocusedRef.current = false

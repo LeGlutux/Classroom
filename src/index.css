@@ -1405,16 +1405,12 @@ body,
     right: 0;
     z-index: 16;
     padding: 0.75rem 0.75rem 0.65rem;
-    background: var(--tn-bg);
-    transform: translateY(0);
-    transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.student-search-overlay.is-stuck {
     background: rgba(244, 244, 245, 0.72);
     -webkit-backdrop-filter: saturate(1.8) blur(18px);
     backdrop-filter: saturate(1.8) blur(18px);
     box-shadow: 0 1px 0 rgba(24, 24, 27, 0.06);
+    transform: translateY(0);
+    transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .student-search-overlay.is-away {
@@ -1423,16 +1419,13 @@ body,
 }
 
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    .student-search-overlay.is-stuck {
+    .student-search-overlay {
         background: var(--tn-bg);
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
     .student-search-overlay {
-        transition: none;
-    }
-    .student-grid {
         transition: none;
     }
 }
@@ -1516,20 +1509,9 @@ body,
 }
 
 .student-grid {
-    padding-top: 4.15rem;
-    padding-bottom: 5rem;
-    overscroll-behavior: contain;
-    transition: padding-top 0.32s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.student-grid.search-away {
     padding-top: 0.7rem;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .student-grid {
-        transition: none;
-    }
+    padding-bottom: 5rem;
+    overscroll-behavior-y: contain;
 }
 
 .student-grid > *:nth-child(1) .student-card,
