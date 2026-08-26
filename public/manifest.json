@@ -4,25 +4,25 @@
   "id": "/",
   "icons": [
     {
-      "src": "favicon-32.png",
+      "src": "icon-t-plume-32.png",
       "type": "image/png",
       "sizes": "32x32",
       "purpose": "any"
     },
     {
-      "src": "logo-192.png",
+      "src": "icon-t-plume-192.png",
       "type": "image/png",
       "sizes": "192x192",
       "purpose": "any"
     },
     {
-      "src": "logo-512.png",
+      "src": "icon-t-plume-512.png",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "any"
     },
     {
-      "src": "logo-512-maskable.png",
+      "src": "icon-t-plume-512-maskable.png",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "maskable"
