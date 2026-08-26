@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import firebase from 'firebase/app'
 import ClassListFilter from '../components/ClassListFilter'
 import HomeClassListFilter from '../components/HomeClassListFilter'
@@ -29,6 +29,8 @@ import Updater from './Updater'
 import PostIt, { PostItAlert } from './PostIt'
 import Loader from './Loader'
 import { StudentInterface } from '../interfaces/Student'
+import StudentSearchBar from './StudentSearchBar'
+import { studentMatchesQuery } from '../utils/studentSearch'
 
 export default () => {
     const db = Firebase.firestore()
@@ -62,10 +64,16 @@ export default () => {
     const [postItClasse] = useState('none')
 
     const [displayedGroup, setDisplayedGroup] = useState('tous')
+    const [studentQuery, setStudentQuery] = useState('')
+    const [searchAway, setSearchAway] = useState(false)
+    const [searchStuck, setSearchStuck] = useState(false)
     const [hardStudents, setHardStudents] = useState<StudentInterface[]>([])
     const [magicStickStudentsList, setMagicStickStudentsList] =
         useState(hardStudents)
     const lastFilteredGroupRef = useRef<string>('')
+    const studentListRef = useRef<HTMLDivElement>(null)
+    const lastListScrollRef = useRef(0)
+    const searchFocusedRef = useRef(false)
 
     useEffect(() => {
         setDisplayed(false)
@@ -126,6 +134,16 @@ export default () => {
         }
     }, [displayedGroup])
 
+    useEffect(() => {
+        setStudentQuery('')
+        setSearchAway(false)
+        setSearchStuck(false)
+        lastListScrollRef.current = 0
+        if (studentListRef.current) {
+            studentListRef.current.scrollTop = 0
+        }
+    }, [displayedGroup])
+
     // Automatique : si une seule classe, utiliser celle-ci
     useEffect(() => {
         if (!groupsLoading && Array.isArray(groups) && groups.length === 1 && displayedGroup === 'tous') {
@@ -162,6 +180,31 @@ export default () => {
             setHardStudents(students)
         }
     }, [students])
+
+    const visibleStudents = useMemo(
+        () =>
+            studentQuery.trim()
+                ? students.filter((student) =>
+                      studentMatchesQuery(student, studentQuery)
+                  )
+                : students,
+        [students, studentQuery]
+    )
+
+    const onStudentListScroll = (
+        event: React.UIEvent<HTMLDivElement>
+    ) => {
+        const y = event.currentTarget.scrollTop
+        const dy = y - lastListScrollRef.current
+        lastListScrollRef.current = y
+        setSearchStuck(y > 8)
+        if (searchFocusedRef.current || y < 16) {
+            setSearchAway(false)
+            return
+        }
+        if (dy > 10) setSearchAway(true)
+        else if (dy < -10) setSearchAway(false)
+    }
 
     const toggleHighlight = (studentId: string) => {
         hardStudents.forEach((s) => {
@@ -362,45 +405,76 @@ export default () => {
             })}
 
             {displayedGroup !== 'tous' && (
-                <div className="flex-1 min-h-0 flex w-full flex-col overflow-y-scroll student-grid md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start">
-                    {students.map(
-                            ({
-                                name,
-                                surname,
-                                classes,
-                                id,
-                                selected,
-                                highlight,
-                                comment,
-                            }) => {
-                                return (
-                                    <Student
-                                        displayedStudents={hardStudents}
-                                        periodes={periodes}
-                                        runningPeriode={runningPeriode}
-                                        currentUser={currentUser.uid}
-                                        key={id}
-                                        loading={studentsLoading}
-                                        currentUserId={currentUser.uid}
-                                        selected={selected}
-                                        classes={classes[0]}
-                                        name={name}
-                                        surname={surname}
-                                        comment={comment ? comment : ''}
-                                        id={id}
-                                        highlight={highlight}
-                                        toggleSelected={toggleSelected}
-                                        toggleHighlight={toggleHighlight}
-                                        refresher={(group) =>
-                                            filterStudents(group)
-                                        }
-                                        displayedGroup={displayedGroup}
-                                        slots={crossSlots}
-                                        smsAvailable={smsAvailable}
-                                    />
-                                )
-                            }
+                <div className="student-list-shell">
+                    <div
+                        ref={studentListRef}
+                        className={`flex-1 min-h-0 flex w-full flex-col overflow-y-scroll student-list-scroll student-grid md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start${
+                            searchAway ? ' search-away' : ''
+                        }`}
+                        onScroll={onStudentListScroll}
+                    >
+                        {visibleStudents.length === 0 ? (
+                            <div className="student-search-empty">
+                                Aucun élève ne correspond
+                            </div>
+                        ) : (
+                            visibleStudents.map(
+                                ({
+                                    name,
+                                    surname,
+                                    classes,
+                                    id,
+                                    selected,
+                                    highlight,
+                                    comment,
+                                }) => {
+                                    return (
+                                        <Student
+                                            displayedStudents={hardStudents}
+                                            periodes={periodes}
+                                            runningPeriode={runningPeriode}
+                                            currentUser={currentUser.uid}
+                                            key={id}
+                                            loading={studentsLoading}
+                                            currentUserId={currentUser.uid}
+                                            selected={selected}
+                                            classes={classes[0]}
+                                            name={name}
+                                            surname={surname}
+                                            comment={comment ? comment : ''}
+                                            id={id}
+                                            highlight={highlight}
+                                            toggleSelected={toggleSelected}
+                                            toggleHighlight={toggleHighlight}
+                                            refresher={(group) =>
+                                                filterStudents(group)
+                                            }
+                                            displayedGroup={displayedGroup}
+                                            slots={crossSlots}
+                                            smsAvailable={smsAvailable}
+                                        />
+                                    )
+                                }
+                            )
                         )}
+                    </div>
+                    <div
+                        className={`student-search-overlay${
+                            searchAway ? ' is-away' : ''
+                        }${searchStuck ? ' is-stuck' : ''}`}
+                    >
+                        <StudentSearchBar
+                            value={studentQuery}
+                            onChange={setStudentQuery}
+                            onFocus={() => {
+                                searchFocusedRef.current = true
+                                setSearchAway(false)
+                            }}
+                            onBlur={() => {
+                                searchFocusedRef.current = false
+                            }}
+                        />
+                    </div>
                 </div>
             )}
 
