@@ -91,3 +91,29 @@ export const getCacheKey = (userId: string, dataType: string): string => {
     return `${userId}_${dataType}`
 }
 
+export const patchCachedStudent = (
+    userId: string,
+    studentId: string,
+    patch: Record<string, unknown>
+): void => {
+    const key = getCacheKey(userId, 'students')
+    const cached = getCachedData<Array<{ id: string }>>(key)
+    if (!cached || cached.length === 0) return
+    setCachedData(
+        key,
+        cached.map((item) =>
+            item.id === studentId ? { ...item, ...patch } : item
+        )
+    )
+}
+
+export const removeCachedStudent = (userId: string, studentId: string): void => {
+    const key = getCacheKey(userId, 'students')
+    const cached = getCachedData<Array<{ id: string }>>(key)
+    if (!cached || cached.length === 0) return
+    setCachedData(
+        key,
+        cached.filter((item) => item.id !== studentId)
+    )
+}
+
