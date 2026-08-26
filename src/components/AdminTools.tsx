@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import firebase from 'firebase/app'
 import { Link } from 'react-router-dom'
 import { AuthContext } from '../Auth'
+import Firebase from '../firebase'
 import SettingsLayout from './SettingsLayout'
 import ConfirmModal from './ConfirmModal'
 import { useIcons, useSmsConfig, useVersion } from '../hooks'
@@ -15,7 +16,7 @@ import {
     DEFAULT_SMS_TEMPLATES,
     SmsTemplate,
 } from '../sms'
-import { saveSmsConfig } from '../database'
+import { saveSmsConfig, wipeUserData } from '../database'
 import SmsEditor from './SmsEditor'
 import {
     IconChat,
@@ -56,6 +57,9 @@ type Account = {
     classes: string[]
 }
 
+const hasClasses = (account: Account) =>
+    account.classes.some((name) => String(name).trim() !== '')
+
 const AdminMenu = () => {
     const { currentUser } = useContext(AuthContext)
     const { version } = useVersion()
@@ -87,7 +91,7 @@ const AdminMenu = () => {
                             Utilisateurices
                         </span>
                         <span className="settings-row-sub">
-                            Comptes et dernière connexion
+                            Comptes avec des classes · vider ou réinit MDP
                         </span>
                     </span>
                     <IconChevronRight className="settings-row-chevron" />
@@ -324,6 +328,10 @@ export const AdminAccounts = () => {
     const [accounts, setAccounts] = useState<Account[]>([])
     const [query, setQuery] = useState('')
     const [loading, setLoading] = useState(true)
+    const [pendingReset, setPendingReset] = useState<Account | null>(null)
+    const [pendingWipe, setPendingWipe] = useState<Account | null>(null)
+    const [busyId, setBusyId] = useState('')
+    const [toast, setToast] = useState('')
 
     useEffect(() => {
         if (!isAdminUser(currentUser)) return
@@ -343,6 +351,7 @@ export const AdminAccounts = () => {
                         classes: Array.isArray(data.classes) ? data.classes : [],
                     } as Account
                 })
+                .filter(hasClasses)
                 .sort((a, b) => {
                     const timeA =
                         a.lastConnection && a.lastConnection.toMillis
@@ -365,6 +374,45 @@ export const AdminAccounts = () => {
 
     if (currentUser === null || !isAdminUser(currentUser)) return <div />
 
+    const sendPasswordReset = async (account: Account) => {
+        if (!account.email) {
+            alert('Pas d’email sur ce compte.')
+            setPendingReset(null)
+            return
+        }
+        setBusyId(account.id)
+        try {
+            await Firebase.auth().sendPasswordResetEmail(account.email)
+            setToast('Email de réinitialisation envoyé à ' + account.email)
+            setTimeout(() => setToast(''), 4000)
+        } catch (error) {
+            alert("L’envoi de l’email a échoué. Vérifie l’adresse.")
+        }
+        setBusyId('')
+        setPendingReset(null)
+    }
+
+    const wipeAccount = async (account: Account) => {
+        if (currentUser && account.id === currentUser.uid) {
+            alert('Tu ne peux pas supprimer ton propre compte.')
+            setPendingWipe(null)
+            return
+        }
+        setBusyId(account.id)
+        try {
+            await wipeUserData(account.id)
+            setAccounts((previous) =>
+                previous.filter((item) => item.id !== account.id)
+            )
+            setToast('Données du compte supprimées')
+            setTimeout(() => setToast(''), 4000)
+        } catch (error) {
+            alert('La suppression a échoué. Réessaie dans un instant.')
+        }
+        setBusyId('')
+        setPendingWipe(null)
+    }
+
     const filteredAccounts = accounts.filter((account) => {
         const haystack = (
             account.email +
@@ -377,7 +425,54 @@ export const AdminAccounts = () => {
     })
 
     return (
-        <SettingsLayout title="Utilisateurices" backTo="/create/admin">
+        <SettingsLayout
+            title="Utilisateurices"
+            backTo="/create/admin"
+            toast={toast || undefined}
+        >
+            <ConfirmModal
+                confirm={pendingReset !== null}
+                setConfirm={(value) => {
+                    const next =
+                        typeof value === 'function'
+                            ? value(pendingReset !== null)
+                            : value
+                    if (!next) setPendingReset(null)
+                }}
+                confirmAction={() => {
+                    if (pendingReset) sendPasswordReset(pendingReset)
+                }}
+                textBox="Réinitialiser le mot de passe ?"
+                subTextBox={
+                    pendingReset && pendingReset.email
+                        ? 'Un email sera envoyé à ' +
+                          pendingReset.email +
+                          ' avec un lien pour choisir un nouveau mot de passe.'
+                        : 'Ce compte n’a pas d’email.'
+                }
+            />
+            <ConfirmModal
+                confirm={pendingWipe !== null}
+                setConfirm={(value) => {
+                    const next =
+                        typeof value === 'function'
+                            ? value(pendingWipe !== null)
+                            : value
+                    if (!next) setPendingWipe(null)
+                }}
+                confirmAction={() => {
+                    if (pendingWipe) wipeAccount(pendingWipe)
+                }}
+                danger
+                textBox={
+                    pendingWipe
+                        ? 'Supprimer les données de ' +
+                          (pendingWipe.email || pendingWipe.id) +
+                          ' ?'
+                        : 'Supprimer les données de ce compte ?'
+                }
+                subTextBox="Classes, élèves, croix, listes et notes seront effacés. Le login email reste : iel pourra se reconnecter sur un compte vide."
+            />
             {loading ? (
                 <p className="settings-panel-note">Chargement…</p>
             ) : (
@@ -388,8 +483,9 @@ export const AdminAccounts = () => {
                             style={{ textAlign: 'left' }}
                         >
                             {accounts.length} compte
-                            {accounts.length > 1 ? 's' : ''} · triés par
-                            dernière connexion
+                            {accounts.length > 1 ? 's' : ''} avec des classes ·
+                            triés par dernière connexion. Les comptes vides
+                            n’apparaissent pas.
                         </p>
                         <input
                             className="modal-input"
@@ -400,23 +496,50 @@ export const AdminAccounts = () => {
                     </div>
                     {filteredAccounts.map((account) => (
                         <div key={account.id} className="account-row">
-                            <div className="account-main">
-                                <div className="account-email">
-                                    {account.email || account.id}
+                            <div className="account-top">
+                                <div className="account-main">
+                                    <div className="account-email">
+                                        {account.email || account.id}
+                                    </div>
+                                    <div className="account-sub">
+                                        {account.userName
+                                            ? account.userName + ' · '
+                                            : ''}
+                                        {account.classes.length} classe
+                                        {account.classes.length > 1 ? 's' : ''}
+                                        {account.classes.length
+                                            ? ' · ' + account.classes.join(', ')
+                                            : ''}
+                                    </div>
                                 </div>
-                                <div className="account-sub">
-                                    {account.userName
-                                        ? account.userName + ' · '
-                                        : ''}
-                                    {account.classes.length} classe
-                                    {account.classes.length > 1 ? 's' : ''}
-                                    {account.classes.length
-                                        ? ' · ' + account.classes.join(', ')
-                                        : ''}
+                                <div className="account-seen">
+                                    {formatDateTime(account.lastConnection)}
                                 </div>
                             </div>
-                            <div className="account-seen">
-                                {formatDateTime(account.lastConnection)}
+                            <div className="account-actions">
+                                <button
+                                    type="button"
+                                    className="report-resolve"
+                                    disabled={
+                                        busyId === account.id || !account.email
+                                    }
+                                    onClick={() => setPendingReset(account)}
+                                >
+                                    Mot de passe
+                                </button>
+                                {currentUser &&
+                                account.id === currentUser.uid ? null : (
+                                    <button
+                                        type="button"
+                                        className="report-resolve account-delete"
+                                        disabled={busyId === account.id}
+                                        onClick={() => setPendingWipe(account)}
+                                    >
+                                        {busyId === account.id
+                                            ? 'Suppression…'
+                                            : 'Supprimer les données'}
+                                    </button>
+                                )}
                             </div>
                         </div>
                     ))}
