@@ -2,12 +2,14 @@ import React, { useContext, useState } from 'react'
 import { useStudent, useGroups, useCross, useIcons } from '../hooks'
 import { AuthContext } from '../Auth'
 import { useParams, Link, useHistory } from 'react-router-dom'
-import closeCard from '../images/closeCard.png'
 import firebase from 'firebase/app'
 import CrossTab from './CrossTab'
 import ConfirmModal from './ConfirmModal'
 import edit from '../images/edit.png'
 import { handleIcon, buildCrossSlots, CrossSlot } from '../functions'
+import { titleCasePersonName } from '../utils/names'
+import { patchCachedStudent, removeCachedStudent } from '../utils/cache'
+import { IconChevronLeft } from './Icons'
 
 const classToValue = (classes: unknown): string => {
     if (Array.isArray(classes)) {
@@ -152,6 +154,7 @@ const View = ({
             .collection('eleves')
             .doc(studentId)
             .delete()
+        removeCachedStudent(currentUser.uid, studentId)
         history.goBack()
     }
 
@@ -163,8 +166,8 @@ const View = ({
     }
 
     const handleEdition = () => {
-        const name = nameInputValue.trim()
-        const surname = surnameInputValue.trim()
+        const name = titleCasePersonName(nameInputValue)
+        const surname = titleCasePersonName(surnameInputValue)
         const classe = classInputValue.trim()
         if (!name || !surname) {
             alert("Le prénom et le nom sont obligatoires")
@@ -187,6 +190,11 @@ const View = ({
                 },
                 { merge: true }
             )
+        patchCachedStudent(currentUser.uid, studentId, {
+            name,
+            surname,
+            classes: nextClasses,
+        })
         setDisplayName(name)
         setDisplaySurname(surname)
         setDisplayClasses(nextClasses)
@@ -199,7 +207,7 @@ const View = ({
             : groups
 
     return (
-        <div className="flex flex-col h-screen">
+        <div className="flex flex-col h-screen app-bg">
             {editNotes ? (
                 <div
                     className="modal-overlay"
@@ -325,8 +333,12 @@ const View = ({
 
             <div className="flex flex-col items-center">
                 <div className="w-full mt-4 flex items-center px-3">
-                    <Link to="/" className="flex items-center justify-center w-8 h-8 flex-shrink-0">
-                        <img className="h-6 w-3" src={closeCard} alt="" />
+                    <Link
+                        to="/"
+                        className="student-stats-back"
+                        aria-label="Retour"
+                    >
+                        <IconChevronLeft />
                     </Link>
                     <div className="flex-1 mr-8 flex flex-row items-center justify-center font-studentName text-xl font-semibold leading-tight text-center px-2">
                         {displaySurname} {displayName}

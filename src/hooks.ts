@@ -22,6 +22,7 @@ import {
 import { parseSmsConfig, SmsTemplate } from './sms'
 import Firebase from './firebase'
 import { getCachedData, setCachedData, getCacheKey, invalidateCache } from './utils/cache'
+import { filterStudentsByGroup } from './utils/studentsList'
 
 export const usePostIts = (currentUserId: string) => {
     const [postIts, setPostIts] = useState<{ classe: string, content: string }[]>([])
@@ -252,6 +253,7 @@ export const useStudents = (currentUserId: string) => {
     const [allIds, setAllIds] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
     const allStudentsRef = useRef<StudentInterface[]>([]); // Cache des étudiants non filtrés
+    const filterGroupRef = useRef<string | null>(null)
     const cacheKey = getCacheKey(currentUserId, 'students');
     const isMountedRef = useRef(true);
 
@@ -295,16 +297,19 @@ export const useStudents = (currentUserId: string) => {
                         } as StudentInterface;
                     });
 
-                    // Mettre à jour le cache et le state
                     allStudentsRef.current = studentData;
                     setCachedData(cacheKey, studentData);
-                    
-                    // Ne mettre à jour le state que si on a tous les étudiants (pas filtrés)
-                    // Le filtrage se fera via filterStudents() dans le composant
-                    // On évite de casser un filtrage en cours en ne touchant pas au state
-                    // si on a déjà des étudiants filtrés
-                    
                     setAllIds(studentData.map((s) => s.id));
+                    if (filterGroupRef.current != null) {
+                        setStudents(
+                            filterStudentsByGroup(
+                                studentData,
+                                filterGroupRef.current
+                            )
+                        )
+                    } else {
+                        setStudents(studentData)
+                    }
                     setLoading(false);
                 },
                 (error) => {
@@ -342,10 +347,8 @@ export const useStudents = (currentUserId: string) => {
 
     // filterStudents utilise maintenant le cache local, pas de rechargement
     const filterStudents = useCallback((group: string) => {
-        const filteredStudents = allStudentsRef.current
-            .filter((student) => group === 'tous' || student.classes.includes(group))
-            .sort((a) => (a.highlight ? -1 : 1));
-        setStudents(filteredStudents);
+        filterGroupRef.current = group
+        setStudents(filterStudentsByGroup(allStudentsRef.current, group));
     }, []);
 
     const refreshStudents = async () => {
@@ -355,9 +358,15 @@ export const useStudents = (currentUserId: string) => {
         const studentData = await fetchStudents(currentUserId);
         if (isMountedRef.current) {
             allStudentsRef.current = studentData;
-            setStudents(studentData);
             setAllIds(studentData.map((s) => s.id));
             setCachedData(cacheKey, studentData);
+            if (filterGroupRef.current != null) {
+                setStudents(
+                    filterStudentsByGroup(studentData, filterGroupRef.current)
+                )
+            } else {
+                setStudents(studentData)
+            }
             setLoading(false);
         }
     };

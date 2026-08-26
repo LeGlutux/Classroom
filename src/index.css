@@ -511,6 +511,17 @@ body,
     cursor: pointer;
 }
 
+.student-stats-back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    flex-shrink: 0;
+    color: var(--tn-ink);
+    background: transparent;
+}
+
 .student-stats-footer {
     display: flex;
     flex-direction: column;

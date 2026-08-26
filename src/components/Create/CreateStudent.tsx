@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import Firebase from '../../firebase'
 import NewStudentGroups from '../NewStudentGroups'
 import { useLists } from '../../hooks'
+import { titleCasePersonName } from '../../utils/names'
 
 interface Props {
     groups: string[]
@@ -36,14 +37,8 @@ export default (props: Props) => {
                     list.length === 1
                 ) {
                     const id = Date.now().toString()
-                    const nameCased = nameInputValue.replace(/\b\w/g, (c) =>
-                        c.toUpperCase()
-                    )
-
-                    const surnameCased = surnameInputValue.replace(
-                        /\b\w/g,
-                        (c) => c.toUpperCase()
-                    )
+                    const nameCased = titleCasePersonName(nameInputValue)
+                    const surnameCased = titleCasePersonName(surnameInputValue)
                     db.collection('users')
                         .doc(props.currentUserId)
                         .collection('eleves')

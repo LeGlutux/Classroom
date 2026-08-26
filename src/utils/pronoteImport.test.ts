@@ -7,6 +7,17 @@ describe('splitPronoteFullName', () => {
             surname: 'Marie',
         })
     })
+
+    it('ne met pas de majuscule après un accent', () => {
+        expect(splitPronoteFullName('BENOÎT Thérèse')).toEqual({
+            name: 'Benoît',
+            surname: 'Thérèse',
+        })
+        expect(splitPronoteFullName('FRANÇOIS Léa')).toEqual({
+            name: 'François',
+            surname: 'Léa',
+        })
+    })
 })
 
 describe('parsePronoteCsv', () => {

@@ -1,4 +1,5 @@
 import Papa from 'papaparse'
+import { titleCasePersonName, titleCaseWord } from './names'
 
 export interface PronoteStudent {
     surname: string
@@ -25,20 +26,6 @@ const ACCOM_VALUE_WORDS = [
     'aménagement',
     'orthophon',
 ]
-
-const titleCaseWord = (word: string) => {
-    if (!word) return ''
-    const lower = word.toLowerCase()
-    return lower.charAt(0).toUpperCase() + lower.slice(1)
-}
-
-const titleCaseName = (value: string) =>
-    value
-        .trim()
-        .split(/\s+/)
-        .filter(Boolean)
-        .map(titleCaseWord)
-        .join(' ')
 
 const normalize = (value: string) =>
     value
@@ -254,8 +241,8 @@ export const parsePronoteCsv = (text: string): PronoteStudent[] => {
             name = split.name
             surname = split.surname
         } else {
-            name = titleCaseName(String(row[lastKey] || ''))
-            surname = titleCaseName(String(row[firstKey] || ''))
+            name = titleCasePersonName(String(row[lastKey] || ''))
+            surname = titleCasePersonName(String(row[firstKey] || ''))
         }
         if (!name && !surname) return
         const identity = normalize(name + ' ' + surname)
