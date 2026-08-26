@@ -66,6 +66,7 @@ export default () => {
     const [displayedGroup, setDisplayedGroup] = useState('tous')
     const [studentQuery, setStudentQuery] = useState('')
     const [searchAway, setSearchAway] = useState(true)
+    const [searchStuck, setSearchStuck] = useState(false)
     const [hardStudents, setHardStudents] = useState<StudentInterface[]>([])
     const [magicStickStudentsList, setMagicStickStudentsList] =
         useState(hardStudents)
@@ -74,6 +75,7 @@ export default () => {
     const lastListScrollRef = useRef(0)
     const searchFocusedRef = useRef(false)
     const searchQueryRef = useRef('')
+    const searchAwayRef = useRef(true)
     const pullStartYRef = useRef<number | null>(null)
 
     useEffect(() => {
@@ -138,7 +140,9 @@ export default () => {
     useEffect(() => {
         setStudentQuery('')
         searchQueryRef.current = ''
+        searchAwayRef.current = true
         setSearchAway(true)
+        setSearchStuck(false)
         lastListScrollRef.current = 0
         pullStartYRef.current = null
         if (studentListRef.current) {
@@ -196,13 +200,29 @@ export default () => {
     const keepSearchOpen = () =>
         searchFocusedRef.current || searchQueryRef.current.trim().length > 0
 
-    const revealSearch = () => {
+    const revealSearch = (asOverlay?: boolean) => {
+        if (searchAwayRef.current && asOverlay !== undefined) {
+            setSearchStuck(asOverlay)
+        }
+        searchAwayRef.current = false
         setSearchAway(false)
+    }
+
+    const pinSearchInFlow = () => {
+        searchAwayRef.current = false
+        setSearchAway(false)
+        setSearchStuck(false)
+        if (studentListRef.current) {
+            studentListRef.current.scrollTop = 0
+        }
+        lastListScrollRef.current = 0
     }
 
     const hideSearch = () => {
         if (keepSearchOpen()) return
+        searchAwayRef.current = true
         setSearchAway(true)
+        setSearchStuck(false)
     }
 
     const onStudentListScroll = (
@@ -213,16 +233,20 @@ export default () => {
         lastListScrollRef.current = y
         if (keepSearchOpen()) {
             revealSearch()
+            if (y < 16) setSearchStuck(false)
             return
         }
         // iOS rubber-band : tirer vers le bas en haut de liste.
         if (y < -8) {
-            revealSearch()
+            revealSearch(false)
             return
+        }
+        if (!searchAwayRef.current && y < 16) {
+            setSearchStuck(false)
         }
         // Ne pas recacher au relâché du rubber-band (retour vers 0).
         if (dy > 10 && y > 24) hideSearch()
-        else if (dy < -10 && y > 8) revealSearch()
+        else if (dy < -10 && y > 8) revealSearch(true)
     }
 
     const onStudentListTouchStart = (
@@ -242,7 +266,7 @@ export default () => {
         if (pullStartYRef.current == null) return
         const pull = event.touches[0].clientY - pullStartYRef.current
         if (pull > 28) {
-            revealSearch()
+            revealSearch(false)
             pullStartYRef.current = null
         }
     }
@@ -252,7 +276,7 @@ export default () => {
     ) => {
         const list = studentListRef.current
         if (!list || list.scrollTop > 2) return
-        if (event.deltaY < -8) revealSearch()
+        if (event.deltaY < -8) revealSearch(false)
     }
 
     const toggleHighlight = (studentId: string) => {
@@ -457,7 +481,9 @@ export default () => {
                 <div className="student-list-shell">
                     <div
                         ref={studentListRef}
-                        className="flex-1 min-h-0 flex w-full flex-col overflow-y-scroll student-list-scroll student-grid md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start"
+                        className={`flex-1 min-h-0 flex w-full flex-col overflow-y-scroll student-list-scroll student-grid md:flex-row md:flex-wrap md:content-start lg:flex-row lg:flex-wrap lg:content-start xl:flex-row xl:flex-wrap xl:content-start${
+                            !searchAway && !searchStuck ? ' search-open' : ''
+                        }`}
                         onScroll={onStudentListScroll}
                         onTouchStart={onStudentListTouchStart}
                         onTouchMove={onStudentListTouchMove}
@@ -511,14 +537,14 @@ export default () => {
                     <div
                         className={`student-search-overlay${
                             searchAway ? ' is-away' : ''
-                        }`}
+                        }${searchStuck && !searchAway ? ' is-stuck' : ''}`}
                     >
                         <StudentSearchBar
                             value={studentQuery}
                             onChange={(value) => {
                                 searchQueryRef.current = value
                                 setStudentQuery(value)
-                                if (value.trim()) revealSearch()
+                                if (value.trim()) pinSearchInFlow()
                             }}
                             onFocus={() => {
                                 searchFocusedRef.current = true
