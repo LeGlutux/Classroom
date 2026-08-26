@@ -1,6 +1,7 @@
 {
   "short_name": "Thòt Note",
   "name": "Thòt Note",
+  "id": "/",
   "icons": [
     {
       "src": "favicon-32.png",
@@ -32,5 +33,15 @@
   "display": "standalone",
   "theme_color": "#f4f4f5",
   "background_color": "#0F3A2A",
-  "lang": "fr"
+  "lang": "fr",
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://thotnote.org/manifest.json"
+    },
+    {
+      "platform": "webapp",
+      "url": "https://www.thotnote.org/manifest.json"
+    }
+  ]
 }
