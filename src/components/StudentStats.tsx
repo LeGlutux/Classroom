@@ -8,6 +8,7 @@ import CrossTab from './CrossTab'
 import ConfirmModal from './ConfirmModal'
 import edit from '../images/edit.png'
 import { handleIcon, buildCrossSlots, CrossSlot } from '../functions'
+import { titleCasePersonName } from '../utils/names'
 
 const classToValue = (classes: unknown): string => {
     if (Array.isArray(classes)) {
@@ -163,8 +164,8 @@ const View = ({
     }
 
     const handleEdition = () => {
-        const name = nameInputValue.trim()
-        const surname = surnameInputValue.trim()
+        const name = titleCasePersonName(nameInputValue)
+        const surname = titleCasePersonName(surnameInputValue)
         const classe = classInputValue.trim()
         if (!name || !surname) {
             alert("Le prénom et le nom sont obligatoires")
