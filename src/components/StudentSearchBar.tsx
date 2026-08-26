@@ -28,7 +28,6 @@ const StudentSearchBar = ({
             className="student-search-input"
             type="search"
             inputMode="search"
-            enterKeyHint="search"
             autoComplete="off"
             autoCorrect="off"
             autoCapitalize="off"
