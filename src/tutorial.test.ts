@@ -97,6 +97,9 @@ describe('getTutorialSteps', () => {
         expect(crosses && crosses.body).toMatch(/positives/)
         expect(crosses && crosses.body).toMatch(/oubli de matériel/)
         expect(crosses && crosses.body).toMatch(/bonne séance/)
+        expect(crosses && crosses.body).not.toMatch(/appui/)
+        const tryCross = steps.find((step) => step.id === 'cards-cross')
+        expect(tryCross && tryCross.body).toMatch(/appui/)
     })
 
     it('présente Pat Mercier sur l’accueil, sans aller dans les listes', () => {

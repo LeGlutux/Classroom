@@ -2,13 +2,18 @@ import React, { useRef, useState } from 'react'
 import info from '../images/info.png'
 import pen from '../images/edit.png'
 import { buildCrossSlots, handleIcon } from '../functions'
+import {
+    TUTORIAL_NEGATIVE_ICONS,
+    TUTORIAL_POSITIVE_ICONS,
+} from '../tutorial'
 
-const DEMO_SLOTS = buildCrossSlots([1, 2, 13, 0, 0, 0], [16, 0, 0, 0, 0, 0]).map(
-    (slot) => ({
-        ...slot,
-        src: handleIcon(slot.icon),
-    })
-)
+const DEMO_SLOTS = buildCrossSlots(
+    TUTORIAL_NEGATIVE_ICONS,
+    TUTORIAL_POSITIVE_ICONS
+).map((slot) => ({
+    ...slot,
+    src: handleIcon(slot.icon),
+}))
 
 const DemoCross = ({
     src,

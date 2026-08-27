@@ -13,6 +13,10 @@ import {
 } from './Icons'
 import { handleIcon } from '../functions'
 import TutorialDemoCard from './TutorialDemoCard'
+import {
+    TUTORIAL_NEGATIVE_ICONS,
+    TUTORIAL_POSITIVE_ICONS,
+} from '../tutorial'
 
 type FakeScreen = 'home' | 'settings' | 'crosses'
 type FakeHighlight =
@@ -191,8 +195,8 @@ const FakeCrosses = ({ highlight }: { highlight?: FakeHighlight }) => (
             Croix négatives (oubli de matériel) et croix positives (bonne
             séance).
         </p>
-        <FakeCrossBlock title="Croix négatives" icons={[1, 2, 13]} />
-        <FakeCrossBlock title="Croix positives" icons={[16, 11]} />
+        <FakeCrossBlock title="Croix négatives" icons={TUTORIAL_NEGATIVE_ICONS} />
+        <FakeCrossBlock title="Croix positives" icons={TUTORIAL_POSITIVE_ICONS} />
     </div>
 )
 

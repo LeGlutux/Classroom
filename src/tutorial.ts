@@ -1,4 +1,6 @@
 export const TUTORIAL_REPLAY_EVENT = 'thotnote-replay-tutorial'
+export const TUTORIAL_NEGATIVE_ICONS = [1, 2, 13]
+export const TUTORIAL_POSITIVE_ICONS = [16, 11]
 
 export type TutorialStepId =
     | 'welcome'
@@ -93,7 +95,7 @@ export const getTutorialSteps = (showSms: boolean): TutorialStep[] => {
             id: 'crosses',
             title: 'Croix négatives et positives',
             body:
-                'Choisissez les icônes : négatives (oubli de matériel, travail non fait…) et positives (bonne séance, effort…). Un appui pose une croix, un appui long la retire.',
+                'Choisissez les icônes : négatives (oubli de matériel, travail non fait…) et positives (bonne séance, effort…).',
             stage: 'crosses',
             highlight: 'crosses',
         },
