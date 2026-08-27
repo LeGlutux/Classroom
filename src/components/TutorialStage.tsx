@@ -5,10 +5,6 @@ import list from '../images/list.png'
 import up from '../images/up.png'
 import down from '../images/down.png'
 import {
-    TutorialHighlight,
-    TutorialScreen,
-} from '../tutorial'
-import {
     IconChevronRight,
     IconGrid,
     IconUpload,
@@ -17,6 +13,18 @@ import {
 } from './Icons'
 import { handleIcon } from '../functions'
 import TutorialDemoCard from './TutorialDemoCard'
+
+type FakeScreen = 'home' | 'settings' | 'crosses'
+type FakeHighlight =
+    | 'nav-settings'
+    | 'classes'
+    | 'crosses-row'
+    | 'crosses'
+    | 'demo-i'
+    | 'demo-cross'
+    | 'demo-note'
+    | 'demo-card'
+    | 'nav-lists'
 
 const navIconClass = (active: boolean) =>
     `self-center${active ? '' : ' nav-icon-inactive'}`
@@ -27,7 +35,7 @@ const FakeNav = ({
     onSettings,
 }: {
     active: 'home' | 'settings'
-    highlight?: TutorialHighlight
+    highlight?: FakeHighlight
     onSettings?: () => void
 }) => (
     <div className="flex flex-row px-4 h-full justify-around py-2">
@@ -100,7 +108,7 @@ const FakeSettings = ({
     highlight,
     onCrosses,
 }: {
-    highlight?: TutorialHighlight
+    highlight?: FakeHighlight
     onCrosses?: () => void
 }) => (
     <div className="tutorial-fake-body">
@@ -173,7 +181,7 @@ const FakeCrossBlock = ({
     </div>
 )
 
-const FakeCrosses = ({ highlight }: { highlight?: TutorialHighlight }) => (
+const FakeCrosses = ({ highlight }: { highlight?: FakeHighlight }) => (
     <div
         className={`tutorial-fake-body${
             highlight === 'crosses' ? ' tutorial-lit' : ''
@@ -192,7 +200,7 @@ const FakeHome = ({
     highlight,
     demo,
 }: {
-    highlight?: TutorialHighlight
+    highlight?: FakeHighlight
     demo?: 'card' | 'swipe'
 }) => (
     <div className="tutorial-fake-body">
@@ -220,15 +228,15 @@ const FakeHome = ({
     </div>
 )
 
-const TutorialStage = ({
+const TutorialFakeApp = ({
     stage,
     highlight,
     demo,
     onAdvance,
     children,
 }: {
-    stage: TutorialScreen
-    highlight?: TutorialHighlight
+    stage: FakeScreen
+    highlight?: FakeHighlight
     demo?: 'card' | 'swipe'
     onAdvance: () => void
     children?: React.ReactNode
@@ -272,4 +280,4 @@ const TutorialStage = ({
     )
 }
 
-export default TutorialStage
+export default TutorialFakeApp

@@ -20,7 +20,7 @@ import {
     IconUser,
     IconUsers,
 } from './Icons'
-import TutorialStage from './TutorialStage'
+import TutorialFakeApp from './TutorialStage'
 
 const AUTH_PATHS = ['/login', '/signup']
 
@@ -247,14 +247,14 @@ const AppTutorialHost = () => {
 
     return (
         <div className="tutorial-root is-stage" role="presentation">
-            <TutorialStage
+            <TutorialFakeApp
                 stage={current.stage!}
                 highlight={current.highlight}
                 demo={current.demo}
                 onAdvance={goNext}
             >
                 <div className="tutorial-speech">{speech}</div>
-            </TutorialStage>
+            </TutorialFakeApp>
         </div>
     )
 }
