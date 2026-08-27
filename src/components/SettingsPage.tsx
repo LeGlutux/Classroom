@@ -100,6 +100,10 @@ const SettingsRow = ({
 const SettingsMenu = () => {
     const { currentUser } = useContext(AuthContext)
     const { smsEnabled } = useSmsConfig()
+    const uid = currentUser ? currentUser.uid : ''
+    const { groups, loading } = useGroups(uid)
+    const history = useHistory()
+    const [needClass, setNeedClass] = useState(false)
     if (currentUser === null) return <div />
 
     const adminConnected = isAdminUser(currentUser)
@@ -109,6 +113,16 @@ const SettingsMenu = () => {
 
     return (
         <SettingsLayout title="Paramètres">
+            <ConfirmModal
+                confirm={needClass}
+                setConfirm={setNeedClass}
+                confirmAction={() => {
+                    history.push('/create/classe')
+                }}
+                textBox="Il faut d’abord créer une classe"
+                subTextBox="Ajoutez une ou plusieurs classes, puis vous pourrez y inscrire des élèves."
+                confirmLabel="Créer une classe"
+            />
             <div className="settings-profile">
                 <div className="settings-avatar">{initial}</div>
                 <div>
@@ -133,10 +147,17 @@ const SettingsMenu = () => {
                         subtitle="Une classe à la fois"
                     />
                     <SettingsRow
-                        to="/create/eleves"
                         icon={<IconUser />}
                         title="Ajouter des élèves manuellement"
                         subtitle="Un élève à la fois, dans une classe"
+                        onClick={() => {
+                            if (loading) {
+                                history.push('/create/eleves')
+                                return
+                            }
+                            if (!groups.length) setNeedClass(true)
+                            else history.push('/create/eleves')
+                        }}
                     />
                 </div>
                 <SettingsRow
@@ -241,7 +262,9 @@ const SettingsClasse = () => {
     const { groups, loading, refreshGroups } = useGroups(uid)
     const { students } = useStudents(uid)
     const { lists } = useLists(uid)
+    const history = useHistory()
     const [pendingClass, setPendingClass] = useState<string | null>(null)
+    const [needClass, setNeedClass] = useState(false)
     if (currentUser === null) return <div />
 
     const studentInClass = (student: { classes: string | string[] }, group: string) => {
@@ -332,6 +355,17 @@ const SettingsClasse = () => {
                 textBox={`Supprimer la classe ${pendingClass || ''} ?`}
                 subTextBox="Tous les élèves de cette classe seront supprimés, avec leurs croix, notes et listes. Cette action est définitive."
             />
+            <ConfirmModal
+                confirm={needClass}
+                setConfirm={setNeedClass}
+                confirmAction={() => {
+                    setNeedClass(false)
+                }}
+                textBox="Il faut d’abord créer une classe"
+                subTextBox="Ajoutez une ou plusieurs classes plus haut, puis vous pourrez y inscrire des élèves."
+                confirmLabel="D’accord"
+                hideCancel
+            />
             <div className="settings-panel">
                 <CreateGroups onAddGroup={refreshGroups} />
             </div>
@@ -375,6 +409,17 @@ const SettingsClasse = () => {
                     })
                 )}
             </div>
+            <button
+                type="button"
+                className="settings-btn"
+                onClick={() => {
+                    if (loading) return
+                    if (!groups.length) setNeedClass(true)
+                    else history.push('/create/eleves')
+                }}
+            >
+                Ajouter des élèves
+            </button>
         </SettingsLayout>
     )
 }
@@ -412,11 +457,29 @@ const SettingsPronote = () => {
 const SettingsEleves = () => {
     const { currentUser } = useContext(AuthContext)
     const uid = currentUser ? currentUser.uid : ''
-    const { groups } = useGroups(uid)
+    const { groups, loading } = useGroups(uid)
+    const history = useHistory()
+    const [needClass, setNeedClass] = useState(false)
+
+    useEffect(() => {
+        if (loading) return
+        setNeedClass(groups.length === 0)
+    }, [loading, groups.length])
+
     if (currentUser === null) return <div />
 
     return (
         <SettingsLayout title="Ajouter des élèves manuellement" backTo="/create">
+            <ConfirmModal
+                confirm={needClass}
+                setConfirm={setNeedClass}
+                confirmAction={() => {
+                    history.push('/create/classe')
+                }}
+                textBox="Il faut d’abord créer une classe"
+                subTextBox="Ajoutez une ou plusieurs classes, puis vous pourrez y inscrire des élèves."
+                confirmLabel="Créer une classe"
+            />
             <div className="settings-panel">
                 <CreateStudent groups={groups} currentUserId={currentUser.uid} />
             </div>
