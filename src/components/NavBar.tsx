@@ -15,7 +15,10 @@ const navIconClass = (active: boolean) =>
 export default (props: NavBarProps) => {
     return (
         <div className="flex flex-row px-4 h-full justify-around py-2">
-            <div className="rounded-full h-8 w-8 xl:h-10 xl:w-10 flex justify-center">
+            <div
+                className="rounded-full h-8 w-8 xl:h-10 xl:w-10 flex justify-center"
+                data-tutorial-spot="nav-settings"
+            >
                 <Link to="/create">
                     <img
                         className={navIconClass(props.activeMenu === 'addPage')}

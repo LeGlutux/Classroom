@@ -55,39 +55,69 @@ describe('getTutorialSteps', () => {
         const withSms = getTutorialSteps(true).map((step) => step.id)
         expect(withoutSms).toEqual([
             'welcome',
+            'classes-nav',
             'classes',
+            'crosses-nav',
             'crosses',
-            'cards',
+            'cards-i',
+            'cards-cross',
+            'cards-note',
             'lists',
             'ready',
         ])
         expect(withSms).toEqual([
             'welcome',
+            'classes-nav',
             'classes',
+            'crosses-nav',
             'crosses',
-            'cards',
+            'cards-i',
+            'cards-cross',
+            'cards-note',
+            'cards-sms',
             'lists',
-            'sms',
             'ready',
         ])
     })
 
-    it('place la personnalisation des croix avant les cartes élèves', () => {
-        const ids = getTutorialSteps(false).map((step) => step.id)
-        expect(ids.indexOf('crosses')).toBeLessThan(ids.indexOf('cards'))
-        expect(getTutorialSteps(false)[2].title).toMatch(/croix/i)
+    it('emmène vers Paramètres puis la personnalisation des croix', () => {
+        const steps = getTutorialSteps(false)
+        const nav = steps.find((step) => step.id === 'classes-nav')
+        const classes = steps.find((step) => step.id === 'classes')
+        const crossesNav = steps.find((step) => step.id === 'crosses-nav')
+        const crosses = steps.find((step) => step.id === 'crosses')
+        expect(nav && nav.spot).toBe('nav-settings')
+        expect(nav && nav.advanceOnSpotClick).toBe(true)
+        expect(classes && classes.route).toBe('/create')
+        expect(classes && classes.spot).toBe('classes')
+        expect(crossesNav && crossesNav.spot).toBe('crosses-row')
+        expect(crosses && crosses.route).toBe('/create/cartes')
+        expect(crosses && crosses.body).toMatch(/négatives/)
+        expect(crosses && crosses.body).toMatch(/positives/)
+        expect(crosses && crosses.body).toMatch(/oubli de matériel/)
+        expect(crosses && crosses.body).toMatch(/bonne séance/)
+    })
+
+    it('présente Pat Mercier sur l’accueil, sans aller dans les listes', () => {
+        const steps = getTutorialSteps(true)
+        const card = steps.find((step) => step.id === 'cards-i')
+        const sms = steps.find((step) => step.id === 'cards-sms')
+        const lists = steps.find((step) => step.id === 'lists')
+        expect(card && card.demo).toBe('card')
+        expect(card && card.route).toBe('/')
+        expect(card && card.body).toMatch(/Pat Mercier/)
+        expect(sms && sms.demo).toBe('swipe')
+        expect(sms && sms.body).toMatch(/droite/)
+        expect(sms && sms.body).not.toMatch(/gauche/)
+        expect(lists && lists.route).toBeUndefined()
+        expect(lists && lists.body).toMatch(/document/)
+        expect(lists && lists.body).toMatch(/évaluation/)
     })
 
     it('parle de visite guidée, pas de tour', () => {
         const welcome = getTutorialSteps(false)[0]
         expect(welcome.body).toMatch(/visite guidée/)
         expect(welcome.body).not.toMatch(/\btour\b/)
-    })
-
-    it('indique un swipe vers la droite pour le SMS', () => {
-        const sms = getTutorialSteps(true).find((step) => step.id === 'sms')
-        expect(sms && sms.body).toMatch(/droite/)
-        expect(sms && sms.body).not.toMatch(/gauche/)
     })
 
     it('garde un titre et un texte sur chaque écran', () => {

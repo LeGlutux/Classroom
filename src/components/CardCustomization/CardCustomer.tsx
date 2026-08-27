@@ -202,6 +202,7 @@ export default (props: CardCustomerProps) => {
                 Jusqu’à 6 icônes au total, réparties entre croix négatives et
                 croix positives.
             </p>
+            <div data-tutorial-spot="crosses">
             <CrossPreview
                 title="Croix négatives"
                 icons={icons}
@@ -239,6 +240,7 @@ export default (props: CardCustomerProps) => {
                     )
                 }
             />
+            </div>
             <div
                 className={`settings-btn is-disabled ${
                     clickable ? 'hidden' : ''
