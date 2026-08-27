@@ -51,7 +51,6 @@ interface SettingsRowProps {
     title: string
     subtitle?: string
     logout?: boolean
-    spot?: string
 }
 
 const SettingsRow = ({
@@ -61,7 +60,6 @@ const SettingsRow = ({
     title,
     subtitle,
     logout,
-    spot,
 }: SettingsRowProps) => {
     const className = `settings-row${logout ? ' settings-row-logout' : ''}`
     const content = (
@@ -79,7 +77,7 @@ const SettingsRow = ({
 
     if (to) {
         return (
-            <Link to={to} className={className} data-tutorial-spot={spot}>
+            <Link to={to} className={className}>
                 {content}
             </Link>
         )
@@ -90,7 +88,6 @@ const SettingsRow = ({
             type="button"
             className={className}
             onClick={onClick}
-            data-tutorial-spot={spot}
         >
             {content}
         </button>
@@ -133,36 +130,33 @@ const SettingsMenu = () => {
 
             <div className="settings-group-label">Classes et élèves</div>
             <div className="settings-group">
-                <div data-tutorial-spot="classes">
-                    <SettingsRow
-                        to="/create/pronote"
-                        icon={<IconUpload />}
-                        title="Importer depuis Pronote"
-                        subtitle="À partir d’un export CSV"
-                    />
-                    <SettingsRow
-                        to="/create/classe"
-                        icon={<IconUsers />}
-                        title="Créer une classe manuellement"
-                        subtitle="Une classe à la fois"
-                    />
-                    <SettingsRow
-                        icon={<IconUser />}
-                        title="Ajouter des élèves manuellement"
-                        subtitle="Un élève à la fois, dans une classe"
-                        onClick={() => {
-                            if (loading) {
-                                history.push('/create/eleves')
-                                return
-                            }
-                            if (!groups.length) setNeedClass(true)
-                            else history.push('/create/eleves')
-                        }}
-                    />
-                </div>
+                <SettingsRow
+                    to="/create/pronote"
+                    icon={<IconUpload />}
+                    title="Importer depuis Pronote"
+                    subtitle="À partir d’un export CSV"
+                />
+                <SettingsRow
+                    to="/create/classe"
+                    icon={<IconUsers />}
+                    title="Créer une classe manuellement"
+                    subtitle="Une classe à la fois"
+                />
+                <SettingsRow
+                    icon={<IconUser />}
+                    title="Ajouter des élèves manuellement"
+                    subtitle="Un élève à la fois, dans une classe"
+                    onClick={() => {
+                        if (loading) {
+                            history.push('/create/eleves')
+                            return
+                        }
+                        if (!groups.length) setNeedClass(true)
+                        else history.push('/create/eleves')
+                    }}
+                />
                 <SettingsRow
                     to="/create/cartes"
-                    spot="crosses-row"
                     icon={<IconGrid />}
                     title="Personnaliser les croix"
                     subtitle="Croix négatives et positives"

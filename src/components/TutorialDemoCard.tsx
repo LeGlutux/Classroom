@@ -68,17 +68,20 @@ const DemoCross = ({
 const TutorialDemoCard = ({
     swipe,
     interactive,
+    focus,
 }: {
     swipe?: boolean
     interactive?: boolean
+    focus?: 'demo-i' | 'demo-cross' | 'demo-note' | 'demo-card'
 }) => {
     const [counts, setCounts] = useState<{ [type: string]: number }>({})
     const [note, setNote] = useState('')
 
     return (
         <div
-            className={`tutorial-demo${swipe ? ' is-swiping' : ''}`}
-            data-tutorial-spot="demo-card"
+            className={`tutorial-demo${swipe ? ' is-swiping' : ''}${
+                focus === 'demo-card' ? ' tutorial-lit' : ''
+            }`}
         >
             <div className="sms-swipe tutorial-demo-swipe">
                 <div className="sms-swipe-rail" aria-hidden="true">
@@ -97,8 +100,9 @@ const TutorialDemoCard = ({
                                     </div>
                                 </div>
                                 <span
-                                    className="flex mr-4"
-                                    data-tutorial-spot="demo-i"
+                                    className={`flex mr-4${
+                                        focus === 'demo-i' ? ' tutorial-lit' : ''
+                                    }`}
                                 >
                                     <img
                                         className="flex w-4 self-center"
@@ -109,8 +113,9 @@ const TutorialDemoCard = ({
                             </div>
                         </div>
                         <div
-                            className="w-full h-12 flex p-2 items-center justify-between pr-6"
-                            data-tutorial-spot="demo-cross"
+                            className={`w-full h-12 flex p-2 items-center justify-between pr-6${
+                                focus === 'demo-cross' ? ' tutorial-lit' : ''
+                            }`}
                         >
                             {DEMO_SLOTS.map((slot) => (
                                 <DemoCross
@@ -138,8 +143,9 @@ const TutorialDemoCard = ({
                             ))}
                         </div>
                         <div
-                            className="student-note"
-                            data-tutorial-spot="demo-note"
+                            className={`student-note${
+                                focus === 'demo-note' ? ' tutorial-lit' : ''
+                            }`}
                         >
                             <button
                                 type="button"

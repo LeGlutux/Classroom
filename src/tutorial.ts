@@ -13,17 +13,28 @@ export type TutorialStepId =
     | 'lists'
     | 'ready'
 
+export type TutorialStage = 'home' | 'settings' | 'crosses'
+
+export type TutorialHighlight =
+    | 'nav-settings'
+    | 'classes'
+    | 'crosses-row'
+    | 'crosses'
+    | 'demo-i'
+    | 'demo-cross'
+    | 'demo-note'
+    | 'demo-card'
+    | 'nav-lists'
+
 export type TutorialStep = {
     id: TutorialStepId
     title: string
     body: string
     hint?: string
-    route?: string
-    spot?: string
-    ring?: string
+    stage?: TutorialStage
+    highlight?: TutorialHighlight
+    advanceOnHighlight?: boolean
     demo?: 'card' | 'swipe'
-    advanceOnSpotClick?: boolean
-    spotInteractive?: boolean
 }
 
 export type TutorialUser = {
@@ -57,44 +68,42 @@ export const getTutorialSteps = (showSms: boolean): TutorialStep[] => {
             body:
                 'L’icône de gauche, en bas, ouvre Paramètres. Appuyez dessus pour y aller.',
             hint: 'C’est l’icône entourée, en bas à gauche.',
-            spot: 'nav-settings',
-            advanceOnSpotClick: true,
-            spotInteractive: true,
+            stage: 'home',
+            highlight: 'nav-settings',
+            advanceOnHighlight: true,
         },
         {
             id: 'classes',
             title: 'Ajouter des classes',
             body:
                 'Importez un export Pronote, ou créez une classe puis des élèves à la main.',
-            route: '/create',
-            spot: 'classes',
+            stage: 'settings',
+            highlight: 'classes',
         },
         {
             id: 'crosses-nav',
             title: 'Personnaliser les croix',
             body:
                 'Toujours dans Paramètres, ouvrez « Personnaliser les croix ». C’est le geste du quotidien.',
-            route: '/create',
-            spot: 'crosses-row',
-            advanceOnSpotClick: true,
-            spotInteractive: true,
+            stage: 'settings',
+            highlight: 'crosses-row',
+            advanceOnHighlight: true,
         },
         {
             id: 'crosses',
             title: 'Croix négatives et positives',
             body:
                 'Choisissez les icônes : négatives (oubli de matériel, travail non fait…) et positives (bonne séance, effort…). Un appui pose une croix, un appui long la retire.',
-            route: '/create/cartes',
-            spot: 'crosses',
-            spotInteractive: true,
+            stage: 'crosses',
+            highlight: 'crosses',
         },
         {
             id: 'cards-i',
             title: 'Les cartes élèves',
             body:
                 'Voici la carte de Pat Mercier. Le « i » ouvre le détail de l’élève : historique des croix, notes, évolution.',
-            route: '/',
-            ring: 'demo-i',
+            stage: 'home',
+            highlight: 'demo-i',
             demo: 'card',
         },
         {
@@ -102,8 +111,8 @@ export const getTutorialSteps = (showSms: boolean): TutorialStep[] => {
             title: 'Poser et retirer une croix',
             body:
                 'Un appui sur une icône pose une croix. Un appui long la retire. Vous pouvez essayer sur la carte de Pat.',
-            route: '/',
-            ring: 'demo-cross',
+            stage: 'home',
+            highlight: 'demo-cross',
             demo: 'card',
         },
         {
@@ -111,8 +120,8 @@ export const getTutorialSteps = (showSms: boolean): TutorialStep[] => {
             title: 'Une note sous la fiche',
             body:
                 'Le crayon sous la carte sert à une note courte, visible d’un coup d’œil (oubli de cahier, mot des parents…).',
-            route: '/',
-            ring: 'demo-note',
+            stage: 'home',
+            highlight: 'demo-note',
             demo: 'card',
         },
     ]
@@ -123,8 +132,8 @@ export const getTutorialSteps = (showSms: boolean): TutorialStep[] => {
             title: 'SMS aux parents',
             body:
                 'Glissez une carte vers la droite pour choisir un modèle. Le prénom se copie : cherchez le contact sous la forme « 6A - Pat Mercier ». Aucun numéro n’est enregistré dans Thòt Note.',
-            route: '/',
-            ring: 'demo-card',
+            stage: 'home',
+            highlight: 'demo-card',
             demo: 'swipe',
         })
     }
@@ -135,6 +144,8 @@ export const getTutorialSteps = (showSms: boolean): TutorialStep[] => {
             title: 'Les listes',
             body:
                 'Pas besoin d’y aller maintenant. L’icône de droite, en bas, ouvre les listes : elles permettent de suivre qui a rendu un document ou fait signer une évaluation. Vous créez une liste, puis vous cochez les élèves concernés.',
+            stage: 'home',
+            highlight: 'nav-lists',
         },
         {
             id: 'ready',
