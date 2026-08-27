@@ -13,7 +13,7 @@ export type TutorialStepId =
     | 'lists'
     | 'ready'
 
-export type TutorialStage = 'home' | 'settings' | 'crosses'
+export type TutorialScreen = 'home' | 'settings' | 'crosses'
 
 export type TutorialHighlight =
     | 'nav-settings'
@@ -31,7 +31,7 @@ export type TutorialStep = {
     title: string
     body: string
     hint?: string
-    stage?: TutorialStage
+    stage?: TutorialScreen
     highlight?: TutorialHighlight
     advanceOnHighlight?: boolean
     demo?: 'card' | 'swipe'

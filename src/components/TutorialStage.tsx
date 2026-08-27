@@ -6,7 +6,7 @@ import up from '../images/up.png'
 import down from '../images/down.png'
 import {
     TutorialHighlight,
-    TutorialStage,
+    TutorialScreen,
 } from '../tutorial'
 import {
     IconChevronRight,
@@ -227,7 +227,7 @@ const TutorialStage = ({
     onAdvance,
     children,
 }: {
-    stage: TutorialStage
+    stage: TutorialScreen
     highlight?: TutorialHighlight
     demo?: 'card' | 'swipe'
     onAdvance: () => void
