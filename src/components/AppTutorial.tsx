@@ -20,51 +20,18 @@ import {
     IconUser,
     IconUsers,
 } from './Icons'
-import addPage from '../images/addPage.png'
-import home from '../images/home.png'
-import list from '../images/list.png'
+import TutorialFakeApp from './TutorialStage'
 
 const AUTH_PATHS = ['/login', '/signup']
 
 const stepIcon = (id: TutorialStep['id']) => {
-    if (id === 'classes') return <IconUsers />
-    if (id === 'crosses') return <IconGrid />
-    if (id === 'cards') return <IconUser />
+    if (id === 'classes' || id === 'classes-nav') return <IconUsers />
+    if (id === 'crosses' || id === 'crosses-nav') return <IconGrid />
+    if (id === 'cards-sms') return <IconChat />
+    if (id.indexOf('cards') === 0) return <IconUser />
     if (id === 'lists') return <IconNote />
-    if (id === 'sms') return <IconChat />
     if (id === 'ready') return <IconCheck />
     return <IconPlay />
-}
-
-const NavHint = ({ active }: { active?: TutorialStep['nav'] }) => {
-    if (!active) return null
-    const slotClass = (id: TutorialStep['nav']) =>
-        `tutorial-nav-slot${active === id ? ' is-target' : ''}`
-    return (
-        <div className="tutorial-nav-hint" aria-hidden="true">
-            <span className={slotClass('settings')}>
-                <img
-                    className={active === 'settings' ? '' : 'nav-icon-inactive'}
-                    src={addPage}
-                    alt=""
-                />
-            </span>
-            <span className={slotClass('home')}>
-                <img
-                    className={active === 'home' ? '' : 'nav-icon-inactive'}
-                    src={home}
-                    alt=""
-                />
-            </span>
-            <span className={slotClass('lists')}>
-                <img
-                    className={active === 'lists' ? '' : 'nav-icon-inactive'}
-                    src={list}
-                    alt=""
-                />
-            </span>
-        </div>
-    )
 }
 
 const AppTutorialHost = () => {
@@ -195,75 +162,99 @@ const AppTutorialHost = () => {
     const index = Math.min(step, steps.length - 1)
     const current = steps[index]
     const last = index === steps.length - 1
+    const staged = !!current.stage
 
-    return (
-        <div className="modal-overlay tutorial-overlay" role="presentation">
-            <div
-                className="modal-card tutorial-card"
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="tutorial-title"
-            >
-                <div className="tutorial-kicker">
-                    Visite guidée {index + 1} / {steps.length}
-                </div>
+    const goNext = () => {
+        if (last) {
+            close()
+            return
+        }
+        setStep(index + 1)
+    }
+
+    const speech = (
+        <div
+            className={`modal-card tutorial-card${staged ? ' is-compact' : ''}`}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="tutorial-title"
+        >
+            <div className="tutorial-kicker">
+                Visite guidée {index + 1} / {steps.length}
+            </div>
+            {staged ? null : (
                 <div className="tutorial-icon">{stepIcon(current.id)}</div>
-                <div className="tutorial-title" id="tutorial-title">
-                    {current.title}
-                </div>
-                <p className="tutorial-body">{current.body}</p>
-                {current.hint ? (
-                    <div className="tutorial-hint">{current.hint}</div>
-                ) : null}
-                <NavHint active={current.nav} />
-                <div className="tutorial-dots" role="tablist" aria-label="Étapes">
-                    {steps.map((item, itemIndex) => (
+            )}
+            <div className="tutorial-title" id="tutorial-title">
+                {current.title}
+            </div>
+            <p className="tutorial-body">{current.body}</p>
+            {current.hint ? (
+                <div className="tutorial-hint">{current.hint}</div>
+            ) : null}
+            <div className="tutorial-dots" role="tablist" aria-label="Étapes">
+                {steps.map((item, itemIndex) => (
+                    <button
+                        key={item.id}
+                        type="button"
+                        className={`tutorial-dot${
+                            itemIndex === index ? ' is-on' : ''
+                        }`}
+                        aria-label={`Étape ${itemIndex + 1}`}
+                        aria-current={itemIndex === index ? 'step' : undefined}
+                        onClick={() => setStep(itemIndex)}
+                    />
+                ))}
+            </div>
+            <div className="tutorial-actions">
+                <button
+                    type="button"
+                    className="modal-btn modal-btn-ghost"
+                    onClick={close}
+                >
+                    Passer
+                </button>
+                <div className="tutorial-actions-end">
+                    {index > 0 ? (
                         <button
-                            key={item.id}
                             type="button"
-                            className={`tutorial-dot${
-                                itemIndex === index ? ' is-on' : ''
-                            }`}
-                            aria-label={`Étape ${itemIndex + 1}`}
-                            aria-current={itemIndex === index ? 'step' : undefined}
-                            onClick={() => setStep(itemIndex)}
-                        />
-                    ))}
-                </div>
-                <div className="tutorial-actions">
+                            className="modal-btn modal-btn-ghost"
+                            onClick={() => setStep(index - 1)}
+                        >
+                            Retour
+                        </button>
+                    ) : null}
                     <button
                         type="button"
-                        className="modal-btn modal-btn-ghost"
-                        onClick={close}
+                        className="modal-btn modal-btn-primary"
+                        onClick={goNext}
                     >
-                        Passer
+                        {last ? 'C’est parti' : 'Continuer'}
                     </button>
-                    <div className="tutorial-actions-end">
-                        {index > 0 ? (
-                            <button
-                                type="button"
-                                className="modal-btn modal-btn-ghost"
-                                onClick={() => setStep(index - 1)}
-                            >
-                                Retour
-                            </button>
-                        ) : null}
-                        <button
-                            type="button"
-                            className="modal-btn modal-btn-primary"
-                            onClick={() => {
-                                if (last) {
-                                    close()
-                                    return
-                                }
-                                setStep(index + 1)
-                            }}
-                        >
-                            {last ? 'C’est parti' : 'Continuer'}
-                        </button>
-                    </div>
                 </div>
             </div>
+        </div>
+    )
+
+    if (!staged) {
+        return (
+            <div className="tutorial-root is-centered" role="presentation">
+                <div className="tutorial-dim is-full" />
+                {speech}
+            </div>
+        )
+    }
+
+    return (
+        <div className="tutorial-root is-stage" role="presentation">
+            <TutorialFakeApp
+                stage={current.stage!}
+                highlight={current.highlight}
+                demo={current.demo}
+                onAdvance={goNext}
+            >
+                <div className="tutorial-speech">{speech}</div>
+            </TutorialFakeApp>
         </div>
     )
 }

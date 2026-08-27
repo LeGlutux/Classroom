@@ -7,6 +7,9 @@ interface ConfirmModalProps {
     textBox: string
     subTextBox?: string
     danger?: boolean
+    confirmLabel?: string
+    cancelLabel?: string
+    hideCancel?: boolean
 }
 
 export default ({
@@ -16,6 +19,9 @@ export default ({
     textBox,
     subTextBox,
     danger,
+    confirmLabel,
+    cancelLabel,
+    hideCancel,
 }: ConfirmModalProps) => {
     if (!confirm) return null
 
@@ -28,13 +34,15 @@ export default ({
                 <div className="modal-empty">{textBox}</div>
                 {subTextBox ? <div className="modal-sub">{subTextBox}</div> : null}
                 <div className="modal-actions">
-                    <button
-                        type="button"
-                        className="modal-btn modal-btn-ghost"
-                        onClick={() => setConfirm(false)}
-                    >
-                        Annuler
-                    </button>
+                    {hideCancel ? null : (
+                        <button
+                            type="button"
+                            className="modal-btn modal-btn-ghost"
+                            onClick={() => setConfirm(false)}
+                        >
+                            {cancelLabel || 'Annuler'}
+                        </button>
+                    )}
                     <button
                         type="button"
                         className={`modal-btn ${
@@ -45,7 +53,7 @@ export default ({
                             setConfirm(false)
                         }}
                     >
-                        Confirmer
+                        {confirmLabel || 'Confirmer'}
                     </button>
                 </div>
             </div>
