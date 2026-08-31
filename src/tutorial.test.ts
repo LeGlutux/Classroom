@@ -1,39 +1,26 @@
 import {
+    TUTORIAL_COMPLETED_EVENT,
     TUTORIAL_REPLAY_EVENT,
     getTutorialSteps,
+    notifyTutorialCompleted,
     replayTutorial,
-    shouldAutoStartTutorial,
+    tutorialNeverPlayed,
 } from './tutorial'
 
-describe('shouldAutoStartTutorial', () => {
-    it('ne démarre pas sans document utilisateur', () => {
-        expect(shouldAutoStartTutorial(undefined)).toBe(false)
-        expect(shouldAutoStartTutorial(null)).toBe(false)
+describe('tutorialNeverPlayed', () => {
+    it('reste vrai tant que le tutoriel n’est pas marqué comme vu', () => {
+        expect(tutorialNeverPlayed(undefined)).toBe(true)
+        expect(tutorialNeverPlayed(null)).toBe(true)
+        expect(tutorialNeverPlayed({})).toBe(true)
+        expect(tutorialNeverPlayed({ tutorialCompleted: false })).toBe(true)
+        expect(tutorialNeverPlayed({ classes: ['6A'] })).toBe(true)
     })
 
-    it('démarre pour un compte neuf, sans classes', () => {
-        expect(shouldAutoStartTutorial({ classes: [], tutorialCompleted: false })).toBe(
-            true
-        )
-        expect(shouldAutoStartTutorial({ classes: [] })).toBe(true)
-        expect(shouldAutoStartTutorial({})).toBe(true)
-    })
-
-    it('ne relance pas un compte qui a déjà vu le tutoriel', () => {
+    it('devient faux une fois le tutoriel terminé', () => {
         expect(
-            shouldAutoStartTutorial({
+            tutorialNeverPlayed({
                 classes: [],
                 tutorialCompleted: true,
-            })
-        ).toBe(false)
-    })
-
-    it('ne s’impose pas aux comptes qui ont déjà des classes', () => {
-        expect(shouldAutoStartTutorial({ classes: ['6A'] })).toBe(false)
-        expect(
-            shouldAutoStartTutorial({
-                classes: ['6A'],
-                tutorialCompleted: false,
             })
         ).toBe(false)
     })
@@ -46,6 +33,14 @@ describe('replayTutorial', () => {
         replayTutorial()
         expect(onReplay).toHaveBeenCalledTimes(1)
         window.removeEventListener(TUTORIAL_REPLAY_EVENT, onReplay)
+    })
+
+    it('signale la fin de la visite guidée', () => {
+        const onDone = jest.fn()
+        window.addEventListener(TUTORIAL_COMPLETED_EVENT, onDone)
+        notifyTutorialCompleted()
+        expect(onDone).toHaveBeenCalledTimes(1)
+        window.removeEventListener(TUTORIAL_COMPLETED_EVENT, onDone)
     })
 })
 

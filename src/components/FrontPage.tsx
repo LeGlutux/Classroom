@@ -24,7 +24,7 @@ import updater_gif from '../images/updater.gif'
 import addPage from '../images/addPage.png'
 import Firebase from '../firebase'
 import { Link } from 'react-router-dom'
-import { replayTutorial } from '../tutorial'
+import { replayTutorial, TUTORIAL_COMPLETED_EVENT, tutorialNeverPlayed } from '../tutorial'
 import Updater from './Updater'
 import PostIt, { PostItAlert } from './PostIt'
 import Loader from './Loader'
@@ -41,6 +41,9 @@ export default () => {
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
     const { user, refreshUser } = useUser(currentUser.uid)
+    const [tutorialDone, setTutorialDone] = useState(
+        user?.tutorialCompleted === true
+    )
     const { students, loading: studentsLoading, filterStudents } = useStudents(currentUser.uid)
     const { postIts, setPostIts } = usePostIts(currentUser.uid)
     const postIt = (group: string) => {
@@ -77,6 +80,23 @@ export default () => {
     const searchQueryRef = useRef('')
     const searchAwayRef = useRef(true)
     const pullStartYRef = useRef<number | null>(null)
+    const tutorialPending = tutorialDone
+        ? false
+        : tutorialNeverPlayed(user)
+
+    useEffect(() => {
+        if (user?.tutorialCompleted === true) {
+            setTutorialDone(true)
+        }
+    }, [user])
+
+    useEffect(() => {
+        const onDone = () => setTutorialDone(true)
+        window.addEventListener(TUTORIAL_COMPLETED_EVENT, onDone)
+        return () => {
+            window.removeEventListener(TUTORIAL_COMPLETED_EVENT, onDone)
+        }
+    }, [])
 
     useEffect(() => {
         setDisplayed(false)
@@ -369,7 +389,10 @@ export default () => {
                     </div>
                     <button
                         type="button"
-                        className="empty-tutorial-btn"
+                        className={
+                            'empty-tutorial-btn' +
+                            (tutorialPending ? ' is-pending' : '')
+                        }
                         onClick={replayTutorial}
                     >
                         Lancer le tutoriel

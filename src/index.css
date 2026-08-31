@@ -119,6 +119,10 @@ body,
         border-top-color: var(--tn-line);
         border-right-color: var(--tn-ink);
     }
+
+    .empty-tutorial-btn.is-pending {
+        animation: none;
+    }
 }
 
 .empty-plus {
@@ -154,8 +158,32 @@ body,
     -webkit-tap-highlight-color: transparent;
 }
 
+.empty-tutorial-btn.is-pending {
+    background: var(--tn-ink);
+    color: #fff;
+    box-shadow: 0 8px 22px rgba(24, 24, 27, 0.22);
+    animation: tutorial-btn-pulse 1.8s ease-in-out infinite;
+}
+
 .empty-tutorial-btn:active {
     background: var(--tn-bg);
+}
+
+.empty-tutorial-btn.is-pending:active {
+    background: #27272a;
+    animation: none;
+}
+
+@keyframes tutorial-btn-pulse {
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow: 0 8px 22px rgba(24, 24, 27, 0.22);
+    }
+    50% {
+        transform: scale(1.035);
+        box-shadow: 0 10px 26px rgba(24, 24, 27, 0.3);
+    }
 }
 
 .lists-plus {

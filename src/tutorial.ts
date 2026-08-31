@@ -44,17 +44,20 @@ export type TutorialUser = {
     classes?: string[] | null
 }
 
+export const TUTORIAL_COMPLETED_EVENT = 'thotnote-tutorial-completed'
+
 export const replayTutorial = () => {
     if (typeof window === 'undefined') return
     window.dispatchEvent(new Event(TUTORIAL_REPLAY_EVENT))
 }
 
-export const shouldAutoStartTutorial = (user?: TutorialUser | null) => {
-    if (!user) return false
-    if (user.tutorialCompleted === true) return false
-    const classes = user.classes
-    return !classes || !Array.isArray(classes) || classes.length === 0
+export const notifyTutorialCompleted = () => {
+    if (typeof window === 'undefined') return
+    window.dispatchEvent(new Event(TUTORIAL_COMPLETED_EVENT))
 }
+
+export const tutorialNeverPlayed = (user?: TutorialUser | null) =>
+    !user || user.tutorialCompleted !== true
 
 export const getTutorialSteps = (showSms: boolean): TutorialStep[] => {
     const steps: TutorialStep[] = [

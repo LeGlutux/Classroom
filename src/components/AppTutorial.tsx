@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { AuthContext } from '../Auth'
 import Firebase from '../firebase'
@@ -9,7 +9,7 @@ import {
     TUTORIAL_REPLAY_EVENT,
     TutorialStep,
     getTutorialSteps,
-    shouldAutoStartTutorial,
+    notifyTutorialCompleted,
 } from '../tutorial'
 import {
     IconChat,
@@ -37,73 +37,34 @@ const stepIcon = (id: TutorialStep['id']) => {
 const AppTutorialHost = () => {
     const { currentUser } = useContext(AuthContext)
     const location = useLocation()
-    const [userDoc, setUserDoc] = useState<{
-        tutorialCompleted?: boolean
-        classes?: string[]
-    } | null>(null)
-    const [userLoaded, setUserLoaded] = useState(false)
     const [smsEnabled, setSmsEnabled] = useState(false)
-    const [smsLoading, setSmsLoading] = useState(true)
     const [open, setOpen] = useState(false)
-    const [forced, setForced] = useState(false)
     const [step, setStep] = useState(0)
-    const skipAutoRef = useRef(false)
 
     useEffect(() => {
         if (!currentUser) {
-            setUserDoc(null)
-            setUserLoaded(false)
             setSmsEnabled(false)
-            setSmsLoading(false)
             setOpen(false)
-            setForced(false)
-            skipAutoRef.current = false
             return
         }
-        setUserLoaded(false)
-        setSmsLoading(true)
-        const unsubUser = Firebase.firestore()
-            .collection('users')
-            .doc(currentUser.uid)
-            .onSnapshot(
-                (snap) => {
-                    const data = snap.data()
-                    setUserDoc(
-                        data
-                            ? {
-                                  tutorialCompleted: data.tutorialCompleted,
-                                  classes: data.classes,
-                              }
-                            : null
-                    )
-                    setUserLoaded(true)
-                },
-                () => {
-                    setUserLoaded(true)
-                }
-            )
         const unsubSms = Firebase.firestore()
             .collection('props')
             .doc('sms-config')
             .onSnapshot(
                 (snap) => {
                     setSmsEnabled(parseSmsConfig(snap.data()).smsEnabled)
-                    setSmsLoading(false)
                 },
                 () => {
-                    setSmsLoading(false)
+                    setSmsEnabled(false)
                 }
             )
         return () => {
-            unsubUser()
             unsubSms()
         }
     }, [currentUser])
 
     useEffect(() => {
         const onReplay = () => {
-            skipAutoRef.current = true
-            setForced(true)
             setStep(0)
             setOpen(true)
         }
@@ -112,24 +73,6 @@ const AppTutorialHost = () => {
             window.removeEventListener(TUTORIAL_REPLAY_EVENT, onReplay)
         }
     }, [])
-
-    useEffect(() => {
-        if (!currentUser || !userLoaded || smsLoading) return
-        if (AUTH_PATHS.indexOf(location.pathname) !== -1) return
-        if (open || forced || skipAutoRef.current) return
-        if (shouldAutoStartTutorial(userDoc)) {
-            setStep(0)
-            setOpen(true)
-        }
-    }, [
-        currentUser,
-        userDoc,
-        userLoaded,
-        smsLoading,
-        location.pathname,
-        open,
-        forced,
-    ])
 
     useEffect(() => {
         if (!open) return
@@ -141,15 +84,14 @@ const AppTutorialHost = () => {
     }, [open])
 
     const close = async () => {
-        skipAutoRef.current = true
         setOpen(false)
-        setForced(false)
         setStep(0)
+        notifyTutorialCompleted()
         if (currentUser) {
             try {
                 await markTutorialCompleted(currentUser.uid)
             } catch (error) {
-                // L’overlay est déjà fermé ; le prochain chargement pourra le rouvrir.
+                // L’overlay est déjà fermé.
             }
         }
     }
