@@ -23,6 +23,11 @@ import {
     splitGivenName,
     steppedZoomScale,
     swapSeats,
+    viewCenteringWorld,
+    worldToScreen,
+    lerpView,
+    lerpViewTrackingWorld,
+    easeInOutCubic,
     zoomAround,
 } from './seatingPlan'
 
@@ -200,6 +205,41 @@ describe('fitView / zoomAround / clampScale', () => {
         expect(steppedZoomScale(1, -DOUBLE_TAP_ZOOM_STEPS)).toBeCloseTo(
             1 / (ZOOM_STEP * ZOOM_STEP * ZOOM_STEP)
         )
+    })
+
+    it('cadre un point monde au centre de la fenêtre', () => {
+        const world = { x: 80, y: 40 }
+        const view = viewCenteringWorld(world, 2, 400, 300)
+        expect(worldToScreen(world, view)).toEqual({ x: 200, y: 150 })
+    })
+
+    it('interpole une vue d’un bout à l’autre', () => {
+        const from = { scale: 1, offset: { x: 0, y: 0 } }
+        const to = { scale: 2, offset: { x: 10, y: 20 } }
+        expect(lerpView(from, to, 0)).toEqual(from)
+        expect(lerpView(from, to, 1)).toEqual(to)
+        expect(lerpView(from, to, 0.5)).toEqual({
+            scale: 1.5,
+            offset: { x: 5, y: 10 },
+        })
+        expect(easeInOutCubic(0)).toBe(0)
+        expect(easeInOutCubic(1)).toBe(1)
+        expect(easeInOutCubic(0.5)).toBe(0.5)
+    })
+
+    it('fait glisser un point monde vers sa place cible pendant le zoom', () => {
+        const world = { x: 80, y: 40 }
+        const from = { scale: 1, offset: { x: 10, y: 20 } }
+        const to = viewCenteringWorld(world, 2, 400, 300)
+        expect(lerpViewTrackingWorld(from, to, world, 0)).toEqual(from)
+        const end = lerpViewTrackingWorld(from, to, world, 1)
+        expect(end.scale).toBeCloseTo(to.scale)
+        expect(worldToScreen(world, end)).toEqual({ x: 200, y: 150 })
+        const mid = lerpViewTrackingWorld(from, to, world, 0.5)
+        const startScreen = worldToScreen(world, from)
+        const midScreen = worldToScreen(world, mid)
+        expect(midScreen.x).toBeCloseTo((startScreen.x + 200) / 2)
+        expect(midScreen.y).toBeCloseTo((startScreen.y + 150) / 2)
     })
 })
 

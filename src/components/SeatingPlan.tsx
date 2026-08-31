@@ -46,6 +46,10 @@ import {
     snapPosition,
     steppedZoomScale,
     zoomAround,
+    viewCenteringWorld,
+    easeInOutCubic,
+    lerpView,
+    lerpViewTrackingWorld,
     ZOOM_STEP,
     DOUBLE_TAP_ZOOM_STEPS,
 } from '../seatingPlan'
@@ -53,6 +57,7 @@ import {
 const DRAG_THRESHOLD = 8
 const DOUBLE_TAP_MS = 340
 const DOUBLE_TAP_PX = 30
+const VIEW_ANIM_MS = 560
 
 const SeatName = ({
     student,
@@ -156,6 +161,8 @@ export default () => {
         null
     )
     const doubleTapZoomedRef = useRef(false)
+    const viewAnimRef = useRef<number | null>(null)
+    const focusWorldRef = useRef<Point | null>(null)
 
     positionsRef.current = positions
     viewRef.current = view
@@ -295,6 +302,11 @@ export default () => {
             const current = positionsRef.current
             if (Object.keys(current).length === 0) return true
             doubleTapZoomedRef.current = false
+            focusWorldRef.current = null
+            if (viewAnimRef.current !== null) {
+                window.cancelAnimationFrame(viewAnimRef.current)
+                viewAnimRef.current = null
+            }
             setView(fitView(current, rect.width, rect.height))
             return true
         }
@@ -308,6 +320,15 @@ export default () => {
         return () => window.cancelAnimationFrame(frame)
     }, [shouldFit, displayedGroup, studentIdsKey])
 
+    useEffect(() => {
+        return () => {
+            if (viewAnimRef.current !== null) {
+                window.cancelAnimationFrame(viewAnimRef.current)
+                viewAnimRef.current = null
+            }
+        }
+    }, [])
+
     const canvasPoint = (event: { clientX: number; clientY: number }): Point => {
         const el = canvasRef.current
         if (!el) return { x: event.clientX, y: event.clientY }
@@ -317,6 +338,43 @@ export default () => {
 
     const endPinch = () => {
         pinchRef.current = null
+    }
+
+    const cancelViewAnim = () => {
+        if (viewAnimRef.current !== null) {
+            window.cancelAnimationFrame(viewAnimRef.current)
+            viewAnimRef.current = null
+        }
+    }
+
+    const animateViewTo = (target: ViewTransform, focusWorld?: Point | null) => {
+        cancelViewAnim()
+        const start = {
+            scale: viewRef.current.scale,
+            offset: {
+                x: viewRef.current.offset.x,
+                y: viewRef.current.offset.y,
+            },
+        }
+        const world = focusWorld
+            ? { x: focusWorld.x, y: focusWorld.y }
+            : focusWorldRef.current
+        const t0 = performance.now()
+        const tick = (now: number) => {
+            const t = Math.min(1, (now - t0) / VIEW_ANIM_MS)
+            const k = easeInOutCubic(t)
+            const next = world
+                ? lerpViewTrackingWorld(start, target, world, k)
+                : lerpView(start, target, k)
+            viewRef.current = next
+            setView(next)
+            if (t < 1) {
+                viewAnimRef.current = window.requestAnimationFrame(tick)
+            } else {
+                viewAnimRef.current = null
+            }
+        }
+        viewAnimRef.current = window.requestAnimationFrame(tick)
     }
 
     const finishDrag = () => {
@@ -362,6 +420,7 @@ export default () => {
                 distance: pointerDistance(a, b),
                 scale: viewRef.current.scale,
             }
+            cancelViewAnim()
             return
         }
         panRef.current = {
@@ -402,6 +461,7 @@ export default () => {
                 distance: pointerDistance(a, b),
                 scale: viewRef.current.scale,
             }
+            cancelViewAnim()
             return
         }
         if (lockedRef.current) {
@@ -495,6 +555,7 @@ export default () => {
             const dy = event.clientY - pan.y
             if (Math.hypot(dx, dy) > DRAG_THRESHOLD) {
                 pan.moved = true
+                cancelViewAnim()
                 setView({
                     scale: viewRef.current.scale,
                     offset: { x: pan.ox + dx, y: pan.oy + dy },
@@ -529,7 +590,11 @@ export default () => {
         if (!el) return
         const rect = el.getBoundingClientRect()
         doubleTapZoomedRef.current = false
-        setView(fitView(positionsRef.current, rect.width, rect.height))
+        animateViewTo(
+            fitView(positionsRef.current, rect.width, rect.height),
+            focusWorldRef.current
+        )
+        focusWorldRef.current = null
     }
 
     const handleEmptyTap = (event: { clientX: number; clientY: number }) => {
@@ -553,17 +618,24 @@ export default () => {
             restoreDefaultView()
             return
         }
+        const el = canvasRef.current
+        if (!el) return
+        const rect = el.getBoundingClientRect()
         const pivot = canvasPoint(event)
+        const world = screenToWorld(pivot, viewRef.current)
         doubleTapZoomedRef.current = true
-        setView(
-            zoomAround(
-                viewRef.current,
+        focusWorldRef.current = world
+        animateViewTo(
+            viewCenteringWorld(
+                world,
                 steppedZoomScale(
                     viewRef.current.scale,
                     DOUBLE_TAP_ZOOM_STEPS
                 ),
-                pivot
-            )
+                rect.width,
+                rect.height
+            ),
+            world
         )
     }
 
@@ -572,6 +644,7 @@ export default () => {
         if (!el) return
         const onWheel = (event: WheelEvent) => {
             event.preventDefault()
+            cancelViewAnim()
             const pivot = canvasPoint(event)
             const factor = event.deltaY > 0 ? 0.92 : 1.08
             setView(
@@ -589,6 +662,7 @@ export default () => {
     const zoomBy = (factor: number) => {
         const el = canvasRef.current
         if (!el) return
+        cancelViewAnim()
         const rect = el.getBoundingClientRect()
         setView(
             zoomAround(viewRef.current, viewRef.current.scale * factor, {

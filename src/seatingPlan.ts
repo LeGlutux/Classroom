@@ -380,6 +380,72 @@ export const screenToWorld = (screen: Point, view: ViewTransform): Point => ({
     y: (screen.y - view.offset.y) / view.scale,
 })
 
+export const worldToScreen = (world: Point, view: ViewTransform): Point => ({
+    x: world.x * view.scale + view.offset.x,
+    y: world.y * view.scale + view.offset.y,
+})
+
+export const easeInOutCubic = (t: number) => {
+    if (t <= 0) return 0
+    if (t >= 1) return 1
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
+}
+
+export const lerpView = (
+    from: ViewTransform,
+    to: ViewTransform,
+    t: number
+): ViewTransform => ({
+    scale: from.scale + (to.scale - from.scale) * t,
+    offset: {
+        x: from.offset.x + (to.offset.x - from.offset.x) * t,
+        y: from.offset.y + (to.offset.y - from.offset.y) * t,
+    },
+})
+
+export const lerpScale = (from: number, to: number, t: number) => {
+    if (from <= 0 || to <= 0) return from + (to - from) * t
+    return Math.exp(Math.log(from) + (Math.log(to) - Math.log(from)) * t)
+}
+
+export const lerpViewTrackingWorld = (
+    from: ViewTransform,
+    to: ViewTransform,
+    world: Point,
+    t: number
+): ViewTransform => {
+    const scale = clampScale(lerpScale(from.scale, to.scale, t))
+    const start = worldToScreen(world, from)
+    const end = worldToScreen(world, to)
+    const screen = {
+        x: start.x + (end.x - start.x) * t,
+        y: start.y + (end.y - start.y) * t,
+    }
+    return {
+        scale,
+        offset: {
+            x: screen.x - world.x * scale,
+            y: screen.y - world.y * scale,
+        },
+    }
+}
+
+export const viewCenteringWorld = (
+    world: Point,
+    scale: number,
+    viewportW: number,
+    viewportH: number
+): ViewTransform => {
+    const next = clampScale(scale)
+    return {
+        scale: next,
+        offset: {
+            x: viewportW / 2 - world.x * next,
+            y: viewportH / 2 - world.y * next,
+        },
+    }
+}
+
 export const parseStoredPlans = (raw: unknown): StoredPlans => {
     if (!raw || typeof raw !== 'object') return {}
     const source = raw as { [classe: string]: unknown }
