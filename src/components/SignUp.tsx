@@ -1,6 +1,8 @@
-import React, { useCallback } from 'react'
-import { useHistory, Link } from 'react-router-dom'
+import React, { useCallback, useContext } from 'react'
+import { Redirect, useHistory, Link } from 'react-router-dom'
 import Firebase from '../firebase'
+import { AuthContext } from '../Auth'
+import AuthSplash from './AuthSplash'
 import lucienPlongeon from '../images/lucienPlongeon.png'
 import { IconLock, IconMail, IconUser } from './Icons'
 
@@ -44,6 +46,10 @@ const SignUp = () => {
         },
         [history, db]
     )
+    const { currentUser, authReady } = useContext(AuthContext)
+
+    if (!authReady) return <AuthSplash />
+    if (currentUser) return <Redirect to="/" />
 
     return (
         <div className="auth-page">
@@ -83,7 +89,7 @@ const SignUp = () => {
                             Créer un compte
                         </button>
                         <div className="auth-alt">
-                            <Link to="/login">Déjà inscrit ?</Link>
+                            <Link to="/">Déjà inscrit ?</Link>
                         </div>
                     </form>
                 </div>

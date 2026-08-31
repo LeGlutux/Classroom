@@ -43,7 +43,19 @@
         ]
       }
     ],
-    "redirects": []
+    "redirects": [
+      {
+        "source": "/login",
+        "destination": "/",
+        "type": 302
+      }
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
   },
   "emulators": {
     "auth": {

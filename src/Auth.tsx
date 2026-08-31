@@ -4,10 +4,12 @@ import firebase from 'firebase/app'
 
 interface AuthContextType {
     currentUser: null | firebase.User
+    authReady: boolean
 }
 
 export const AuthContext = React.createContext<AuthContextType>({
     currentUser: null,
+    authReady: false,
 })
 
 interface AuthProviderProps {
@@ -16,14 +18,17 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [currentUser, setCurrentUser] = useState<firebase.User | null>(null)
+    const [authReady, setAuthReady] = useState(false)
 
     useEffect(() => {
-        Firebase.auth().onAuthStateChanged((User) => {
+        const unsub = Firebase.auth().onAuthStateChanged((User) => {
             setCurrentUser(User)
+            setAuthReady(true)
         })
+        return () => unsub()
     }, [])
     return (
-        <AuthContext.Provider value={{ currentUser }}>
+        <AuthContext.Provider value={{ currentUser, authReady }}>
             {children}
         </AuthContext.Provider>
     )
