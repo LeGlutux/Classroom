@@ -18,9 +18,7 @@ import List from './components/List'
 import InstallAppHost from './components/InstallApp'
 import SmsHost from './components/SmsSheet'
 import AppTutorialHost from './components/AppTutorial'
-<<<<<<< HEAD
 import SeatingPlan from './components/SeatingPlan'
-=======
 import AuthSplash from './components/AuthSplash'
 
 const HomeRoute = () => {
@@ -29,7 +27,6 @@ const HomeRoute = () => {
     if (!currentUser) return <Login />
     return <FrontPage />
 }
->>>>>>> 598f545 (Rediriger /login et les chemins inconnus vers l’accueil)
 
 export default () => {
     return (
@@ -66,16 +63,12 @@ export default () => {
                                     path="/student/:id"
                                     component={StudentStats}
                                 />
-<<<<<<< HEAD
                                 <PrivateRoute
                                     path="/plan"
                                     component={SeatingPlan}
                                 />
-                                <PrivateRoute path="/" component={FrontPage} />
-=======
                                 <Route exact path="/" component={HomeRoute} />
                                 <Redirect to="/" />
->>>>>>> 598f545 (Rediriger /login et les chemins inconnus vers l’accueil)
                             </Switch>
                         </Router>
                     </div>
