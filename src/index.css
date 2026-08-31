@@ -3518,22 +3518,32 @@ body,
     will-change: transform;
 }
 
+.seating-clusters {
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: visible;
+    pointer-events: none;
+    z-index: 0;
+}
+
 .seating-seat {
     position: absolute;
     top: 0;
     left: 0;
+    z-index: 1;
     box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 0.22rem;
+    padding: 0.08rem 0.16rem;
     margin: 0;
     background: #fff;
-    border: 1px solid var(--tn-line);
-    border-radius: 4px;
-    box-shadow: none;
+    border: 0;
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px #fff;
     font-family: 'Open Sans', sans-serif;
-    font-size: 0.68rem;
+    font-size: 0.62rem;
     font-weight: 600;
     line-height: 1.05;
     color: var(--tn-ink);
@@ -3545,12 +3555,43 @@ body,
 }
 
 .seating-seat-name {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+}
+
+.seating-seat-line {
     display: block;
     min-width: 0;
     max-width: 100%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    text-align: center;
+}
+
+.seating-seat-line-split {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: center;
+}
+
+.seating-seat-tail {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.seating-seat-hint {
+    flex-shrink: 0;
+    font-weight: 700;
+    margin-left: 0.12rem;
 }
 
 .seating-seat.is-locked {
@@ -3560,13 +3601,11 @@ body,
 .seating-seat.is-dragging {
     z-index: 4;
     cursor: grabbing;
-    border-color: var(--tn-ink);
-    box-shadow: 0 8px 20px rgba(24, 24, 27, 0.14);
+    box-shadow: 0 0 0 1px #fff, 0 8px 20px rgba(24, 24, 27, 0.14);
 }
 
 .seating-seat.is-swap {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.28);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.55);
 }
 
 .seating-zoom {

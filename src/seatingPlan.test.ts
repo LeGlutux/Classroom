@@ -14,8 +14,11 @@ import {
     mergePositions,
     parseStoredPlans,
     prunePositions,
-    seatLabel,
+    seatCaption,
+    seatsTouching,
+    linkedSeatGroups,
     snapPosition,
+    splitGivenName,
     swapSeats,
     zoomAround,
 } from './seatingPlan'
@@ -61,7 +64,7 @@ describe('mergePositions', () => {
     it('ajoute les nouveaux élèves sous le plan existant', () => {
         const merged = mergePositions(['a', 'b'], { a: { x: 10, y: 20 } })
         expect(merged.a).toEqual({ x: 10, y: 20 })
-        expect(merged.b.y).toBeGreaterThanOrEqual(20 + CARD_H)
+        expect(merged.b.y).toBe(20 + CARD_H + CARD_GAP * 2)
     })
 
     it('génère une grille si rien n’est encore enregistré', () => {
@@ -94,11 +97,11 @@ describe('snapPosition', () => {
     })
 
     it('colle un cadre à droite d’un autre, bord à bord', () => {
-        const beside = 100 + CARD_W
+        const beside = 100 + CARD_W + CARD_GAP
         expect(
             snapPosition('moving', { x: beside - 6, y: 80 }, others)
         ).toEqual({ x: beside, y: 80 })
-        expect(beside).toBe(100 + CARD_W + CARD_GAP)
+        expect(beside).toBeLessThan(100 + CARD_W)
     })
 
     it('ne magnétise pas trop loin', () => {
@@ -179,15 +182,69 @@ describe('fitView / zoomAround / clampScale', () => {
     })
 })
 
-describe('seatLabel', () => {
-    it('laisse les prénoms courts intacts', () => {
-        expect(seatLabel('Léa')).toBe('Léa')
-        expect(seatLabel('Maxime')).toBe('Maxime')
+describe('splitGivenName / seatCaption', () => {
+    it('sépare un prénom composé sur deux lignes', () => {
+        expect(splitGivenName('Jean-Pierre')).toEqual({
+            head: 'Jean',
+            tail: 'Pierre',
+        })
+        expect(splitGivenName('Marie Claire')).toEqual({
+            head: 'Marie',
+            tail: 'Claire',
+        })
+        expect(splitGivenName('Léa')).toEqual({ head: 'Léa', tail: '' })
     })
 
     it('coupe les prénoms trop longs pour le cadre', () => {
-        expect(seatLabel('Christophe')).toBe('Christo…')
-        expect(seatLabel('  Alexandre  ')).toBe('Alexand…')
+        const caption = seatCaption(
+            { surname: 'Christophe', name: 'Dupont' },
+            [{ surname: 'Christophe' }]
+        )
+        expect(caption.line1).toBe('Christo…')
+        expect(caption.hint).toBe('')
+    })
+
+    it('ajoute les 3 lettres du nom si le prénom est partagé', () => {
+        const mates = [{ surname: 'Léa' }, { surname: 'Léa' }]
+        expect(
+            seatCaption({ surname: 'Léa', name: 'Dupont' }, mates)
+        ).toEqual({
+            line1: 'Léa',
+            line2: '',
+            hint: 'Dup',
+        })
+        expect(
+            seatCaption({ surname: 'Jean-Pierre', name: 'Martin' }, [
+                { surname: 'Jean-Pierre' },
+                { surname: 'Jean-Pierre' },
+            ])
+        ).toEqual({
+            line1: 'Jean',
+            line2: 'Pierre',
+            hint: 'Mar',
+        })
+    })
+})
+
+describe('seatsTouching / linkedSeatGroups', () => {
+    it('détecte deux cadres collés et un L', () => {
+        const a = { x: 0, y: 0 }
+        const b = { x: CARD_W + CARD_GAP, y: 0 }
+        const c = { x: 0, y: CARD_H + CARD_GAP }
+        const far = { x: 400, y: 400 }
+        expect(seatsTouching(a, b)).toBe(true)
+        expect(seatsTouching(a, c)).toBe(true)
+        expect(seatsTouching(a, far)).toBe(false)
+        const groups = linkedSeatGroups({
+            a,
+            b,
+            c,
+            d: far,
+        })
+        const sorted = groups
+            .map((group) => group.slice().sort().join(','))
+            .sort()
+        expect(sorted).toEqual(['a,b,c', 'd'])
     })
 })
 

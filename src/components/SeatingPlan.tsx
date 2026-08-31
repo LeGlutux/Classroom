@@ -37,7 +37,10 @@ import {
     parseStoredPlans,
     prunePositions,
     screenToWorld,
-    seatLabel,
+    seatCaption,
+    linkedSeatGroups,
+    boundingBox,
+    CLUSTER_OUTLINE,
     snapPosition,
     zoomAround,
 } from '../seatingPlan'
@@ -544,6 +547,16 @@ export default () => {
 
     const showClassFilter =
         groups.length !== 1 && displayedGroup !== 'tous'
+    const seatClusters = linkedSeatGroups(positions)
+    const clusterBox = boundingBox(positions)
+    const clusterSvgW = Math.max(
+        1,
+        clusterBox.x + clusterBox.w + CLUSTER_OUTLINE * 6
+    )
+    const clusterSvgH = Math.max(
+        1,
+        clusterBox.y + clusterBox.h + CLUSTER_OUTLINE * 6
+    )
 
     return (
         <div className="w-full h-screen flex flex-col overflow-hidden app-bg">
@@ -628,11 +641,57 @@ export default () => {
                                 ')',
                         }}
                     >
+                        <svg
+                            className="seating-clusters"
+                            width={clusterSvgW}
+                            height={clusterSvgH}
+                        >
+                            {seatClusters.map((ids) => (
+                                <g key={ids.slice().sort().join('-')}>
+                                    {ids.map((id) => {
+                                        const pos = positions[id]
+                                        if (!pos) return null
+                                        return (
+                                            <rect
+                                                key={'o-' + id}
+                                                x={pos.x - CLUSTER_OUTLINE}
+                                                y={pos.y - CLUSTER_OUTLINE}
+                                                width={
+                                                    CARD_W + CLUSTER_OUTLINE * 2
+                                                }
+                                                height={
+                                                    CARD_H + CLUSTER_OUTLINE * 2
+                                                }
+                                                rx="3"
+                                                fill="#18181b"
+                                            />
+                                        )
+                                    })}
+                                    {ids.map((id) => {
+                                        const pos = positions[id]
+                                        if (!pos) return null
+                                        return (
+                                            <rect
+                                                key={'f-' + id}
+                                                x={pos.x - 1}
+                                                y={pos.y - 1}
+                                                width={CARD_W + 2}
+                                                height={CARD_H + 2}
+                                                rx="2"
+                                                fill="#fff"
+                                            />
+                                        )
+                                    })}
+                                </g>
+                            ))}
+                        </svg>
                         {classStudents.map((student) => {
                             const pos = positions[student.id]
                             if (!pos) return null
                             const isDragging = draggingId === student.id
                             const isSwap = swapTarget === student.id
+                            const caption = seatCaption(student, classStudents)
+                            const hasSecond = !!(caption.line2 || caption.hint)
                             return (
                                 <button
                                     type="button"
@@ -653,6 +712,9 @@ export default () => {
                                         width: CARD_W,
                                         height: CARD_H,
                                     }}
+                                    aria-label={
+                                        student.surname + ' ' + student.name
+                                    }
                                     onPointerDown={(event) =>
                                         onSeatPointerDown(event, student.id)
                                     }
@@ -664,7 +726,23 @@ export default () => {
                                     }
                                 >
                                     <span className="seating-seat-name">
-                                        {seatLabel(student.surname)}
+                                        <span className="seating-seat-line">
+                                            {caption.line1}
+                                        </span>
+                                        {hasSecond ? (
+                                            <span className="seating-seat-line seating-seat-line-split">
+                                                {caption.line2 ? (
+                                                    <span className="seating-seat-tail">
+                                                        {caption.line2}
+                                                    </span>
+                                                ) : null}
+                                                {caption.hint ? (
+                                                    <span className="seating-seat-hint">
+                                                        {caption.hint}
+                                                    </span>
+                                                ) : null}
+                                            </span>
+                                        ) : null}
                                     </span>
                                 </button>
                             )

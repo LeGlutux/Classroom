@@ -1,8 +1,10 @@
 export const CARD_W = 72
 export const CARD_H = 60
-export const CARD_GAP = 0
-export const SNAP_THRESHOLD = 12
+export const CARD_GAP = -1
+export const SNAP_THRESHOLD = 16
 export const MAX_SEAT_CHARS = 8
+export const LINK_EPS = 2.5
+export const CLUSTER_OUTLINE = 2.5
 export const LAYOUT_PAD = 24
 export const MIN_SCALE = 0.35
 export const MAX_SCALE = 2.8
@@ -30,10 +32,98 @@ export const roundPoint = (point: Point): Point => ({
     y: Math.round(point.y * 10) / 10,
 })
 
-export const seatLabel = (surname: string) => {
+export type SeatCaption = {
+    line1: string
+    line2: string
+    hint: string
+}
+
+export const clipSeatText = (text: string, max: number) => {
+    const value = (text || '').trim()
+    if (value.length <= max) return value
+    if (max <= 1) return '…'
+    return value.substring(0, max - 1) + '…'
+}
+
+export const splitGivenName = (surname: string): { head: string; tail: string } => {
     const text = (surname || '').trim()
-    if (text.length <= MAX_SEAT_CHARS) return text
-    return text.substring(0, MAX_SEAT_CHARS - 1) + '…'
+    if (!text) return { head: '', tail: '' }
+    const hyphen = text.indexOf('-')
+    const space = text.indexOf(' ')
+    let cut = -1
+    if (hyphen >= 0 && space >= 0) cut = Math.min(hyphen, space)
+    else if (hyphen >= 0) cut = hyphen
+    else cut = space
+    if (cut <= 0) return { head: text, tail: '' }
+    return {
+        head: text.slice(0, cut).trim(),
+        tail: text.slice(cut + 1).trim(),
+    }
+}
+
+export const givenNameKey = (surname: string) =>
+    (surname || '').trim().toLowerCase()
+
+export const lastNameHint = (name: string) => (name || '').trim().substring(0, 3)
+
+export const seatCaption = (
+    student: { surname: string; name: string },
+    classmates: { surname: string }[]
+): SeatCaption => {
+    const parts = splitGivenName(student.surname)
+    const key = givenNameKey(student.surname)
+    const twins =
+        classmates.filter((mate) => givenNameKey(mate.surname) === key)
+            .length > 1
+    const hint = twins ? lastNameHint(student.name) : ''
+    return {
+        line1: clipSeatText(parts.head, MAX_SEAT_CHARS),
+        line2: clipSeatText(parts.tail, MAX_SEAT_CHARS),
+        hint,
+    }
+}
+
+export const seatsTouching = (a: Point, b: Point, eps = LINK_EPS) => {
+    const hTouch =
+        Math.abs(a.x + CARD_W - b.x) <= eps ||
+        Math.abs(b.x + CARD_W - a.x) <= eps
+    const vOverlap = a.y < b.y + CARD_H - 1 && b.y < a.y + CARD_H - 1
+    const vTouch =
+        Math.abs(a.y + CARD_H - b.y) <= eps ||
+        Math.abs(b.y + CARD_H - a.y) <= eps
+    const hOverlap = a.x < b.x + CARD_W - 1 && b.x < a.x + CARD_W - 1
+    return (hTouch && vOverlap) || (vTouch && hOverlap)
+}
+
+export const linkedSeatGroups = (positions: Positions): string[][] => {
+    const ids = Object.keys(positions)
+    const parent: { [id: string]: string } = {}
+    ids.forEach((id) => {
+        parent[id] = id
+    })
+    const find = (id: string): string => {
+        if (parent[id] !== id) parent[id] = find(parent[id])
+        return parent[id]
+    }
+    const unite = (a: string, b: string) => {
+        const pa = find(a)
+        const pb = find(b)
+        if (pa !== pb) parent[pa] = pb
+    }
+    for (let i = 0; i < ids.length; i++) {
+        for (let j = i + 1; j < ids.length; j++) {
+            if (seatsTouching(positions[ids[i]], positions[ids[j]])) {
+                unite(ids[i], ids[j])
+            }
+        }
+    }
+    const buckets: { [root: string]: string[] } = {}
+    ids.forEach((id) => {
+        const root = find(id)
+        if (!buckets[root]) buckets[root] = []
+        buckets[root].push(id)
+    })
+    return Object.keys(buckets).map((root) => buckets[root])
 }
 
 export const layoutColumns = (count: number) => {
