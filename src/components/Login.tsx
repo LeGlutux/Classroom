@@ -34,7 +34,16 @@ const Login = () => {
             clearTimeout(timer)
         }
     }, [])
-    const { currentUser } = useContext(AuthContext)
+    const { currentUser, authReady } = useContext(AuthContext)
+
+    if (!authReady) {
+        return (
+            <div className="flex flex-col items-center justify-center absolute w-full h-full mb-12 bg-white">
+                <div className="empty-title">Chargement des données</div>
+                <Loader />
+            </div>
+        )
+    }
 
     if (currentUser) {
         return <Redirect to="/" />
