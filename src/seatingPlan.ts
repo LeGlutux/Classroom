@@ -8,6 +8,14 @@ export const CLUSTER_OUTLINE = 2.5
 export const LAYOUT_PAD = 24
 export const MIN_SCALE = 0.35
 export const MAX_SCALE = 2.8
+export const ZOOM_STEP = 1.15
+export const DOUBLE_TAP_ZOOM_STEPS = 3
+
+export const clampScale = (scale: number) =>
+    Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale))
+
+export const steppedZoomScale = (scale: number, steps: number) =>
+    clampScale(scale * Math.pow(ZOOM_STEP, steps))
 
 export type Point = { x: number; y: number }
 export type Positions = { [id: string]: Point }
@@ -23,9 +31,6 @@ export type ViewTransform = {
     scale: number
     offset: Point
 }
-
-export const clampScale = (scale: number) =>
-    Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale))
 
 export const roundPoint = (point: Point): Point => ({
     x: Math.round(point.x * 10) / 10,

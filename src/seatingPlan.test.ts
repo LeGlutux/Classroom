@@ -2,9 +2,11 @@ import {
     CARD_GAP,
     CARD_H,
     CARD_W,
+    DOUBLE_TAP_ZOOM_STEPS,
     LAYOUT_PAD,
     MAX_SCALE,
     MIN_SCALE,
+    ZOOM_STEP,
     applyDrop,
     clampScale,
     defaultLayout,
@@ -19,6 +21,7 @@ import {
     linkedSeatGroups,
     snapPosition,
     splitGivenName,
+    steppedZoomScale,
     swapSeats,
     zoomAround,
 } from './seatingPlan'
@@ -188,6 +191,15 @@ describe('fitView / zoomAround / clampScale', () => {
     it('borne le zoom', () => {
         expect(clampScale(0.01)).toBe(MIN_SCALE)
         expect(clampScale(99)).toBe(MAX_SCALE)
+    })
+
+    it('applique trois crans + comme les boutons', () => {
+        expect(steppedZoomScale(1, DOUBLE_TAP_ZOOM_STEPS)).toBeCloseTo(
+            ZOOM_STEP * ZOOM_STEP * ZOOM_STEP
+        )
+        expect(steppedZoomScale(1, -DOUBLE_TAP_ZOOM_STEPS)).toBeCloseTo(
+            1 / (ZOOM_STEP * ZOOM_STEP * ZOOM_STEP)
+        )
     })
 })
 

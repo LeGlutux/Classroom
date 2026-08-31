@@ -44,10 +44,15 @@ import {
     boundingBox,
     CLUSTER_OUTLINE,
     snapPosition,
+    steppedZoomScale,
     zoomAround,
+    ZOOM_STEP,
+    DOUBLE_TAP_ZOOM_STEPS,
 } from '../seatingPlan'
 
 const DRAG_THRESHOLD = 8
+const DOUBLE_TAP_MS = 340
+const DOUBLE_TAP_PX = 30
 
 const SeatName = ({
     student,
@@ -147,6 +152,10 @@ export default () => {
     const dragRef = useRef<DragState | null>(null)
     const panRef = useRef<PanState | null>(null)
     const pinchRef = useRef<{ distance: number; scale: number } | null>(null)
+    const lastEmptyTapRef = useRef<{ time: number; x: number; y: number } | null>(
+        null
+    )
+    const doubleTapZoomedRef = useRef(false)
 
     positionsRef.current = positions
     viewRef.current = view
@@ -285,6 +294,7 @@ export default () => {
             if (rect.width < 8 || rect.height < 8) return false
             const current = positionsRef.current
             if (Object.keys(current).length === 0) return true
+            doubleTapZoomedRef.current = false
             setView(fitView(current, rect.width, rect.height))
             return true
         }
@@ -483,11 +493,13 @@ export default () => {
         if (pan && pan.pointerId === event.pointerId) {
             const dx = event.clientX - pan.x
             const dy = event.clientY - pan.y
-            if (Math.hypot(dx, dy) > DRAG_THRESHOLD) pan.moved = true
-            setView({
-                scale: viewRef.current.scale,
-                offset: { x: pan.ox + dx, y: pan.oy + dy },
-            })
+            if (Math.hypot(dx, dy) > DRAG_THRESHOLD) {
+                pan.moved = true
+                setView({
+                    scale: viewRef.current.scale,
+                    offset: { x: pan.ox + dx, y: pan.oy + dy },
+                })
+            }
         }
     }
 
@@ -503,8 +515,56 @@ export default () => {
         const pan = panRef.current
         if (pan && pan.pointerId === event.pointerId) {
             panRef.current = null
-            if (pan.moved) skipSeatClickRef.current = true
+            if (pan.moved) {
+                skipSeatClickRef.current = true
+                lastEmptyTapRef.current = null
+            } else if (!pan.seatId) {
+                handleEmptyTap(event)
+            }
         }
+    }
+
+    const restoreDefaultView = () => {
+        const el = canvasRef.current
+        if (!el) return
+        const rect = el.getBoundingClientRect()
+        doubleTapZoomedRef.current = false
+        setView(fitView(positionsRef.current, rect.width, rect.height))
+    }
+
+    const handleEmptyTap = (event: { clientX: number; clientY: number }) => {
+        const now = Date.now()
+        const last = lastEmptyTapRef.current
+        const close =
+            last &&
+            now - last.time <= DOUBLE_TAP_MS &&
+            Math.hypot(event.clientX - last.x, event.clientY - last.y) <=
+                DOUBLE_TAP_PX
+        if (!close) {
+            lastEmptyTapRef.current = {
+                time: now,
+                x: event.clientX,
+                y: event.clientY,
+            }
+            return
+        }
+        lastEmptyTapRef.current = null
+        if (doubleTapZoomedRef.current) {
+            restoreDefaultView()
+            return
+        }
+        const pivot = canvasPoint(event)
+        doubleTapZoomedRef.current = true
+        setView(
+            zoomAround(
+                viewRef.current,
+                steppedZoomScale(
+                    viewRef.current.scale,
+                    DOUBLE_TAP_ZOOM_STEPS
+                ),
+                pivot
+            )
+        )
     }
 
     useEffect(() => {
@@ -681,6 +741,7 @@ export default () => {
                     onPointerMove={onPointerMove}
                     onPointerUp={onPointerUp}
                     onPointerCancel={onPointerUp}
+                    onDoubleClick={(event) => event.preventDefault()}
                 >
                     <div
                         className="seating-world"
@@ -829,7 +890,7 @@ export default () => {
                         <button
                             type="button"
                             aria-label="Zoom avant"
-                            onClick={() => zoomBy(1.15)}
+                            onClick={() => zoomBy(ZOOM_STEP)}
                             onPointerDown={(event) => event.stopPropagation()}
                         >
                             <IconPlus />
@@ -837,7 +898,7 @@ export default () => {
                         <button
                             type="button"
                             aria-label="Zoom arrière"
-                            onClick={() => zoomBy(1 / 1.15)}
+                            onClick={() => zoomBy(1 / ZOOM_STEP)}
                             onPointerDown={(event) => event.stopPropagation()}
                         >
                             <IconMinus />
