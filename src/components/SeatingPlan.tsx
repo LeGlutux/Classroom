@@ -22,7 +22,7 @@ import {
     useStudents,
     useSmsConfig,
 } from '../hooks'
-import { buildCrossSlots, handleIcon, isAdminUser } from '../functions'
+import { buildCrossSlots, handleIcon, isAdminUser, studentInClass } from '../functions'
 import { StudentInterface } from '../interfaces/Student'
 import {
     CARD_H,
@@ -37,6 +37,7 @@ import {
     mergePositions,
     parseStoredPlans,
     prunePositions,
+    samePositions,
     screenToWorld,
     seatCaption,
     linkedSeatGroups,
@@ -100,7 +101,6 @@ const pointerDistance = (
 ) => Math.hypot(a.x - b.x, a.y - b.y)
 
 export default () => {
-    const db = Firebase.firestore()
     const { currentUser } = useContext(AuthContext)
     const uid = currentUser ? currentUser.uid : ''
     const { students, loading: studentsLoading, filterStudents } = useStudents(
@@ -165,14 +165,15 @@ export default () => {
             const nextPlans: StoredPlans = { ...plansRef.current }
             nextPlans[classe] = { locked: nextLocked, positions: pruned }
             plansRef.current = nextPlans
-            db.collection('users')
+            Firebase.firestore()
+                .collection('users')
                 .doc(uid)
                 .update({ seatingPlans: nextPlans })
                 .catch(() => {
                     // hors-ligne / règles : on garde l'état local
                 })
         },
-        [db, uid]
+        [uid]
     )
 
     useEffect(() => {
@@ -201,17 +202,22 @@ export default () => {
 
     useEffect(() => {
         if (!uid) return
-        return db
+        return Firebase.firestore()
             .collection('users')
             .doc(uid)
-            .onSnapshot((doc) => {
-                const data = doc.data()
-                plansRef.current = parseStoredPlans(
-                    data ? data.seatingPlans : undefined
-                )
-                setPlansReady(true)
-            })
-    }, [uid, db])
+            .onSnapshot(
+                (doc) => {
+                    const data = doc.data()
+                    plansRef.current = parseStoredPlans(
+                        data ? data.seatingPlans : undefined
+                    )
+                    setPlansReady(true)
+                },
+                () => {
+                    setPlansReady(true)
+                }
+            )
+    }, [uid])
 
     useEffect(() => {
         if (studentsLoading) return
@@ -222,14 +228,11 @@ export default () => {
         displayedGroup === 'tous'
             ? []
             : students.filter((student) =>
-                  student.classes.includes(displayedGroup)
+                  studentInClass(student, displayedGroup)
               )
     const seatsReady =
         displayedGroup !== 'tous' &&
-        students.every(
-            (student) =>
-                student.classes && student.classes.includes(displayedGroup)
-        )
+        students.every((student) => studentInClass(student, displayedGroup))
     const studentIdsKey = classStudents
         .map((student) => student.id)
         .slice()
@@ -247,19 +250,21 @@ export default () => {
         const saved = plansRef.current[displayedGroup]
         const savedPos = saved ? saved.positions : {}
         const merged = mergePositions(ids, savedPos)
-        setPositions(merged)
-        setLocked(saved ? saved.locked === true : false)
-        setSwapTarget(null)
-        setDraggingId(null)
-        setGhost(null)
-        setShouldFit(true)
+        const nextLocked = saved ? saved.locked === true : false
+        const unchanged =
+            nextLocked === lockedRef.current &&
+            samePositions(positionsRef.current, merged)
+        if (!unchanged) {
+            setPositions(merged)
+            setLocked(nextLocked)
+            setSwapTarget(null)
+            setDraggingId(null)
+            setGhost(null)
+            setShouldFit(true)
+        }
         const hadNew = ids.some((id) => !savedPos[id])
         if (ids.length > 0 && hadNew) {
-            persistPlan(
-                displayedGroup,
-                saved ? saved.locked === true : false,
-                merged
-            )
+            persistPlan(displayedGroup, nextLocked, merged)
         }
         // classStudents is derived from students + displayedGroup (studentIdsKey)
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -269,7 +274,6 @@ export default () => {
         displayedGroup,
         studentIdsKey,
         seatsReady,
-        persistPlan,
     ])
 
     useEffect(() => {

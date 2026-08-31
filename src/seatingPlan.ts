@@ -202,11 +202,27 @@ export const mergePositions = (ids: string[], saved: Positions): Positions => {
 export const prunePositions = (ids: string[], positions: Positions): Positions => {
     const next: Positions = {}
     ids.forEach((id) => {
-        if (positions[id]) {
-            next[id] = roundPoint(positions[id])
-        }
+        const point = positions[id]
+        if (!point) return
+        if (!Number.isFinite(point.x) || !Number.isFinite(point.y)) return
+        next[id] = roundPoint(point)
     })
     return next
+}
+
+export const samePositions = (a: Positions, b: Positions) => {
+    const ids = Object.keys(a)
+    if (ids.length !== Object.keys(b).length) return false
+    return ids.every((id) => {
+        const left = a[id]
+        const right = b[id]
+        return !!(
+            left &&
+            right &&
+            left.x === right.x &&
+            left.y === right.y
+        )
+    })
 }
 
 const closestSnap = (value: number, candidates: number[]) => {

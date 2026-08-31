@@ -81,6 +81,15 @@ describe('prunePositions', () => {
             })
         ).toEqual({ a: { x: 1.3, y: 4.8 } })
     })
+
+    it('ignore les coordonnées non numériques', () => {
+        expect(
+            prunePositions(['a', 'b'], {
+                a: { x: 2, y: 3 },
+                b: { x: NaN, y: 1 },
+            })
+        ).toEqual({ a: { x: 2, y: 3 } })
+    })
 })
 
 describe('snapPosition', () => {
