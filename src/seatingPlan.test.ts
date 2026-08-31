@@ -2,6 +2,8 @@ import {
     CARD_GAP,
     CARD_H,
     CARD_W,
+    DOUBLE_TAP_MS,
+    DOUBLE_TAP_PX,
     DOUBLE_TAP_ZOOM_STEPS,
     LAYOUT_PAD,
     MAX_SCALE,
@@ -28,6 +30,7 @@ import {
     lerpView,
     lerpViewTrackingWorld,
     easeInOutCubic,
+    isDoubleTap,
     zoomAround,
 } from './seatingPlan'
 
@@ -196,6 +199,27 @@ describe('fitView / zoomAround / clampScale', () => {
     it('borne le zoom', () => {
         expect(clampScale(0.01)).toBe(MIN_SCALE)
         expect(clampScale(99)).toBe(MAX_SCALE)
+    })
+
+    it('détecte un double-tap proche dans le temps et l’espace', () => {
+        const first = { time: 1000, x: 40, y: 80 }
+        expect(
+            isDoubleTap(first, { time: 1000 + DOUBLE_TAP_MS, x: 40, y: 80 })
+        ).toBe(true)
+        expect(
+            isDoubleTap(first, {
+                time: 1000 + DOUBLE_TAP_MS + 1,
+                x: 40,
+                y: 80,
+            })
+        ).toBe(false)
+        expect(
+            isDoubleTap(first, { time: 1100, x: 40 + DOUBLE_TAP_PX, y: 80 })
+        ).toBe(true)
+        expect(
+            isDoubleTap(first, { time: 1100, x: 40 + DOUBLE_TAP_PX + 1, y: 80 })
+        ).toBe(false)
+        expect(isDoubleTap(null, first)).toBe(false)
     })
 
     it('applique trois crans + comme les boutons', () => {

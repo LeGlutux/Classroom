@@ -51,12 +51,12 @@ import {
     lerpView,
     lerpViewTrackingWorld,
     ZOOM_STEP,
+    DOUBLE_TAP_MS,
     DOUBLE_TAP_ZOOM_STEPS,
+    isDoubleTap,
 } from '../seatingPlan'
 
 const DRAG_THRESHOLD = 8
-const DOUBLE_TAP_MS = 340
-const DOUBLE_TAP_PX = 30
 const VIEW_ANIM_MS = 560
 
 const SeatName = ({
@@ -163,6 +163,7 @@ export default () => {
     const doubleTapZoomedRef = useRef(false)
     const viewAnimRef = useRef<number | null>(null)
     const focusWorldRef = useRef<Point | null>(null)
+    const pendingModalRef = useRef<number | null>(null)
 
     positionsRef.current = positions
     viewRef.current = view
@@ -326,6 +327,10 @@ export default () => {
                 window.cancelAnimationFrame(viewAnimRef.current)
                 viewAnimRef.current = null
             }
+            if (pendingModalRef.current !== null) {
+                window.clearTimeout(pendingModalRef.current)
+                pendingModalRef.current = null
+            }
         }
     }, [])
 
@@ -338,6 +343,13 @@ export default () => {
 
     const endPinch = () => {
         pinchRef.current = null
+    }
+
+    const cancelPendingModal = () => {
+        if (pendingModalRef.current !== null) {
+            window.clearTimeout(pendingModalRef.current)
+            pendingModalRef.current = null
+        }
     }
 
     const cancelViewAnim = () => {
@@ -383,7 +395,7 @@ export default () => {
         setDraggingId(null)
         setGhost(null)
         setSwapTarget(null)
-        if (!drag) return
+        if (!drag || !drag.moved) return
         const classe = displayedGroupRef.current
         const next = applyDrop(
             positionsRef.current,
@@ -421,6 +433,7 @@ export default () => {
                 scale: viewRef.current.scale,
             }
             cancelViewAnim()
+            cancelPendingModal()
             return
         }
         panRef.current = {
@@ -462,6 +475,7 @@ export default () => {
                 scale: viewRef.current.scale,
             }
             cancelViewAnim()
+            cancelPendingModal()
             return
         }
         if (lockedRef.current) {
@@ -493,7 +507,6 @@ export default () => {
             startX: event.clientX,
             startY: event.clientY,
         }
-        setDraggingId(studentId)
         try {
             event.currentTarget.setPointerCapture(event.pointerId)
         } catch (err) {
@@ -532,10 +545,12 @@ export default () => {
             )
             if (dist > DRAG_THRESHOLD) {
                 if (!drag.moved) {
+                    setDraggingId(drag.id)
                     setGhost({ id: drag.id, origin: drag.origin })
                 }
                 drag.moved = true
             }
+            if (!drag.moved) return
             const world = screenToWorld(canvasPoint(event), viewRef.current)
             const raw = {
                 x: world.x - drag.grab.x,
@@ -570,7 +585,15 @@ export default () => {
         if (remaining.length < 2) endPinch()
         const drag = dragRef.current
         if (drag && drag.pointerId === event.pointerId) {
+            const moved = drag.moved
+            const seatId = drag.id
             finishDrag()
+            if (moved) {
+                lastEmptyTapRef.current = null
+                cancelPendingModal()
+            } else {
+                handleSurfaceTap(event, seatId)
+            }
             return
         }
         const pan = panRef.current
@@ -579,8 +602,9 @@ export default () => {
             if (pan.moved) {
                 skipSeatClickRef.current = true
                 lastEmptyTapRef.current = null
-            } else if (!pan.seatId) {
-                handleEmptyTap(event)
+                cancelPendingModal()
+            } else {
+                handleSurfaceTap(event, pan.seatId)
             }
         }
     }
@@ -597,46 +621,53 @@ export default () => {
         focusWorldRef.current = null
     }
 
-    const handleEmptyTap = (event: { clientX: number; clientY: number }) => {
+    const handleSurfaceTap = (
+        event: { clientX: number; clientY: number },
+        seatId?: string | null
+    ) => {
         const now = Date.now()
-        const last = lastEmptyTapRef.current
-        const close =
-            last &&
-            now - last.time <= DOUBLE_TAP_MS &&
-            Math.hypot(event.clientX - last.x, event.clientY - last.y) <=
-                DOUBLE_TAP_PX
-        if (!close) {
-            lastEmptyTapRef.current = {
-                time: now,
-                x: event.clientX,
-                y: event.clientY,
+        const tap = {
+            time: now,
+            x: event.clientX,
+            y: event.clientY,
+        }
+        if (isDoubleTap(lastEmptyTapRef.current, tap)) {
+            lastEmptyTapRef.current = null
+            cancelPendingModal()
+            skipSeatClickRef.current = true
+            if (doubleTapZoomedRef.current) {
+                restoreDefaultView()
+            } else {
+                const el = canvasRef.current
+                if (!el) return
+                const rect = el.getBoundingClientRect()
+                const pivot = canvasPoint(event)
+                const world = screenToWorld(pivot, viewRef.current)
+                doubleTapZoomedRef.current = true
+                focusWorldRef.current = world
+                animateViewTo(
+                    viewCenteringWorld(
+                        world,
+                        steppedZoomScale(
+                            viewRef.current.scale,
+                            DOUBLE_TAP_ZOOM_STEPS
+                        ),
+                        rect.width,
+                        rect.height
+                    ),
+                    world
+                )
             }
             return
         }
-        lastEmptyTapRef.current = null
-        if (doubleTapZoomedRef.current) {
-            restoreDefaultView()
-            return
+        lastEmptyTapRef.current = tap
+        if (seatId && lockedRef.current) {
+            cancelPendingModal()
+            pendingModalRef.current = window.setTimeout(() => {
+                pendingModalRef.current = null
+                openStudentModal(seatId)
+            }, DOUBLE_TAP_MS)
         }
-        const el = canvasRef.current
-        if (!el) return
-        const rect = el.getBoundingClientRect()
-        const pivot = canvasPoint(event)
-        const world = screenToWorld(pivot, viewRef.current)
-        doubleTapZoomedRef.current = true
-        focusWorldRef.current = world
-        animateViewTo(
-            viewCenteringWorld(
-                world,
-                steppedZoomScale(
-                    viewRef.current.scale,
-                    DOUBLE_TAP_ZOOM_STEPS
-                ),
-                rect.width,
-                rect.height
-            ),
-            world
-        )
     }
 
     useEffect(() => {
@@ -673,6 +704,8 @@ export default () => {
     }
 
     const toggleLock = () => {
+        cancelPendingModal()
+        lastEmptyTapRef.current = null
         const next = !locked
         setLocked(next)
         persistPlan(displayedGroup, next, positionsRef.current)
@@ -935,12 +968,14 @@ export default () => {
                                     onPointerUp={onPointerUp}
                                     onPointerCancel={onPointerUp}
                                     onClick={(event) => {
+                                        event.stopPropagation()
                                         if (!lockedRef.current) return
                                         if (skipSeatClickRef.current) {
                                             skipSeatClickRef.current = false
                                             return
                                         }
-                                        event.stopPropagation()
+                                        if (event.detail !== 0) return
+                                        cancelPendingModal()
                                         openStudentModal(student.id)
                                     }}
                                     onContextMenu={(event) =>

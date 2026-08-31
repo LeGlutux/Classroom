@@ -10,6 +10,23 @@ export const MIN_SCALE = 0.35
 export const MAX_SCALE = 2.8
 export const ZOOM_STEP = 1.15
 export const DOUBLE_TAP_ZOOM_STEPS = 3
+export const DOUBLE_TAP_MS = 340
+export const DOUBLE_TAP_PX = 30
+
+export type TapPoint = { time: number; x: number; y: number }
+
+export const isDoubleTap = (
+    last: TapPoint | null,
+    next: TapPoint,
+    windowMs = DOUBLE_TAP_MS,
+    maxDist = DOUBLE_TAP_PX
+) => {
+    if (!last) return false
+    return (
+        next.time - last.time <= windowMs &&
+        Math.hypot(next.x - last.x, next.y - last.y) <= maxDist
+    )
+}
 
 export const clampScale = (scale: number) =>
     Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale))
