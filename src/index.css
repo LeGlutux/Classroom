@@ -3614,6 +3614,10 @@ body,
     box-shadow: none;
 }
 
+.seating-seat.is-ghost.is-highlight {
+    color: #e53e3e;
+}
+
 .seating-seat.is-dragging {
     z-index: 4;
     cursor: grabbing;
