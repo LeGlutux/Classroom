@@ -3597,6 +3597,10 @@ body,
     margin-left: 0.12rem;
 }
 
+.seating-seat.is-highlight {
+    color: #e53e3e;
+}
+
 .seating-seat.is-locked {
     cursor: pointer;
 }

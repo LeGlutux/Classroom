@@ -913,7 +913,12 @@ export default () => {
                                   .map((student) => (
                                       <div
                                           key={'ghost-' + student.id}
-                                          className="seating-seat is-ghost"
+                                          className={
+                                              'seating-seat is-ghost' +
+                                              (student.highlight
+                                                  ? ' is-highlight'
+                                                  : '')
+                                          }
                                           style={{
                                               transform:
                                                   'translate(' +
@@ -946,7 +951,8 @@ export default () => {
                                         'seating-seat' +
                                         (locked ? ' is-locked' : '') +
                                         (isDragging ? ' is-dragging' : '') +
-                                        (isSwap ? ' is-swap' : '')
+                                        (isSwap ? ' is-swap' : '') +
+                                        (student.highlight ? ' is-highlight' : '')
                                     }
                                     style={{
                                         transform:
