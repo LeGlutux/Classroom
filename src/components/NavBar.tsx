@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import addPage from '../images/addPage.png'
 import list from '../images/list.png'
 import home from '../images/home.png'
+import { IconGrid } from './Icons'
 
 interface NavBarProps {
     activeMenu: string
@@ -33,6 +34,17 @@ export default (props: NavBarProps) => {
                         className={navIconClass(props.activeMenu === 'home')}
                         src={home}
                         alt=""
+                    />
+                </Link>
+            </div>
+            <div className="rounded-full h-8 w-8 xl:h-10 xl:w-10 flex justify-center items-center">
+                <Link to="/plan" aria-label="Plan de classe">
+                    <IconGrid
+                        className={`tn-icon nav-plan-icon${
+                            props.activeMenu === 'plan'
+                                ? ''
+                                : ' nav-icon-inactive'
+                        }`}
                     />
                 </Link>
             </div>

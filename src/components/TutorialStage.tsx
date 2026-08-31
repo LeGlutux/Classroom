@@ -64,6 +64,9 @@ const FakeNav = ({
                 alt=""
             />
         </span>
+        <span className="rounded-full h-8 w-8 flex justify-center items-center">
+            <IconGrid className="tn-icon nav-plan-icon nav-icon-inactive" />
+        </span>
         <span
             className={`rounded-full h-8 w-8 flex justify-center items-center tutorial-fake-nav-btn${
                 highlight === 'nav-lists' ? ' tutorial-lit' : ''

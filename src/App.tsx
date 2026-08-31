@@ -13,6 +13,7 @@ import List from './components/List'
 import InstallAppHost from './components/InstallApp'
 import SmsHost from './components/SmsSheet'
 import AppTutorialHost from './components/AppTutorial'
+import SeatingPlan from './components/SeatingPlan'
 
 export default () => {
     return (
@@ -48,6 +49,10 @@ export default () => {
                                 <PrivateRoute
                                     path="/student/:id"
                                     component={StudentStats}
+                                />
+                                <PrivateRoute
+                                    path="/plan"
+                                    component={SeatingPlan}
                                 />
                                 <PrivateRoute path="/" component={FrontPage} />
                             </Switch>
