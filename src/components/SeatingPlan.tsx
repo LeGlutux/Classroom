@@ -13,15 +13,16 @@ import ClassListFilter from './ClassListFilter'
 import HomeClassListFilter from './HomeClassListFilter'
 import Student from './Student'
 import Loader from './Loader'
-import { IconLock, IconMinus, IconPlus, IconUnlock } from './Icons'
+import { IconClose, IconLock, IconMinus, IconPlus, IconUnlock } from './Icons'
 import addPage from '../images/addPage.png'
 import {
     useGroups,
     useIcons,
     usePeriodes,
     useStudents,
+    useSmsConfig,
 } from '../hooks'
-import { buildCrossSlots, handleIcon } from '../functions'
+import { buildCrossSlots, handleIcon, isAdminUser } from '../functions'
 import { StudentInterface } from '../interfaces/Student'
 import {
     CARD_H,
@@ -46,6 +47,32 @@ import {
 } from '../seatingPlan'
 
 const DRAG_THRESHOLD = 8
+
+const SeatName = ({
+    student,
+    classmates,
+}: {
+    student: StudentInterface
+    classmates: StudentInterface[]
+}) => {
+    const caption = seatCaption(student, classmates)
+    const hasSecond = !!(caption.line2 || caption.hint)
+    return (
+        <span className="seating-seat-name">
+            <span className="seating-seat-line">{caption.line1}</span>
+            {hasSecond ? (
+                <span className="seating-seat-line seating-seat-line-split">
+                    {caption.line2 ? (
+                        <span className="seating-seat-tail">{caption.line2}</span>
+                    ) : null}
+                    {caption.hint ? (
+                        <span className="seating-seat-hint">{caption.hint}</span>
+                    ) : null}
+                </span>
+            ) : null}
+        </span>
+    )
+}
 
 type DragState = {
     id: string
@@ -81,6 +108,8 @@ export default () => {
     )
     const { groups, loading: groupsLoading } = useGroups(uid)
     const { periodes, runningPeriode } = usePeriodes(uid)
+    const { smsEnabled } = useSmsConfig()
+    const smsAvailable = smsEnabled || isAdminUser(currentUser)
     const userIcons = useIcons(uid)
     const crossSlots = buildCrossSlots(
         userIcons.icons,
@@ -100,6 +129,9 @@ export default () => {
     const [shouldFit, setShouldFit] = useState(false)
     const [swapTarget, setSwapTarget] = useState<string | null>(null)
     const [draggingId, setDraggingId] = useState<string | null>(null)
+    const [ghost, setGhost] = useState<{ id: string; origin: Point } | null>(
+        null
+    )
     const [modalStudent, setModalStudent] = useState<StudentInterface | null>(
         null
     )
@@ -203,6 +235,9 @@ export default () => {
         .slice()
         .sort()
         .join(',')
+    const skipSeatClickRef = useRef(false)
+    const classStudentsRef = useRef(classStudents)
+    classStudentsRef.current = classStudents
 
     useEffect(() => {
         if (!plansReady || studentsLoading || displayedGroup === 'tous') return
@@ -216,6 +251,7 @@ export default () => {
         setLocked(saved ? saved.locked === true : false)
         setSwapTarget(null)
         setDraggingId(null)
+        setGhost(null)
         setShouldFit(true)
         const hadNew = ids.some((id) => !savedPos[id])
         if (ids.length > 0 && hadNew) {
@@ -273,6 +309,7 @@ export default () => {
         const drag = dragRef.current
         dragRef.current = null
         setDraggingId(null)
+        setGhost(null)
         setSwapTarget(null)
         if (!drag) return
         const classe = displayedGroupRef.current
@@ -286,6 +323,13 @@ export default () => {
         persistPlan(classe, lockedRef.current, next)
     }
 
+    const openStudentModal = (studentId: string) => {
+        const student = classStudentsRef.current.find(
+            (item) => item.id === studentId
+        )
+        if (student) setModalStudent(student)
+    }
+
     const onCanvasPointerDown = (event: React.PointerEvent<HTMLElement>) => {
         if (event.button !== 0 && event.pointerType === 'mouse') return
         pointersRef.current[event.pointerId] = {
@@ -297,6 +341,7 @@ export default () => {
             dragRef.current = null
             panRef.current = null
             setDraggingId(null)
+            setGhost(null)
             const a = pointersRef.current[ids[0]]
             const b = pointersRef.current[ids[1]]
             pinchRef.current = {
@@ -336,6 +381,7 @@ export default () => {
             dragRef.current = null
             panRef.current = null
             setDraggingId(null)
+            setGhost(null)
             const a = pointersRef.current[ids[0]]
             const b = pointersRef.current[ids[1]]
             pinchRef.current = {
@@ -410,7 +456,12 @@ export default () => {
                 event.clientX - drag.startX,
                 event.clientY - drag.startY
             )
-            if (dist > DRAG_THRESHOLD) drag.moved = true
+            if (dist > DRAG_THRESHOLD) {
+                if (!drag.moved) {
+                    setGhost({ id: drag.id, origin: drag.origin })
+                }
+                drag.moved = true
+            }
             const world = screenToWorld(canvasPoint(event), viewRef.current)
             const raw = {
                 x: world.x - drag.grab.x,
@@ -448,12 +499,7 @@ export default () => {
         const pan = panRef.current
         if (pan && pan.pointerId === event.pointerId) {
             panRef.current = null
-            if (!pan.moved && pan.seatId && lockedRef.current) {
-                const student = classStudents.find(
-                    (item) => item.id === pan.seatId
-                )
-                if (student) setModalStudent(student)
-            }
+            if (pan.moved) skipSeatClickRef.current = true
         }
     }
 
@@ -547,8 +593,12 @@ export default () => {
 
     const showClassFilter =
         groups.length !== 1 && displayedGroup !== 'tous'
-    const seatClusters = linkedSeatGroups(positions)
-    const clusterBox = boundingBox(positions)
+    const clusterPositions: Positions = { ...positions }
+    if (ghost) {
+        clusterPositions[ghost.id] = ghost.origin
+    }
+    const seatClusters = linkedSeatGroups(clusterPositions)
+    const clusterBox = boundingBox(clusterPositions)
     const clusterSvgW = Math.max(
         1,
         clusterBox.x + clusterBox.w + CLUSTER_OUTLINE * 6
@@ -649,7 +699,7 @@ export default () => {
                             {seatClusters.map((ids) => (
                                 <g key={ids.slice().sort().join('-')}>
                                     {ids.map((id) => {
-                                        const pos = positions[id]
+                                        const pos = clusterPositions[id]
                                         if (!pos) return null
                                         return (
                                             <rect
@@ -668,7 +718,7 @@ export default () => {
                                         )
                                     })}
                                     {ids.map((id) => {
-                                        const pos = positions[id]
+                                        const pos = clusterPositions[id]
                                         if (!pos) return null
                                         return (
                                             <rect
@@ -685,13 +735,37 @@ export default () => {
                                 </g>
                             ))}
                         </svg>
+                        {ghost
+                            ? classStudents
+                                  .filter((student) => student.id === ghost.id)
+                                  .map((student) => (
+                                      <div
+                                          key={'ghost-' + student.id}
+                                          className="seating-seat is-ghost"
+                                          style={{
+                                              transform:
+                                                  'translate(' +
+                                                  ghost.origin.x +
+                                                  'px, ' +
+                                                  ghost.origin.y +
+                                                  'px)',
+                                              width: CARD_W,
+                                              height: CARD_H,
+                                          }}
+                                          aria-hidden="true"
+                                      >
+                                          <SeatName
+                                              student={student}
+                                              classmates={classStudents}
+                                          />
+                                      </div>
+                                  ))
+                            : null}
                         {classStudents.map((student) => {
                             const pos = positions[student.id]
                             if (!pos) return null
                             const isDragging = draggingId === student.id
                             const isSwap = swapTarget === student.id
-                            const caption = seatCaption(student, classStudents)
-                            const hasSecond = !!(caption.line2 || caption.hint)
                             return (
                                 <button
                                     type="button"
@@ -721,29 +795,23 @@ export default () => {
                                     onPointerMove={onPointerMove}
                                     onPointerUp={onPointerUp}
                                     onPointerCancel={onPointerUp}
+                                    onClick={(event) => {
+                                        if (!lockedRef.current) return
+                                        if (skipSeatClickRef.current) {
+                                            skipSeatClickRef.current = false
+                                            return
+                                        }
+                                        event.stopPropagation()
+                                        openStudentModal(student.id)
+                                    }}
                                     onContextMenu={(event) =>
                                         event.preventDefault()
                                     }
                                 >
-                                    <span className="seating-seat-name">
-                                        <span className="seating-seat-line">
-                                            {caption.line1}
-                                        </span>
-                                        {hasSecond ? (
-                                            <span className="seating-seat-line seating-seat-line-split">
-                                                {caption.line2 ? (
-                                                    <span className="seating-seat-tail">
-                                                        {caption.line2}
-                                                    </span>
-                                                ) : null}
-                                                {caption.hint ? (
-                                                    <span className="seating-seat-hint">
-                                                        {caption.hint}
-                                                    </span>
-                                                ) : null}
-                                            </span>
-                                        ) : null}
-                                    </span>
+                                    <SeatName
+                                        student={student}
+                                        classmates={classStudents}
+                                    />
                                 </button>
                             )
                         })}
@@ -787,13 +855,21 @@ export default () => {
 
             {modalStudent && (
                 <div
-                    className="modal-overlay"
+                    className="modal-overlay seating-student-overlay"
                     onClick={() => setModalStudent(null)}
                 >
                     <div
                         className="modal-card seating-student-modal"
                         onClick={(event) => event.stopPropagation()}
                     >
+                        <button
+                            type="button"
+                            className="seating-modal-close"
+                            onClick={() => setModalStudent(null)}
+                            aria-label="Fermer"
+                        >
+                            <IconClose />
+                        </button>
                         <div className="seating-student-modal-inner">
                             <Student
                                 displayedStudents={[modalStudent]}
@@ -823,6 +899,7 @@ export default () => {
                                 refresher={(group) => filterStudents(group)}
                                 displayedGroup={displayedGroup}
                                 slots={crossSlots}
+                                smsAvailable={smsAvailable}
                             />
                         </div>
                     </div>
