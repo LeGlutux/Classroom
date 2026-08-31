@@ -37,6 +37,7 @@ import {
     parseStoredPlans,
     prunePositions,
     screenToWorld,
+    seatLabel,
     snapPosition,
     zoomAround,
 } from '../seatingPlan'
@@ -662,7 +663,9 @@ export default () => {
                                         event.preventDefault()
                                     }
                                 >
-                                    {student.surname}
+                                    <span className="seating-seat-name">
+                                        {seatLabel(student.surname)}
+                                    </span>
                                 </button>
                             )
                         })}

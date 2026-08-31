@@ -3526,24 +3526,31 @@ body,
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 0.4rem;
+    padding: 0 0.22rem;
     margin: 0;
     background: #fff;
     border: 1px solid var(--tn-line);
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(24, 24, 27, 0.06);
+    border-radius: 4px;
+    box-shadow: none;
     font-family: 'Open Sans', sans-serif;
-    font-size: 0.82rem;
+    font-size: 0.68rem;
     font-weight: 600;
-    line-height: 1.1;
+    line-height: 1.05;
     color: var(--tn-ink);
     user-select: none;
     -webkit-user-select: none;
     cursor: grab;
     overflow: hidden;
+    touch-action: none;
+}
+
+.seating-seat-name {
+    display: block;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    touch-action: none;
 }
 
 .seating-seat.is-locked {

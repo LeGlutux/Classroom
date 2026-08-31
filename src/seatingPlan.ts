@@ -1,7 +1,8 @@
-export const CARD_W = 96
-export const CARD_H = 44
-export const CARD_GAP = 12
+export const CARD_W = 72
+export const CARD_H = 60
+export const CARD_GAP = 0
 export const SNAP_THRESHOLD = 12
+export const MAX_SEAT_CHARS = 8
 export const LAYOUT_PAD = 24
 export const MIN_SCALE = 0.35
 export const MAX_SCALE = 2.8
@@ -28,6 +29,12 @@ export const roundPoint = (point: Point): Point => ({
     x: Math.round(point.x * 10) / 10,
     y: Math.round(point.y * 10) / 10,
 })
+
+export const seatLabel = (surname: string) => {
+    const text = (surname || '').trim()
+    if (text.length <= MAX_SEAT_CHARS) return text
+    return text.substring(0, MAX_SEAT_CHARS - 1) + '…'
+}
 
 export const layoutColumns = (count: number) => {
     if (count <= 1) return 1

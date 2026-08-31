@@ -14,6 +14,7 @@ import {
     mergePositions,
     parseStoredPlans,
     prunePositions,
+    seatLabel,
     snapPosition,
     swapSeats,
     zoomAround,
@@ -60,7 +61,7 @@ describe('mergePositions', () => {
     it('ajoute les nouveaux élèves sous le plan existant', () => {
         const merged = mergePositions(['a', 'b'], { a: { x: 10, y: 20 } })
         expect(merged.a).toEqual({ x: 10, y: 20 })
-        expect(merged.b.y).toBeGreaterThan(20 + CARD_H)
+        expect(merged.b.y).toBeGreaterThanOrEqual(20 + CARD_H)
     })
 
     it('génère une grille si rien n’est encore enregistré', () => {
@@ -92,11 +93,12 @@ describe('snapPosition', () => {
         })
     })
 
-    it('colle un cadre à droite d’un autre', () => {
-        const beside = 100 + CARD_W + CARD_GAP
+    it('colle un cadre à droite d’un autre, bord à bord', () => {
+        const beside = 100 + CARD_W
         expect(
             snapPosition('moving', { x: beside - 6, y: 80 }, others)
         ).toEqual({ x: beside, y: 80 })
+        expect(beside).toBe(100 + CARD_W + CARD_GAP)
     })
 
     it('ne magnétise pas trop loin', () => {
@@ -174,6 +176,18 @@ describe('fitView / zoomAround / clampScale', () => {
     it('borne le zoom', () => {
         expect(clampScale(0.01)).toBe(MIN_SCALE)
         expect(clampScale(99)).toBe(MAX_SCALE)
+    })
+})
+
+describe('seatLabel', () => {
+    it('laisse les prénoms courts intacts', () => {
+        expect(seatLabel('Léa')).toBe('Léa')
+        expect(seatLabel('Maxime')).toBe('Maxime')
+    })
+
+    it('coupe les prénoms trop longs pour le cadre', () => {
+        expect(seatLabel('Christophe')).toBe('Christo…')
+        expect(seatLabel('  Alexandre  ')).toBe('Alexand…')
     })
 })
 
