@@ -9,6 +9,11 @@ import edit from '../images/edit.png'
 import { handleIcon, buildCrossSlots, CrossSlot } from '../functions'
 import { titleCasePersonName } from '../utils/names'
 import { patchCachedStudent, removeCachedStudent } from '../utils/cache'
+import {
+    schoolWeekNumber,
+    schoolWeekStart,
+    schoolYearStart,
+} from '../utils/schoolWeeks'
 import { IconChevronLeft } from './Icons'
 
 const classToValue = (classes: unknown): string => {
@@ -83,33 +88,7 @@ const View = ({
         })
         return ordered
     }
-    const getClosestFirstMondayOfSeptember = (): Date => {
-        const today = new Date();
-        let year = today.getFullYear();
-    
-        // Crée la date du 1er septembre de l'année en cours
-        let septemberFirst = new Date(year, 8, 1);
-        
-        // Calcule le jour de la semaine pour le 1er septembre
-        let dayOfWeek = septemberFirst.getDay();
-    
-        // Calcule le décalage pour atteindre le premier lundi
-        let offset = (8 - dayOfWeek) % 7;
-    
-        // Ajoute le décalage pour obtenir le premier lundi
-        let firstMondayOfSeptember = new Date(septemberFirst.setDate(1 + offset));
-    
-        // Si le premier lundi est dans le futur, recommence avec l'année précédente
-        if (firstMondayOfSeptember > today) {
-            septemberFirst = new Date(--year, 8, 1);
-            dayOfWeek = septemberFirst.getDay();
-            offset = (8 - dayOfWeek) % 7;
-            firstMondayOfSeptember = new Date(septemberFirst.setDate(1 + offset));
-        }
-    
-        return firstMondayOfSeptember;
-    };
-    const startDate = getClosestFirstMondayOfSeptember()
+    const startDate = schoolYearStart(new Date())
     const [confirm, setConfirm] = useState(false)
     const [editing, setEditing] = useState(false)
     const [nameInputValue, setNameInputValue] = useState('')
@@ -118,10 +97,7 @@ const View = ({
     const [displayName, setDisplayName] = useState(student.name)
     const [displaySurname, setDisplaySurname] = useState(student.surname)
     const [displayClasses, setDisplayClasses] = useState(student.classes)
-    const currentWeek =
-        Math.floor(
-            (new Date().getTime() - startDate.getTime()) / (7 * 86400000)
-        ) + 1
+    const currentWeek = schoolWeekNumber(new Date())
     const weeks = Array.from({ length: currentWeek }, (_, index) => index + 1)
     const db = firebase.firestore()
     const history = useHistory()
@@ -373,10 +349,10 @@ const View = ({
                             studentId={studentId}
                             userId={currentUser.uid}
                             crossRefresher={crossRefresher}
-                            week={
-                                startDate.getTime() +
-                                (weeks.length - index - 1) * 7 * 86400000
-                            }
+                            week={schoolWeekStart(
+                                startDate,
+                                weeks.length - index
+                            ).getTime()}
                             index={weeks.length - index}
                             key={index}
                             slots={slots}
