@@ -13,7 +13,7 @@ import ClassListFilter from './ClassListFilter'
 import HomeClassListFilter from './HomeClassListFilter'
 import Student from './Student'
 import Loader from './Loader'
-import { IconClose, IconLock, IconMinus, IconPlus, IconUnlock } from './Icons'
+import { IconClose, IconLock, IconMinus, IconPlus, IconSeatBlank, IconUnlock } from './Icons'
 import addPage from '../images/addPage.png'
 import {
     useGroups,
@@ -32,8 +32,11 @@ import {
     StoredPlans,
     ViewTransform,
     applyDrop,
+    addEmptySeat,
+    emptySeatIds,
     findSwapTarget,
     fitView,
+    isEmptySeatId,
     mergePositions,
     parseStoredPlans,
     prunePositions,
@@ -50,6 +53,7 @@ import {
     easeInOutCubic,
     lerpView,
     lerpViewTrackingWorld,
+    removeSeat,
     ZOOM_STEP,
     DOUBLE_TAP_MS,
     DOUBLE_TAP_ZOOM_STEPS,
@@ -661,7 +665,7 @@ export default () => {
             return
         }
         lastEmptyTapRef.current = tap
-        if (seatId && lockedRef.current) {
+        if (seatId && lockedRef.current && !isEmptySeatId(seatId)) {
             cancelPendingModal()
             pendingModalRef.current = window.setTimeout(() => {
                 pendingModalRef.current = null
@@ -701,6 +705,36 @@ export default () => {
                 y: rect.height / 2,
             })
         )
+    }
+
+    const addBlankSeat = () => {
+        if (lockedRef.current) return
+        const el = canvasRef.current
+        if (!el) return
+        const rect = el.getBoundingClientRect()
+        const world = screenToWorld(
+            { x: rect.width / 2, y: rect.height / 2 },
+            viewRef.current
+        )
+        const next = addEmptySeat(positionsRef.current, {
+            x: world.x - CARD_W / 2,
+            y: world.y - CARD_H / 2,
+        })
+        positionsRef.current = next
+        setPositions(next)
+        persistPlan(displayedGroup, lockedRef.current, next)
+    }
+
+    const removeBlankSeat = (id: string) => {
+        if (lockedRef.current || !isEmptySeatId(id)) return
+        const next = removeSeat(positionsRef.current, id)
+        positionsRef.current = next
+        setPositions(next)
+        persistPlan(displayedGroup, lockedRef.current, next)
+        if (draggingId === id) {
+            setDraggingId(null)
+            setGhost(null)
+        }
     }
 
     const toggleLock = () => {
@@ -823,24 +857,7 @@ export default () => {
             )}
 
             {displayedGroup !== 'tous' &&
-                seatsReady &&
-                classStudents.length === 0 && (
-                <div className="flex-1 min-h-0 flex w-full flex-col items-center justify-center">
-                    <div className="empty-state">
-                        <div className="empty-title">Aucun élève</div>
-                        <div className="empty-text">
-                            Cette classe n’a pas encore d’élèves.
-                        </div>
-                    </div>
-                    <Link to="/create">
-                        <img className="self-center" src={addPage} alt="" />
-                    </Link>
-                </div>
-            )}
-
-            {displayedGroup !== 'tous' &&
-                seatsReady &&
-                classStudents.length > 0 && (
+                seatsReady && (
                 <div
                     ref={canvasRef}
                     className="seating-canvas"
@@ -907,7 +924,23 @@ export default () => {
                                 </g>
                             ))}
                         </svg>
-                        {ghost
+                        {ghost && isEmptySeatId(ghost.id) ? (
+                            <div
+                                key={'ghost-' + ghost.id}
+                                className="seating-seat is-ghost is-empty"
+                                style={{
+                                    transform:
+                                        'translate(' +
+                                        ghost.origin.x +
+                                        'px, ' +
+                                        ghost.origin.y +
+                                        'px)',
+                                    width: CARD_W,
+                                    height: CARD_H,
+                                }}
+                                aria-hidden="true"
+                            />
+                        ) : ghost
                             ? classStudents
                                   .filter((student) => student.id === ghost.id)
                                   .map((student) => (
@@ -995,6 +1028,62 @@ export default () => {
                                 </button>
                             )
                         })}
+                        {emptySeatIds(positions).map((id) => {
+                            const pos = positions[id]
+                            if (!pos) return null
+                            const isDragging = draggingId === id
+                            const isSwap = swapTarget === id
+                            return (
+                                <button
+                                    type="button"
+                                    key={id}
+                                    className={
+                                        'seating-seat is-empty' +
+                                        (locked ? ' is-locked' : '') +
+                                        (isDragging ? ' is-dragging' : '') +
+                                        (isSwap ? ' is-swap' : '')
+                                    }
+                                    style={{
+                                        transform:
+                                            'translate(' +
+                                            pos.x +
+                                            'px, ' +
+                                            pos.y +
+                                            'px)',
+                                        width: CARD_W,
+                                        height: CARD_H,
+                                    }}
+                                    aria-label="Cadre vide"
+                                    onPointerDown={(event) =>
+                                        onSeatPointerDown(event, id)
+                                    }
+                                    onPointerMove={onPointerMove}
+                                    onPointerUp={onPointerUp}
+                                    onPointerCancel={onPointerUp}
+                                    onContextMenu={(event) =>
+                                        event.preventDefault()
+                                    }
+                                >
+                                    {!locked ? (
+                                        <span
+                                            className="seating-blank-remove"
+                                            role="button"
+                                            aria-label="Retirer le cadre vide"
+                                            onPointerDown={(event) => {
+                                                event.stopPropagation()
+                                                event.preventDefault()
+                                            }}
+                                            onClick={(event) => {
+                                                event.stopPropagation()
+                                                removeBlankSeat(id)
+                                            }}
+                                        >
+                                            <IconClose />
+                                        </span>
+                                    ) : null}
+                                </button>
+                            )
+                        })}
                     </div>
                     <div
                         className={
@@ -1002,6 +1091,19 @@ export default () => {
                             (showClassFilter ? '' : ' is-flush')
                         }
                     >
+                        {!locked ? (
+                            <button
+                                type="button"
+                                className="seating-add-blank"
+                                aria-label="Ajouter un cadre vide"
+                                onClick={addBlankSeat}
+                                onPointerDown={(event) =>
+                                    event.stopPropagation()
+                                }
+                            >
+                                <IconSeatBlank />
+                            </button>
+                        ) : null}
                         <button
                             type="button"
                             aria-label="Zoom avant"

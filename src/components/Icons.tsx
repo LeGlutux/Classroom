@@ -47,6 +47,12 @@ export const IconPlus: React.FC<IconProps> = (props) => (
     </Svg>
 )
 
+export const IconSeatBlank: React.FC<IconProps> = (props) => (
+    <Svg {...props}>
+        <rect x="5.5" y="6.5" width="13" height="11" rx="1.6" />
+    </Svg>
+)
+
 export const IconMinus: React.FC<IconProps> = (props) => (
     <Svg {...props}>
         <path d="M5 12h14" />
