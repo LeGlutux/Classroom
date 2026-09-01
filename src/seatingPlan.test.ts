@@ -10,6 +10,12 @@ import {
     MIN_SCALE,
     ZOOM_STEP,
     applyDrop,
+    addEmptySeat,
+    emptySeatIds,
+    isEmptySeatId,
+    nextEmptySeatId,
+    removeSeat,
+    seatsOverlap,
     clampScale,
     defaultLayout,
     findSwapTarget,
@@ -80,6 +86,62 @@ describe('mergePositions', () => {
 
     it('génère une grille si rien n’est encore enregistré', () => {
         expect(mergePositions(['a', 'b'], {})).toEqual(defaultLayout(['a', 'b']))
+    })
+
+    it('conserve les cadres vides déjà enregistrés', () => {
+        const merged = mergePositions(['a'], {
+            a: { x: 10, y: 20 },
+            'blank:2': { x: 80, y: 40 },
+            junk: { x: 1, y: 2 },
+        })
+        expect(merged).toEqual({
+            a: { x: 10, y: 20 },
+            'blank:2': { x: 80, y: 40 },
+        })
+    })
+})
+
+describe('empty seats', () => {
+    it('numérote les cadres vides', () => {
+        expect(nextEmptySeatId({})).toBe('blank:1')
+        expect(
+            nextEmptySeatId({
+                a: { x: 0, y: 0 },
+                'blank:1': { x: 10, y: 10 },
+                'blank:4': { x: 20, y: 20 },
+            })
+        ).toBe('blank:5')
+        expect(isEmptySeatId('blank:1')).toBe(true)
+        expect(isEmptySeatId('s1')).toBe(false)
+    })
+
+    it('place un cadre vide sans recouvrir un élève', () => {
+        const positions = { a: { x: 0, y: 0 } }
+        const next = addEmptySeat(positions, { x: 2, y: 1 })
+        expect(emptySeatIds(next)).toEqual(['blank:1'])
+        expect(seatsOverlap(next.a, next['blank:1'])).toBe(false)
+    })
+
+    it('échange un élève avec un cadre vide', () => {
+        const origin = { x: 0, y: 0 }
+        const blank = { x: CARD_W + CARD_GAP, y: 0 }
+        const dropped = applyDrop(
+            { a: origin, 'blank:1': blank },
+            'a',
+            blank,
+            origin
+        )
+        expect(dropped.a).toEqual(blank)
+        expect(dropped['blank:1']).toEqual(origin)
+    })
+
+    it('retire un cadre vide sans toucher aux autres', () => {
+        expect(
+            removeSeat(
+                { a: { x: 1, y: 2 }, 'blank:1': { x: 3, y: 4 } },
+                'blank:1'
+            )
+        ).toEqual({ a: { x: 1, y: 2 } })
     })
 })
 

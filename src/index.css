@@ -3642,6 +3642,33 @@ body,
     box-shadow: 0 2px 8px rgba(24, 24, 27, 0.08);
 }
 
+.seating-seat.is-empty {
+    background: #fff;
+}
+
+.seating-blank-remove {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--tn-muted);
+    cursor: pointer;
+}
+
+.seating-blank-remove .tn-icon {
+    width: 11px;
+    height: 11px;
+}
+
 .seating-zoom.is-flush {
     bottom: 0.7rem;
 }
@@ -3661,6 +3688,10 @@ body,
 
 .seating-zoom button + button {
     border-top: 1px solid var(--tn-line);
+}
+
+.seating-zoom .seating-add-blank {
+    color: var(--tn-muted);
 }
 
 .seating-student-overlay {

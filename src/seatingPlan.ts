@@ -37,6 +37,34 @@ export const steppedZoomScale = (scale: number, steps: number) =>
 export type Point = { x: number; y: number }
 export type Positions = { [id: string]: Point }
 
+export const EMPTY_SEAT_PREFIX = 'blank:'
+
+export const isEmptySeatId = (id: string) =>
+    id.indexOf(EMPTY_SEAT_PREFIX) === 0
+
+export const emptySeatIds = (positions: Positions) =>
+    Object.keys(positions).filter(isEmptySeatId)
+
+export const nextEmptySeatId = (positions: Positions) => {
+    let max = 0
+    emptySeatIds(positions).forEach((id) => {
+        const n = Number(id.slice(EMPTY_SEAT_PREFIX.length))
+        if (Number.isFinite(n) && n > max) max = n
+    })
+    return EMPTY_SEAT_PREFIX + (max + 1)
+}
+
+export const seatsOverlap = (a: Point, b: Point) =>
+    Math.abs(a.x - b.x) < CARD_W - 1 && Math.abs(a.y - b.y) < CARD_H - 1
+
+export const removeSeat = (positions: Positions, id: string): Positions => {
+    const next: Positions = {}
+    Object.keys(positions).forEach((key) => {
+        if (key !== id) next[key] = positions[key]
+    })
+    return next
+}
+
 export type StoredPlan = {
     locked: boolean
     positions: Positions
@@ -192,8 +220,16 @@ export const boundingBox = (positions: Positions) => {
 
 export const mergePositions = (ids: string[], saved: Positions): Positions => {
     const result: Positions = {}
+    Object.keys(saved).forEach((id) => {
+        if (!isEmptySeatId(id)) return
+        const point = saved[id]
+        if (!point) return
+        if (!Number.isFinite(point.x) || !Number.isFinite(point.y)) return
+        result[id] = { x: point.x, y: point.y }
+    })
     const missing: string[] = []
     ids.forEach((id) => {
+        if (isEmptySeatId(id)) return
         if (saved[id]) {
             result[id] = { x: saved[id].x, y: saved[id].y }
         } else {
@@ -280,6 +316,50 @@ export const snapPosition = (
     return {
         x: closestSnap(pos.x, candidatesX),
         y: closestSnap(pos.y, candidatesY),
+    }
+}
+
+export const findFreeSeatPoint = (
+    positions: Positions,
+    preferred: Point
+): Point => {
+    const start = snapPosition('__empty__', preferred, positions)
+    const blocked = (point: Point) =>
+        Object.keys(positions).some((id) => seatsOverlap(point, positions[id]))
+    if (!blocked(start)) return roundPoint(start)
+    const stepX = CARD_W + CARD_GAP
+    const stepY = CARD_H + CARD_GAP
+    for (let ring = 1; ring <= 8; ring++) {
+        for (let dx = -ring; dx <= ring; dx++) {
+            for (let dy = -ring; dy <= ring; dy++) {
+                if (Math.abs(dx) !== ring && Math.abs(dy) !== ring) continue
+                const candidate = snapPosition(
+                    '__empty__',
+                    {
+                        x: start.x + dx * stepX,
+                        y: start.y + dy * stepY,
+                    },
+                    positions
+                )
+                if (!blocked(candidate)) return roundPoint(candidate)
+            }
+        }
+    }
+    const box = boundingBox(positions)
+    return roundPoint({
+        x: box.x,
+        y: box.y + box.h + CARD_GAP * 2,
+    })
+}
+
+export const addEmptySeat = (
+    positions: Positions,
+    preferred: Point
+): Positions => {
+    const id = nextEmptySeatId(positions)
+    return {
+        ...positions,
+        [id]: findFreeSeatPoint(positions, preferred),
     }
 }
 
