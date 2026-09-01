@@ -4,13 +4,22 @@ const DAY_MS = 86400000
 export const startOfLocalDay = (date: Date) =>
     new Date(date.getFullYear(), date.getMonth(), date.getDate())
 
+export const mondayOnOrBefore = (date: Date) => {
+    const day = startOfLocalDay(date)
+    const weekday = day.getDay()
+    const delta = weekday === 0 ? 6 : weekday - 1
+    day.setDate(day.getDate() - delta)
+    return day
+}
+
 export const schoolYearStart = (today: Date) => {
     const day = startOfLocalDay(today)
     const thisSept1 = new Date(day.getFullYear(), 8, 1)
-    if (day.getTime() < thisSept1.getTime()) {
-        return new Date(day.getFullYear() - 1, 8, 1)
-    }
-    return thisSept1
+    const sept1 =
+        day.getTime() < thisSept1.getTime()
+            ? new Date(day.getFullYear() - 1, 8, 1)
+            : thisSept1
+    return mondayOnOrBefore(sept1)
 }
 
 export const schoolWeekNumber = (today: Date) => {
