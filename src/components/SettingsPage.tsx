@@ -38,11 +38,13 @@ import {
     IconDownload,
     IconChat,
     IconPlay,
+    IconDrop,
 } from './Icons'
 import { isAdminUser } from '../functions'
 import { openInstallApp } from './InstallApp'
 import { replayTutorial } from '../tutorial'
 import SmsTemplates from './SmsTemplates'
+import NameColors from './NameColors'
 
 interface SettingsRowProps {
     to?: string
@@ -199,6 +201,12 @@ const SettingsMenu = () => {
                         subtitle="Textes et jetons envoyés aux parents"
                     />
                 ) : null}
+                <SettingsRow
+                    to="/create/couleurs"
+                    icon={<IconDrop />}
+                    title="Personnaliser les couleurs élèves"
+                    subtitle="Selon les notes de fiche (PAP, PAI…)"
+                />
                 <SettingsRow
                     icon={<IconDownload />}
                     title="Télécharger l’app"
@@ -660,6 +668,7 @@ export default () => {
             <Route path="/create/periodes" component={SettingsPeriodes} />
             <Route path="/create/annee" component={SettingsAnnee} />
             <Route path="/create/sms" component={SmsTemplates} />
+            <Route path="/create/couleurs" component={NameColors} />
             <Route path="/create/signaler" component={ReportProblem} />
             <Route path="/create/admin/signalements" component={AdminReports} />
             <Route path="/create/admin/utilisateurs" component={AdminAccounts} />

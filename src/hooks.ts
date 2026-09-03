@@ -18,8 +18,10 @@ import {
     fetchVersion,
     fetchIcons,
     fetchPostIts,
+    saveNameColorRules,
 } from './database'
 import { parseSmsConfig, SmsTemplate } from './sms'
+import { parseNameColorRules, NameColorRule } from './utils/nameColors'
 import Firebase from './firebase'
 import { getCachedData, setCachedData, getCacheKey, invalidateCache } from './utils/cache'
 import { filterStudentsByGroup } from './utils/studentsList'
@@ -675,6 +677,49 @@ export const useSmsConfig = () => {
     }, [])
 
     return { smsEnabled, defaultTemplates, loading }
+}
+
+export const useNameColorRules = (currentUserId: string) => {
+    const [rules, setRules] = useState<NameColorRule[]>(
+        parseNameColorRules(undefined)
+    )
+    const [loading, setLoading] = useState(true)
+    const [saving, setSaving] = useState(false)
+
+    useEffect(() => {
+        if (!currentUserId) {
+            setRules(parseNameColorRules(undefined))
+            setLoading(false)
+            return
+        }
+        setLoading(true)
+        const unsub = Firebase.firestore()
+            .collection('users')
+            .doc(currentUserId)
+            .onSnapshot(
+                (snap) => {
+                    setRules(parseNameColorRules(snap.data()?.nameColorRules))
+                    setLoading(false)
+                },
+                () => {
+                    setLoading(false)
+                }
+            )
+        return () => unsub()
+    }, [currentUserId])
+
+    const save = async (next: NameColorRule[]) => {
+        if (!currentUserId) return
+        setSaving(true)
+        try {
+            await saveNameColorRules(currentUserId, next)
+            setRules(next)
+        } finally {
+            setSaving(false)
+        }
+    }
+
+    return { rules, loading, saving, save }
 }
 
 export const useIcons = (currentUserId: string) => {

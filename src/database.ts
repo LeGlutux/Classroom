@@ -282,6 +282,17 @@ export const fetchIcons = async (currentUserId: string) => {
     }
 }
 
+export const saveNameColorRules = async (
+    currentUserId: string,
+    rules: unknown
+) => {
+    const db = Firebase.firestore()
+    await db
+        .collection('users')
+        .doc(currentUserId)
+        .set({ nameColorRules: rules }, { merge: true })
+}
+
 const BATCH_LIMIT = 400
 
 const deleteRefs = async (refs: firebase.firestore.DocumentReference[]) => {
@@ -325,6 +336,9 @@ export const wipeUserData = async (uid: string) => {
         classes: [],
         periodes: [],
         postIt: [],
+        ...(Array.isArray(previous.nameColorRules)
+            ? { nameColorRules: previous.nameColorRules }
+            : {}),
         wiped: true,
         wipedAt: firebase.firestore.FieldValue.serverTimestamp(),
     })

@@ -30,6 +30,7 @@ interface StudentProps {
     toggleHighlight: (studentId: string) => void
     selected: boolean
     comment?: string
+    nameColor?: string
     refresher: (group: string) => void
     displayedGroup: string
     currentUser: string
@@ -455,6 +456,11 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                                         highlight ? 'text-red-600' : ''
                                     }
                                 `}
+                                    style={
+                                        highlight || !props.nameColor
+                                            ? undefined
+                                            : { color: props.nameColor }
+                                    }
                                 >
                                     {shortSurname}
                                 </div>
@@ -462,6 +468,11 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                                     className={`student-name ml-2 text-gray-900 font-bold ${
                                         highlight ? 'text-red-600' : ''
                                     }`}
+                                    style={
+                                        highlight || !props.nameColor
+                                            ? undefined
+                                            : { color: props.nameColor }
+                                    }
                                 >
                                     {shortName}
                                 </div>

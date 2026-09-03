@@ -198,3 +198,10 @@ export const IconSearch: React.FC<IconProps> = (props) => (
         <path d="M16.2 16.2L20 20" />
     </Svg>
 )
+
+export const IconDrop: React.FC<IconProps> = (props) => (
+    <Svg {...props}>
+        <path d="M12 3.6s6.4 6.3 6.4 10.4A6.4 6.4 0 0 1 5.6 14C5.6 9.9 12 3.6 12 3.6z" />
+        <path d="M9.6 14.2c.6 1.5 1.8 2.2 3.4 2.2" />
+    </Svg>
+)
