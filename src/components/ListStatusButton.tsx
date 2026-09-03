@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import firebase from 'firebase/app'
 import { IconCheck, IconClose, IconQuestion } from './Icons'
+import { normalizeListState } from '../utils/listSort'
 
 interface ListStatusButtonProps {
     studentId: string
@@ -8,6 +9,7 @@ interface ListStatusButtonProps {
     listId: string
     indexOfItem: number
     listState: number[]
+    onStateChange?: (next: number[]) => void
 }
 
 export const listStatusClass = (state: number) => {
@@ -26,28 +28,26 @@ export const ListStatusMark = ({ state }: { state: number }) => {
 
 export default (props: ListStatusButtonProps) => {
     const db = firebase.firestore()
-    const originalState = props.listState[props.indexOfItem]
-    const [state, setState] = useState(originalState)
-    const newState = props.listState
+    const cellState = normalizeListState(props.listState)[props.indexOfItem] || 0
+    const [state, setState] = useState(cellState)
 
-    // states : 0 -> empty // 1 -> check // 2 -> uncheck // 3 -> question mark
+    useEffect(() => {
+        setState(cellState)
+    }, [cellState])
+
     const handleClick = () => {
-        if (state === 3) setState(0)
-        else setState(state + 1)
-        newState.splice(
-            props.indexOfItem,
-            1,
-            newState[props.indexOfItem] >= 3
-                ? 0
-                : newState[props.indexOfItem] + 1
-        )
+        const nextValue = state >= 3 ? 0 : state + 1
+        const next = normalizeListState(props.listState)
+        next[props.indexOfItem] = nextValue
+        setState(nextValue)
+        if (props.onStateChange) props.onStateChange(next)
         db.collection('users')
             .doc(props.userId)
             .collection('eleves')
             .doc(props.studentId)
             .collection('listes')
             .doc(props.listId.concat('s'))
-            .update({ state: newState })
+            .update({ state: next })
     }
 
     return (
