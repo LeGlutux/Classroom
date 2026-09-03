@@ -179,6 +179,25 @@ export const isDeletedReportExpired = (deletedAt: any): boolean => {
     return ms > 0 && Date.now() - ms >= MONTH_MS
 }
 
+export const isPendingAdminReport = (data?: {
+    kind?: string
+    status?: string
+    deletedAt?: any
+} | null) => {
+    if (!data || data.kind !== 'report') return false
+    if (data.deletedAt) return false
+    if (data.status === 'seen' || data.status === 'resolved') return false
+    return true
+}
+
+export const countPendingAdminReports = (
+    docs: Array<{
+        kind?: string
+        status?: string
+        deletedAt?: any
+    } | null | undefined>
+) => docs.filter((doc) => isPendingAdminReport(doc)).length
+
 export const PERIOD_YEAR = 0
 
 export const crossInCurrentPeriod = (

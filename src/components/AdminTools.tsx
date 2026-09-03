@@ -5,7 +5,7 @@ import { AuthContext } from '../Auth'
 import Firebase from '../firebase'
 import SettingsLayout from './SettingsLayout'
 import ConfirmModal from './ConfirmModal'
-import { useIcons, useSmsConfig, useVersion } from '../hooks'
+import { useIcons, usePendingReportCount, useSmsConfig, useVersion } from '../hooks'
 import {
     buildCrossSlots,
     formatDateTime,
@@ -24,6 +24,7 @@ import {
     IconFlag,
     IconUsers,
 } from './Icons'
+import { NoticeBadge } from './NoticeBadge'
 
 type FeedbackType = 'problem' | 'suggestion'
 type FeedbackStatus = 'pending' | 'seen' | 'resolved'
@@ -63,6 +64,7 @@ const hasClasses = (account: Account) =>
 const AdminMenu = () => {
     const { currentUser } = useContext(AuthContext)
     const { version } = useVersion()
+    const pendingReports = usePendingReportCount(isAdminUser(currentUser))
     if (currentUser === null || !isAdminUser(currentUser)) return <div />
 
     return (
@@ -71,6 +73,7 @@ const AdminMenu = () => {
                 <Link to="/create/admin/signalements" className="settings-row">
                     <span className="settings-row-icon">
                         <IconFlag />
+                        <NoticeBadge count={pendingReports} />
                     </span>
                     <span className="settings-row-body">
                         <span className="settings-row-title">
