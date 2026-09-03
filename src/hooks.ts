@@ -21,6 +21,7 @@ import {
 } from './database'
 import { parseSmsConfig, SmsTemplate } from './sms'
 import Firebase from './firebase'
+import { isPendingAdminReport } from './functions'
 import { getCachedData, setCachedData, getCacheKey, invalidateCache } from './utils/cache'
 import { filterStudentsByGroup } from './utils/studentsList'
 
@@ -675,6 +676,34 @@ export const useSmsConfig = () => {
     }, [])
 
     return { smsEnabled, defaultTemplates, loading }
+}
+
+export const usePendingReportCount = (enabled: boolean) => {
+    const [count, setCount] = useState(0)
+
+    useEffect(() => {
+        if (!enabled) {
+            setCount(0)
+            return
+        }
+        const unsub = Firebase.firestore()
+            .collection('props')
+            .onSnapshot(
+                (snap) => {
+                    setCount(
+                        snap.docs.filter((doc) =>
+                            isPendingAdminReport(doc.data())
+                        ).length
+                    )
+                },
+                () => {
+                    setCount(0)
+                }
+            )
+        return () => unsub()
+    }, [enabled])
+
+    return count
 }
 
 export const useIcons = (currentUserId: string) => {

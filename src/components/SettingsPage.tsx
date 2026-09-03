@@ -6,6 +6,7 @@ import {
     useGroups,
     useLists,
     usePeriodes,
+    usePendingReportCount,
     useSmsConfig,
     useStudents,
 } from '../hooks'
@@ -40,6 +41,7 @@ import {
     IconPlay,
 } from './Icons'
 import { isAdminUser } from '../functions'
+import { NoticeBadge } from './NoticeBadge'
 import { openInstallApp } from './InstallApp'
 import { replayTutorial } from '../tutorial'
 import SmsTemplates from './SmsTemplates'
@@ -51,6 +53,7 @@ interface SettingsRowProps {
     title: string
     subtitle?: string
     logout?: boolean
+    badge?: number
 }
 
 const SettingsRow = ({
@@ -60,11 +63,15 @@ const SettingsRow = ({
     title,
     subtitle,
     logout,
+    badge,
 }: SettingsRowProps) => {
     const className = `settings-row${logout ? ' settings-row-logout' : ''}`
     const content = (
         <React.Fragment>
-            <span className="settings-row-icon">{icon}</span>
+            <span className="settings-row-icon">
+                {icon}
+                <NoticeBadge count={badge || 0} />
+            </span>
             <span className="settings-row-body">
                 <span className="settings-row-title">{title}</span>
                 {subtitle ? (
@@ -101,9 +108,10 @@ const SettingsMenu = () => {
     const { groups, loading } = useGroups(uid)
     const history = useHistory()
     const [needClass, setNeedClass] = useState(false)
+    const adminConnected = isAdminUser(currentUser)
+    const pendingReports = usePendingReportCount(adminConnected)
     if (currentUser === null) return <div />
 
-    const adminConnected = isAdminUser(currentUser)
     const smsAvailable = smsEnabled || adminConnected
     const email = currentUser.email || 'Compte'
     const initial = email.charAt(0).toUpperCase()
@@ -234,6 +242,7 @@ const SettingsMenu = () => {
                         icon={<IconWrench />}
                         title="Maintenance"
                         subtitle="Signalements, comptes et SMS"
+                        badge={pendingReports}
                     />
                 </div>
             )}
