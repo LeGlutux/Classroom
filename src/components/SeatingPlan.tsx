@@ -21,8 +21,10 @@ import {
     usePeriodes,
     useStudents,
     useSmsConfig,
+    useNameColorRules,
 } from '../hooks'
 import { buildCrossSlots, handleIcon, isAdminUser, studentInClass } from '../functions'
+import { commentNameColor } from '../utils/nameColors'
 import { StudentInterface } from '../interfaces/Student'
 import {
     CARD_H,
@@ -66,14 +68,23 @@ const VIEW_ANIM_MS = 560
 const SeatName = ({
     student,
     classmates,
+    nameColor,
 }: {
     student: StudentInterface
     classmates: StudentInterface[]
+    nameColor?: string
 }) => {
     const caption = seatCaption(student, classmates)
     const hasSecond = !!(caption.line2 || caption.hint)
     return (
-        <span className="seating-seat-name">
+        <span
+            className="seating-seat-name"
+            style={
+                student.highlight || !nameColor
+                    ? undefined
+                    : { color: nameColor }
+            }
+        >
             <span className="seating-seat-line">{caption.line1}</span>
             {hasSecond ? (
                 <span className="seating-seat-line seating-seat-line-split">
@@ -123,6 +134,7 @@ export default () => {
     const { groups, loading: groupsLoading } = useGroups(uid)
     const { periodes, runningPeriode } = usePeriodes(uid)
     const { smsEnabled } = useSmsConfig()
+    const { rules: nameColorRules } = useNameColorRules(uid)
     const smsAvailable = smsEnabled || isAdminUser(currentUser)
     const userIcons = useIcons(uid)
     const crossSlots = buildCrossSlots(
@@ -967,6 +979,10 @@ export default () => {
                                           <SeatName
                                               student={student}
                                               classmates={classStudents}
+                                              nameColor={commentNameColor(
+                                                  student.comment,
+                                                  nameColorRules
+                                              )}
                                           />
                                       </div>
                                   ))
@@ -1024,6 +1040,10 @@ export default () => {
                                     <SeatName
                                         student={student}
                                         classmates={classStudents}
+                                        nameColor={commentNameColor(
+                                            student.comment,
+                                            nameColorRules
+                                        )}
                                     />
                                 </button>
                             )
@@ -1174,6 +1194,10 @@ export default () => {
                                         ? modalStudent.comment
                                         : ''
                                 }
+                                nameColor={commentNameColor(
+                                    modalStudent.comment,
+                                    nameColorRules
+                                )}
                                 id={modalStudent.id}
                                 highlight={modalStudent.highlight}
                                 toggleSelected={() => undefined}

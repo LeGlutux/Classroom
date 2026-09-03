@@ -11,10 +11,12 @@ import useOnClickOutside, {
     useUser,
     usePostIts,
     useSmsConfig,
+    useNameColorRules,
 } from '../hooks'
 import { AuthContext } from '../Auth'
 import Student from '../components/Student'
 import { buildCrossSlots, handleIcon, isAdminUser } from '../functions'
+import { commentNameColor } from '../utils/nameColors'
 import 'firebase/firestore'
 import MagicStick from './MagicStick'
 import magicStick from '../images/magicStick.png'
@@ -55,6 +57,7 @@ export default () => {
     const { groups, loading: groupsLoading } = useGroups(currentUser.uid)
     const { periodes, runningPeriode } = usePeriodes(currentUser.uid)
     const { smsEnabled } = useSmsConfig()
+    const { rules: nameColorRules } = useNameColorRules(currentUser.uid)
     const smsAvailable = smsEnabled || isAdminUser(currentUser)
     const [updating, setUpdating] = useState(false)
     const [displayed, setDisplayed] = useState(false)
@@ -541,6 +544,10 @@ export default () => {
                                             name={name}
                                             surname={surname}
                                             comment={comment ? comment : ''}
+                                            nameColor={commentNameColor(
+                                                comment,
+                                                nameColorRules
+                                            )}
                                             id={id}
                                             highlight={highlight}
                                             toggleSelected={toggleSelected}

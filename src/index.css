@@ -1333,6 +1333,63 @@ body,
     border: 1px solid #fecaca;
 }
 
+.name-color-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    border-bottom: 1px solid var(--tn-line);
+    background: #fff;
+}
+
+.name-color-word {
+    flex: 1;
+    min-width: 0;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+.name-color-swatch {
+    width: 1.7rem;
+    height: 1.7rem;
+    border-radius: 999px;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px var(--tn-line);
+    padding: 0;
+    margin-right: 0.45rem;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.name-color-swatch.is-open {
+    box-shadow: 0 0 0 2px var(--tn-ink);
+}
+
+.name-color-palette {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    padding: 0.35rem 0.9rem 0.85rem;
+    background: #fafafa;
+    border-bottom: 1px solid var(--tn-line);
+}
+
+.name-color-choice {
+    width: 1.85rem;
+    height: 1.85rem;
+    border-radius: 999px;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px var(--tn-line);
+    padding: 0;
+    cursor: pointer;
+}
+
+.name-color-choice.is-on {
+    box-shadow: 0 0 0 2px var(--tn-ink);
+}
+
 .settings-toast {
     position: fixed;
     left: 0.75rem;
