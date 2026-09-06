@@ -12,10 +12,13 @@ export type TutorialStepId =
     | 'cards-cross'
     | 'cards-note'
     | 'cards-sms'
+    | 'plan-nav'
+    | 'plan'
+    | 'lists-nav'
     | 'lists'
     | 'ready'
 
-export type TutorialScreen = 'home' | 'settings' | 'crosses'
+export type TutorialScreen = 'home' | 'settings' | 'crosses' | 'plan' | 'lists'
 
 export type TutorialHighlight =
     | 'nav-settings'
@@ -26,6 +29,7 @@ export type TutorialHighlight =
     | 'demo-cross'
     | 'demo-note'
     | 'demo-card'
+    | 'nav-plan'
     | 'nav-lists'
 
 export type TutorialStep = {
@@ -145,12 +149,38 @@ export const getTutorialSteps = (showSms: boolean): TutorialStep[] => {
 
     steps.push(
         {
-            id: 'lists',
+            id: 'plan-nav',
+            title: 'Le plan de classe',
+            body:
+                'L’icône à côté de l’accueil ouvre le plan de classe. Appuyez dessus pour y aller.',
+            hint: 'C’est l’icône entourée, en bas.',
+            stage: 'home',
+            highlight: 'nav-plan',
+            advanceOnHighlight: true,
+        },
+        {
+            id: 'plan',
+            title: 'Le plan de classe',
+            body:
+                'Les places montrent le prénom. Deux Léa : les trois premières lettres du nom. Le bouton en bas à droite pose un cadre vide. Vous pouvez essayer.',
+            stage: 'plan',
+        },
+        {
+            id: 'lists-nav',
             title: 'Les listes',
             body:
-                'Pas besoin d’y aller maintenant. L’icône de droite, en bas, ouvre les listes : elles permettent de suivre qui a rendu un document ou fait signer une évaluation. Vous créez une liste, puis vous cochez les élèves concernés.',
-            stage: 'home',
+                'L’icône de droite, en bas, ouvre les listes : documents, signatures, évaluations. Appuyez dessus pour y aller.',
+            hint: 'C’est l’icône entourée, en bas à droite.',
+            stage: 'plan',
             highlight: 'nav-lists',
+            advanceOnHighlight: true,
+        },
+        {
+            id: 'lists',
+            title: 'Cocher les élèves',
+            body:
+                'Le prénom passe en premier, le nom s’il tient. Deux Léa : les trois premières lettres du nom. Un appui fait tourner la case ; un appui long la remet à vide. L’en-tête trie.',
+            stage: 'lists',
         },
         {
             id: 'ready',

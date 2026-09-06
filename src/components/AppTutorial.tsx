@@ -29,7 +29,8 @@ const stepIcon = (id: TutorialStep['id']) => {
     if (id === 'crosses' || id === 'crosses-nav') return <IconGrid />
     if (id === 'cards-sms') return <IconChat />
     if (id.indexOf('cards') === 0) return <IconUser />
-    if (id === 'lists') return <IconNote />
+    if (id === 'plan' || id === 'plan-nav') return <IconGrid />
+    if (id === 'lists' || id === 'lists-nav') return <IconNote />
     if (id === 'ready') return <IconCheck />
     return <IconPlay />
 }

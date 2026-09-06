@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import addPage from '../images/addPage.png'
 import home from '../images/home.png'
 import list from '../images/list.png'
@@ -6,7 +6,9 @@ import up from '../images/up.png'
 import down from '../images/down.png'
 import {
     IconChevronRight,
+    IconClose,
     IconGrid,
+    IconSeatBlank,
     IconUpload,
     IconUser,
     IconUsers,
@@ -16,31 +18,54 @@ import TutorialDemoCard from './TutorialDemoCard'
 import {
     TUTORIAL_NEGATIVE_ICONS,
     TUTORIAL_POSITIVE_ICONS,
+    TutorialHighlight,
+    TutorialScreen,
 } from '../tutorial'
+import { seatCaption } from '../seatingPlan'
+import { formatListStudentName } from '../utils/listNames'
+import { sortStudentsByListColumn } from '../utils/listSort'
+import { listStatusClass, ListStatusMark } from './ListStatusButton'
 
-type FakeScreen = 'home' | 'settings' | 'crosses'
-type FakeHighlight =
-    | 'nav-settings'
-    | 'classes'
-    | 'crosses-row'
-    | 'crosses'
-    | 'demo-i'
-    | 'demo-cross'
-    | 'demo-note'
-    | 'demo-card'
-    | 'nav-lists'
+type FakeHighlight = TutorialHighlight
 
 const navIconClass = (active: boolean) =>
     `self-center${active ? '' : ' nav-icon-inactive'}`
+
+const TUTORIAL_PLAN_STUDENTS = [
+    { surname: 'Pat', name: 'Mercier' },
+    { surname: 'Léa', name: 'Dupont' },
+    { surname: 'Léa', name: 'Martin' },
+    { surname: 'Noah', name: 'Petit' },
+]
+
+const TUTORIAL_LIST_STUDENTS = [
+    { id: 'pat', surname: 'Pat', name: 'Mercier' },
+    { id: 'lea-d', surname: 'Léa', name: 'Dupont' },
+    { id: 'lea-m', surname: 'Léa', name: 'Martin' },
+    { id: 'chris', surname: 'Christophe', name: 'Bernard' },
+    { id: 'noah', surname: 'Noah', name: 'Petit' },
+]
+
+const TUTORIAL_LIST_START: { [id: string]: number } = {
+    pat: 1,
+    'lea-d': 0,
+    'lea-m': 2,
+    chris: 3,
+    noah: 0,
+}
 
 const FakeNav = ({
     active,
     highlight,
     onSettings,
+    onPlan,
+    onLists,
 }: {
-    active: 'home' | 'settings'
+    active: 'home' | 'settings' | 'plan' | 'lists'
     highlight?: FakeHighlight
     onSettings?: () => void
+    onPlan?: () => void
+    onLists?: () => void
 }) => (
     <div className="flex flex-row px-4 h-full justify-around py-2">
         <button
@@ -64,16 +89,34 @@ const FakeNav = ({
                 alt=""
             />
         </span>
-        <span className="rounded-full h-8 w-8 flex justify-center items-center">
-            <IconGrid className="tn-icon nav-plan-icon nav-icon-inactive" />
-        </span>
-        <span
+        <button
+            type="button"
+            className={`rounded-full h-8 w-8 flex justify-center items-center tutorial-fake-nav-btn${
+                highlight === 'nav-plan' ? ' tutorial-lit' : ''
+            }`}
+            onClick={onPlan}
+            aria-label="Plan de classe"
+        >
+            <IconGrid
+                className={`tn-icon nav-plan-icon${
+                    active === 'plan' ? '' : ' nav-icon-inactive'
+                }`}
+            />
+        </button>
+        <button
+            type="button"
             className={`rounded-full h-8 w-8 flex justify-center items-center tutorial-fake-nav-btn${
                 highlight === 'nav-lists' ? ' tutorial-lit' : ''
             }`}
+            onClick={onLists}
+            aria-label="Listes"
         >
-            <img className="nav-icon-inactive" src={list} alt="" />
-        </span>
+            <img
+                className={navIconClass(active === 'lists')}
+                src={list}
+                alt=""
+            />
+        </button>
     </div>
 )
 
@@ -235,6 +278,232 @@ const FakeHome = ({
     </div>
 )
 
+const FakePlanSeatName = ({
+    student,
+    classmates,
+}: {
+    student: { surname: string; name: string }
+    classmates: { surname: string }[]
+}) => {
+    const caption = seatCaption(student, classmates)
+    const hasSecond = !!(caption.line2 || caption.hint)
+    return (
+        <span className="seating-seat-name">
+            <span className="seating-seat-line">{caption.line1}</span>
+            {hasSecond ? (
+                <span className="seating-seat-line seating-seat-line-split">
+                    {caption.line2 ? (
+                        <span className="seating-seat-tail">{caption.line2}</span>
+                    ) : null}
+                    {caption.hint ? (
+                        <span className="seating-seat-hint">{caption.hint}</span>
+                    ) : null}
+                </span>
+            ) : null}
+        </span>
+    )
+}
+
+const FakePlan = () => {
+    const [blanks, setBlanks] = useState([1, 2])
+    const nextBlank = useRef(3)
+    const classmates = TUTORIAL_PLAN_STUDENTS
+
+    return (
+        <div className="tutorial-fake-body">
+            <div className="tutorial-fake-plan">
+                {TUTORIAL_PLAN_STUDENTS.map((student) => (
+                    <div
+                        key={student.surname + student.name}
+                        className="seating-seat is-locked"
+                        style={{ width: 72, height: 60 }}
+                    >
+                        <FakePlanSeatName
+                            student={student}
+                            classmates={classmates}
+                        />
+                    </div>
+                ))}
+                {blanks.map((id) => (
+                    <button
+                        type="button"
+                        key={'blank-' + id}
+                        className="seating-seat is-empty is-locked"
+                        style={{ width: 72, height: 60 }}
+                        aria-label="Cadre vide"
+                    >
+                        <span
+                            className="seating-blank-remove"
+                            role="button"
+                            aria-label="Retirer le cadre vide"
+                            onClick={(event) => {
+                                event.stopPropagation()
+                                setBlanks((previous) =>
+                                    previous.filter((item) => item !== id)
+                                )
+                            }}
+                        >
+                            <IconClose />
+                        </span>
+                    </button>
+                ))}
+            </div>
+            <div className="tutorial-fake-plan-tools">
+                <button
+                    type="button"
+                    className="tutorial-fake-plan-add"
+                    aria-label="Ajouter un cadre vide"
+                    onClick={() => {
+                        const id = nextBlank.current
+                        nextBlank.current += 1
+                        setBlanks((previous) =>
+                            previous.length >= 4 ? previous : previous.concat(id)
+                        )
+                    }}
+                >
+                    <IconSeatBlank />
+                </button>
+            </div>
+        </div>
+    )
+}
+
+const DemoListStatus = ({
+    state,
+    onChange,
+}: {
+    state: number
+    onChange: (next: number) => void
+}) => {
+    const longPress = useRef(false)
+    const timer = useRef<number | null>(null)
+
+    const start = () => {
+        longPress.current = false
+        timer.current = window.setTimeout(() => {
+            longPress.current = true
+            onChange(0)
+        }, 500)
+    }
+
+    const cancel = () => {
+        if (timer.current !== null) {
+            window.clearTimeout(timer.current)
+            timer.current = null
+        }
+    }
+
+    return (
+        <button
+            type="button"
+            className={`list-status ${listStatusClass(state)}`}
+            onPointerDown={start}
+            onPointerUp={cancel}
+            onPointerLeave={cancel}
+            onPointerCancel={cancel}
+            onContextMenu={(event) => event.preventDefault()}
+            onClick={() => {
+                if (longPress.current) {
+                    longPress.current = false
+                    return
+                }
+                onChange(state >= 3 ? 0 : state + 1)
+            }}
+        >
+            <ListStatusMark state={state} />
+        </button>
+    )
+}
+
+const FakeList = () => {
+    const [states, setStates] = useState<{ [id: string]: number }>(
+        TUTORIAL_LIST_START
+    )
+    const [sorted, setSorted] = useState(false)
+    const classmates = TUTORIAL_LIST_STUDENTS
+    const statesById: { [id: string]: number[] } = {}
+    TUTORIAL_LIST_STUDENTS.forEach((student) => {
+        statesById[student.id] = [states[student.id] || 0]
+    })
+    const ordered = sorted
+        ? sortStudentsByListColumn(TUTORIAL_LIST_STUDENTS, 0, statesById)
+        : TUTORIAL_LIST_STUDENTS
+
+    return (
+        <div className="tutorial-fake-body tutorial-fake-list-body">
+            <div className="tutorial-fake-list">
+                <div
+                    className="flex flex-row h-auto bg-white rounded-lg border overflow-hidden box-border"
+                    style={{ borderColor: 'var(--tn-line)' }}
+                >
+                    <div
+                        className="list-col-head flex items-center justify-center w-7/12 border-r py-3 px-2 box-border"
+                        style={{ borderColor: 'var(--tn-line)' }}
+                    >
+                        Nom
+                    </div>
+                    <button
+                        type="button"
+                        className={`list-col-head list-col-head-item flex justify-center items-center w-5/12 py-3 box-border${
+                            sorted ? ' is-sorted' : ''
+                        }`}
+                        onClick={() => setSorted((value) => !value)}
+                        aria-pressed={sorted}
+                        aria-label={
+                            sorted
+                                ? 'Revenir à l’ordre alphabétique'
+                                : 'Trier par Signé'
+                        }
+                    >
+                        Signé
+                    </button>
+                </div>
+                {ordered.map((student) => (
+                    <div
+                        key={student.id}
+                        className="bg-white rounded-lg overflow-hidden mt-1"
+                        style={{ border: '1px solid var(--tn-line)' }}
+                    >
+                        <div className="flex flex-row w-full h-12 items-center box-border">
+                            <div className="flex border-r-2 border-gray-200 w-7/12 overflow-x-hidden text-center pl-3 font-studentName text-gray-800 box-border">
+                                {formatListStudentName(student, classmates)}
+                            </div>
+                            <div className="flex w-5/12 h-full flex-shrink-0 box-border">
+                                <DemoListStatus
+                                    state={states[student.id] || 0}
+                                    onChange={(next) =>
+                                        setStates((previous) => ({
+                                            ...previous,
+                                            [student.id]: next,
+                                        }))
+                                    }
+                                />
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    )
+}
+
+const stageHeader = (stage: TutorialScreen) => {
+    if (stage === 'settings') return 'Paramètres'
+    if (stage === 'crosses') return 'Personnaliser les croix'
+    if (stage === 'plan') return 'Plan de classe'
+    if (stage === 'lists') return 'Évaluation'
+    return 'Accueil'
+}
+
+const navActiveFor = (
+    stage: TutorialScreen
+): 'home' | 'settings' | 'plan' | 'lists' => {
+    if (stage === 'plan') return 'plan'
+    if (stage === 'lists') return 'lists'
+    if (stage === 'home') return 'home'
+    return 'settings'
+}
+
 const TutorialFakeApp = ({
     stage,
     highlight,
@@ -242,37 +511,39 @@ const TutorialFakeApp = ({
     onAdvance,
     children,
 }: {
-    stage: FakeScreen
+    stage: TutorialScreen
     highlight?: FakeHighlight
     demo?: 'card' | 'swipe'
     onAdvance: () => void
     children?: React.ReactNode
 }) => {
-    const header =
-        stage === 'settings'
-            ? 'Paramètres'
-            : stage === 'crosses'
-            ? 'Personnaliser les croix'
-            : 'Accueil'
-    const navActive = stage === 'home' ? 'home' : 'settings'
+    const header = stageHeader(stage)
+    const navActive = navActiveFor(stage)
+
+    let body: React.ReactNode
+    if (stage === 'settings') {
+        body = (
+            <FakeSettings
+                highlight={highlight}
+                onCrosses={highlight === 'crosses-row' ? onAdvance : undefined}
+            />
+        )
+    } else if (stage === 'crosses') {
+        body = <FakeCrosses highlight={highlight} />
+    } else if (stage === 'plan') {
+        body = <FakePlan />
+    } else if (stage === 'lists') {
+        body = <FakeList />
+    } else {
+        body = <FakeHome highlight={highlight} demo={demo} />
+    }
 
     return (
         <div className="tutorial-stage">
             <div className="flex-shrink-0 relative flex flex-row w-full h-12 page-header items-center justify-center">
                 <span className="page-header-title">{header}</span>
             </div>
-            {stage === 'settings' ? (
-                <FakeSettings
-                    highlight={highlight}
-                    onCrosses={
-                        highlight === 'crosses-row' ? onAdvance : undefined
-                    }
-                />
-            ) : stage === 'crosses' ? (
-                <FakeCrosses highlight={highlight} />
-            ) : (
-                <FakeHome highlight={highlight} demo={demo} />
-            )}
+            {body}
             {children}
             <div className="flex-shrink-0 w-full h-12 nav-wrap">
                 <FakeNav
@@ -281,6 +552,8 @@ const TutorialFakeApp = ({
                     onSettings={
                         highlight === 'nav-settings' ? onAdvance : undefined
                     }
+                    onPlan={highlight === 'nav-plan' ? onAdvance : undefined}
+                    onLists={highlight === 'nav-lists' ? onAdvance : undefined}
                 />
             </div>
         </div>

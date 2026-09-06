@@ -57,6 +57,9 @@ describe('getTutorialSteps', () => {
             'cards-i',
             'cards-cross',
             'cards-note',
+            'plan-nav',
+            'plan',
+            'lists-nav',
             'lists',
             'ready',
         ])
@@ -70,6 +73,9 @@ describe('getTutorialSteps', () => {
             'cards-cross',
             'cards-note',
             'cards-sms',
+            'plan-nav',
+            'plan',
+            'lists-nav',
             'lists',
             'ready',
         ])
@@ -97,10 +103,13 @@ describe('getTutorialSteps', () => {
         expect(tryCross && tryCross.body).toMatch(/appui/)
     })
 
-    it('présente Pat Mercier sur l’accueil, sans aller dans les listes', () => {
+    it('présente Pat Mercier sur l’accueil, puis le plan et les listes', () => {
         const steps = getTutorialSteps(true)
         const card = steps.find((step) => step.id === 'cards-i')
         const sms = steps.find((step) => step.id === 'cards-sms')
+        const planNav = steps.find((step) => step.id === 'plan-nav')
+        const plan = steps.find((step) => step.id === 'plan')
+        const listsNav = steps.find((step) => step.id === 'lists-nav')
         const lists = steps.find((step) => step.id === 'lists')
         expect(card && card.demo).toBe('card')
         expect(card && card.stage).toBe('home')
@@ -108,10 +117,17 @@ describe('getTutorialSteps', () => {
         expect(sms && sms.demo).toBe('swipe')
         expect(sms && sms.body).toMatch(/droite/)
         expect(sms && sms.body).not.toMatch(/gauche/)
-        expect(lists && lists.stage).toBe('home')
-        expect(lists && lists.highlight).toBe('nav-lists')
-        expect(lists && lists.body).toMatch(/document/)
-        expect(lists && lists.body).toMatch(/évaluation/)
+        expect(planNav && planNav.highlight).toBe('nav-plan')
+        expect(planNav && planNav.advanceOnHighlight).toBe(true)
+        expect(plan && plan.stage).toBe('plan')
+        expect(plan && plan.body).toMatch(/prénom/)
+        expect(plan && plan.body).toMatch(/cadre vide/)
+        expect(listsNav && listsNav.highlight).toBe('nav-lists')
+        expect(listsNav && listsNav.advanceOnHighlight).toBe(true)
+        expect(lists && lists.stage).toBe('lists')
+        expect(lists && lists.body).toMatch(/prénom/)
+        expect(lists && lists.body).toMatch(/appui long/)
+        expect(lists && lists.body).not.toMatch(/Pas besoin/)
     })
 
     it('parle de visite guidée, pas de tour', () => {

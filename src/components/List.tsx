@@ -200,6 +200,7 @@ export default () => {
                                             studentId={studentId}
                                             userId={currentUser.uid}
                                             currentList={currentList}
+                                            classmates={classStudents}
                                             listState={
                                                 statesById[studentId] ||
                                                 normalizeListState(undefined)

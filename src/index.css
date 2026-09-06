@@ -3406,6 +3406,58 @@ body,
     }
 }
 
+.tutorial-fake-plan {
+    display: grid;
+    grid-template-columns: repeat(3, 72px);
+    gap: 8px;
+    justify-content: center;
+    margin: 0.15rem auto 0.55rem;
+}
+
+.tutorial-fake-plan .seating-seat {
+    position: relative;
+    transform: none;
+}
+
+.tutorial-fake-plan-tools {
+    display: flex;
+    justify-content: flex-end;
+    max-width: 232px;
+    margin: 0 auto 0.35rem;
+}
+
+.tutorial-fake-plan-add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    padding: 0;
+    border: 1px solid var(--tn-line);
+    border-radius: 10px;
+    background: #fff;
+    color: var(--tn-muted);
+    cursor: pointer;
+}
+
+.tutorial-fake-plan-add .tn-icon {
+    width: 1.15rem;
+    height: 1.15rem;
+}
+
+.tutorial-fake-list-body {
+    padding-top: 0.7rem;
+}
+
+.tutorial-fake-list {
+    max-width: 22rem;
+    margin: 0 auto;
+}
+
+.tutorial-fake-list .list-status {
+    min-width: 0;
+}
+
 .tutorial-demo {
     max-width: 26rem;
     margin: 0 auto;
