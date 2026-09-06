@@ -1469,6 +1469,12 @@ body,
     animation: tn-rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+.student-card.cross-customize-card {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+}
+
 .student-card.is-archived {
     border-style: dashed;
 }

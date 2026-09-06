@@ -54,12 +54,11 @@ const CrossPreview = ({
                         </div>
                     </div>
                     <div className="cross-customize-icons">
-                        {icons.map((icon, index) => (
+                        {icons.map((icon, index) =>
+                            icon === 0 ? null : (
                             <div
                                 key={index}
-                                className={`flex flex-col items-center${
-                                    icon === 0 ? ' hidden' : ''
-                                }`}
+                                className="flex flex-col items-center"
                             >
                                 <button
                                     type="button"
@@ -83,7 +82,8 @@ const CrossPreview = ({
                                     />
                                 </button>
                             </div>
-                        ))}
+                            )
+                        )}
                     </div>
                 </div>
             </div>
