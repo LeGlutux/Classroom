@@ -181,6 +181,14 @@ const SettingsMenu = () => {
                     title="Personnaliser les couleurs élèves"
                     subtitle="Selon les notes de fiche (PAP, PAI…)"
                 />
+                {smsAvailable ? (
+                    <SettingsRow
+                        to="/create/sms"
+                        icon={<IconChat />}
+                        title="Personnaliser les SMS"
+                        subtitle="Modifier les modèles de SMS à envoyer aux parents"
+                    />
+                ) : null}
             </div>
 
             <div className="settings-group-label">Suivi</div>
@@ -209,26 +217,6 @@ const SettingsMenu = () => {
                 />
             </div>
 
-            <div className="settings-group-label">Application</div>
-            <div className="settings-group">
-                {smsAvailable ? (
-                    <SettingsRow
-                        to="/create/sms"
-                        icon={<IconChat />}
-                        title="Modèles SMS"
-                        subtitle="Textes et jetons envoyés aux parents"
-                    />
-                ) : null}
-                <SettingsRow
-                    icon={<IconDownload />}
-                    title="Télécharger l’app"
-                    subtitle="Ajouter à l’écran d’accueil du téléphone"
-                    onClick={() => {
-                        openInstallApp()
-                    }}
-                />
-            </div>
-
             <div className="settings-group-label">Aide</div>
             <div className="settings-group">
                 <SettingsRow
@@ -237,6 +225,14 @@ const SettingsMenu = () => {
                     subtitle="Classes, croix, cartes, plan et listes"
                     onClick={() => {
                         replayTutorial()
+                    }}
+                />
+                <SettingsRow
+                    icon={<IconDownload />}
+                    title="Télécharger l’app"
+                    subtitle="Ajouter à l’écran d’accueil du téléphone"
+                    onClick={() => {
+                        openInstallApp()
                     }}
                 />
                 <SettingsRow

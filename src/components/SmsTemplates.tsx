@@ -50,14 +50,14 @@ export default () => {
     if (currentUser === null) return <div />
     if (configLoading) {
         return (
-            <SettingsLayout title="Modèles SMS" backTo="/create">
+            <SettingsLayout title="Personnaliser les SMS" backTo="/create">
                 <p className="settings-panel-note">Chargement…</p>
             </SettingsLayout>
         )
     }
     if (!smsEnabled && !isAdminUser(currentUser)) {
         return (
-            <SettingsLayout title="Modèles SMS" backTo="/create">
+            <SettingsLayout title="Personnaliser les SMS" backTo="/create">
                 <p className="settings-panel-note">
                     Cette fonction n’est pas encore disponible.
                 </p>
@@ -79,7 +79,7 @@ export default () => {
     }
 
     return (
-        <SettingsLayout title="Modèles SMS" backTo="/create" toast={toast}>
+        <SettingsLayout title="Personnaliser les SMS" backTo="/create" toast={toast}>
             <ConfirmModal
                 confirm={confirmReset}
                 setConfirm={setConfirmReset}
@@ -90,9 +90,9 @@ export default () => {
             <div className="settings-panel">
                 <p className="settings-panel-note" style={{ textAlign: 'left' }}>
                     Swipe une carte élève vers la droite pour envoyer un SMS.
-                    Les boutons ci-dessous insèrent un jeton (#prénom, #nom…)
-                    remplacé à l’envoi. Aucun numéro n’est enregistré. Pour
-                    retrouver vite les parents, nomme les contacts du type
+                    Les boutons ci-dessous insèrent le prénom, le nom ou la
+                    classe, remplacés à l’envoi. Aucun numéro n’est enregistré.
+                    Pour retrouver vite les parents, nomme les contacts du type
                     « 6A - Léa Dupont ».
                 </p>
             </div>

@@ -124,6 +124,7 @@ describe('getTutorialSteps', () => {
         expect(planNav && planNav.advanceOnHighlight).toBe(true)
         expect(plan && plan.stage).toBe('plan')
         expect(plan && plan.body).toMatch(/comme vous voulez/)
+        expect(plan && plan.body).not.toMatch(/deux tables/)
         expect(plan && plan.body).not.toMatch(/Glissez/)
         expect(plan && plan.body).not.toMatch(/lettres/)
         expect(listsNav && listsNav.highlight).toBe('nav-lists')

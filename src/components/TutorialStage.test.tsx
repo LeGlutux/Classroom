@@ -40,6 +40,7 @@ describe('TutorialFakeApp plan et listes', () => {
         expect(getByText('Personnalisation')).toBeTruthy()
         expect(getByText('Personnaliser les croix')).toBeTruthy()
         expect(getByText('Personnaliser les couleurs élèves')).toBeTruthy()
+        expect(getByText('Personnaliser les SMS')).toBeTruthy()
     })
 
     it('avance vers le plan ou les listes depuis la barre du bas', () => {

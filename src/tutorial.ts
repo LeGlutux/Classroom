@@ -162,7 +162,7 @@ export const getTutorialSteps = (showSms: boolean): TutorialStep[] => {
             id: 'plan',
             title: 'Le plan de classe',
             body:
-                'Vous placez les élèves comme vous voulez. Voici un exemple : deux tables de deux.',
+                'Vous placez les élèves comme vous voulez.',
             stage: 'plan',
         },
         {

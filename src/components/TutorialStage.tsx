@@ -5,6 +5,7 @@ import list from '../images/list.png'
 import up from '../images/up.png'
 import down from '../images/down.png'
 import {
+    IconChat,
     IconChevronRight,
     IconDrop,
     IconGrid,
@@ -200,6 +201,11 @@ const FakeSettings = ({
                 title="Personnaliser les couleurs élèves"
                 subtitle="Selon les notes de fiche (PAP, PAI…)"
             />
+            <FakeRow
+                icon={<IconChat />}
+                title="Personnaliser les SMS"
+                subtitle="Modifier les modèles de SMS à envoyer aux parents"
+            />
         </div>
     </div>
 )
@@ -216,24 +222,24 @@ const FakeCrossBlock = ({
         <div className="student-card cross-customize-card">
             <div className="flex justify-between flex-col">
                 <div className="flex flex-row">
-                    <div className="font-studentName ml-2 mt-2 text-gray-900 font-medium text-xl leading-none">
+                    <div className="font-studentName ml-2 mt-1 text-gray-900 font-medium leading-none">
                         Pat
                     </div>
-                    <div className="font-studentName ml-2 mt-2 text-gray-900 font-bold text-xl leading-none">
+                    <div className="font-studentName ml-2 mt-1 text-gray-900 font-bold leading-none">
                         Mercier
                     </div>
                 </div>
-                <div className="w-full h-24 flex p-2 content-center justify-between pr-6">
+                <div className="w-full tutorial-cross-icons flex p-1 content-center justify-between pr-4">
                     {icons.map((icon) => (
                         <div key={icon} className="flex flex-col">
-                            <span className="flex flex-row justify-center mb-1">
-                                <img className="h-5 w-5" src={up} alt="" />
+                            <span className="flex flex-row justify-center mb-0.5">
+                                <img className="tutorial-cross-arrow" src={up} alt="" />
                             </span>
-                            <div className="w-8 h-8 rounded-full">
+                            <div className="tutorial-cross-icon rounded-full">
                                 <img src={handleIcon(icon)} alt="" />
                             </div>
-                            <span className="flex flex-row justify-center mt-2">
-                                <img className="h-5 w-5" src={down} alt="" />
+                            <span className="flex flex-row justify-center mt-1">
+                                <img className="tutorial-cross-arrow" src={down} alt="" />
                             </span>
                         </div>
                     ))}
@@ -243,12 +249,8 @@ const FakeCrossBlock = ({
     </div>
 )
 
-const FakeCrosses = ({ highlight }: { highlight?: FakeHighlight }) => (
-    <div
-        className={`tutorial-fake-body${
-            highlight === 'crosses' ? ' tutorial-lit' : ''
-        }`}
-    >
+const FakeCrosses = () => (
+    <div className="tutorial-fake-body tutorial-fake-crosses">
         <p className="settings-panel-note">
             Croix négatives (oubli de matériel) et croix positives (bonne
             séance).
@@ -506,7 +508,7 @@ const TutorialFakeApp = ({
             />
         )
     } else if (stage === 'crosses') {
-        body = <FakeCrosses highlight={highlight} />
+        body = <FakeCrosses />
     } else if (stage === 'plan') {
         body = <FakePlan />
     } else if (stage === 'lists') {
