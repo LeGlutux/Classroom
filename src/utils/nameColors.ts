@@ -37,7 +37,7 @@ export const DEFAULT_NAME_COLOR_RULES: NameColorRule[] = [
     { id: 'pps', keyword: 'pps', color: NAME_INK },
 ]
 
-const LETTER_SEP = "[.\\s'’\\-]*"
+const LETTER_SEP = '[^a-z0-9]*'
 
 export const foldSearchText = (value: string) =>
     String(value || '')

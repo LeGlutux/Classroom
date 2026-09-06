@@ -23,6 +23,8 @@ describe('keywordLetters', () => {
     it('retire les points et espaces', () => {
         expect(keywordLetters('P.A.P.')).toBe('pap')
         expect(keywordLetters(' pap ')).toBe('pap')
+        expect(keywordLetters('pap?')).toBe('pap')
+        expect(keywordLetters('pap,')).toBe('pap')
         expect(keywordLetters('élève')).toBe('eleve')
     })
 })
@@ -33,7 +35,14 @@ describe('commentMatchesKeyword', () => {
         expect(commentMatchesKeyword('P.A.P.', 'pap')).toBe(true)
         expect(commentMatchesKeyword('p.a.p ok', 'pap')).toBe(true)
         expect(commentMatchesKeyword('pap.', 'pap')).toBe(true)
+        expect(commentMatchesKeyword('pap?', 'pap')).toBe(true)
+        expect(commentMatchesKeyword('pap,', 'pap')).toBe(true)
+        expect(commentMatchesKeyword('pap!', 'pap')).toBe(true)
+        expect(commentMatchesKeyword('pap:', 'pap')).toBe(true)
         expect(commentMatchesKeyword('le pap,', 'pap')).toBe(true)
+        expect(commentMatchesKeyword('(pap)', 'pap')).toBe(true)
+        expect(commentMatchesKeyword('pap?', 'pap?')).toBe(true)
+        expect(commentMatchesKeyword('PAP notifié', 'pap,')).toBe(true)
         expect(commentMatchesKeyword('PAI alimentaire', 'pai')).toBe(true)
         expect(commentMatchesKeyword('PPS', 'pps')).toBe(true)
         expect(commentMatchesKeyword('papa', 'pap')).toBe(false)
@@ -90,6 +99,9 @@ describe('addNameColorRule', () => {
     it('refuse les doublons même avec une autre casse', () => {
         const added = addNameColorRule(DEFAULT_NAME_COLOR_RULES, 'P.A.P')
         expect('error' in added && added.error).toBeTruthy()
+        expect('error' in addNameColorRule(DEFAULT_NAME_COLOR_RULES, 'pap?')).toBe(
+            true
+        )
         const fresh = addNameColorRule(DEFAULT_NAME_COLOR_RULES, 'AESH')
         expect('rules' in fresh && fresh.rules[fresh.rules.length - 1].keyword).toBe(
             'AESH'
