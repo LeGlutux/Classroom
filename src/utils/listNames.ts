@@ -21,14 +21,10 @@ export const formatListStudentName = (
         classmates.filter((mate) => givenNameKey(mate.surname) === key)
             .length > 1
 
-    if (twins) {
-        const hint = lastNameHint(nom)
-        const room = hint ? hint.length + 1 : 0
-        const head = clipListName(prenom, Math.max(1, maxChars - room))
-        return hint ? head + ' ' + hint : head
-    }
+    if (!twins) return clipListName(prenom, maxChars)
 
-    const full = nom ? prenom + ' ' + nom : prenom
-    if (full.length <= maxChars) return full
-    return clipListName(prenom, maxChars)
+    const hint = lastNameHint(nom)
+    const room = hint ? hint.length + 1 : 0
+    const head = clipListName(prenom, Math.max(1, maxChars - room))
+    return hint ? head + ' ' + hint : head
 }

@@ -26,7 +26,7 @@ export default (props: ListedStudentProps) => {
 
     return (
         <div className="flex flex-row w-full h-12 items-center rounded-lg box-border">
-            <div className="flex border-r-2 border-gray-200 w-5/12 overflow-x-hidden text-center pl-4 font-studentName text-gray-800 box-border">
+            <div className="list-student-name w-5/12 border-r-2 border-gray-200 font-studentName text-gray-800 box-border">
                 {label}
             </div>
             <div className="flex border-r-2 border-gray-200 justify-center w-2/12 overflow-x-hidden text-center font-studentName text-gray-600 box-border">

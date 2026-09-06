@@ -2,17 +2,17 @@ import React from 'react'
 import { act, fireEvent, render } from '@testing-library/react'
 import ListStatusButton from './ListStatusButton'
 
-const mockUpdate = jest.fn(() => Promise.resolve())
+const mockUpdate = jest.fn((_payload?: unknown) => Promise.resolve())
 
 jest.mock('firebase/app', () => {
     const chain: {
         collection: () => typeof chain
         doc: () => typeof chain
-        update: (...args: unknown[]) => Promise<void>
+        update: (payload: unknown) => Promise<void>
     } = {
         collection: () => chain,
         doc: () => chain,
-        update: (...args: unknown[]) => mockUpdate(...args),
+        update: (payload: unknown) => mockUpdate(payload),
     }
     return {
         __esModule: true,

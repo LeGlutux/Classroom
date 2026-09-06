@@ -18,16 +18,31 @@ describe('TutorialFakeApp plan et listes', () => {
         expect(getAllByLabelText('Cadre vide').length).toBe(2)
     })
 
-    it('affiche le prénom en premier et les trois lettres en cas de doublon', () => {
+    it('affiche le prénom, et les trois lettres seulement en cas de doublon', () => {
         const { getByText } = render(
             <TutorialFakeApp stage="lists" onAdvance={() => undefined} />
         )
         expect(getByText('Évaluation')).toBeTruthy()
-        expect(getByText('Pat Mercier')).toBeTruthy()
+        expect(getByText('Pat')).toBeTruthy()
         expect(getByText('Léa Dup')).toBeTruthy()
         expect(getByText('Léa Mar')).toBeTruthy()
         expect(getByText('Christophe')).toBeTruthy()
-        expect(getByText('Noah Petit')).toBeTruthy()
+        expect(getByText('Noah')).toBeTruthy()
+    })
+
+    it('permet de glisser une table sur le plan', () => {
+        const { getByLabelText } = render(
+            <TutorialFakeApp stage="plan" onAdvance={() => undefined} />
+        )
+        const pat = getByLabelText('Pat Mercier')
+        expect(pat.getAttribute('style') || '').toMatch(/translate\(0px/)
+        fireEvent.pointerDown(pat, { pointerId: 1, clientX: 20, clientY: 20 })
+        fireEvent.pointerMove(pat, { pointerId: 1, clientX: 60, clientY: 50 })
+        fireEvent.pointerUp(pat, { pointerId: 1 })
+        expect(pat.getAttribute('style') || '').toMatch(/translate\(/)
+        expect(pat.getAttribute('style') || '').not.toMatch(
+            /translate\(0px, 0px\)/
+        )
     })
 
     it('avance vers le plan ou les listes depuis la barre du bas', () => {

@@ -162,7 +162,7 @@ export const getTutorialSteps = (showSms: boolean): TutorialStep[] => {
             id: 'plan',
             title: 'Le plan de classe',
             body:
-                'Les places montrent le prénom. Deux Léa : les trois premières lettres du nom. Le bouton en bas à droite pose un cadre vide. Vous pouvez essayer.',
+                'Glissez les tables pour les ranger. Le bouton en bas à droite pose un cadre vide. Vous pouvez essayer.',
             stage: 'plan',
         },
         {
@@ -179,7 +179,7 @@ export const getTutorialSteps = (showSms: boolean): TutorialStep[] => {
             id: 'lists',
             title: 'Cocher les élèves',
             body:
-                'Le prénom passe en premier, le nom s’il tient. Deux Léa : les trois premières lettres du nom. Un appui fait tourner la case ; un appui long la remet à vide. L’en-tête trie.',
+                'Un appui fait tourner la case. Un appui long la remet à vide, sans toute la rotation. L’en-tête trie. Vous pouvez essayer.',
             stage: 'lists',
         },
         {

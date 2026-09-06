@@ -1,13 +1,13 @@
 import { formatListStudentName } from './listNames'
 
 describe('formatListStudentName', () => {
-    it('met le prénom en premier et le nom s’il tient', () => {
+    it('n’affiche que le prénom s’il est unique', () => {
         expect(
             formatListStudentName(
                 { surname: 'Pat', name: 'Mercier' },
                 [{ surname: 'Pat' }]
             )
-        ).toBe('Pat Mercier')
+        ).toBe('Pat')
         expect(
             formatListStudentName(
                 { surname: 'Christophe', name: 'Dupont' },
