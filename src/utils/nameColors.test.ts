@@ -5,8 +5,10 @@ import {
     DEFAULT_NAME_COLOR_RULES,
     foldSearchText,
     keywordLetters,
+    NAME_COLOR_PALETTE,
     NAME_COLOR_SAGE,
     NAME_INK,
+    paletteColor,
     parseNameColorRules,
 } from './nameColors'
 
@@ -56,6 +58,24 @@ describe('commentNameColor', () => {
         expect(commentNameColor('rien', DEFAULT_NAME_COLOR_RULES)).toBe(
             undefined
         )
+    })
+})
+
+describe('NAME_COLOR_PALETTE', () => {
+    it('propose des teintes voyantes, sans rouge de highlight', () => {
+        const hexes = NAME_COLOR_PALETTE.map((swatch) => swatch.hex.toLowerCase())
+        expect(hexes).toEqual(
+            expect.arrayContaining([
+                '#2563eb',
+                '#0d9488',
+                '#16a34a',
+                '#d97706',
+                '#f97316',
+            ])
+        )
+        expect(hexes).not.toContain('#e53e3e')
+        expect(hexes).not.toContain('#dc2626')
+        expect(paletteColor('#f97316')).toBe('#f97316')
     })
 })
 
