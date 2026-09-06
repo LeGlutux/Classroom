@@ -24,6 +24,11 @@ export const NAME_COLOR_PALETTE: NameColorSwatch[] = [
     { id: 'navy', hex: '#1e3a5f', label: 'Marine' },
     { id: 'violet', hex: '#534d7a', label: 'Violet' },
     { id: 'brown', hex: '#6b5344', label: 'Brun' },
+    { id: 'blue-bright', hex: '#2563eb', label: 'Bleu vif' },
+    { id: 'turquoise', hex: '#0d9488', label: 'Turquoise' },
+    { id: 'green-bright', hex: '#16a34a', label: 'Vert vif' },
+    { id: 'amber', hex: '#d97706', label: 'Ambre' },
+    { id: 'orange', hex: '#f97316', label: 'Orange' },
 ]
 
 export const DEFAULT_NAME_COLOR_RULES: NameColorRule[] = [
@@ -32,7 +37,7 @@ export const DEFAULT_NAME_COLOR_RULES: NameColorRule[] = [
     { id: 'pps', keyword: 'pps', color: NAME_INK },
 ]
 
-const LETTER_SEP = "[.\\s'’\\-]*"
+const LETTER_SEP = '[^a-z0-9]*'
 
 export const foldSearchText = (value: string) =>
     String(value || '')
