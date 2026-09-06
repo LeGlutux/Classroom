@@ -165,11 +165,21 @@ const SettingsMenu = () => {
                         else history.push('/create/eleves')
                     }}
                 />
+            </div>
+
+            <div className="settings-group-label">Personnalisation</div>
+            <div className="settings-group">
                 <SettingsRow
                     to="/create/cartes"
                     icon={<IconGrid />}
                     title="Personnaliser les croix"
                     subtitle="Croix négatives et positives"
+                />
+                <SettingsRow
+                    to="/create/couleurs"
+                    icon={<IconDrop />}
+                    title="Personnaliser les couleurs élèves"
+                    subtitle="Selon les notes de fiche (PAP, PAI…)"
                 />
             </div>
 
@@ -209,12 +219,6 @@ const SettingsMenu = () => {
                         subtitle="Textes et jetons envoyés aux parents"
                     />
                 ) : null}
-                <SettingsRow
-                    to="/create/couleurs"
-                    icon={<IconDrop />}
-                    title="Personnaliser les couleurs élèves"
-                    subtitle="Selon les notes de fiche (PAP, PAI…)"
-                />
                 <SettingsRow
                     icon={<IconDownload />}
                     title="Télécharger l’app"

@@ -93,7 +93,7 @@ export const getTutorialSteps = (showSms: boolean): TutorialStep[] => {
             id: 'crosses-nav',
             title: 'Personnaliser les croix',
             body:
-                'Toujours dans Paramètres, ouvrez « Personnaliser les croix ». C’est le geste du quotidien.',
+                'Toujours dans Paramètres, groupe Personnalisation, ouvrez « Personnaliser les croix ».',
             stage: 'settings',
             highlight: 'crosses-row',
             advanceOnHighlight: true,
@@ -119,7 +119,7 @@ export const getTutorialSteps = (showSms: boolean): TutorialStep[] => {
             id: 'cards-cross',
             title: 'Poser et retirer une croix',
             body:
-                'Un appui sur une icône pose une croix. Un appui long la retire. Vous pouvez essayer sur la carte de Pat.',
+                'Un appui sur une icône pose une croix. Un appui long la retire. C’est le geste du quotidien. Vous pouvez essayer sur la carte de Pat.',
             stage: 'home',
             highlight: 'demo-cross',
             demo: 'card',
@@ -162,7 +162,7 @@ export const getTutorialSteps = (showSms: boolean): TutorialStep[] => {
             id: 'plan',
             title: 'Le plan de classe',
             body:
-                'Glissez les tables pour les ranger. Le bouton en bas à droite pose un cadre vide. Vous pouvez essayer.',
+                'Vous placez les élèves comme vous voulez. Voici un exemple : deux tables de deux.',
             stage: 'plan',
         },
         {

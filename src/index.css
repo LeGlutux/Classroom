@@ -3346,11 +3346,11 @@ body,
 }
 
 .tutorial-stage .settings-group > .tutorial-lit {
-    border-radius: 12px 12px 0 0;
+    border-radius: 12px;
 }
 
 .tutorial-stage .settings-row.tutorial-lit {
-    border-radius: 0 0 12px 12px;
+    border-radius: 12px;
 }
 
 .tutorial-fake-home-empty {
@@ -3423,47 +3423,31 @@ body,
 }
 
 .tutorial-fake-plan {
-    position: relative;
-    margin: 0.15rem auto 0.55rem;
-    touch-action: none;
-}
-
-.tutorial-fake-plan .seating-seat {
-    position: absolute;
-    left: 0;
-    top: 0;
-    cursor: grab;
-}
-
-.tutorial-fake-plan .seating-seat.is-dragging {
-    z-index: 6;
-    cursor: grabbing;
-}
-
-.tutorial-fake-plan-tools {
     display: flex;
-    justify-content: flex-end;
-    max-width: 232px;
-    margin: 0 auto 0.35rem;
-}
-
-.tutorial-fake-plan-add {
-    display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    width: 2.4rem;
-    height: 2.4rem;
-    padding: 0;
-    border: 1px solid var(--tn-line);
-    border-radius: 10px;
-    background: #fff;
-    color: var(--tn-muted);
-    cursor: pointer;
+    gap: 1.15rem;
+    margin: 0.45rem auto 0.55rem;
 }
 
-.tutorial-fake-plan-add .tn-icon {
-    width: 1.15rem;
-    height: 1.15rem;
+.tutorial-fake-table {
+    display: flex;
+    padding: 2.5px;
+    background: #18181b;
+    border-radius: 3px;
+}
+
+.tutorial-fake-table .seating-seat {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    cursor: default;
+    touch-action: auto;
+}
+
+.tutorial-fake-table .seating-seat + .seating-seat {
+    margin-left: -1px;
 }
 
 .tutorial-fake-list-body {

@@ -3,19 +3,18 @@ import { fireEvent, render } from '@testing-library/react'
 import TutorialFakeApp from './TutorialStage'
 
 describe('TutorialFakeApp plan et listes', () => {
-    it('montre les prénoms, les hints d’homonymes et un cadre vide', () => {
-        const { getByText, getAllByLabelText, getByLabelText } = render(
+    it('montre deux tables de deux, avec les hints d’homonymes', () => {
+        const { getByText, getByLabelText, queryByLabelText } = render(
             <TutorialFakeApp stage="plan" onAdvance={() => undefined} />
         )
         expect(getByText('Plan de classe')).toBeTruthy()
         expect(getByText('Pat')).toBeTruthy()
         expect(getByText('Dup')).toBeTruthy()
         expect(getByText('Mar')).toBeTruthy()
-        expect(getAllByLabelText('Cadre vide').length).toBe(2)
-        fireEvent.click(getByLabelText('Ajouter un cadre vide'))
-        expect(getAllByLabelText('Cadre vide').length).toBe(3)
-        fireEvent.click(getAllByLabelText('Retirer le cadre vide')[0])
-        expect(getAllByLabelText('Cadre vide').length).toBe(2)
+        expect(getByLabelText('Pat Mercier')).toBeTruthy()
+        expect(getByLabelText('Noah Petit')).toBeTruthy()
+        expect(queryByLabelText('Cadre vide')).toBeNull()
+        expect(queryByLabelText('Ajouter un cadre vide')).toBeNull()
     })
 
     it('affiche le prénom, et les trois lettres seulement en cas de doublon', () => {
@@ -30,19 +29,17 @@ describe('TutorialFakeApp plan et listes', () => {
         expect(getByText('Noah')).toBeTruthy()
     })
 
-    it('permet de glisser une table sur le plan', () => {
-        const { getByLabelText } = render(
-            <TutorialFakeApp stage="plan" onAdvance={() => undefined} />
+    it('range les croix dans Personnalisation sur le faux écran Paramètres', () => {
+        const { getByText } = render(
+            <TutorialFakeApp
+                stage="settings"
+                highlight="crosses-row"
+                onAdvance={() => undefined}
+            />
         )
-        const pat = getByLabelText('Pat Mercier')
-        expect(pat.getAttribute('style') || '').toMatch(/translate\(0px/)
-        fireEvent.pointerDown(pat, { pointerId: 1, clientX: 20, clientY: 20 })
-        fireEvent.pointerMove(pat, { pointerId: 1, clientX: 60, clientY: 50 })
-        fireEvent.pointerUp(pat, { pointerId: 1 })
-        expect(pat.getAttribute('style') || '').toMatch(/translate\(/)
-        expect(pat.getAttribute('style') || '').not.toMatch(
-            /translate\(0px, 0px\)/
-        )
+        expect(getByText('Personnalisation')).toBeTruthy()
+        expect(getByText('Personnaliser les croix')).toBeTruthy()
+        expect(getByText('Personnaliser les couleurs élèves')).toBeTruthy()
     })
 
     it('avance vers le plan ou les listes depuis la barre du bas', () => {
