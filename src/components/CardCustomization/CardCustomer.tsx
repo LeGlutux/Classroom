@@ -53,12 +53,12 @@ const CrossPreview = ({
                             Daxe
                         </div>
                     </div>
-                    <div className="w-full h-24 flex p-2 content-center justify-between pr-6">
+                    <div className="cross-customize-icons">
                         {icons.map((icon, index) => (
                             <div
                                 key={index}
-                                className={`flex flex-col ${
-                                    icon === 0 ? 'hidden' : 'visible'
+                                className={`flex flex-col items-center${
+                                    icon === 0 ? ' hidden' : ''
                                 }`}
                             >
                                 <button

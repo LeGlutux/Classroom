@@ -229,7 +229,7 @@ const FakeCrossBlock = ({
                         Mercier
                     </div>
                 </div>
-                <div className="w-full tutorial-cross-icons flex p-1 content-center justify-between pr-4">
+                <div className="w-full tutorial-cross-icons flex items-center justify-center">
                     {icons.map((icon) => (
                         <div key={icon} className="flex flex-col">
                             <span className="flex flex-row justify-center mb-0.5">
