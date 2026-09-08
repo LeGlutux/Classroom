@@ -27,7 +27,8 @@ describe('SessionSummaryStrip', () => {
             expect(node.className).not.toMatch(/is-multi/)
         })
         expect(container.querySelectorAll('img').length).toBe(3)
-        expect(container.querySelector('.session-summary-dock')).toBeTruthy()
+        expect(container.querySelector('.session-summary-bar')).toBeTruthy()
+        expect(container.querySelector('.session-summary-dock')).toBeNull()
     })
 
     it('ne rend rien sans icônes', () => {

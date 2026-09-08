@@ -452,11 +452,7 @@ export default () => {
     }
 
     return (
-        <div
-            className={`w-full h-screen flex flex-col overflow-hidden app-bg${
-                displayedGroup !== 'tous' ? ' has-session-summary' : ''
-            }`}
-        >
+        <div className="w-full h-screen flex flex-col overflow-hidden app-bg">
             <Updater
                 userId={currentUser.uid}
                 userVersion={user?.version || 0}
@@ -473,7 +469,21 @@ export default () => {
             )}
 
             <div className="flex-shrink-0 relative flex flex-row w-full bg-white h-12 page-header items-center justify-center z-10">
-                <span className="page-header-title">{title}</span>
+                {displayedGroup !== 'tous' && (
+                    <SessionSummaryBar
+                        uid={currentUser.uid}
+                        studentIds={students.map((student) => student.id)}
+                        slots={crossSlots}
+                        sessionFollow={userIcons.sessionFollow}
+                    />
+                )}
+                <span
+                    className={`page-header-title${
+                        displayedGroup !== 'tous' ? ' has-session-summary' : ''
+                    }`}
+                >
+                    {title}
+                </span>
                 {postIt(displayedGroup) ? (
                     <span className="postit-alert-header">
                         <PostItAlert onClick={() => setDisplayPostIt(true)} />
@@ -679,15 +689,6 @@ export default () => {
                     }}
                     closeMenu={setMenuOpened}
                     groups={groups}
-                />
-            )}
-
-            {displayedGroup !== 'tous' && (
-                <SessionSummaryBar
-                    uid={currentUser.uid}
-                    studentIds={students.map((student) => student.id)}
-                    slots={crossSlots}
-                    sessionFollow={userIcons.sessionFollow}
                 />
             )}
 

@@ -827,13 +827,21 @@ export default () => {
     )
 
     return (
-        <div
-            className={`w-full h-screen flex flex-col overflow-hidden app-bg${
-                displayedGroup !== 'tous' ? ' has-session-summary' : ''
-            }`}
-        >
+        <div className="w-full h-screen flex flex-col overflow-hidden app-bg">
             <div className="flex-shrink-0 relative flex flex-row w-full h-12 page-header items-center justify-center">
-                <span className="page-header-title seating-page-title">
+                {displayedGroup !== 'tous' && (
+                    <SessionSummaryBar
+                        uid={uid}
+                        studentIds={classStudents.map((student) => student.id)}
+                        slots={crossSlots}
+                        sessionFollow={userIcons.sessionFollow}
+                    />
+                )}
+                <span
+                    className={`page-header-title seating-page-title${
+                        displayedGroup !== 'tous' ? ' has-session-summary' : ''
+                    }`}
+                >
                     {title}
                 </span>
                 {displayedGroup !== 'tous' && (
@@ -1216,15 +1224,6 @@ export default () => {
                         </div>
                     </div>
                 </div>
-            )}
-
-            {displayedGroup !== 'tous' && (
-                <SessionSummaryBar
-                    uid={uid}
-                    studentIds={classStudents.map((student) => student.id)}
-                    slots={crossSlots}
-                    sessionFollow={userIcons.sessionFollow}
-                />
             )}
 
             <div className="flex-shrink-0 w-full h-12 nav-wrap">

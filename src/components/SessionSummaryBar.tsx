@@ -28,17 +28,15 @@ const useNow = (intervalMs: number) => {
 export const SessionSummaryStrip = ({ items }: { items: SummaryStripItem[] }) => {
     if (items.length === 0) return null
     return (
-        <div className="session-summary-dock">
-            <div className="session-summary-bar" aria-label="Résumé de séance">
-                {items.map((item) => (
-                    <span key={item.type} className="session-summary-item">
-                        {item.src && item.src !== 'none' ? (
-                            <img src={item.src} alt="" />
-                        ) : null}
-                        <span className="session-summary-count">{item.count}</span>
-                    </span>
-                ))}
-            </div>
+        <div className="session-summary-bar" aria-label="Résumé de séance">
+            {items.map((item) => (
+                <span key={item.type} className="session-summary-item">
+                    {item.src && item.src !== 'none' ? (
+                        <img src={item.src} alt="" />
+                    ) : null}
+                    <span className="session-summary-count">{item.count}</span>
+                </span>
+            ))}
         </div>
     )
 }
