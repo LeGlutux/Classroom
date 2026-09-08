@@ -1,4 +1,6 @@
 import {
+    cardCrossTone,
+    countRecentCrossesOfType,
     countSessionCrosses,
     normalizeSessionFollow,
     sessionSummaryItems,
@@ -75,6 +77,25 @@ describe('countSessionCrosses', () => {
     })
 })
 
+describe('countRecentCrossesOfType', () => {
+    const windowStart = new Date(2026, 8, 8, 12, 0, 0)
+
+    it('ne compte que le type demandé dans la fenêtre', () => {
+        const crosses = [
+            { type: 'behaviour', time: new Date(2026, 8, 8, 13, 0, 0) },
+            { type: 'behaviour', time: new Date(2026, 8, 8, 11, 0, 0) },
+            { type: 'homework', time: new Date(2026, 8, 8, 13, 0, 0) },
+        ]
+        expect(countRecentCrossesOfType(crosses, 'behaviour', windowStart)).toBe(
+            1
+        )
+        expect(countRecentCrossesOfType(crosses, 'homework', windowStart)).toBe(
+            1
+        )
+        expect(countRecentCrossesOfType(crosses, 'supply', windowStart)).toBe(0)
+    })
+})
+
 describe('sessionSummaryItems', () => {
     const slots = [
         { type: 'behaviour', icon: 15 },
@@ -82,33 +103,15 @@ describe('sessionSummaryItems', () => {
         { type: 'supply', icon: 13 },
     ]
 
-    it('garde l’ordre des logos, 1 en rouge, 2 et plus en gras', () => {
+    it('garde l’ordre des logos et les totaux de séance', () => {
         const items = sessionSummaryItems(
             { behaviour: 1, homework: 3 },
             slots
         )
         expect(items).toEqual([
-            {
-                type: 'behaviour',
-                icon: 15,
-                count: 1,
-                recent: true,
-                bold: false,
-            },
-            {
-                type: 'homework',
-                icon: 20,
-                count: 3,
-                recent: true,
-                bold: true,
-            },
-            {
-                type: 'supply',
-                icon: 13,
-                count: 0,
-                recent: false,
-                bold: false,
-            },
+            { type: 'behaviour', icon: 15, count: 1 },
+            { type: 'homework', icon: 20, count: 3 },
+            { type: 'supply', icon: 13, count: 0 },
         ])
     })
 
@@ -118,8 +121,14 @@ describe('sessionSummaryItems', () => {
             type: 'phone',
             icon: 0,
             count: 2,
-            recent: true,
-            bold: true,
         })
+    })
+})
+
+describe('cardCrossTone', () => {
+    it('met le nombre en rouge dès 1 croix récente, gras dès 2', () => {
+        expect(cardCrossTone(0)).toEqual({ recent: false, bold: false })
+        expect(cardCrossTone(1)).toEqual({ recent: true, bold: false })
+        expect(cardCrossTone(2)).toEqual({ recent: true, bold: true })
     })
 })

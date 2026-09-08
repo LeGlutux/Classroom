@@ -8,6 +8,12 @@ import StudentComment from './StudentComment'
 import { useCross } from '../hooks'
 import { StudentInterface } from '../interfaces/Student'
 import { CrossPolarity } from '../functions'
+import {
+    cardCrossTone,
+    countRecentCrossesOfType,
+    normalizeSessionFollow,
+    sessionWindowStart,
+} from '../sessionFollow'
 import { openStudentSms } from './SmsSheet'
 import { lockPageTouch, unlockPageTouch } from '../touchLock'
 
@@ -38,6 +44,7 @@ interface StudentProps {
     runningPeriode: number
     slots: StudentSlot[]
     smsAvailable?: boolean
+    sessionFollow?: unknown
 }
 
 interface CrossButtonProps {
@@ -100,6 +107,12 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
     const [crosses, setCrosses] =
         useState<firebase.firestore.DocumentData[]>(cross)
     const [hidden, setHidden] = useState(false)
+    const [now, setNow] = useState(() => Date.now())
+
+    useEffect(() => {
+        const id = window.setInterval(() => setNow(Date.now()), 15000)
+        return () => window.clearInterval(id)
+    }, [])
 
     useEffect(() => {
         setSelected(props.selected)
@@ -268,6 +281,15 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
             })
         }
     }
+
+    const followWindowStart = sessionWindowStart(
+        new Date(now),
+        normalizeSessionFollow(props.sessionFollow)
+    )
+    const countTone = (type: string) =>
+        cardCrossTone(
+            countRecentCrossesOfType(crosses, type, followWindowStart)
+        )
 
     const crossIdentifier = (type: string) => {
         if (type === 'behaviour') return '1'
@@ -510,7 +532,17 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                                     }
                                     onRemove={() => handleRemoveCross(slot.type)}
                                 />
-                                <div className="student-cross-count">
+                                <div
+                                    className={
+                                        'student-cross-count' +
+                                        (countTone(slot.type).recent
+                                            ? ' is-recent'
+                                            : '') +
+                                        (countTone(slot.type).bold
+                                            ? ' is-multi'
+                                            : '')
+                                    }
+                                >
                                     {
                                         crossFilter(
                                             slot.type,

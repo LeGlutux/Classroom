@@ -266,7 +266,8 @@ export default (props: CardCustomerProps) => {
                 </div>
                 <p className="session-follow-note">
                     Le résumé de séance compte les croix posées pendant cette
-                    durée. Le nombre reste rouge tant que la croix est récente.
+                    durée. Sur la carte élève, le nombre reste rouge tant que
+                    la croix est récente.
                 </p>
                 <div className="session-follow-options">
                     {SESSION_FOLLOW_OPTIONS.map((option) => (

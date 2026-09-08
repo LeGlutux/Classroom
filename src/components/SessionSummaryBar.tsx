@@ -14,8 +14,6 @@ export type SummaryStripItem = {
     type: string
     src: string
     count: number
-    recent: boolean
-    bold: boolean
 }
 
 const useNow = (intervalMs: number) => {
@@ -28,28 +26,19 @@ const useNow = (intervalMs: number) => {
 }
 
 export const SessionSummaryStrip = ({ items }: { items: SummaryStripItem[] }) => {
+    if (items.length === 0) return null
     return (
-        <div className="session-summary-bar" aria-label="Résumé de séance">
-            {items.length === 0 ? (
-                <span className="session-summary-empty">Aucune croix configurée</span>
-            ) : (
-                items.map((item) => (
+        <div className="session-summary-dock">
+            <div className="session-summary-bar" aria-label="Résumé de séance">
+                {items.map((item) => (
                     <span key={item.type} className="session-summary-item">
                         {item.src && item.src !== 'none' ? (
                             <img src={item.src} alt="" />
                         ) : null}
-                        <span
-                            className={
-                                'session-summary-count' +
-                                (item.recent ? ' is-recent' : '') +
-                                (item.bold ? ' is-multi' : '')
-                            }
-                        >
-                            {item.count}
-                        </span>
+                        <span className="session-summary-count">{item.count}</span>
                     </span>
-                ))
-            )}
+                ))}
+            </div>
         </div>
     )
 }
@@ -81,8 +70,6 @@ export default ({
                 type: item.type,
                 src: src === 'none' ? '' : src,
                 count: item.count,
-                recent: item.recent,
-                bold: item.bold,
             }
         })
     }, [crosses, now, mode, slots])

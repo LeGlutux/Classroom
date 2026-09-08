@@ -67,8 +67,6 @@ export type SessionSummaryItem = {
     type: string
     icon: number
     count: number
-    recent: boolean
-    bold: boolean
 }
 
 export const sessionSummaryItems = (
@@ -85,8 +83,6 @@ export const sessionSummaryItems = (
             type: slot.type,
             icon: slot.icon,
             count,
-            recent: count >= 1,
-            bold: count >= 2,
         })
     })
     Object.keys(counts || {}).forEach((type) => {
@@ -97,9 +93,27 @@ export const sessionSummaryItems = (
             type,
             icon: 0,
             count,
-            recent: true,
-            bold: count >= 2,
         })
     })
     return items
 }
+
+export const countRecentCrossesOfType = (
+    crosses: { type?: string; time?: any }[],
+    type: string,
+    windowStart: Date
+) => {
+    const startMs = windowStart.getTime()
+    let count = 0
+    ;(crosses || []).forEach((cross) => {
+        if (!cross || cross.type !== type) return
+        const time = crossTimeValue(cross)
+        if (time && time >= startMs) count += 1
+    })
+    return count
+}
+
+export const cardCrossTone = (recentCount: number) => ({
+    recent: recentCount >= 1,
+    bold: recentCount >= 2,
+})

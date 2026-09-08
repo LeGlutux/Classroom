@@ -292,6 +292,14 @@ body,
     color: var(--tn-ink);
 }
 
+.student-cross-count.is-recent {
+    color: #dc2626;
+}
+
+.student-cross-count.is-multi {
+    font-weight: 800;
+}
+
 .nav-wrap {
     background: #fff;
     border-top: 0 !important;
@@ -687,15 +695,31 @@ body,
     border-color: var(--tn-ink);
 }
 
+.session-summary-dock {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: calc(3rem + 0.45rem);
+    z-index: 16;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+    padding: 0 4.75rem 0 0.75rem;
+}
+
 .session-summary-bar {
-    flex-shrink: 0;
+    pointer-events: auto;
     display: flex;
     align-items: center;
-    gap: 0.7rem;
-    min-height: 2.5rem;
-    padding: 0.3rem 0.85rem;
+    justify-content: center;
+    gap: 0.65rem;
+    min-height: 2.35rem;
+    max-width: 100%;
+    padding: 0.28rem 0.9rem;
     background: #fff;
-    border-top: 1px solid var(--tn-line);
+    border: 1px solid var(--tn-line);
+    border-radius: 999px;
+    box-shadow: 0 2px 10px rgba(24, 24, 27, 0.08);
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
@@ -725,33 +749,37 @@ body,
     font-variant-numeric: tabular-nums;
 }
 
-.session-summary-count.is-recent {
-    color: #dc2626;
-}
-
-.session-summary-count.is-multi {
-    font-weight: 700;
-}
-
 .session-summary-empty {
     font-size: 0.8rem;
     color: var(--tn-muted);
 }
 
+.has-session-summary .student-list-scroll {
+    padding-bottom: 3.25rem;
+}
+
 .has-session-summary .class-filter-bar {
-    bottom: calc(3rem + 2.5rem - 2px);
+    bottom: calc(3rem + 2.7rem - 2px);
 }
 
 .has-session-summary .bottom-right-custom {
-    bottom: calc(9rem + 2.5rem);
+    bottom: calc(9rem + 2.7rem);
 }
 
 .has-session-summary .bottom-right-custom2 {
-    bottom: calc(4rem + 2.5rem);
+    bottom: calc(4rem + 2.7rem);
 }
 
 .has-session-summary .bottom-right-custom3 {
-    bottom: calc(14rem + 2.5rem);
+    bottom: calc(14rem + 2.7rem);
+}
+
+.has-session-summary .seating-zoom {
+    bottom: 6.2rem;
+}
+
+.has-session-summary .seating-zoom.is-flush {
+    bottom: 3.35rem;
 }
 
 .podium-class {

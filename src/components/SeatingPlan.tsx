@@ -1211,6 +1211,7 @@ export default () => {
                                 displayedGroup={displayedGroup}
                                 slots={crossSlots}
                                 smsAvailable={smsAvailable}
+                                sessionFollow={userIcons.sessionFollow}
                             />
                         </div>
                     </div>
