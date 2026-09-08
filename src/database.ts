@@ -12,7 +12,6 @@ import {
     LegacyIconMap,
     buildLegacyIconMap,
     parseLegacyIconMap,
-    resolveCrossIcon,
     withResolvedIcon,
 } from './crossIdentity'
 
@@ -64,25 +63,6 @@ export const loadCrossIconMap = async (
     }
 }
 
-export const backfillCrossIcons = async (
-    docs: firebase.firestore.QueryDocumentSnapshot[],
-    iconMap: LegacyIconMap
-) => {
-    const db = Firebase.firestore()
-    const missing = docs.filter((doc) => {
-        const icon = Number(doc.data() && doc.data().icon)
-        return !Number.isFinite(icon) || icon <= 0
-    })
-    for (let index = 0; index < missing.length; index += 400) {
-        const batch = db.batch()
-        missing.slice(index, index + 400).forEach((doc) => {
-            const icon = resolveCrossIcon(doc.data(), iconMap)
-            if (icon > 0) batch.update(doc.ref, { icon })
-        })
-        await batch.commit()
-    }
-}
-
 export const fetchCross = async (
     currentUserId: string,
     currentStudentId: string
@@ -96,12 +76,6 @@ export const fetchCross = async (
         .doc(currentStudentId)
         .collection('crosses')
         .get()
-
-    try {
-        await backfillCrossIcons(querySnapshot.docs, iconMap)
-    } catch (error) {
-        console.error('Error backfilling cross icons:', error)
-    }
 
     const data = [] as firebase.firestore.DocumentData[]
     querySnapshot.docs.forEach((doc) => {
@@ -125,11 +99,6 @@ export const fetchCrosses = async (
             .doc(id)
             .collection('crosses')
             .get()
-        try {
-            await backfillCrossIcons(querySnapshot.docs, iconMap)
-        } catch (error) {
-            console.error('Error backfilling cross icons:', error)
-        }
         const docs = [] as firebase.firestore.DocumentData[]
         querySnapshot.docs.forEach((doc) => {
             const docData = doc.data()

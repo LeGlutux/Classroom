@@ -18,7 +18,6 @@ import {
     fetchVersion,
     fetchIcons,
     loadCrossIconMap,
-    backfillCrossIcons,
     fetchPostIts,
     saveNameColorRules,
 } from './database'
@@ -251,9 +250,6 @@ export const useSessionCrosses = (
                                 byStudent[id] = list
                                 emit()
                                 markSeen(id)
-                                backfillCrossIcons(snap.docs, iconMap).catch(
-                                    () => undefined
-                                )
                             })
                             .catch(() => {
                                 if (cancelled) return
