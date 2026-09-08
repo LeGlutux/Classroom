@@ -1,4 +1,12 @@
-import { crossTimeValue } from './functions'
+import { CrossPolarity, crossTimeValue } from './functions'
+import {
+    LegacyIconMap,
+    crossMatchesSlot,
+    crossPolarityOf,
+    resolveCrossIcon,
+    slotIdentity,
+    slotIdentityOf,
+} from './crossIdentity'
 
 export type SessionFollowMode = '30' | '60' | '120' | '180' | 'day'
 
@@ -48,17 +56,24 @@ export const sessionWindowStart = (
 }
 
 export const countSessionCrosses = (
-    crosses: { type?: string; time?: any }[],
-    windowStart: Date
-): { [type: string]: number } => {
+    crosses: {
+        type?: string
+        icon?: number
+        polarity?: string
+        time?: any
+    }[],
+    windowStart: Date,
+    iconMap?: LegacyIconMap | null
+): { [key: string]: number } => {
     const startMs = windowStart.getTime()
-    const counts: { [type: string]: number } = {}
+    const counts: { [key: string]: number } = {}
     ;(crosses || []).forEach((cross) => {
-        const type = cross && cross.type
-        if (!type) return
+        const icon = resolveCrossIcon(cross, iconMap)
+        if (!icon) return
         const time = crossTimeValue(cross)
         if (!time || time < startMs) return
-        counts[type] = (counts[type] || 0) + 1
+        const key = slotIdentity(crossPolarityOf(cross), icon)
+        counts[key] = (counts[key] || 0) + 1
     })
     return counts
 }
@@ -66,32 +81,39 @@ export const countSessionCrosses = (
 export type SessionSummaryItem = {
     type: string
     icon: number
+    polarity: CrossPolarity
     count: number
 }
 
 export const sessionSummaryItems = (
-    counts: { [type: string]: number },
-    slots: { type: string; icon: number }[]
+    counts: { [key: string]: number },
+    slots: { type: string; icon: number; polarity: CrossPolarity }[]
 ): SessionSummaryItem[] => {
-    const seen: { [type: string]: boolean } = {}
+    const seen: { [key: string]: boolean } = {}
     const items: SessionSummaryItem[] = []
     ;(slots || []).forEach((slot) => {
-        if (!slot || !slot.type) return
-        const count = counts[slot.type] || 0
-        seen[slot.type] = true
+        if (!slot || !slot.icon) return
+        const key = slotIdentityOf(slot)
+        if (seen[key]) return
+        seen[key] = true
         items.push({
-            type: slot.type,
+            type: key,
             icon: slot.icon,
-            count,
+            polarity: slot.polarity,
+            count: counts[key] || 0,
         })
     })
-    Object.keys(counts || {}).forEach((type) => {
-        if (seen[type]) return
-        const count = counts[type] || 0
+    Object.keys(counts || {}).forEach((key) => {
+        if (seen[key]) return
+        const count = counts[key] || 0
         if (count === 0) return
+        const parts = key.split(':')
+        const polarity = parts[0] === 'positive' ? 'positive' : 'negative'
+        const icon = Number(parts[1]) || 0
         items.push({
-            type,
-            icon: 0,
+            type: key,
+            icon,
+            polarity,
             count,
         })
     })
@@ -102,15 +124,21 @@ export const sessionSummaryVisibleItems = <T extends { count: number }>(
     items: T[]
 ) => items.filter((item) => item.count > 0)
 
-export const countRecentCrossesOfType = (
-    crosses: { type?: string; time?: any }[],
-    type: string,
-    windowStart: Date
+export const countRecentCrossesForSlot = (
+    crosses: {
+        type?: string
+        icon?: number
+        polarity?: string
+        time?: any
+    }[],
+    slot: { icon: number; polarity: CrossPolarity },
+    windowStart: Date,
+    iconMap?: LegacyIconMap | null
 ) => {
     const startMs = windowStart.getTime()
     let count = 0
     ;(crosses || []).forEach((cross) => {
-        if (!cross || cross.type !== type) return
+        if (!crossMatchesSlot(cross, slot, iconMap)) return
         const time = crossTimeValue(cross)
         if (time && time >= startMs) count += 1
     })

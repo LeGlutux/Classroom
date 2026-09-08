@@ -9,8 +9,13 @@ import { useCross } from '../hooks'
 import { StudentInterface } from '../interfaces/Student'
 import { CrossPolarity } from '../functions'
 import {
+    LegacyIconMap,
+    filterCrossesForSlot,
+    newCrossDocId,
+} from '../crossIdentity'
+import {
     cardCrossTone,
-    countRecentCrossesOfType,
+    countRecentCrossesForSlot,
     normalizeSessionFollow,
     sessionWindowStart,
 } from '../sessionFollow'
@@ -20,6 +25,7 @@ import { lockPageTouch, unlockPageTouch } from '../touchLock'
 interface StudentSlot {
     src: string
     type: string
+    icon: number
     polarity: CrossPolarity
 }
 
@@ -43,6 +49,7 @@ interface StudentProps {
     periodes: Date[]
     runningPeriode: number
     slots: StudentSlot[]
+    iconMap?: LegacyIconMap
     smsAvailable?: boolean
     sessionFollow?: unknown
 }
@@ -231,7 +238,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                 crossCounts: props.slots.reduce(
                     (counts, slot) => {
                         counts[slot.type] = crossFilter(
-                            slot.type,
+                            slot,
                             props.runningPeriode
                         ).length
                         return counts
@@ -258,21 +265,20 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
         props.toggleSelected(props.id)
     }
 
-    const crossFilter = (crossType: string, runningP: number) => {
-        const filtered = crosses.filter(
-            (element: firebase.firestore.DocumentData) =>
-                element && element.type === crossType
+    const crossFilter = (slot: StudentSlot, runningP: number) => {
+        const filtered = filterCrossesForSlot(
+            crosses,
+            slot,
+            props.iconMap
         )
         
         if (runningP === props.periodes.length) {
-            // Dernière période : toutes les crosses après la dernière date de période
             const periodeStart = props.periodes[runningP - 1]
             return filtered.filter((element: firebase.firestore.DocumentData) => {
                 const crossTime = element.time?.toDate ? element.time.toDate() : element.time
                 return crossTime > periodeStart
             })
         } else {
-            // Période intermédiaire : crosses entre deux dates
             const periodeStart = props.periodes[runningP - 1]
             const periodeEnd = props.periodes[runningP]
             return filtered.filter((element: firebase.firestore.DocumentData) => {
@@ -286,28 +292,20 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
         new Date(now),
         normalizeSessionFollow(props.sessionFollow)
     )
-    const countTone = (type: string) =>
+    const countTone = (slot: StudentSlot) =>
         cardCrossTone(
-            countRecentCrossesOfType(crosses, type, followWindowStart)
+            countRecentCrossesForSlot(
+                crosses,
+                slot,
+                followWindowStart,
+                props.iconMap
+            )
         )
 
-    const crossIdentifier = (type: string) => {
-        if (type === 'behaviour') return '1'
-        if (type === 'homework') return '2'
-        if (type === 'supply') return '3'
-        if (type === 'observation') return '4'
-        if (type === 'calculator') return '5'
-        if (type === 'phone') return '6'
-        if (type.indexOf('pos') === 0) return type
-        else return '000'
-    }
-    const newCrossId = (type: string) => {
-        return crossIdentifier(type).concat('c').concat(Date.now().toString())
-    }
-    const handleAddCross = (crossType: string, polarity: CrossPolarity) => {
+    const handleAddCross = (slot: StudentSlot) => {
         if (props.runningPeriode === props.periodes.length) {
             const newDate = new Date()
-            const id = newCrossId(crossType)
+            const id = newCrossDocId(slot.icon, slot.polarity)
             db.collection('users')
                 .doc(props.currentUser)
                 .collection('eleves')
@@ -315,8 +313,9 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                 .collection('crosses')
                 .doc(id)
                 .set({
-                    type: crossType,
-                    polarity,
+                    type: slot.type,
+                    icon: slot.icon,
+                    polarity: slot.polarity,
                     time: newDate,
                     id,
                     student_id: props.id,
@@ -333,7 +332,13 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                 })
 
             const newCross = crosses.concat([
-                { type: crossType, polarity, id, time: newDate },
+                {
+                    type: slot.type,
+                    icon: slot.icon,
+                    polarity: slot.polarity,
+                    id,
+                    time: newDate,
+                },
             ])
             setCrosses(newCross)
         }
@@ -346,9 +351,9 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
             : new Date(element.time).getTime()
     }
 
-    const handleRemoveCross = (crossType: string) => {
+    const handleRemoveCross = (slot: StudentSlot) => {
         if (props.runningPeriode !== props.periodes.length) return
-        const current = crossFilter(crossType, props.runningPeriode)
+        const current = crossFilter(slot, props.runningPeriode)
         if (current.length === 0) return
         const latest = current.reduce((best, element) =>
             crossTime(element) >= crossTime(best) ? element : best
@@ -516,9 +521,9 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                             props.slots.length === 6 ? 'mb-6' : ''
                         }`}
                     >
-                        {props.slots.map((slot) => (
+                        {props.slots.map((slot, index) => (
                             <div
-                                key={slot.type}
+                                key={slot.polarity + '-' + slot.icon + '-' + index}
                                 className={`flex ${
                                     props.slots.length === 6
                                         ? 'flex-col items-center'
@@ -527,25 +532,23 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
                             >
                                 <CrossButton
                                     src={slot.src}
-                                    onAdd={() =>
-                                        handleAddCross(slot.type, slot.polarity)
-                                    }
-                                    onRemove={() => handleRemoveCross(slot.type)}
+                                    onAdd={() => handleAddCross(slot)}
+                                    onRemove={() => handleRemoveCross(slot)}
                                 />
                                 <div
                                     className={
                                         'student-cross-count' +
-                                        (countTone(slot.type).recent
+                                        (countTone(slot).recent
                                             ? ' is-recent'
                                             : '') +
-                                        (countTone(slot.type).bold
+                                        (countTone(slot).bold
                                             ? ' is-multi'
                                             : '')
                                     }
                                 >
                                     {
                                         crossFilter(
-                                            slot.type,
+                                            slot,
                                             props.runningPeriode
                                         ).length
                                     }

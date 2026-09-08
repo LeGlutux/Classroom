@@ -17,6 +17,7 @@ import {
     fetchAllUsersIds,
     fetchVersion,
     fetchIcons,
+    loadCrossIconMap,
     fetchPostIts,
     saveNameColorRules,
 } from './database'
@@ -31,6 +32,7 @@ import {
 } from './sessionFollow'
 import { getCachedData, setCachedData, getCacheKey, invalidateCache } from './utils/cache'
 import { filterStudentsByGroup } from './utils/studentsList'
+import { LegacyIconMap, withResolvedIcon } from './crossIdentity'
 
 export const usePostIts = (currentUserId: string) => {
     const [postIts, setPostIts] = useState<{ classe: string, content: string }[]>([])
@@ -233,14 +235,33 @@ export const useSessionCrosses = (
                 .collection('crosses')
                 .onSnapshot(
                     (snap) => {
-                        const list: firebase.firestore.DocumentData[] = []
-                        snap.forEach((doc) => {
-                            const data = doc.data()
-                            if (data) list.push(data)
-                        })
-                        byStudent[id] = list
-                        emit()
-                        markSeen(id)
+                        loadCrossIconMap(currentUserId)
+                            .then((iconMap) => {
+                                if (cancelled) return
+                                const list: firebase.firestore.DocumentData[] = []
+                                snap.forEach((doc) => {
+                                    const data = doc.data()
+                                    if (data) {
+                                        list.push(
+                                            withResolvedIcon(data, iconMap)
+                                        )
+                                    }
+                                })
+                                byStudent[id] = list
+                                emit()
+                                markSeen(id)
+                            })
+                            .catch(() => {
+                                if (cancelled) return
+                                const list: firebase.firestore.DocumentData[] = []
+                                snap.forEach((doc) => {
+                                    const data = doc.data()
+                                    if (data) list.push(data)
+                                })
+                                byStudent[id] = list
+                                emit()
+                                markSeen(id)
+                            })
                     },
                     () => {
                         byStudent[id] = []
@@ -842,6 +863,7 @@ export const useIcons = (currentUserId: string) => {
     const [sessionFollow, setSessionFollow] = useState<SessionFollowMode>(
         SESSION_FOLLOW_DEFAULT
     )
+    const [crossIconMap, setCrossIconMap] = useState<LegacyIconMap>({})
     const [loading, setLoading] = useState(true)
     const isMountedRef = useRef(true)
 
@@ -858,6 +880,7 @@ export const useIcons = (currentUserId: string) => {
                 setIcons(data.icons)
                 setPositiveIcons(data.positiveIcons)
                 setSessionFollow(normalizeSessionFollow(data.sessionFollow))
+                setCrossIconMap(data.crossIconMap || {})
                 setLoading(false)
             }
         }
@@ -868,7 +891,7 @@ export const useIcons = (currentUserId: string) => {
         }
     }, [currentUserId])
 
-    return { icons, positiveIcons, sessionFollow, loading }
+    return { icons, positiveIcons, sessionFollow, crossIconMap, loading }
 }
 
 /////////////////////////////// Click outside component ////////////////////////////////////

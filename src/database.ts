@@ -8,6 +8,12 @@ import {
 } from './functions'
 import { normalizeSessionFollow } from './sessionFollow'
 import { parseSmsConfig, SmsTemplate } from './sms'
+import {
+    LegacyIconMap,
+    buildLegacyIconMap,
+    parseLegacyIconMap,
+    withResolvedIcon,
+} from './crossIdentity'
 
 
 export const fetchPostIts = async (currentUserId: string) => {
@@ -28,12 +34,41 @@ export const fetchGroups = async (currentUserId: string) => {
     return data
 }
 
+const CROSS_ICON_MAP_CACHE: { [uid: string]: Promise<LegacyIconMap> } = {}
+
+export const loadCrossIconMap = async (
+    currentUserId: string
+): Promise<LegacyIconMap> => {
+    if (!currentUserId) return {}
+    if (!CROSS_ICON_MAP_CACHE[currentUserId]) {
+        CROSS_ICON_MAP_CACHE[currentUserId] = (async () => {
+            const db = Firebase.firestore()
+            const snap = await db.collection('users').doc(currentUserId).get()
+            const data = snap.data() || {}
+            const existing = parseLegacyIconMap(data.crossIconMap)
+            if (existing) return existing
+            const map = buildLegacyIconMap(data.icons, data.positiveIcons)
+            await db
+                .collection('users')
+                .doc(currentUserId)
+                .set({ crossIconMap: map }, { merge: true })
+            return map
+        })()
+    }
+    try {
+        return await CROSS_ICON_MAP_CACHE[currentUserId]
+    } catch (error) {
+        delete CROSS_ICON_MAP_CACHE[currentUserId]
+        throw error
+    }
+}
+
 export const fetchCross = async (
     currentUserId: string,
     currentStudentId: string
 ) => {
     const db = Firebase.firestore()
-    // Hard fetch - toujours récupérer depuis Firebase
+    const iconMap = await loadCrossIconMap(currentUserId)
     const querySnapshot = await db
         .collection('users')
         .doc(currentUserId)
@@ -43,14 +78,10 @@ export const fetchCross = async (
         .get()
 
     const data = [] as firebase.firestore.DocumentData[]
-
     querySnapshot.docs.forEach((doc) => {
         const docData = doc.data()
-        if (docData) {
-            data.push(docData)
-        }
+        if (docData) data.push(withResolvedIcon(docData, iconMap))
     })
-
     return data
 }
 
@@ -59,6 +90,7 @@ export const fetchCrosses = async (
     allStudentIds: string[]
 ) => {
     const db = Firebase.firestore()
+    const iconMap = await loadCrossIconMap(currentUserId)
     const promises = allStudentIds.map(async (id) => {
         const querySnapshot = await db
             .collection('users')
@@ -67,9 +99,11 @@ export const fetchCrosses = async (
             .doc(id)
             .collection('crosses')
             .get()
-
         const docs = [] as firebase.firestore.DocumentData[]
-        querySnapshot.docs.forEach((doc) => docs.push(doc.data()))
+        querySnapshot.docs.forEach((doc) => {
+            const docData = doc.data()
+            if (docData) docs.push(withResolvedIcon(docData, iconMap))
+        })
         return { id, docs }
     })
 
@@ -276,11 +310,23 @@ export const fetchIcons = async (currentUserId: string) => {
     const db = Firebase.firestore()
     const querySnapshot = await db.collection('users').doc(currentUserId).get()
     const data = querySnapshot.data()
+    const icons = padIconList(data?.icons, DEFAULT_NEGATIVE_ICONS)
+    const positiveIcons = padIconList(
+        data?.positiveIcons,
+        DEFAULT_POSITIVE_ICONS
+    )
+    let crossIconMap = parseLegacyIconMap(data?.crossIconMap)
+    if (!crossIconMap) {
+        crossIconMap = await loadCrossIconMap(currentUserId)
+    } else if (!CROSS_ICON_MAP_CACHE[currentUserId]) {
+        CROSS_ICON_MAP_CACHE[currentUserId] = Promise.resolve(crossIconMap)
+    }
 
     return {
-        icons: padIconList(data?.icons, DEFAULT_NEGATIVE_ICONS),
-        positiveIcons: padIconList(data?.positiveIcons, DEFAULT_POSITIVE_ICONS),
+        icons,
+        positiveIcons,
         sessionFollow: normalizeSessionFollow(data?.sessionFollow),
+        crossIconMap,
     }
 }
 

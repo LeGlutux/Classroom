@@ -2,6 +2,7 @@ import React from 'react'
 import firebase from 'firebase/app'
 import { useCross } from '../hooks'
 import { CrossPolarity, CrossSlot } from '../functions'
+import { LegacyIconMap, filterCrossesForSlot } from '../crossIdentity'
 
 interface CrossTabProps {
     studentId: string
@@ -10,6 +11,7 @@ interface CrossTabProps {
     index: number
     crossRefresher: number
     slots: CrossSlot[]
+    iconMap?: LegacyIconMap
 }
 
 const Dot = ({ polarity }: { polarity: CrossPolarity }) => (
@@ -27,12 +29,8 @@ export default (props: CrossTabProps) => {
         props.crossRefresher
     )
 
-    const crossFilter = (type: string, polarity: CrossPolarity) => {
-        const filtered = cross
-            .filter(
-                (element: firebase.firestore.DocumentData) =>
-                    element.type === type
-            )
+    const crossFilter = (slot: CrossSlot) => {
+        const filtered = filterCrossesForSlot(cross, slot, props.iconMap)
             .filter((element: firebase.firestore.DocumentData) => {
                 const time = element.time?.toDate
                     ? element.time.toDate()
@@ -44,7 +42,7 @@ export default (props: CrossTabProps) => {
             })
 
         const dot = filtered.map((c) => (
-            <Dot key={c.id || c.time} polarity={polarity} />
+            <Dot key={c.id || c.time} polarity={slot.polarity} />
         ))
 
         if (
@@ -59,7 +57,7 @@ export default (props: CrossTabProps) => {
                             : 'text-lg font-bold'
                     }`}
                 >
-                    {filtered.length} <Dot polarity={polarity} />
+                    {filtered.length} <Dot polarity={slot.polarity} />
                 </div>
             )
         }
@@ -72,12 +70,12 @@ export default (props: CrossTabProps) => {
                 {props.index}
             </div>
             <div className="w-full h-4 flex flex-row justify-evenly my-2 text-xl">
-                {props.slots.map((slot) => (
+                {props.slots.map((slot, index) => (
                     <div
-                        key={slot.type}
+                        key={slot.polarity + '-' + slot.icon + '-' + index}
                         className="flex flex-row w-full mx-4 items-center justify-center flex-wrap"
                     >
-                        {crossFilter(slot.type, slot.polarity)}
+                        {crossFilter(slot)}
                     </div>
                 ))}
             </div>
