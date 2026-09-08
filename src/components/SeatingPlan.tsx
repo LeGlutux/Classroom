@@ -829,7 +829,7 @@ export default () => {
     return (
         <div className="w-full h-screen flex flex-col overflow-hidden app-bg">
             <div className="flex-shrink-0 relative flex flex-col w-full page-header">
-                <div className="relative flex flex-row w-full h-12 items-center justify-center">
+                <div className="page-header-main relative flex flex-row w-full h-12 items-center justify-center">
                     <span className="page-header-title seating-page-title">
                         {title}
                     </span>

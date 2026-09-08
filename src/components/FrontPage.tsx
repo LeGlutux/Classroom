@@ -469,7 +469,7 @@ export default () => {
             )}
 
             <div className="flex-shrink-0 relative flex flex-col w-full bg-white page-header z-10">
-                <div className="relative flex flex-row w-full h-12 items-center justify-center">
+                <div className="page-header-main relative flex flex-row w-full h-12 items-center justify-center">
                     <span className="page-header-title">{title}</span>
                     {postIt(displayedGroup) ? (
                         <span className="postit-alert-header">

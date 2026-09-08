@@ -59,6 +59,12 @@ body,
     text-align: center;
 }
 
+.page-header-main {
+    background: #fff;
+    border: 0;
+    box-shadow: none;
+}
+
 .settings-back + .page-header-title {
     padding: 0 2.5rem;
 }
@@ -698,6 +704,12 @@ body,
 .session-summary-fold {
     display: grid;
     grid-template-rows: 0fr;
+    position: relative;
+    z-index: 2;
+    margin-top: -0.4rem;
+    background: #fff;
+    border: 0;
+    box-shadow: none;
 }
 
 .session-summary-fold.is-animated {
@@ -711,6 +723,7 @@ body,
 .session-summary-fold-inner {
     overflow: hidden;
     min-height: 0;
+    background: #fff;
 }
 
 .session-summary-bar {
@@ -719,9 +732,12 @@ body,
     justify-content: center;
     gap: 0.85rem;
     width: 100%;
-    padding: 0 0.75rem 0.5rem;
+    padding: 0 0.75rem 0.45rem;
+    background: #fff;
+    border: 0;
+    box-shadow: none;
     opacity: 0;
-    transform: translateY(-6px);
+    transform: translateY(-4px);
 }
 
 .session-summary-fold.is-animated .session-summary-bar {
@@ -749,6 +765,7 @@ body,
     width: 1.15rem;
     height: 1.15rem;
     display: block;
+    border: 0;
 }
 
 .session-summary-count {
