@@ -21,6 +21,7 @@ import {
     TutorialHighlight,
     TutorialScreen,
 } from '../tutorial'
+import { SESSION_FOLLOW_OPTIONS } from '../sessionFollow'
 import { seatCaption, CARD_H, CARD_W } from '../seatingPlan'
 import { formatListStudentName } from '../utils/listNames'
 import { sortStudentsByListColumn } from '../utils/listSort'
@@ -257,6 +258,23 @@ const FakeCrosses = () => (
         </p>
         <FakeCrossBlock title="Croix négatives" icons={TUTORIAL_NEGATIVE_ICONS} />
         <FakeCrossBlock title="Croix positives" icons={TUTORIAL_POSITIVE_ICONS} />
+        <div className="session-follow-field">
+            <div className="settings-group-label">
+                Durée du suivi des croix
+            </div>
+            <div className="session-follow-options">
+                {SESSION_FOLLOW_OPTIONS.map((option) => (
+                    <span
+                        key={option.value}
+                        className={`session-follow-chip${
+                            option.value === '120' ? ' is-on' : ''
+                        }`}
+                    >
+                        {option.shortLabel}
+                    </span>
+                ))}
+            </div>
+        </div>
     </div>
 )
 

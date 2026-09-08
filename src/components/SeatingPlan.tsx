@@ -14,6 +14,7 @@ import HomeClassListFilter from './HomeClassListFilter'
 import Student from './Student'
 import Loader from './Loader'
 import { IconClose, IconLock, IconMinus, IconPlus, IconSeatBlank, IconUnlock } from './Icons'
+import SessionSummaryBar from './SessionSummaryBar'
 import addPage from '../images/addPage.png'
 import {
     useGroups,
@@ -827,7 +828,12 @@ export default () => {
 
     return (
         <div className="w-full h-screen flex flex-col overflow-hidden app-bg">
-            <div className="flex-shrink-0 relative flex flex-row w-full h-12 page-header items-center justify-center">
+            <div
+                className={
+                    'flex-shrink-0 relative page-header' +
+                    (displayedGroup !== 'tous' ? ' has-session-fold' : '')
+                }
+            >
                 <span className="page-header-title seating-page-title">
                     {title}
                 </span>
@@ -845,6 +851,14 @@ export default () => {
                     >
                         {locked ? <IconLock /> : <IconUnlock />}
                     </button>
+                )}
+                {displayedGroup !== 'tous' && (
+                    <SessionSummaryBar
+                        uid={uid}
+                        studentIds={classStudents.map((student) => student.id)}
+                        slots={crossSlots}
+                        sessionFollow={userIcons.sessionFollow}
+                    />
                 )}
             </div>
 
@@ -1206,6 +1220,7 @@ export default () => {
                                 displayedGroup={displayedGroup}
                                 slots={crossSlots}
                                 smsAvailable={smsAvailable}
+                                sessionFollow={userIcons.sessionFollow}
                             />
                         </div>
                     </div>

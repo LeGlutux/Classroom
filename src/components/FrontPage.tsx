@@ -33,6 +33,7 @@ import Loader from './Loader'
 import { StudentInterface } from '../interfaces/Student'
 import StudentSearchBar from './StudentSearchBar'
 import { studentMatchesQuery } from '../utils/studentSearch'
+import SessionSummaryBar from './SessionSummaryBar'
 
 export default () => {
     const db = Firebase.firestore()
@@ -467,13 +468,26 @@ export default () => {
                 </div>
             )}
 
-            <div className="flex-shrink-0 relative flex flex-row w-full bg-white h-12 page-header items-center justify-center z-10">
+            <div
+                className={
+                    'flex-shrink-0 relative page-header z-10' +
+                    (displayedGroup !== 'tous' ? ' has-session-fold' : '')
+                }
+            >
                 <span className="page-header-title">{title}</span>
                 {postIt(displayedGroup) ? (
                     <span className="postit-alert-header">
                         <PostItAlert onClick={() => setDisplayPostIt(true)} />
                     </span>
                 ) : null}
+                {displayedGroup !== 'tous' && (
+                    <SessionSummaryBar
+                        uid={currentUser.uid}
+                        studentIds={students.map((student) => student.id)}
+                        slots={crossSlots}
+                        sessionFollow={userIcons.sessionFollow}
+                    />
+                )}
             </div>
 
             <MagicStick
@@ -558,6 +572,7 @@ export default () => {
                                             displayedGroup={displayedGroup}
                                             slots={crossSlots}
                                             smsAvailable={smsAvailable}
+                                            sessionFollow={userIcons.sessionFollow}
                                         />
                                     )
                                 }

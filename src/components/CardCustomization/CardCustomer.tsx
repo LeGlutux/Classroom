@@ -13,6 +13,11 @@ import {
 } from '../../functions'
 import { useIcons } from '../../hooks'
 import { IconMinus, IconPlus } from '../Icons'
+import {
+    SESSION_FOLLOW_OPTIONS,
+    SessionFollowMode,
+    normalizeSessionFollow,
+} from '../../sessionFollow'
 
 interface CardCustomerProps {
     userId: string
@@ -110,13 +115,23 @@ const CrossPreview = ({
 }
 
 export default (props: CardCustomerProps) => {
-    const { icons: userIcons, positiveIcons: userPositiveIcons, loading } =
-        useIcons(props.userId)
+    const {
+        icons: userIcons,
+        positiveIcons: userPositiveIcons,
+        sessionFollow: userSessionFollow,
+        loading,
+    } = useIcons(props.userId)
     const [icons, setIcons] = useState(userIcons)
     const [positiveIcons, setPositiveIcons] = useState(userPositiveIcons)
+    const [sessionFollow, setSessionFollow] = useState(
+        normalizeSessionFollow(userSessionFollow)
+    )
     const [initialIcons, setInitialIcons] = useState(userIcons)
     const [initialPositiveIcons, setInitialPositiveIcons] =
         useState(userPositiveIcons)
+    const [initialSessionFollow, setInitialSessionFollow] = useState(
+        normalizeSessionFollow(userSessionFollow)
+    )
     const [justSaved, setJustSaved] = useState(false)
     const db = firebase.firestore()
 
@@ -126,12 +141,15 @@ export default (props: CardCustomerProps) => {
             userPositiveIcons,
             DEFAULT_POSITIVE_ICONS
         )
+        const nextFollow = normalizeSessionFollow(userSessionFollow)
         setIcons(nextIcons)
         setPositiveIcons(nextPositive)
+        setSessionFollow(nextFollow)
         setInitialIcons(nextIcons)
         setInitialPositiveIcons(nextPositive)
+        setInitialSessionFollow(nextFollow)
         setJustSaved(false)
-    }, [userIcons, userPositiveIcons, loading])
+    }, [userIcons, userPositiveIcons, userSessionFollow, loading])
 
     const loop = (initial: number, change: number) => {
         if (change === 1) return initial === maxValue ? 1 : initial + 1
@@ -184,9 +202,11 @@ export default (props: CardCustomerProps) => {
         db.collection('users').doc(props.userId).update({
             icons,
             positiveIcons,
+            sessionFollow,
         })
         setInitialIcons(icons)
         setInitialPositiveIcons(positiveIcons)
+        setInitialSessionFollow(sessionFollow)
         setJustSaved(true)
         props.setSaveConfirm(true)
     }
@@ -194,7 +214,8 @@ export default (props: CardCustomerProps) => {
     const clickable =
         !justSaved &&
         (!sameIcons(icons, initialIcons) ||
-            !sameIcons(positiveIcons, initialPositiveIcons))
+            !sameIcons(positiveIcons, initialPositiveIcons) ||
+            sessionFollow !== initialSessionFollow)
 
     return (
         <div className="flex flex-col items-center">
@@ -239,6 +260,36 @@ export default (props: CardCustomerProps) => {
                     )
                 }
             />
+            <div className="session-follow-field">
+                <div className="settings-group-label">
+                    Durée du suivi des croix
+                </div>
+                <p className="session-follow-note">
+                    Le résumé de séance compte les croix posées pendant cette
+                    durée. Sur la carte élève, le nombre reste rouge tant que
+                    la croix est récente.
+                </p>
+                <div className="session-follow-options">
+                    {SESSION_FOLLOW_OPTIONS.map((option) => (
+                        <button
+                            type="button"
+                            key={option.value}
+                            className={`session-follow-chip${
+                                sessionFollow === option.value ? ' is-on' : ''
+                            }`}
+                            aria-pressed={sessionFollow === option.value}
+                            onClick={() => {
+                                setSessionFollow(
+                                    option.value as SessionFollowMode
+                                )
+                                setJustSaved(false)
+                            }}
+                        >
+                            {option.shortLabel}
+                        </button>
+                    ))}
+                </div>
+            </div>
             <div
                 className={`settings-btn is-disabled ${
                     clickable ? 'hidden' : ''
