@@ -828,27 +828,30 @@ export default () => {
 
     return (
         <div className="w-full h-screen flex flex-col overflow-hidden app-bg">
-            <div className="flex-shrink-0 relative flex flex-col w-full page-header">
-                <div className="page-header-main relative flex flex-row w-full h-12 items-center justify-center">
-                    <span className="page-header-title seating-page-title">
-                        {title}
-                    </span>
-                    {displayedGroup !== 'tous' && (
-                        <button
-                            type="button"
-                            className={`seating-lock${locked ? ' is-on' : ''}`}
-                            onClick={toggleLock}
-                            aria-label={
-                                locked
-                                    ? 'Déverrouiller le plan'
-                                    : 'Verrouiller le plan'
-                            }
-                            aria-pressed={locked}
-                        >
-                            {locked ? <IconLock /> : <IconUnlock />}
-                        </button>
-                    )}
-                </div>
+            <div
+                className={
+                    'flex-shrink-0 relative page-header' +
+                    (displayedGroup !== 'tous' ? ' has-session-fold' : '')
+                }
+            >
+                <span className="page-header-title seating-page-title">
+                    {title}
+                </span>
+                {displayedGroup !== 'tous' && (
+                    <button
+                        type="button"
+                        className={`seating-lock${locked ? ' is-on' : ''}`}
+                        onClick={toggleLock}
+                        aria-label={
+                            locked
+                                ? 'Déverrouiller le plan'
+                                : 'Verrouiller le plan'
+                        }
+                        aria-pressed={locked}
+                    >
+                        {locked ? <IconLock /> : <IconUnlock />}
+                    </button>
+                )}
                 {displayedGroup !== 'tous' && (
                     <SessionSummaryBar
                         uid={uid}
