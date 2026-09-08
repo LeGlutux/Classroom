@@ -7,6 +7,7 @@ import CrossTab from './CrossTab'
 import ConfirmModal from './ConfirmModal'
 import edit from '../images/edit.png'
 import { handleIcon, buildCrossSlots, CrossSlot } from '../functions'
+import { LegacyIconMap, filterCrossesForSlot } from '../crossIdentity'
 import { titleCasePersonName } from '../utils/names'
 import { patchCachedStudent, removeCachedStudent } from '../utils/cache'
 import {
@@ -46,6 +47,7 @@ export default () => {
     const student = useStudent(currentUser.uid, id)
     if (student === undefined) return <div />
     const slots = buildCrossSlots(icons.icons, icons.positiveIcons)
+    const iconMap = icons.crossIconMap
 
     return (
         <View
@@ -55,6 +57,7 @@ export default () => {
             studentId={id}
             cross={cross}
             slots={slots}
+            iconMap={iconMap}
         />
     )
 }
@@ -66,6 +69,7 @@ const View = ({
     studentId,
     cross,
     slots,
+    iconMap,
 }: {
     currentUser: firebase.User
     crossRefresher: number
@@ -73,14 +77,12 @@ const View = ({
     studentId: string
     cross: firebase.firestore.DocumentData[]
     slots: CrossSlot[]
+    iconMap?: LegacyIconMap
 }) => {
     const { groups } = useGroups(currentUser.uid)
-    const crossFilter = (crossType: string) => {
+    const crossFilter = (slot: CrossSlot) => {
         if (!cross || !Array.isArray(cross)) return []
-        const filtered = cross.filter(
-            (element: firebase.firestore.DocumentData) =>
-                element && element.type === crossType
-        )
+        const filtered = filterCrossesForSlot(cross, slot, iconMap)
         const ordered = filtered.sort((a, b) => {
             const timeA = a.time?.toDate ? a.time.toDate().getTime() : (a.time?.getTime ? a.time.getTime() : a.time)
             const timeB = b.time?.toDate ? b.time.toDate().getTime() : (b.time?.getTime ? b.time.getTime() : b.time)
@@ -328,9 +330,9 @@ const View = ({
             <div className="flex flex-row ml-4 mb-4">
                 <div className="w-4 text-sm font-bold h-4 my-2">S</div>
                 <div className="w-full h-4 flex flex-row justify-evenly my-2 text-xl">
-                    {slots.map((slot) => (
+                    {slots.map((slot, index) => (
                         <div
-                            key={slot.type}
+                            key={slot.polarity + '-' + slot.icon + '-' + index}
                             className="flex flex-row w-full mx-4 items-center justify-center"
                         >
                             <img
@@ -356,6 +358,7 @@ const View = ({
                             index={weeks.length - index}
                             key={index}
                             slots={slots}
+                            iconMap={iconMap}
                         />
                     )
                 })}
@@ -363,12 +366,12 @@ const View = ({
             <div className="flex flex-row ml-4 mb-2">
                 <div className="w-6 text-sm font-bold h-4 my-2" />
                 <div className="w-full h-4 flex flex-row justify-evenly my-2 text-xl">
-                    {slots.map((slot) => (
+                    {slots.map((slot, index) => (
                         <div
-                            key={slot.type}
+                            key={slot.polarity + '-' + slot.icon + '-' + index}
                             className="flex flex-row w-full mx-4 items-center justify-center"
                         >
-                            {crossFilter(slot.type).length}
+                            {crossFilter(slot).length}
                         </div>
                     ))}
                 </div>

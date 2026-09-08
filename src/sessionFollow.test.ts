@@ -1,6 +1,6 @@
 import {
     cardCrossTone,
-    countRecentCrossesOfType,
+    countRecentCrossesForSlot,
     countSessionCrosses,
     normalizeSessionFollow,
     sessionSummaryItems,
@@ -48,8 +48,9 @@ describe('sessionWindowStart', () => {
 
 describe('countSessionCrosses', () => {
     const windowStart = new Date(2026, 8, 8, 12, 0, 0)
+    const iconMap = { behaviour: 1, homework: 2, supply: 3, phone: 8 }
 
-    it('ignore les croix trop anciennes et agrège par type', () => {
+    it('agrège par logo, y compris les anciennes croix sans champ icon', () => {
         const counts = countSessionCrosses(
             [
                 { type: 'behaviour', time: new Date(2026, 8, 8, 13, 0, 0) },
@@ -58,10 +59,19 @@ describe('countSessionCrosses', () => {
                 { type: 'supply', time: new Date(2026, 8, 8, 11, 59, 0) },
                 { type: 'observation' },
                 { time: new Date(2026, 8, 8, 13, 0, 0) },
+                {
+                    icon: 1,
+                    polarity: 'negative',
+                    time: new Date(2026, 8, 8, 13, 10, 0),
+                },
             ],
-            windowStart
+            windowStart,
+            iconMap
         )
-        expect(counts).toEqual({ behaviour: 2, homework: 1 })
+        expect(counts).toEqual({
+            'negative:1': 3,
+            'negative:2': 1,
+        })
     })
 
     it('lit un Timestamp Firestore via toDate', () => {
@@ -72,55 +82,90 @@ describe('countSessionCrosses', () => {
                     time: { toDate: () => new Date(2026, 8, 8, 12, 1, 0) },
                 },
             ],
-            windowStart
+            windowStart,
+            iconMap
         )
-        expect(counts.phone).toBe(1)
+        expect(counts['negative:8']).toBe(1)
     })
 })
 
-describe('countRecentCrossesOfType', () => {
+describe('countRecentCrossesForSlot', () => {
     const windowStart = new Date(2026, 8, 8, 12, 0, 0)
+    const iconMap = { behaviour: 1, homework: 2 }
 
-    it('ne compte que le type demandé dans la fenêtre', () => {
+    it('ne compte que le logo demandé dans la fenêtre', () => {
         const crosses = [
             { type: 'behaviour', time: new Date(2026, 8, 8, 13, 0, 0) },
             { type: 'behaviour', time: new Date(2026, 8, 8, 11, 0, 0) },
             { type: 'homework', time: new Date(2026, 8, 8, 13, 0, 0) },
         ]
-        expect(countRecentCrossesOfType(crosses, 'behaviour', windowStart)).toBe(
-            1
-        )
-        expect(countRecentCrossesOfType(crosses, 'homework', windowStart)).toBe(
-            1
-        )
-        expect(countRecentCrossesOfType(crosses, 'supply', windowStart)).toBe(0)
+        expect(
+            countRecentCrossesForSlot(
+                crosses,
+                { icon: 1, polarity: 'negative' },
+                windowStart,
+                iconMap
+            )
+        ).toBe(1)
+        expect(
+            countRecentCrossesForSlot(
+                crosses,
+                { icon: 2, polarity: 'negative' },
+                windowStart,
+                iconMap
+            )
+        ).toBe(1)
+        expect(
+            countRecentCrossesForSlot(
+                crosses,
+                { icon: 3, polarity: 'negative' },
+                windowStart,
+                iconMap
+            )
+        ).toBe(0)
     })
 })
 
 describe('sessionSummaryItems', () => {
     const slots = [
-        { type: 'behaviour', icon: 15 },
-        { type: 'homework', icon: 20 },
-        { type: 'supply', icon: 13 },
+        { type: 'behaviour', icon: 15, polarity: 'negative' as const },
+        { type: 'homework', icon: 20, polarity: 'negative' as const },
+        { type: 'supply', icon: 13, polarity: 'negative' as const },
     ]
 
     it('garde l’ordre des logos et les totaux de séance', () => {
         const items = sessionSummaryItems(
-            { behaviour: 1, homework: 3 },
+            { 'negative:15': 1, 'negative:20': 3 },
             slots
         )
         expect(items).toEqual([
-            { type: 'behaviour', icon: 15, count: 1 },
-            { type: 'homework', icon: 20, count: 3 },
-            { type: 'supply', icon: 13, count: 0 },
+            {
+                type: 'negative:15',
+                icon: 15,
+                polarity: 'negative',
+                count: 1,
+            },
+            {
+                type: 'negative:20',
+                icon: 20,
+                polarity: 'negative',
+                count: 3,
+            },
+            {
+                type: 'negative:13',
+                icon: 13,
+                polarity: 'negative',
+                count: 0,
+            },
         ])
     })
 
-    it('ajoute à la fin un type hors config s’il a des croix', () => {
-        const items = sessionSummaryItems({ phone: 2 }, slots)
+    it('ajoute à la fin un logo hors config s’il a des croix', () => {
+        const items = sessionSummaryItems({ 'negative:8': 2 }, slots)
         expect(items[items.length - 1]).toEqual({
-            type: 'phone',
-            icon: 0,
+            type: 'negative:8',
+            icon: 8,
+            polarity: 'negative',
             count: 2,
         })
     })
@@ -128,12 +173,22 @@ describe('sessionSummaryItems', () => {
     it('ne garde que les logos avec au moins une croix', () => {
         expect(
             sessionSummaryVisibleItems(
-                sessionSummaryItems({ behaviour: 1, homework: 0 }, slots)
+                sessionSummaryItems(
+                    { 'negative:15': 1, 'negative:20': 0 },
+                    slots
+                )
             )
-        ).toEqual([{ type: 'behaviour', icon: 15, count: 1 }])
+        ).toEqual([
+            {
+                type: 'negative:15',
+                icon: 15,
+                polarity: 'negative',
+                count: 1,
+            },
+        ])
         expect(
             sessionSummaryVisibleItems(
-                sessionSummaryItems({ behaviour: 0 }, slots)
+                sessionSummaryItems({ 'negative:15': 0 }, slots)
             )
         ).toEqual([])
     })

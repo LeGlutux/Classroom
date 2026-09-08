@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { handleIcon } from '../functions'
+import { LegacyIconMap } from '../crossIdentity'
 import { useSessionCrosses } from '../hooks'
 import {
     countSessionCrosses,
@@ -9,7 +10,12 @@ import {
     sessionWindowStart,
 } from '../sessionFollow'
 
-type Slot = { type: string; icon: number; src?: string }
+type Slot = {
+    type: string
+    icon: number
+    polarity: 'negative' | 'positive'
+    src?: string
+}
 
 export type SummaryStripItem = {
     type: string
@@ -72,21 +78,27 @@ export default ({
     studentIds,
     slots,
     sessionFollow,
+    iconMap,
 }: {
     uid: string
     studentIds: string[]
     slots: Slot[]
     sessionFollow?: unknown
+    iconMap?: LegacyIconMap
 }) => {
     const now = useNow(15000)
     const { crosses, ready } = useSessionCrosses(uid, studentIds)
     const mode = normalizeSessionFollow(sessionFollow)
     const visible = useMemo(() => {
         const windowStart = sessionWindowStart(new Date(now), mode)
-        const counts = countSessionCrosses(crosses, windowStart)
+        const counts = countSessionCrosses(crosses, windowStart, iconMap)
         return sessionSummaryVisibleItems(
             sessionSummaryItems(counts, slots).map((item) => {
-                const slot = slots.find((entry) => entry.type === item.type)
+                const slot = slots.find(
+                    (entry) =>
+                        entry.icon === item.icon &&
+                        entry.polarity === item.polarity
+                )
                 const src =
                     (slot && slot.src) || handleIcon(item.icon) || ''
                 return {
@@ -96,7 +108,7 @@ export default ({
                 }
             })
         )
-    }, [crosses, now, mode, slots])
+    }, [crosses, now, mode, slots, iconMap])
 
     const open = visible.length > 0
     const [shown, setShown] = useState(visible)

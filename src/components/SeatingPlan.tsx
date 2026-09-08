@@ -858,6 +858,7 @@ export default () => {
                         studentIds={classStudents.map((student) => student.id)}
                         slots={crossSlots}
                         sessionFollow={userIcons.sessionFollow}
+                        iconMap={userIcons.crossIconMap}
                     />
                 )}
             </div>
@@ -1219,6 +1220,7 @@ export default () => {
                                 refresher={(group) => filterStudents(group)}
                                 displayedGroup={displayedGroup}
                                 slots={crossSlots}
+                                iconMap={userIcons.crossIconMap}
                                 smsAvailable={smsAvailable}
                                 sessionFollow={userIcons.sessionFollow}
                             />

@@ -50,6 +50,8 @@ export const handleIcon = (iconNumber: number) => {
 export const DEFAULT_NEGATIVE_ICONS = [1, 2, 3, 4, 0, 0]
 export const DEFAULT_POSITIVE_ICONS = [0, 0, 0, 0, 0, 0]
 export const MAX_CROSS_ICONS = 6
+// Anciens noms de cases (1re version). Conservés comme alias de position
+// pour les SMS (#x-homework) et la migration des croix déjà enregistrées.
 export const NEGATIVE_CROSS_TYPES = [
     'behaviour',
     'homework',
