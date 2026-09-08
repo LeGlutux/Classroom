@@ -29,6 +29,16 @@ describe('TutorialFakeApp plan et listes', () => {
         expect(getByText('Noah')).toBeTruthy()
     })
 
+    it('montre la durée du suivi sur l’écran des croix', () => {
+        const { getByText } = render(
+            <TutorialFakeApp stage="crosses" onAdvance={() => undefined} />
+        )
+        expect(getByText('Durée du suivi des croix')).toBeTruthy()
+        expect(getByText('2 h')).toBeTruthy()
+        expect(getByText('Journée')).toBeTruthy()
+        expect(getByText('2 h').className).toMatch(/is-on/)
+    })
+
     it('range les croix dans Personnalisation sur le faux écran Paramètres', () => {
         const { getByText } = render(
             <TutorialFakeApp
