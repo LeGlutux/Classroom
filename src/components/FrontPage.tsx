@@ -468,7 +468,15 @@ export default () => {
                 </div>
             )}
 
-            <div className="flex-shrink-0 relative flex flex-row w-full bg-white h-12 page-header items-center justify-center z-10">
+            <div className="flex-shrink-0 relative flex flex-col w-full bg-white page-header z-10">
+                <div className="relative flex flex-row w-full h-12 items-center justify-center">
+                    <span className="page-header-title">{title}</span>
+                    {postIt(displayedGroup) ? (
+                        <span className="postit-alert-header">
+                            <PostItAlert onClick={() => setDisplayPostIt(true)} />
+                        </span>
+                    ) : null}
+                </div>
                 {displayedGroup !== 'tous' && (
                     <SessionSummaryBar
                         uid={currentUser.uid}
@@ -477,18 +485,6 @@ export default () => {
                         sessionFollow={userIcons.sessionFollow}
                     />
                 )}
-                <span
-                    className={`page-header-title${
-                        displayedGroup !== 'tous' ? ' has-session-summary' : ''
-                    }`}
-                >
-                    {title}
-                </span>
-                {postIt(displayedGroup) ? (
-                    <span className="postit-alert-header">
-                        <PostItAlert onClick={() => setDisplayPostIt(true)} />
-                    </span>
-                ) : null}
             </div>
 
             <MagicStick

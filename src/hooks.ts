@@ -188,16 +188,21 @@ export const useSessionCrosses = (
     const [crosses, setCrosses] = useState<firebase.firestore.DocumentData[]>(
         []
     )
+    const [ready, setReady] = useState(!(currentUserId && studentIds && studentIds.length))
     const idsKey = (studentIds || []).slice().sort().join(',')
 
     useEffect(() => {
         if (!currentUserId || !idsKey) {
             setCrosses([])
+            setReady(true)
             return undefined
         }
+        setReady(false)
         const ids = idsKey.split(',')
         const db = Firebase.firestore()
         const byStudent: { [id: string]: firebase.firestore.DocumentData[] } = {}
+        const seen: { [id: string]: boolean } = {}
+        let pending = ids.length
         let cancelled = false
 
         const emit = () => {
@@ -212,6 +217,13 @@ export const useSessionCrosses = (
             setCrosses(all)
         }
 
+        const markSeen = (id: string) => {
+            if (seen[id]) return
+            seen[id] = true
+            pending -= 1
+            if (pending <= 0 && !cancelled) setReady(true)
+        }
+
         const unsubs = ids.map((id) =>
             db
                 .collection('users')
@@ -219,15 +231,23 @@ export const useSessionCrosses = (
                 .collection('eleves')
                 .doc(id)
                 .collection('crosses')
-                .onSnapshot((snap) => {
-                    const list: firebase.firestore.DocumentData[] = []
-                    snap.forEach((doc) => {
-                        const data = doc.data()
-                        if (data) list.push(data)
-                    })
-                    byStudent[id] = list
-                    emit()
-                })
+                .onSnapshot(
+                    (snap) => {
+                        const list: firebase.firestore.DocumentData[] = []
+                        snap.forEach((doc) => {
+                            const data = doc.data()
+                            if (data) list.push(data)
+                        })
+                        byStudent[id] = list
+                        emit()
+                        markSeen(id)
+                    },
+                    () => {
+                        byStudent[id] = []
+                        emit()
+                        markSeen(id)
+                    }
+                )
         )
 
         return () => {
@@ -236,7 +256,7 @@ export const useSessionCrosses = (
         }
     }, [currentUserId, idsKey])
 
-    return crosses
+    return { crosses, ready }
 }
 
 export const useCross = (

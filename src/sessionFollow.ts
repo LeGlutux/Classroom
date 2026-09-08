@@ -98,6 +98,10 @@ export const sessionSummaryItems = (
     return items
 }
 
+export const sessionSummaryVisibleItems = <T extends { count: number }>(
+    items: T[]
+) => items.filter((item) => item.count > 0)
+
 export const countRecentCrossesOfType = (
     crosses: { type?: string; time?: any }[],
     type: string,

@@ -4,6 +4,7 @@ import {
     countSessionCrosses,
     normalizeSessionFollow,
     sessionSummaryItems,
+    sessionSummaryVisibleItems,
     sessionWindowStart,
 } from './sessionFollow'
 
@@ -122,6 +123,19 @@ describe('sessionSummaryItems', () => {
             icon: 0,
             count: 2,
         })
+    })
+
+    it('ne garde que les logos avec au moins une croix', () => {
+        expect(
+            sessionSummaryVisibleItems(
+                sessionSummaryItems({ behaviour: 1, homework: 0 }, slots)
+            )
+        ).toEqual([{ type: 'behaviour', icon: 15, count: 1 }])
+        expect(
+            sessionSummaryVisibleItems(
+                sessionSummaryItems({ behaviour: 0 }, slots)
+            )
+        ).toEqual([])
     })
 })
 
