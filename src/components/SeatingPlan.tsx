@@ -14,6 +14,7 @@ import HomeClassListFilter from './HomeClassListFilter'
 import Student from './Student'
 import Loader from './Loader'
 import { IconClose, IconLock, IconMinus, IconPlus, IconSeatBlank, IconUnlock } from './Icons'
+import SessionSummaryBar from './SessionSummaryBar'
 import addPage from '../images/addPage.png'
 import {
     useGroups,
@@ -826,7 +827,11 @@ export default () => {
     )
 
     return (
-        <div className="w-full h-screen flex flex-col overflow-hidden app-bg">
+        <div
+            className={`w-full h-screen flex flex-col overflow-hidden app-bg${
+                displayedGroup !== 'tous' ? ' has-session-summary' : ''
+            }`}
+        >
             <div className="flex-shrink-0 relative flex flex-row w-full h-12 page-header items-center justify-center">
                 <span className="page-header-title seating-page-title">
                     {title}
@@ -1210,6 +1215,15 @@ export default () => {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {displayedGroup !== 'tous' && (
+                <SessionSummaryBar
+                    uid={uid}
+                    studentIds={classStudents.map((student) => student.id)}
+                    slots={crossSlots}
+                    sessionFollow={userIcons.sessionFollow}
+                />
             )}
 
             <div className="flex-shrink-0 w-full h-12 nav-wrap">

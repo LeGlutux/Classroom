@@ -6,6 +6,7 @@ import {
     DEFAULT_POSITIVE_ICONS,
     padIconList,
 } from './functions'
+import { normalizeSessionFollow } from './sessionFollow'
 import { parseSmsConfig, SmsTemplate } from './sms'
 
 
@@ -279,6 +280,7 @@ export const fetchIcons = async (currentUserId: string) => {
     return {
         icons: padIconList(data?.icons, DEFAULT_NEGATIVE_ICONS),
         positiveIcons: padIconList(data?.positiveIcons, DEFAULT_POSITIVE_ICONS),
+        sessionFollow: normalizeSessionFollow(data?.sessionFollow),
     }
 }
 

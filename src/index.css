@@ -647,6 +647,113 @@ body,
     margin: 0;
 }
 
+.session-follow-field {
+    width: 100%;
+    margin-top: 0.85rem;
+    text-align: left;
+}
+
+.session-follow-note {
+    font-size: 0.82rem;
+    line-height: 1.4;
+    color: var(--tn-muted);
+    margin: 0 0 0.65rem;
+}
+
+.session-follow-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.session-follow-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2rem;
+    padding: 0 0.7rem;
+    border: 1px solid var(--tn-line);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--tn-ink);
+    font-family: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.session-follow-chip.is-on {
+    background: var(--tn-ink);
+    color: #fff;
+    border-color: var(--tn-ink);
+}
+
+.session-summary-bar {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    min-height: 2.5rem;
+    padding: 0.3rem 0.85rem;
+    background: #fff;
+    border-top: 1px solid var(--tn-line);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.session-summary-bar::-webkit-scrollbar {
+    display: none;
+}
+
+.session-summary-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.28rem;
+    flex-shrink: 0;
+}
+
+.session-summary-item img {
+    width: 1.35rem;
+    height: 1.35rem;
+    display: block;
+}
+
+.session-summary-count {
+    font-size: 0.95rem;
+    line-height: 1;
+    color: var(--tn-ink);
+    font-variant-numeric: tabular-nums;
+}
+
+.session-summary-count.is-recent {
+    color: #dc2626;
+}
+
+.session-summary-count.is-multi {
+    font-weight: 700;
+}
+
+.session-summary-empty {
+    font-size: 0.8rem;
+    color: var(--tn-muted);
+}
+
+.has-session-summary .class-filter-bar {
+    bottom: calc(3rem + 2.5rem - 2px);
+}
+
+.has-session-summary .bottom-right-custom {
+    bottom: calc(9rem + 2.5rem);
+}
+
+.has-session-summary .bottom-right-custom2 {
+    bottom: calc(4rem + 2.5rem);
+}
+
+.has-session-summary .bottom-right-custom3 {
+    bottom: calc(14rem + 2.5rem);
+}
+
 .podium-class {
     background: #fff;
     border: 1px solid var(--tn-line);

@@ -33,6 +33,7 @@ import Loader from './Loader'
 import { StudentInterface } from '../interfaces/Student'
 import StudentSearchBar from './StudentSearchBar'
 import { studentMatchesQuery } from '../utils/studentSearch'
+import SessionSummaryBar from './SessionSummaryBar'
 
 export default () => {
     const db = Firebase.firestore()
@@ -451,7 +452,11 @@ export default () => {
     }
 
     return (
-        <div className="w-full h-screen flex flex-col overflow-hidden app-bg">
+        <div
+            className={`w-full h-screen flex flex-col overflow-hidden app-bg${
+                displayedGroup !== 'tous' ? ' has-session-summary' : ''
+            }`}
+        >
             <Updater
                 userId={currentUser.uid}
                 userVersion={user?.version || 0}
@@ -673,6 +678,15 @@ export default () => {
                     }}
                     closeMenu={setMenuOpened}
                     groups={groups}
+                />
+            )}
+
+            {displayedGroup !== 'tous' && (
+                <SessionSummaryBar
+                    uid={currentUser.uid}
+                    studentIds={students.map((student) => student.id)}
+                    slots={crossSlots}
+                    sessionFollow={userIcons.sessionFollow}
                 />
             )}
 

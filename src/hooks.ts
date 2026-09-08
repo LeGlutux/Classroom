@@ -24,6 +24,11 @@ import { parseSmsConfig, SmsTemplate } from './sms'
 import { parseNameColorRules, NameColorRule } from './utils/nameColors'
 import Firebase from './firebase'
 import { isPendingAdminReport } from './functions'
+import {
+    normalizeSessionFollow,
+    SessionFollowMode,
+    SESSION_FOLLOW_DEFAULT,
+} from './sessionFollow'
 import { getCachedData, setCachedData, getCacheKey, invalidateCache } from './utils/cache'
 import { filterStudentsByGroup } from './utils/studentsList'
 
@@ -174,6 +179,64 @@ export const useCrosses = (currentUserId: string, allStudentsIds: string[]) => {
     }
 
     return { crosses, refreshCrosses }
+}
+
+export const useSessionCrosses = (
+    currentUserId: string,
+    studentIds: string[]
+) => {
+    const [crosses, setCrosses] = useState<firebase.firestore.DocumentData[]>(
+        []
+    )
+    const idsKey = (studentIds || []).slice().sort().join(',')
+
+    useEffect(() => {
+        if (!currentUserId || !idsKey) {
+            setCrosses([])
+            return undefined
+        }
+        const ids = idsKey.split(',')
+        const db = Firebase.firestore()
+        const byStudent: { [id: string]: firebase.firestore.DocumentData[] } = {}
+        let cancelled = false
+
+        const emit = () => {
+            if (cancelled) return
+            const all: firebase.firestore.DocumentData[] = []
+            ids.forEach((id) => {
+                const docs = byStudent[id]
+                if (docs) {
+                    for (let i = 0; i < docs.length; i++) all.push(docs[i])
+                }
+            })
+            setCrosses(all)
+        }
+
+        const unsubs = ids.map((id) =>
+            db
+                .collection('users')
+                .doc(currentUserId)
+                .collection('eleves')
+                .doc(id)
+                .collection('crosses')
+                .onSnapshot((snap) => {
+                    const list: firebase.firestore.DocumentData[] = []
+                    snap.forEach((doc) => {
+                        const data = doc.data()
+                        if (data) list.push(data)
+                    })
+                    byStudent[id] = list
+                    emit()
+                })
+        )
+
+        return () => {
+            cancelled = true
+            unsubs.forEach((unsub) => unsub())
+        }
+    }, [currentUserId, idsKey])
+
+    return crosses
 }
 
 export const useCross = (
@@ -756,6 +819,9 @@ export const useIcons = (currentUserId: string) => {
     const [positiveIcons, setPositiveIcons] = useState<number[]>([
         0, 0, 0, 0, 0, 0,
     ])
+    const [sessionFollow, setSessionFollow] = useState<SessionFollowMode>(
+        SESSION_FOLLOW_DEFAULT
+    )
     const [loading, setLoading] = useState(true)
     const isMountedRef = useRef(true)
 
@@ -771,6 +837,7 @@ export const useIcons = (currentUserId: string) => {
             if (isMountedRef.current) {
                 setIcons(data.icons)
                 setPositiveIcons(data.positiveIcons)
+                setSessionFollow(normalizeSessionFollow(data.sessionFollow))
                 setLoading(false)
             }
         }
@@ -781,7 +848,7 @@ export const useIcons = (currentUserId: string) => {
         }
     }, [currentUserId])
 
-    return { icons, positiveIcons, loading }
+    return { icons, positiveIcons, sessionFollow, loading }
 }
 
 /////////////////////////////// Click outside component ////////////////////////////////////
