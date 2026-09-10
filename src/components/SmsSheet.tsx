@@ -300,12 +300,6 @@ export default () => {
                                         <span className="sms-template-choice-title">
                                             {template.title}
                                         </span>
-                                        <span className="sms-template-choice-body">
-                                            {fillSmsTemplate(
-                                                template.body,
-                                                student
-                                            )}
-                                        </span>
                                     </button>
                                 ))}
                             </div>

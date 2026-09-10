@@ -88,6 +88,9 @@ describe('SmsSheet', () => {
 
         await wait(() => getByText('Travail non rendu'))
         expect(queryByText('Ouvrir Messages')).toBeNull()
+        expect(
+            queryByText('Bonjour, Lila n’a pas rendu le travail.')
+        ).toBeNull()
 
         fireEvent.click(getByText('Travail non rendu'))
         expect(getByText('Ouvrir Messages')).toBeTruthy()
