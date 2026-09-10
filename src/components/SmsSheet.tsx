@@ -25,6 +25,7 @@ export default () => {
     const [student, setStudent] = useState<SmsStudent | null>(null)
     const [templates, setTemplates] = useState<SmsTemplate[]>([])
     const [selectedId, setSelectedId] = useState('')
+    const [confirmOpen, setConfirmOpen] = useState(false)
     const [toast, setToast] = useState('')
     const [busy, setBusy] = useState(false)
     const pickerAvailable = canPickContacts()
@@ -49,6 +50,7 @@ export default () => {
         openSheet = (next) => {
             setStudent(next)
             setSelectedId('')
+            setConfirmOpen(false)
         }
         return () => {
             openSheet = null
@@ -71,7 +73,6 @@ export default () => {
                 config.defaultTemplates
             )
             setTemplates(next)
-            setSelectedId(next[0] ? next[0].id : '')
         }
         load()
         return () => {
@@ -92,6 +93,8 @@ export default () => {
         releaseDragLock()
         setStudent(null)
         setBusy(false)
+        setConfirmOpen(false)
+        setSelectedId('')
         dragY.current = 0
     }
 
@@ -185,6 +188,16 @@ export default () => {
         return () => releaseDragLock()
     }, [student])
 
+    const openConfirm = (template: SmsTemplate) => {
+        setSelectedId(template.id)
+        setConfirmOpen(true)
+    }
+
+    const closeConfirm = () => {
+        if (busy) return
+        setConfirmOpen(false)
+    }
+
     const send = async (tel?: string) => {
         if (!student || !selected) return
         setBusy(true)
@@ -277,13 +290,12 @@ export default () => {
                                         type="button"
                                         key={template.id}
                                         className={`sms-template-choice${
-                                            template.id === selectedId
+                                            template.id === selectedId &&
+                                            confirmOpen
                                                 ? ' is-selected'
                                                 : ''
                                         }`}
-                                        onClick={() =>
-                                            setSelectedId(template.id)
-                                        }
+                                        onClick={() => openConfirm(template)}
                                     >
                                         <span className="sms-template-choice-title">
                                             {template.title}
@@ -298,11 +310,35 @@ export default () => {
                                 ))}
                             </div>
                         )}
-                        <div className="sms-sheet-actions">
+                        <Link
+                            className="sms-sheet-link"
+                            to="/create/sms"
+                            onClick={close}
+                        >
+                            Modifier les modèles
+                        </Link>
+                        </div>
+                    </div>
+                </div>
+            ) : null}
+            {student && confirmOpen && selected ? (
+                <div
+                    className="sms-confirm-overlay"
+                    onClick={closeConfirm}
+                >
+                    <div
+                        className="modal-card sms-confirm-card"
+                        onClick={(event) => event.stopPropagation()}
+                    >
+                        <div className="modal-empty">{selected.title}</div>
+                        <div className="sms-confirm-body">
+                            {fillSmsTemplate(selected.body, student)}
+                        </div>
+                        <div className="sms-confirm-actions">
                             <button
                                 type="button"
                                 className="settings-btn"
-                                disabled={!selected || busy}
+                                disabled={busy}
                                 onClick={() => send()}
                             >
                                 Ouvrir Messages
@@ -311,20 +347,20 @@ export default () => {
                                 <button
                                     type="button"
                                     className="settings-btn sms-btn-secondary"
-                                    disabled={!selected || busy}
+                                    disabled={busy}
                                     onClick={sendWithContact}
                                 >
                                     Choisir un parent dans les contacts
                                 </button>
                             ) : null}
-                            <Link
-                                className="sms-sheet-link"
-                                to="/create/sms"
-                                onClick={close}
+                            <button
+                                type="button"
+                                className="modal-btn modal-btn-ghost sms-confirm-cancel"
+                                disabled={busy}
+                                onClick={closeConfirm}
                             >
-                                Modifier les modèles
-                            </Link>
-                        </div>
+                                Annuler
+                            </button>
                         </div>
                     </div>
                 </div>
