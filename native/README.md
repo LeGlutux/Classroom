@@ -12,7 +12,7 @@ Android est le plus simple à publier en premier (compte Play 25 $, pas besoin d
 - Mac + Xcode 16+ pour iOS
 - Page de confidentialité déjà sur le site : https://www.thotnote.org/confidentialite.html
 
-**Avant de soumettre aux stores :** Play (et bientôt Apple) exigent une **suppression de compte dans l’app**. Ce n’est pas encore dans l’interface ; à faire avant d’envoyer la fiche Play.
+**Avant de soumettre aux stores :** Play et App Store veulent un lien de confidentialité (`https://thotnote.org/confidentialite.html`) et une suppression de compte dans l’app (Paramètres → Supprimer le compte).
 
 ## Premier build Android (sur ta machine)
 
