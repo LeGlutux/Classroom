@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Thòt Note</string>
+    <string name="title_activity_main">Thòt Note</string>
+    <string name="package_name">org.thotnote.app</string>
+    <string name="custom_url_scheme">org.thotnote.app</string>
+</resources>

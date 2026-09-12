@@ -205,3 +205,10 @@ export const IconDrop: React.FC<IconProps> = (props) => (
         <path d="M9.6 14.2c.6 1.5 1.8 2.2 3.4 2.2" />
     </Svg>
 )
+
+export const IconShield: React.FC<IconProps> = (props) => (
+    <Svg {...props}>
+        <path d="M12 3.5l7 2.8v5.8c0 4.2-2.8 7.2-7 8.6-4.2-1.4-7-4.4-7-8.6V6.3L12 3.5z" />
+        <path d="M9.2 12.1l1.9 1.9 3.7-3.8" />
+    </Svg>
+)

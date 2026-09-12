@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { isNativeApp } from '../native'
 
 interface BeforeInstallPromptEvent extends Event {
     prompt: () => Promise<void>
@@ -74,6 +75,7 @@ let listeningForInstallPrompt = false
 
 export const listenForInstallPrompt = () => {
     if (typeof window === 'undefined' || listeningForInstallPrompt) return
+    if (isNativeApp()) return
     listeningForInstallPrompt = true
     window.addEventListener('beforeinstallprompt', (event) => {
         event.preventDefault()
@@ -87,6 +89,7 @@ export const listenForInstallPrompt = () => {
 }
 
 export const openInstallApp = async () => {
+    if (isNativeApp()) return
     if (deferredPrompt) {
         try {
             await launchNativePrompt()
@@ -204,7 +207,7 @@ export const InstallAppHost = () => {
         }
     }, [])
 
-    if (!open) return null
+    if (!open || isNativeApp()) return null
 
     const copy = sheetCopy(platform, alreadyInstalled, brave)
     const showNativeButton = canPrompt && !alreadyInstalled

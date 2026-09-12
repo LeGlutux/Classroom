@@ -91,6 +91,9 @@ const SignUp = () => {
                         <div className="auth-alt">
                             <Link to="/">Déjà inscrit ?</Link>
                         </div>
+                        <div className="auth-legal">
+                            <a href="/confidentialite.html">Confidentialité</a>
+                        </div>
                     </form>
                 </div>
             </div>
