@@ -1,0 +1,23 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+      day: monday
+    open-pull-requests-limit: 3
+    groups:
+      npm-patches:
+        patterns:
+          - '*'
+        update-types:
+          - minor
+          - patch
+    ignore:
+      - dependency-name: react
+      - dependency-name: react-dom
+      - dependency-name: react-scripts
+      - dependency-name: firebase
+      - dependency-name: tailwindcss
+      - dependency-name: typescript
+      - dependency-name: react-router-dom
