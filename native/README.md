@@ -1,6 +1,6 @@
 # Coquille native Thòt Note (Play Store + App Store)
 
-Les apps store sont une **coquille Capacitor** : icône, écran de lancement, barre de statut. Elles affichent le site **https://www.thotnote.org**. Un `firebase deploy --only hosting` met donc à jour le site **et** les apps déjà installées, sans nouveau passage store.
+Les apps store sont une **coquille Capacitor** : icône, écran de lancement, barre de statut. Elles affichent le site **https://thotnote.org** (sans `www` : l’autre adresse redirige et vidait la WebView). Un `firebase deploy --only hosting` met donc à jour le site **et** les apps déjà installées, sans nouveau passage store.
 
 Android est le plus simple à publier en premier (compte Play 25 $, pas besoin de Mac). iOS demande un Mac, Xcode et un compte Apple Developer (99 $/an).
 
@@ -56,4 +56,4 @@ Dans `ios/App/App/Info.plist`, `ITSAppUsesNonExemptEncryption` est à `false` (H
 | `npm run native:android` | Ouvre Android Studio |
 | `npm run native:ios` | Ouvre Xcode |
 
-Changer `server.url` dans `capacitor.config.json` vers `http://10.0.2.2:3000` (émulateur Android) ou l’IP locale pour tester le `npm start` dans la coquille. Remettre `https://www.thotnote.org` avant de publier.
+Changer `server.url` dans `capacitor.config.json` vers `http://10.0.2.2:3000` (émulateur Android) ou l’IP locale pour tester le `npm start` dans la coquille. Remettre `https://thotnote.org` avant de publier.

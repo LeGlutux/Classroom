@@ -3,8 +3,15 @@
   "appName": "Thòt Note",
   "webDir": "../build",
   "server": {
-    "url": "https://www.thotnote.org",
-    "androidScheme": "https"
+    "url": "https://thotnote.org",
+    "androidScheme": "https",
+    "allowNavigation": [
+      "thotnote.org",
+      "www.thotnote.org",
+      "*.thotnote.org",
+      "*.firebaseapp.com",
+      "*.googleapis.com"
+    ]
   },
   "plugins": {
     "SplashScreen": {
@@ -18,8 +25,7 @@
       "backgroundColor": "#f4f4f5"
     },
     "Keyboard": {
-      "resize": "body",
-      "resizeOnFullScreen": true
+      "resize": "none"
     }
   },
   "android": {
