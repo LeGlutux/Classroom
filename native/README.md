@@ -19,10 +19,11 @@ Android est le plus simple à publier en premier (compte Play 25 $, pas besoin d
 ```bash
 git checkout master && git pull
 npm install
-cd native && npm install && cd ..
-npm run native:sync
+cd native && npm install && npx cap sync && cd ..
 npm run native:android
 ```
+
+`npx cap sync` (depuis `native/`) est obligatoire avant le premier Gradle : il crée `android/capacitor-cordova-android-plugins/`. Sans ça, Android Studio affiche *Could not read script cordova.variables.gradle*.
 
 Dans Android Studio : laisser Gradle finir, brancher un téléphone ou lancer un émulateur API 24+, Run.
 
