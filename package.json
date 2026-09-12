@@ -40,7 +40,10 @@
     "dev": "node scripts/start.js",
     "build": "node scripts/start.js build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "native:sync": "npm run build && npm --prefix native run sync",
+    "native:android": "npm --prefix native run open:android",
+    "native:ios": "npm --prefix native run open:ios"
   },
   "eslintConfig": {
     "extends": "react-app"

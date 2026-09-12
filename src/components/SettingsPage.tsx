@@ -40,16 +40,19 @@ import {
     IconChat,
     IconPlay,
     IconDrop,
+    IconShield,
 } from './Icons'
 import { isAdminUser } from '../functions'
 import { NoticeBadge } from './NoticeBadge'
 import { openInstallApp } from './InstallApp'
+import { isNativeApp } from '../native'
 import { replayTutorial } from '../tutorial'
 import SmsTemplates from './SmsTemplates'
 import NameColors from './NameColors'
 
 interface SettingsRowProps {
     to?: string
+    href?: string
     onClick?: () => void
     icon: React.ReactNode
     title: string
@@ -60,6 +63,7 @@ interface SettingsRowProps {
 
 const SettingsRow = ({
     to,
+    href,
     onClick,
     icon,
     title,
@@ -89,6 +93,14 @@ const SettingsRow = ({
             <Link to={to} className={className}>
                 {content}
             </Link>
+        )
+    }
+
+    if (href) {
+        return (
+            <a href={href} className={className}>
+                {content}
+            </a>
         )
     }
 
@@ -227,13 +239,21 @@ const SettingsMenu = () => {
                         replayTutorial()
                     }}
                 />
+                {isNativeApp() ? null : (
+                    <SettingsRow
+                        icon={<IconDownload />}
+                        title="Télécharger l’app"
+                        subtitle="Ajouter à l’écran d’accueil du téléphone"
+                        onClick={() => {
+                            openInstallApp()
+                        }}
+                    />
+                )}
                 <SettingsRow
-                    icon={<IconDownload />}
-                    title="Télécharger l’app"
-                    subtitle="Ajouter à l’écran d’accueil du téléphone"
-                    onClick={() => {
-                        openInstallApp()
-                    }}
+                    href="/confidentialite.html"
+                    icon={<IconShield />}
+                    title="Confidentialité"
+                    subtitle="Données du compte et de la classe"
                 />
                 <SettingsRow
                     to="/create/signaler"

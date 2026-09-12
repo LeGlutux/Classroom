@@ -542,6 +542,43 @@ body,
     cursor: pointer;
 }
 
+.auth-legal {
+    margin-top: 0.75rem;
+    text-align: center;
+    font-size: 0.8rem;
+}
+
+.auth-legal a {
+    color: var(--tn-muted);
+    text-decoration: underline;
+}
+
+html.is-native-app {
+    --tn-safe-top: env(safe-area-inset-top, 0px);
+    --tn-safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html.is-native-app .auth-install {
+    display: none !important;
+}
+
+html.is-native-app .auth-page {
+    padding-top: calc(1.5rem + var(--tn-safe-top));
+    padding-bottom: calc(1.5rem + var(--tn-safe-bottom));
+}
+
+html.is-native-app .page-header {
+    padding-top: var(--tn-safe-top);
+    min-height: calc(3rem + var(--tn-safe-top));
+    height: auto !important;
+}
+
+html.is-native-app .nav-wrap {
+    padding-bottom: var(--tn-safe-bottom);
+    min-height: calc(3rem + var(--tn-safe-bottom));
+    height: auto !important;
+}
+
 .modal-field {
     display: flex;
     flex-direction: column;

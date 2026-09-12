@@ -25,6 +25,9 @@ yarn-error.log*
 # tailwind
 /src/tailwind.css
 ui-debug.log
+
+# Capacitor (coquille store)
+/native/node_modules
 database-debug.log
 firebase-debug.log
 firestore-debug.log

@@ -6,6 +6,7 @@ import lucienEtMonstre from '../images/lucienEtMonstre.png'
 import { IconLock, IconMail } from './Icons'
 import Loader from './Loader'
 import { openInstallApp } from './InstallApp'
+import { isNativeApp } from '../native'
 
 const Login = () => {
     const history = useHistory()
@@ -91,15 +92,20 @@ const Login = () => {
                             <div className="auth-alt">
                                 <Link to="/signup">Créer un compte</Link>
                             </div>
-                            <button
-                                type="button"
-                                className="auth-install"
-                                onClick={() => {
-                                    openInstallApp()
-                                }}
-                            >
-                                Télécharger l’app
-                            </button>
+                            {isNativeApp() ? null : (
+                                <button
+                                    type="button"
+                                    className="auth-install"
+                                    onClick={() => {
+                                        openInstallApp()
+                                    }}
+                                >
+                                    Télécharger l’app
+                                </button>
+                            )}
+                            <div className="auth-legal">
+                                <a href="/confidentialite.html">Confidentialité</a>
+                            </div>
                         </form>
                     </div>
                 </div>
