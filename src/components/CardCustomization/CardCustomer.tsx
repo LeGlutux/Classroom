@@ -290,16 +290,10 @@ export default (props: CardCustomerProps) => {
                     ))}
                 </div>
             </div>
-            <div
-                className={`settings-btn is-disabled ${
-                    clickable ? 'hidden' : ''
-                }`}
-            >
-                Enregistrer les modifications
-            </div>
             <button
                 type="button"
-                className={`settings-btn ${clickable ? '' : 'hidden'}`}
+                className="settings-btn"
+                disabled={!clickable}
                 onClick={handleSave}
             >
                 Enregistrer les modifications
