@@ -279,6 +279,10 @@ body,
     background: #fff;
 }
 
+.modal-field .auth-field {
+    margin-top: 0;
+}
+
 .auth-field .tn-icon {
     width: 1.15rem;
     height: 1.15rem;
@@ -576,6 +580,13 @@ html.is-native-app .page-header {
 html.is-native-app,
 html.is-native-app * {
     -webkit-touch-callout: none;
+}
+
+.modal-error {
+    margin-top: 0.75rem;
+    color: #dc2626;
+    font-size: 0.88rem;
+    line-height: 1.35;
 }
 
 .modal-field {

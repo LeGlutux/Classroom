@@ -17,6 +17,7 @@ import CardCustomer from './CardCustomization/CardCustomer'
 import FileUploader from './FileUploader'
 import PeriodeFilter from './PeriodeFilter'
 import ConfirmModal from './ConfirmModal'
+import DeleteAccountModal from './DeleteAccountModal'
 import Podium from './Podium'
 import ReportProblem from './ReportProblem'
 import AdminTools, {
@@ -122,6 +123,7 @@ const SettingsMenu = () => {
     const { groups, loading } = useGroups(uid)
     const history = useHistory()
     const [needClass, setNeedClass] = useState(false)
+    const [deleteAccount, setDeleteAccount] = useState(false)
     const adminConnected = isAdminUser(currentUser)
     const pendingReports = usePendingReportCount(adminConnected)
     if (currentUser === null) return <div />
@@ -141,6 +143,10 @@ const SettingsMenu = () => {
                 textBox="Il faut d’abord créer une classe"
                 subTextBox="Ajoutez une ou plusieurs classes, puis vous pourrez y inscrire des élèves."
                 confirmLabel="Créer une classe"
+            />
+            <DeleteAccountModal
+                open={deleteAccount}
+                onClose={() => setDeleteAccount(false)}
             />
             <div className="settings-profile">
                 <div className="settings-avatar">{initial}</div>
@@ -281,6 +287,13 @@ const SettingsMenu = () => {
                     icon={<IconLogout />}
                     title="Se déconnecter"
                     onClick={() => firebase.auth().signOut()}
+                />
+                <SettingsRow
+                    logout
+                    icon={<IconTrash />}
+                    title="Supprimer le compte"
+                    subtitle="Effacer classes, élèves et le login"
+                    onClick={() => setDeleteAccount(true)}
                 />
             </div>
         </SettingsLayout>
