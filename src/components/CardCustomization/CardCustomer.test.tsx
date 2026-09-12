@@ -63,4 +63,11 @@ describe('CardCustomer durée du suivi', () => {
         expect(mockUpdate.mock.calls[0][0].sessionFollow).toBe('30')
         expect(setSaveConfirm).toHaveBeenCalledWith(true)
     })
+
+    it('n’affiche qu’un seul bouton d’enregistrement', () => {
+        const { getAllByText } = render(
+            <CardCustomer userId="user" setSaveConfirm={jest.fn()} />
+        )
+        expect(getAllByText('Enregistrer les modifications')).toHaveLength(1)
+    })
 })
