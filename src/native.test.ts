@@ -31,4 +31,15 @@ describe('isNativeApp', () => {
             true
         )
     })
+
+    it('bloque le menu contextuel du WebView', () => {
+        ;(window as any).Capacitor = { isNativePlatform: () => true }
+        markNativeShell()
+        const event = new MouseEvent('contextmenu', {
+            bubbles: true,
+            cancelable: true,
+        })
+        document.dispatchEvent(event)
+        expect(event.defaultPrevented).toBe(true)
+    })
 })

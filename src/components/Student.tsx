@@ -64,21 +64,49 @@ const CrossButton: React.FC<CrossButtonProps> = ({ src, onAdd, onRemove }) => {
     const longPress = useRef(false)
     const timer = useRef<number | null>(null)
 
-    const start = () => {
+    const clearTimer = () => {
+        if (timer.current !== null) {
+            window.clearTimeout(timer.current)
+            timer.current = null
+        }
+    }
+
+    const start = (event: React.PointerEvent<HTMLButtonElement>) => {
+        event.stopPropagation()
         longPress.current = false
+        try {
+            event.currentTarget.setPointerCapture(event.pointerId)
+        } catch (error) {
+            // Older browsers without setPointerCapture.
+        }
+        clearTimer()
         timer.current = window.setTimeout(() => {
             longPress.current = true
             onRemove()
-            if (typeof navigator !== 'undefined' && navigator.vibrate) {
-                navigator.vibrate(12)
+            try {
+                const selection = window.getSelection()
+                if (selection) selection.removeAllRanges()
+            } catch (error) {
+                // WebView without Selection API.
+            }
+            try {
+                if (typeof navigator !== 'undefined' && navigator.vibrate) {
+                    navigator.vibrate(12)
+                }
+            } catch (error) {
+                // Vibration can throw in a WebView.
             }
         }, 500)
     }
 
-    const cancel = () => {
-        if (timer.current !== null) {
-            window.clearTimeout(timer.current)
-            timer.current = null
+    const cancel = (event: React.PointerEvent<HTMLButtonElement>) => {
+        clearTimer()
+        try {
+            if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+                event.currentTarget.releasePointerCapture(event.pointerId)
+            }
+        } catch (error) {
+            // Capture already released.
         }
     }
 
@@ -88,10 +116,14 @@ const CrossButton: React.FC<CrossButtonProps> = ({ src, onAdd, onRemove }) => {
             className="w-8 h-8 lg:w-10 lg:h-10 xl:w-10 xl:h-10 rounded-full touch-manipulation tap-target-44 flex items-center justify-center student-cross-btn"
             onPointerDown={start}
             onPointerUp={cancel}
-            onPointerLeave={cancel}
             onPointerCancel={cancel}
-            onContextMenu={(event) => event.preventDefault()}
+            onLostPointerCapture={clearTimer}
+            onContextMenu={(event) => {
+                event.preventDefault()
+                event.stopPropagation()
+            }}
             onClick={(event) => {
+                event.stopPropagation()
                 if (longPress.current) {
                     event.preventDefault()
                     longPress.current = false
@@ -100,7 +132,7 @@ const CrossButton: React.FC<CrossButtonProps> = ({ src, onAdd, onRemove }) => {
                 onAdd()
             }}
         >
-            <img className="student-cross-icon" src={src} alt="" />
+            <img className="student-cross-icon" src={src} alt="" draggable={false} />
         </button>
     )
 }

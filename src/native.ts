@@ -17,7 +17,14 @@ export const isNativeApp = () => {
     }
 }
 
+let contextMenuBlocked = false
+
 export const markNativeShell = () => {
     if (typeof document === 'undefined' || !isNativeApp()) return
     document.documentElement.classList.add('is-native-app')
+    if (contextMenuBlocked) return
+    contextMenuBlocked = true
+    document.addEventListener('contextmenu', (event) => {
+        event.preventDefault()
+    })
 }

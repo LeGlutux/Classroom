@@ -573,10 +573,9 @@ html.is-native-app .page-header {
     height: auto !important;
 }
 
-html.is-native-app .nav-wrap {
-    padding-bottom: var(--tn-safe-bottom);
-    min-height: calc(3rem + var(--tn-safe-bottom));
-    height: auto !important;
+html.is-native-app,
+html.is-native-app * {
+    -webkit-touch-callout: none;
 }
 
 .modal-field {
@@ -1675,6 +1674,9 @@ html.is-native-app .nav-wrap {
     overflow: hidden;
     padding: 0.7rem 0.8rem 0.45rem;
     animation: tn-rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .student-card.cross-customize-card {
