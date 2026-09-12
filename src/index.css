@@ -3332,7 +3332,7 @@ body,
     background: #fff;
     border: 1px solid var(--tn-line);
     border-radius: 10px;
-    padding: 0.75rem 0.85rem;
+    padding: 0.85rem 0.9rem;
     margin-bottom: 0.5rem;
     cursor: pointer;
     font-family: inherit;
@@ -3374,6 +3374,58 @@ body,
     text-align: center;
     margin-top: 0.85rem;
     font-size: 0.88rem;
+}
+
+.sms-confirm-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 90;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem 0.85rem;
+    background: rgba(24, 24, 27, 0.42);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+}
+
+.sms-confirm-card {
+    max-height: 86vh;
+    overflow: auto;
+}
+
+.sms-confirm-body {
+    margin-top: 0.85rem;
+    padding: 0.85rem 0.9rem;
+    border: 1px solid var(--tn-line);
+    border-radius: 10px;
+    background: #fafafa;
+    font-size: 0.92rem;
+    line-height: 1.45;
+    color: var(--tn-ink);
+    white-space: pre-wrap;
+    text-align: left;
+}
+
+.sms-confirm-actions {
+    margin-top: 1rem;
+}
+
+.sms-confirm-actions .settings-btn {
+    margin-top: 0.55rem;
+}
+
+.sms-confirm-actions .settings-btn:first-child {
+    margin-top: 0;
+}
+
+.sms-confirm-cancel {
+    display: block;
+    width: 100%;
+    margin: 0.35rem 0 0;
 }
 
 .sms-btn-secondary {
