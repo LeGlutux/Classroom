@@ -27,12 +27,63 @@ npm run native:android
 
 Dans Android Studio : laisser Gradle finir, brancher un téléphone ou lancer un émulateur API 24+, Run.
 
-Pour un **AAB** Play Store : Build → Generate Signed Bundle / APK.
+## Publier sur le Play Store
 
-1. Créer un keystore (`thotnote-upload.jks`) et le garder hors git, en lieu sûr.
-2. `applicationId` : `org.thotnote.app`
-3. Remplir la fiche Play : nom **Thòt Note**, captures téléphone, texte court, politique de confidentialité `https://www.thotnote.org/confidentialite.html`, catégorie Éducation.
-4. Copier `native/assetlinks.example.json` vers `public/.well-known/assetlinks.json` avec l’empreinte SHA-256 du keystore (ou de l’App Signing Google), puis redéployer le site.
+Textes, Data safety et captures : **`native/play/FICHE.md`**. Bannière : `native/play/feature-graphic.png`.
+
+### 1. Compte et identifiants
+
+1. [Play Console](https://play.google.com/console) (25 $ une fois) → Créer une application **Thòt Note**.
+2. Crée un compte démo (ex. `demo.thotnote@gmail.com`) avec une petite classe, pour la relecture Google.
+
+### 2. Keystore (une fois, à garder à vie)
+
+Dans le Terminal, **hors du repo** :
+
+```bash
+keytool -genkeypair -v \
+  -keystore "$HOME/Documents/thotnote-upload.jks" \
+  -keyalg RSA -keysize 2048 -validity 10000 \
+  -alias thotnote \
+  -dname "CN=Thot Note, O=Thot Note, L=France, C=FR"
+```
+
+Note les deux mots de passe. Perdre ce fichier = impossible de mettre l’app à jour.
+
+```bash
+cd native/android
+cp keystore.properties.example keystore.properties
+```
+
+Édite `keystore.properties` : chemin du `.jks` et les mots de passe. Ce fichier est gitignoré.
+
+### 3. Bundle (.aab)
+
+```bash
+cd ~/Github/Classroom
+git checkout master && git pull
+cd native && npx cap sync android
+cd android && ./gradlew bundleRelease
+```
+
+Le fichier : `native/android/app/build/outputs/bundle/release/app-release.aab`
+
+Play Console → Production (ou test interne d’abord, recommandé) → Créer une version → importer l’AAB.
+
+### 4. Fiche
+
+Copie `native/play/FICHE.md`. Confidentialité : `https://thotnote.org/confidentialite.html`. Suppression : `https://thotnote.org/supprimer-compte.html`.
+
+Déploie le site **avant** d’envoyer la fiche, pour que ces pages existent :
+
+```bash
+cd ~/Github/Classroom
+git checkout master && git pull
+npm run build
+firebase deploy --only hosting
+```
+
+`applicationId` : `org.thotnote.app`
 
 ## Premier build iOS (sur un Mac)
 
