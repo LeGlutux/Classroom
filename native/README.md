@@ -68,6 +68,8 @@ cd android && ./gradlew bundleRelease
 
 Le fichier : `native/android/app/build/outputs/bundle/release/app-release.aab`
 
+Play exige **API 36** (`variables.gradle`). Sans ça, la Console refuse le bundle.
+
 Play Console → Production (ou test interne d’abord, recommandé) → Créer une version → importer l’AAB.
 
 ### 4. Fiche
