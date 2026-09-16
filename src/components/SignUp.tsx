@@ -32,7 +32,6 @@ const SignUp = () => {
                         classes: [] as string[],
                         periodes: [new Date()],
                         runningPeriode: 1 as number,
-                        version: 0,
                         icons: [1, 2, 3, 4, 0, 0],
                         positiveIcons: [0, 0, 0, 0, 0, 0],
                         postIt: [],
