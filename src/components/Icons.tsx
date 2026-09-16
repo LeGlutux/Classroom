@@ -115,6 +115,14 @@ export const IconCheck: React.FC<IconProps> = (props) => (
     </Svg>
 )
 
+export const IconAppel: React.FC<IconProps> = (props) => (
+    <Svg {...props}>
+        <rect x="5.2" y="4.2" width="13.6" height="15.6" rx="1.6" />
+        <path d="M8.2 8.2h7.6M8.2 11.5h7.6M8.2 14.8h4.8" />
+        <path d="M15.2 16.6l1.2 1.2 2.4-2.6" />
+    </Svg>
+)
+
 export const IconClose: React.FC<IconProps> = (props) => (
     <Svg {...props}>
         <path d="M6.5 6.5l11 11M17.5 6.5l-11 11" />

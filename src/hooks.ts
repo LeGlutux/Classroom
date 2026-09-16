@@ -401,6 +401,7 @@ export const useStudents = (currentUserId: string) => {
                             selected: data.selected,
                             comment: data.comment,
                             crosses: data.crosses || [],
+                            pronoteId: data.pronoteId || undefined,
                         } as StudentInterface;
                     });
 

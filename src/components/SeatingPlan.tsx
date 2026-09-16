@@ -5,7 +5,7 @@ import React, {
     useRef,
     useState,
 } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { AuthContext } from '../Auth'
 import Firebase from '../firebase'
 import NavBar from './NavBar'
@@ -13,8 +13,24 @@ import ClassListFilter from './ClassListFilter'
 import HomeClassListFilter from './HomeClassListFilter'
 import Student from './Student'
 import Loader from './Loader'
-import { IconClose, IconLock, IconMinus, IconPlus, IconSeatBlank, IconUnlock } from './Icons'
+import AppelConfirmModal from './AppelConfirmModal'
+import {
+    IconAppel,
+    IconCheck,
+    IconClose,
+    IconLock,
+    IconMinus,
+    IconPlus,
+    IconSeatBlank,
+    IconUnlock,
+} from './Icons'
 import SessionSummaryBar from './SessionSummaryBar'
+import {
+    buildAppelPayload,
+    currentLessonLabel,
+    submitPronoteAppel,
+} from '../pronote/appel'
+import { parsePronoteLink, PronoteLink } from '../pronote/link'
 import addPage from '../images/addPage.png'
 import {
     useGroups,
@@ -128,6 +144,7 @@ const pointerDistance = (
 
 export default () => {
     const { currentUser } = useContext(AuthContext)
+    const history = useHistory()
     const uid = currentUser ? currentUser.uid : ''
     const { students, loading: studentsLoading, filterStudents } = useStudents(
         uid
@@ -163,6 +180,16 @@ export default () => {
         null
     )
     const [plansReady, setPlansReady] = useState(false)
+    const [appelMode, setAppelMode] = useState(false)
+    const [absentIds, setAbsentIds] = useState<{ [id: string]: true }>({})
+    const [appelConfirmOpen, setAppelConfirmOpen] = useState(false)
+    const [appelSubmitting, setAppelSubmitting] = useState(false)
+    const [appelError, setAppelError] = useState<string | null>(null)
+    const [appelNeedLink, setAppelNeedLink] = useState(false)
+    const [appelToast, setAppelToast] = useState('')
+    const [pronoteLink, setPronoteLink] = useState<PronoteLink | null>(null)
+    const appelModeRef = useRef(false)
+    appelModeRef.current = appelMode
 
     const canvasRef = useRef<HTMLDivElement>(null)
     const plansRef = useRef<StoredPlans>({})
@@ -245,6 +272,9 @@ export default () => {
                     plansRef.current = parseStoredPlans(
                         data ? data.seatingPlans : undefined
                     )
+                    setPronoteLink(
+                        parsePronoteLink(data ? data.pronoteLink : null)
+                    )
                     setPlansReady(true)
                 },
                 () => {
@@ -252,6 +282,20 @@ export default () => {
                 }
             )
     }, [uid])
+
+    useEffect(() => {
+        if (!appelToast) return
+        const id = window.setTimeout(() => setAppelToast(''), 3600)
+        return () => window.clearTimeout(id)
+    }, [appelToast])
+
+    useEffect(() => {
+        setAppelMode(false)
+        setAbsentIds({})
+        setAppelConfirmOpen(false)
+        setAppelError(null)
+        setAppelNeedLink(false)
+    }, [displayedGroup])
 
     useEffect(() => {
         if (studentsLoading) return
@@ -425,10 +469,114 @@ export default () => {
     }
 
     const openStudentModal = (studentId: string) => {
+        if (appelModeRef.current) return
         const student = classStudentsRef.current.find(
             (item) => item.id === studentId
         )
         if (student) setModalStudent(student)
+    }
+
+    const toggleAbsent = (studentId: string) => {
+        if (isEmptySeatId(studentId)) return
+        setAbsentIds((prev) => {
+            const next = { ...prev }
+            if (next[studentId]) delete next[studentId]
+            else next[studentId] = true
+            return next
+        })
+    }
+
+    const exitAppelMode = () => {
+        setAppelMode(false)
+        setAbsentIds({})
+        setAppelConfirmOpen(false)
+        setAppelError(null)
+        setAppelNeedLink(false)
+        setAppelSubmitting(false)
+    }
+
+    const enterAppelMode = () => {
+        cancelPendingModal()
+        lastEmptyTapRef.current = null
+        setModalStudent(null)
+        setAbsentIds({})
+        setAppelError(null)
+        setAppelNeedLink(false)
+        setAppelConfirmOpen(false)
+        setAppelMode(true)
+    }
+
+    const onAppelButtonClick = () => {
+        if (!appelMode) {
+            enterAppelMode()
+            return
+        }
+        setAppelError(null)
+        setAppelNeedLink(false)
+        setAppelConfirmOpen(true)
+    }
+
+    const confirmAppel = async () => {
+        if (appelNeedLink) {
+            history.push('/create/pronote-link')
+            return
+        }
+        const absents = classStudentsRef.current
+            .filter((student) => absentIds[student.id])
+            .map((student) => ({
+                id: student.id,
+                name: student.name,
+                surname: student.surname,
+                pronoteId: student.pronoteId,
+            }))
+        const presentCount = Math.max(
+            0,
+            classStudentsRef.current.length - absents.length
+        )
+        const payload = buildAppelPayload(
+            displayedGroupRef.current,
+            absents,
+            presentCount
+        )
+        setAppelSubmitting(true)
+        setAppelError(null)
+        const result = await submitPronoteAppel({
+            link: pronoteLink,
+            payload,
+            recordAttempt: async (recorded, link) => {
+                if (!uid) return
+                await Firebase.firestore()
+                    .collection('users')
+                    .doc(uid)
+                    .collection('appels')
+                    .add({
+                        classe: recorded.classe,
+                        at: recorded.at,
+                        lessonLabel: currentLessonLabel(recorded.at),
+                        absentIds: recorded.absents.map((s) => s.id),
+                        absents: recorded.absents,
+                        presentCount: recorded.presentCount,
+                        pronoteUrl: link.url,
+                        pronoteUsername: link.username,
+                        createdAt: Date.now(),
+                    })
+            },
+        })
+        setAppelSubmitting(false)
+        if (result.status === 'need_link') {
+            setAppelNeedLink(true)
+            setAppelError(
+                'Liez d’abord votre compte professeur Pronote dans les paramètres.'
+            )
+            return
+        }
+        if (result.status === 'error') {
+            setAppelNeedLink(false)
+            setAppelError(result.message)
+            return
+        }
+        setAppelToast('Appel validé · ' + result.lessonLabel)
+        exitAppelMode()
     }
 
     const onCanvasPointerDown = (event: React.PointerEvent<HTMLElement>) => {
@@ -495,7 +643,7 @@ export default () => {
             cancelPendingModal()
             return
         }
-        if (lockedRef.current) {
+        if (lockedRef.current || appelModeRef.current) {
             panRef.current = {
                 pointerId: event.pointerId,
                 x: event.clientX,
@@ -678,8 +826,16 @@ export default () => {
             return
         }
         lastEmptyTapRef.current = tap
-        if (seatId && lockedRef.current && !isEmptySeatId(seatId)) {
+        if (
+            seatId &&
+            !isEmptySeatId(seatId) &&
+            (lockedRef.current || appelModeRef.current)
+        ) {
             cancelPendingModal()
+            if (appelModeRef.current) {
+                toggleAbsent(seatId)
+                return
+            }
             pendingModalRef.current = window.setTimeout(() => {
                 pendingModalRef.current = null
                 openStudentModal(seatId)
@@ -827,16 +983,36 @@ export default () => {
     )
 
     return (
-        <div className="w-full h-screen flex flex-col overflow-hidden app-bg">
+        <div className="w-full h-screen flex flex-col overflow-hidden app-bg relative">
             <div
                 className={
                     'flex-shrink-0 relative page-header' +
                     (displayedGroup !== 'tous' ? ' has-session-fold' : '')
                 }
             >
-                <span className="page-header-title seating-page-title">
+                <span
+                    className={
+                        'page-header-title seating-page-title' +
+                        (displayedGroup !== 'tous' ? ' has-appel' : '')
+                    }
+                >
                     {title}
                 </span>
+                {displayedGroup !== 'tous' && (
+                    <button
+                        type="button"
+                        className={`seating-appel${appelMode ? ' is-on' : ''}`}
+                        onClick={onAppelButtonClick}
+                        aria-label={
+                            appelMode
+                                ? 'Confirmer l’appel Pronote'
+                                : 'Lancer le mode appel'
+                        }
+                        aria-pressed={appelMode}
+                    >
+                        {appelMode ? <IconCheck /> : <IconAppel />}
+                    </button>
+                )}
                 {displayedGroup !== 'tous' && (
                     <button
                         type="button"
@@ -848,6 +1024,7 @@ export default () => {
                                 : 'Verrouiller le plan'
                         }
                         aria-pressed={locked}
+                        disabled={appelMode}
                     >
                         {locked ? <IconLock /> : <IconUnlock />}
                     </button>
@@ -1007,16 +1184,23 @@ export default () => {
                             if (!pos) return null
                             const isDragging = draggingId === student.id
                             const isSwap = swapTarget === student.id
+                            const isAbsent = !!absentIds[student.id]
                             return (
                                 <button
                                     type="button"
                                     key={student.id}
                                     className={
                                         'seating-seat' +
-                                        (locked ? ' is-locked' : '') +
+                                        (locked || appelMode
+                                            ? ' is-locked'
+                                            : '') +
                                         (isDragging ? ' is-dragging' : '') +
                                         (isSwap ? ' is-swap' : '') +
-                                        (student.highlight ? ' is-highlight' : '')
+                                        (student.highlight
+                                            ? ' is-highlight'
+                                            : '') +
+                                        (appelMode ? ' is-appel' : '') +
+                                        (isAbsent ? ' is-absent' : '')
                                     }
                                     style={{
                                         transform:
@@ -1029,8 +1213,12 @@ export default () => {
                                         height: CARD_H,
                                     }}
                                     aria-label={
-                                        student.surname + ' ' + student.name
+                                        student.surname +
+                                        ' ' +
+                                        student.name +
+                                        (isAbsent ? ' (absent)' : '')
                                     }
+                                    aria-pressed={appelMode ? isAbsent : undefined}
                                     onPointerDown={(event) =>
                                         onSeatPointerDown(event, student.id)
                                     }
@@ -1039,6 +1227,15 @@ export default () => {
                                     onPointerCancel={onPointerUp}
                                     onClick={(event) => {
                                         event.stopPropagation()
+                                        if (appelModeRef.current) {
+                                            if (skipSeatClickRef.current) {
+                                                skipSeatClickRef.current = false
+                                                return
+                                            }
+                                            if (event.detail !== 0) return
+                                            toggleAbsent(student.id)
+                                            return
+                                        }
                                         if (!lockedRef.current) return
                                         if (skipSeatClickRef.current) {
                                             skipSeatClickRef.current = false
@@ -1074,7 +1271,9 @@ export default () => {
                                     key={id}
                                     className={
                                         'seating-seat is-empty' +
-                                        (locked ? ' is-locked' : '') +
+                                        (locked || appelMode
+                                            ? ' is-locked'
+                                            : '') +
                                         (isDragging ? ' is-dragging' : '') +
                                         (isSwap ? ' is-swap' : '')
                                     }
@@ -1099,7 +1298,7 @@ export default () => {
                                         event.preventDefault()
                                     }
                                 >
-                                    {!locked ? (
+                                    {!locked && !appelMode ? (
                                         <span
                                             className="seating-blank-remove"
                                             role="button"
@@ -1126,7 +1325,7 @@ export default () => {
                             (showClassFilter ? '' : ' is-flush')
                         }
                     >
-                        {!locked ? (
+                        {!locked && !appelMode ? (
                             <button
                                 type="button"
                                 className="seating-add-blank"
@@ -1228,6 +1427,46 @@ export default () => {
                     </div>
                 </div>
             )}
+
+            <AppelConfirmModal
+                open={appelConfirmOpen}
+                classe={displayedGroup}
+                lessonLabel={currentLessonLabel()}
+                absents={classStudents
+                    .filter((student) => absentIds[student.id])
+                    .map((student) => ({
+                        id: student.id,
+                        name: student.name,
+                        surname: student.surname,
+                        pronoteId: student.pronoteId,
+                    }))}
+                submitting={appelSubmitting}
+                error={appelError}
+                needLink={appelNeedLink}
+                onClose={() => {
+                    if (appelSubmitting) return
+                    setAppelConfirmOpen(false)
+                    setAppelError(null)
+                    setAppelNeedLink(false)
+                }}
+                onQuitMode={() => {
+                    if (appelSubmitting) return
+                    exitAppelMode()
+                }}
+                onConfirm={confirmAppel}
+            />
+
+            {appelToast ? (
+                <div className="settings-toast seating-appel-toast">
+                    {appelToast}
+                </div>
+            ) : null}
+
+            {appelMode && displayedGroup !== 'tous' ? (
+                <div className="seating-appel-hint" aria-live="polite">
+                    Touchez les absents, puis validez
+                </div>
+            ) : null}
 
             <div className="flex-shrink-0 w-full h-12 nav-wrap">
                 <NavBar activeMenu="plan" onHomeClick={handleHomeClick} />

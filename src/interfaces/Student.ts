@@ -7,4 +7,6 @@ export interface StudentInterface {
     selected: boolean;
     comment?: string;
     crosses?: string[];
+    /** Identifiant Pronote / INE quand disponible (matching appel). */
+    pronoteId?: string;
 }

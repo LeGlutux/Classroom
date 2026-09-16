@@ -4005,6 +4005,37 @@ html.is-native-app * {
     padding: 0 2.75rem;
 }
 
+.seating-page-title.has-appel {
+    padding: 0 5.4rem;
+}
+
+.seating-appel {
+    position: absolute;
+    left: 0.35rem;
+    top: 1.5rem !important;
+    transform: translateY(-50%) !important;
+    z-index: 12;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--tn-muted);
+}
+
+.seating-appel.is-on {
+    color: #fff;
+    background: #4e7a5c;
+}
+
+.seating-appel.is-on .tn-icon {
+    stroke-width: 2.1;
+}
+
 .seating-lock {
     position: absolute;
     right: 0.35rem;
@@ -4021,6 +4052,10 @@ html.is-native-app * {
     border-radius: 8px;
     background: transparent;
     color: var(--tn-muted);
+}
+
+.seating-lock:disabled {
+    opacity: 0.35;
 }
 
 .seating-lock.is-on {
@@ -4125,6 +4160,20 @@ html.is-native-app * {
 
 .seating-seat.is-highlight {
     color: #e53e3e;
+}
+
+.seating-seat.is-appel {
+    cursor: pointer;
+}
+
+.seating-seat.is-absent {
+    background: #f3e8e7;
+    color: #9b4a43;
+    box-shadow: 0 0 0 2px #b45c55;
+}
+
+.seating-seat.is-absent.is-highlight {
+    color: #9b4a43;
 }
 
 .seating-seat.is-locked {
@@ -4250,4 +4299,78 @@ html.is-native-app * {
 .seating-student-modal-inner > div {
     width: 100% !important;
     max-width: 100%;
+}
+
+.appel-confirm-modal {
+    max-width: 22rem;
+    padding-top: 1.6rem;
+}
+
+.appel-absent-list {
+    list-style: none;
+    margin: 0.85rem 0 0;
+    padding: 0;
+    max-height: 12rem;
+    overflow: auto;
+    text-align: left;
+}
+
+.appel-absent-list li {
+    padding: 0.45rem 0;
+    border-bottom: 1px solid var(--tn-line);
+    color: var(--tn-ink);
+    font-size: 0.95rem;
+}
+
+.appel-absent-list li:last-child {
+    border-bottom: 0;
+}
+
+.appel-confirm-note {
+    margin: 0.85rem 0 0;
+    color: var(--tn-muted);
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.appel-confirm-actions {
+    flex-wrap: wrap;
+}
+
+.seating-appel-hint {
+    position: absolute;
+    left: 50%;
+    bottom: calc(3.4rem + var(--tn-safe-bottom, 0px));
+    z-index: 20;
+    transform: translateX(-50%);
+    padding: 0.4rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(24, 24, 27, 0.88);
+    color: #fff;
+    font-size: 0.82rem;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.seating-appel-toast {
+    z-index: 100;
+}
+
+.pronote-link-form .modal-field {
+    display: block;
+    margin-top: 0.85rem;
+}
+
+.pronote-link-form .settings-btn {
+    margin-top: 1rem;
+}
+
+.pronote-link-status {
+    margin: 0.6rem 0 0;
+    color: var(--tn-muted);
+    font-size: 0.9rem;
+}
+
+.pronote-link-status.is-on {
+    color: #4e7a5c;
 }

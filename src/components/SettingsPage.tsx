@@ -42,7 +42,9 @@ import {
     IconPlay,
     IconDrop,
     IconShield,
+    IconAppel,
 } from './Icons'
+import PronoteLinkSettings from './PronoteLinkSettings'
 import { isAdminUser } from '../functions'
 import { NoticeBadge } from './NoticeBadge'
 import { openInstallApp } from './InstallApp'
@@ -158,6 +160,12 @@ const SettingsMenu = () => {
 
             <div className="settings-group-label">Classes et élèves</div>
             <div className="settings-group">
+                <SettingsRow
+                    to="/create/pronote-link"
+                    icon={<IconAppel />}
+                    title="Lier Pronote"
+                    subtitle="Compte professeur pour l’appel"
+                />
                 <SettingsRow
                     to="/create/pronote"
                     icon={<IconUpload />}
@@ -703,6 +711,7 @@ export default () => {
     return (
         <Switch>
             <Route path="/create/classe" component={SettingsClasse} />
+            <Route path="/create/pronote-link" component={PronoteLinkSettings} />
             <Route path="/create/pronote" component={SettingsPronote} />
             <Route path="/create/eleves" component={SettingsEleves} />
             <Route path="/create/cartes" component={SettingsCartes} />
