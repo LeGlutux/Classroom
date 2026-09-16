@@ -53,7 +53,8 @@ https://thotnote.org
 
 | Élément | Fichier | Taille |
 | --- | --- | --- |
-| Icône | `native/assets/icon.png` | 512×512 mini, on a 1024×1024 |
+| Icône (fiche Play) | `native/play/icon-512.png` | 512×512, exigée par la Console |
+| Icône source | `native/assets/icon.png` | 1024×1024 |
 | Bannière (feature graphic) | `native/play/feature-graphic.png` | 1024×500, obligatoire |
 | Captures téléphone | à faire dans l’émulateur | au moins 2, JPEG ou PNG, 16:9 ou 9:16 |
 
