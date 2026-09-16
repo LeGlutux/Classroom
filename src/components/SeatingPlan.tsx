@@ -31,6 +31,7 @@ import {
     submitPronoteAppel,
 } from '../pronote/appel'
 import { parsePronoteLink, PronoteLink } from '../pronote/link'
+import { loadPronoteLinkForUser } from '../pronote/session'
 import addPage from '../images/addPage.png'
 import {
     useGroups,
@@ -282,6 +283,17 @@ export default () => {
                 }
             )
     }, [uid])
+
+    useEffect(() => {
+        if (!uid) return
+        let cancelled = false
+        loadPronoteLinkForUser(uid).then((link) => {
+            if (!cancelled && link) setPronoteLink(link)
+        })
+        return () => {
+            cancelled = true
+        }
+    }, [uid, appelConfirmOpen])
 
     useEffect(() => {
         if (!appelToast) return
@@ -540,8 +552,9 @@ export default () => {
         )
         setAppelSubmitting(true)
         setAppelError(null)
+        const link = (await loadPronoteLinkForUser(uid)) || pronoteLink
         const result = await submitPronoteAppel({
-            link: pronoteLink,
+            link,
             payload,
             recordAttempt: async (recorded, link) => {
                 if (!uid) return
@@ -773,12 +786,12 @@ export default () => {
                 event.clientX - pan.x,
                 event.clientY - pan.y
             )
-            // En mode appel, un léger mouvement ne doit pas bloquer la sélection.
+            // Tap appel : mouvement minime uniquement (évite de cocher en panoramiquant).
             const appelTap =
                 appelModeRef.current &&
                 pan.seatId &&
                 !isEmptySeatId(pan.seatId) &&
-                travel < 28
+                travel < 14
             if (appelTap) {
                 skipSeatClickRef.current = false
                 lastEmptyTapRef.current = null
@@ -786,7 +799,7 @@ export default () => {
                 toggleAbsent(pan.seatId as string)
                 return
             }
-            if (pan.moved) {
+            if (pan.moved || travel >= 14) {
                 skipSeatClickRef.current = true
                 lastEmptyTapRef.current = null
                 cancelPendingModal()

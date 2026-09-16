@@ -6,7 +6,22 @@ import {
 
 describe('parsePronoteLink', () => {
     it('rejette un lien incomplet', () => {
-        expect(parsePronoteLink({ url: 'https://x', username: 'a' })).toBeNull()
+        expect(parsePronoteLink({ url: 'https://x' })).toBeNull()
+    })
+
+    it('accepte un lien sans mot de passe (métadonnées Firestore)', () => {
+        expect(
+            parsePronoteLink({
+                url: 'https://demo/pronote',
+                username: 'prof',
+                linkedAt: 42,
+            })
+        ).toEqual({
+            url: 'https://demo/pronote',
+            username: 'prof',
+            password: '',
+            linkedAt: 42,
+        })
     })
 
     it('accepte un lien complet', () => {

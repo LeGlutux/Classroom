@@ -9,6 +9,10 @@ import {
     parsePronoteLink,
     PronoteLink,
 } from '../pronote/link'
+import {
+    readPronotePassword,
+    writePronotePassword,
+} from '../pronote/session'
 
 type PronoteLinkFormProps = {
     uid: string
@@ -19,7 +23,7 @@ export const PronoteLinkForm = ({ uid, onSaved }: PronoteLinkFormProps) => {
     const [url, setUrl] = useState('')
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
-    const [linked, setLinked] = useState<PronoteLink | null>(null)
+    const [linkedMeta, setLinkedMeta] = useState(false)
     const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
     const [error, setError] = useState('')
@@ -36,11 +40,14 @@ export const PronoteLinkForm = ({ uid, onSaved }: PronoteLinkFormProps) => {
                     const next = parsePronoteLink(
                         data ? data.pronoteLink : null
                     )
-                    setLinked(next)
                     if (next) {
                         setUrl(next.url)
                         setUsername(next.username)
-                        setPassword(next.password)
+                        setLinkedMeta(true)
+                        const sessionPassword = readPronotePassword(uid)
+                        setPassword(sessionPassword || '')
+                    } else {
+                        setLinkedMeta(false)
                     }
                     setLoading(false)
                 },
@@ -68,10 +75,22 @@ export const PronoteLinkForm = ({ uid, onSaved }: PronoteLinkFormProps) => {
         }
         setSaving(true)
         try {
+            // Mot de passe seulement en session navigateur — pas Firestore.
             await Firebase.firestore()
                 .collection('users')
                 .doc(uid)
-                .set({ pronoteLink: next }, { merge: true })
+                .set(
+                    {
+                        pronoteLink: {
+                            url: next.url,
+                            username: next.username,
+                            linkedAt: next.linkedAt,
+                        },
+                    },
+                    { merge: true }
+                )
+            writePronotePassword(uid, next.password)
+            setLinkedMeta(true)
             setToast('Compte Pronote lié')
             if (onSaved) onSaved()
         } catch (err) {
@@ -91,10 +110,11 @@ export const PronoteLinkForm = ({ uid, onSaved }: PronoteLinkFormProps) => {
                 .update({
                     pronoteLink: firebase.firestore.FieldValue.delete(),
                 })
+            writePronotePassword(uid, '')
             setUrl('')
             setUsername('')
             setPassword('')
-            setLinked(null)
+            setLinkedMeta(false)
             setToast('Liaison Pronote retirée')
         } catch (err) {
             setError('Impossible de retirer la liaison.')
@@ -112,12 +132,15 @@ export const PronoteLinkForm = ({ uid, onSaved }: PronoteLinkFormProps) => {
             {toast ? <div className="settings-toast">{toast}</div> : null}
             <p className="settings-panel-note">
                 Liez votre espace professeur Pronote pour envoyer l’appel depuis
-                le plan de classe. Expérimental : le mot de passe est stocké
-                dans votre compte Thòt Note.
+                le plan de classe. Le mot de passe reste dans cette session
+                navigateur (il n’est pas stocké sur le serveur).
             </p>
-            {linked ? (
+            {linkedMeta ? (
                 <p className="pronote-link-status is-on">
-                    Compte lié · {linked.username}
+                    Compte lié · {username}
+                    {!password
+                        ? ' — resaisissez le mot de passe pour cette session'
+                        : ''}
                 </p>
             ) : (
                 <p className="pronote-link-status">Aucun compte lié</p>
@@ -158,9 +181,9 @@ export const PronoteLinkForm = ({ uid, onSaved }: PronoteLinkFormProps) => {
                 onClick={save}
                 disabled={saving}
             >
-                {linked ? 'Mettre à jour la liaison' : 'Lier le compte Pronote'}
+                {linkedMeta ? 'Mettre à jour la liaison' : 'Lier le compte Pronote'}
             </button>
-            {linked ? (
+            {linkedMeta ? (
                 <button
                     type="button"
                     className="settings-btn settings-btn-danger"

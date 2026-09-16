@@ -23,7 +23,7 @@ export const parsePronoteLink = (raw: unknown): PronoteLink | null => {
         typeof data.linkedAt === 'number' && Number.isFinite(data.linkedAt)
             ? data.linkedAt
             : 0
-    if (!url || !username || !password) return null
+    if (!url || !username) return null
     return { url, username, password, linkedAt }
 }
 
