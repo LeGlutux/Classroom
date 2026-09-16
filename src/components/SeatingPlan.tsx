@@ -764,6 +764,23 @@ export default () => {
         const pan = panRef.current
         if (pan && pan.pointerId === event.pointerId) {
             panRef.current = null
+            const travel = Math.hypot(
+                event.clientX - pan.x,
+                event.clientY - pan.y
+            )
+            // En mode appel, un léger mouvement ne doit pas bloquer la sélection.
+            const appelTap =
+                appelModeRef.current &&
+                pan.seatId &&
+                !isEmptySeatId(pan.seatId) &&
+                travel < 28
+            if (appelTap) {
+                skipSeatClickRef.current = false
+                lastEmptyTapRef.current = null
+                cancelPendingModal()
+                toggleAbsent(pan.seatId as string)
+                return
+            }
             if (pan.moved) {
                 skipSeatClickRef.current = true
                 lastEmptyTapRef.current = null
@@ -1232,6 +1249,9 @@ export default () => {
                                                 skipSeatClickRef.current = false
                                                 return
                                             }
+                                            // Souris : detail >= 1 ; clavier : 0.
+                                            // La sélection est déjà gérée au pointerup
+                                            // pour éviter un double basculement.
                                             if (event.detail !== 0) return
                                             toggleAbsent(student.id)
                                             return
