@@ -554,7 +554,12 @@ export default () => {
                         at: recorded.at,
                         lessonLabel: currentLessonLabel(recorded.at),
                         absentIds: recorded.absents.map((s) => s.id),
-                        absents: recorded.absents,
+                        absents: recorded.absents.map((s) => ({
+                            id: s.id,
+                            name: s.name,
+                            surname: s.surname,
+                            ...(s.pronoteId ? { pronoteId: s.pronoteId } : {}),
+                        })),
                         presentCount: recorded.presentCount,
                         pronoteUrl: link.url,
                         pronoteUsername: link.username,
