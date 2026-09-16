@@ -60,6 +60,8 @@ https://thotnote.org
 
 Captures utiles : connexion, liste d’élèves avec croix, plan de classe, paramètres.
 
+Classes fictives à importer (Paramètres → Pronote) : `native/play/demo/` (`6A.csv`, `5C.csv`, `4B.csv`).
+
 Dans l’émulateur : icône appareil photo de la barre Android Studio. Recadre si Play refuse le format.
 
 ## Confidentialité et suppression
