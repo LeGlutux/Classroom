@@ -22,12 +22,10 @@ import MagicStick from './MagicStick'
 import magicStick from '../images/magicStick.png'
 import stickyNote from '../images/stickyNote.png'
 import burgerMenu from '../images/burgerMenu.png'
-import updater_gif from '../images/updater.gif'
 import addPage from '../images/addPage.png'
 import Firebase from '../firebase'
 import { Link } from 'react-router-dom'
 import { replayTutorial, TUTORIAL_COMPLETED_EVENT, tutorialNeverPlayed } from '../tutorial'
-import Updater from './Updater'
 import PostIt, { PostItAlert } from './PostIt'
 import Loader from './Loader'
 import { StudentInterface } from '../interfaces/Student'
@@ -43,7 +41,7 @@ export default () => {
     const [displayRandomStudent, setDisplayRandomStudent] = useState(false)
     const { currentUser } = useContext(AuthContext)
     if (currentUser === null) return <div />
-    const { user, refreshUser } = useUser(currentUser.uid)
+    const { user } = useUser(currentUser.uid)
     const [tutorialDone, setTutorialDone] = useState(
         user?.tutorialCompleted === true
     )
@@ -60,7 +58,6 @@ export default () => {
     const { smsEnabled } = useSmsConfig()
     const { rules: nameColorRules } = useNameColorRules(currentUser.uid)
     const smsAvailable = smsEnabled || isAdminUser(currentUser)
-    const [updating, setUpdating] = useState(false)
     const [displayed, setDisplayed] = useState(false)
 
     const handleHomeClick = () => {
@@ -438,29 +435,8 @@ export default () => {
         )
     }
 
-    if (updating === true) {
-        return (
-            <div className="w-full h-screen flex flex-col justify-center items-center app-bg">
-                <div className="h-full flex flex-col justify-center items-center">
-                    <div className="empty-title">Mise à jour</div>
-                    <div className="w-48 h-48 mt-8">
-                        <img src={updater_gif} alt="" />
-                    </div>
-                </div>
-            </div>
-        )
-    }
-
     return (
         <div className="w-full h-screen flex flex-col overflow-hidden app-bg">
-            <Updater
-                userId={currentUser.uid}
-                userVersion={user?.version || 0}
-                refreshUser={refreshUser}
-                students={students}
-                setUpdating={setUpdating}
-                classes={groups}
-            />
             {!displayed && displayedGroup !== 'tous' && (
                 <div className="flex flex-col items-center justify-center absolute w-full h-full mb-12 bg-white z-10">
                     <div className="empty-title">Chargement des données</div>
