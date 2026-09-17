@@ -3290,7 +3290,7 @@ html.is-native-app * {
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 90;
+    z-index: 110;
     display: flex;
     align-items: center;
     justify-content: center;
