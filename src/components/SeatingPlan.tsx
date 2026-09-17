@@ -1223,6 +1223,7 @@ export default () => {
                                 iconMap={userIcons.crossIconMap}
                                 smsAvailable={smsAvailable}
                                 sessionFollow={userIcons.sessionFollow}
+                                onSmsOpen={() => setModalStudent(null)}
                             />
                         </div>
                     </div>

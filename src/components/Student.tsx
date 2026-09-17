@@ -52,6 +52,7 @@ interface StudentProps {
     iconMap?: LegacyIconMap
     smsAvailable?: boolean
     sessionFollow?: unknown
+    onSmsOpen?: () => void
 }
 
 interface CrossButtonProps {
@@ -263,6 +264,7 @@ const StudentComponent: React.FC<StudentProps> = (props) => {
             if (typeof navigator !== 'undefined' && navigator.vibrate) {
                 navigator.vibrate(10)
             }
+            if (props.onSmsOpen) props.onSmsOpen()
             openStudentSms({
                 prenom: props.surname,
                 nom: props.name,
