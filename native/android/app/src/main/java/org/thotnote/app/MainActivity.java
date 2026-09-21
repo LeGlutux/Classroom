@@ -1,5 +1,6 @@
 package org.thotnote.app;
 
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -16,10 +17,13 @@ public class MainActivity extends BridgeActivity {
         super.onCreate(savedInstanceState);
         WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
         disableWebViewLongClick();
-        if (Build.VERSION.SDK_INT < 35) {
+        final View content = findViewById(android.R.id.content);
+        if (content != null) {
+            content.setBackgroundColor(Color.WHITE);
+        }
+        if (Build.VERSION.SDK_INT < 35 || content == null) {
             return;
         }
-        final View content = findViewById(android.R.id.content);
         ViewCompat.setOnApplyWindowInsetsListener(content, (v, windowInsets) -> {
             Insets bars = windowInsets.getInsets(
                 WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout()

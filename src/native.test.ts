@@ -1,4 +1,4 @@
-import { isNativeApp, markNativeShell } from './native'
+import { isNativeApp, markNativeShell, syncKeyboardInset } from './native'
 
 describe('isNativeApp', () => {
     const original = (window as any).Capacitor
@@ -7,6 +7,8 @@ describe('isNativeApp', () => {
         if (original === undefined) delete (window as any).Capacitor
         else (window as any).Capacitor = original
         document.documentElement.classList.remove('is-native-app')
+        document.documentElement.classList.remove('keyboard-open')
+        document.documentElement.style.removeProperty('--keyboard-inset')
     })
 
     it('est faux dans le navigateur', () => {
@@ -41,5 +43,32 @@ describe('isNativeApp', () => {
         })
         document.dispatchEvent(event)
         expect(event.defaultPrevented).toBe(true)
+    })
+
+    it('laisse de la place pour le clavier natif', () => {
+        document.documentElement.classList.add('is-native-app')
+        const previousHeight = Object.getOwnPropertyDescriptor(
+            window,
+            'innerHeight'
+        )
+        const previousViewport = (window as any).visualViewport
+        Object.defineProperty(window, 'innerHeight', {
+            configurable: true,
+            value: 800,
+        })
+        ;(window as any).visualViewport = { height: 390, offsetTop: 0 }
+        syncKeyboardInset()
+        expect(document.documentElement.classList.contains('keyboard-open')).toBe(
+            true
+        )
+        expect(
+            document.documentElement.style.getPropertyValue('--keyboard-inset')
+        ).toBe('410px')
+        if (previousHeight) Object.defineProperty(window, 'innerHeight', previousHeight)
+        else delete (window as any).innerHeight
+        if (previousViewport === undefined) delete (window as any).visualViewport
+        else (window as any).visualViewport = previousViewport
+        document.documentElement.classList.remove('keyboard-open')
+        document.documentElement.style.removeProperty('--keyboard-inset')
     })
 })

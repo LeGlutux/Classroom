@@ -22,11 +22,11 @@
     },
     "StatusBar": {
       "overlaysWebView": false,
-      "style": "LIGHT",
+      "style": "DARK",
       "backgroundColor": "#ffffff"
     },
     "Keyboard": {
-      "resize": "none"
+      "resize": "native"
     }
   },
   "android": {

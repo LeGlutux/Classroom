@@ -560,6 +560,13 @@ body,
 html.is-native-app {
     --tn-safe-top: env(safe-area-inset-top, 0px);
     --tn-safe-bottom: env(safe-area-inset-bottom, 0px);
+    --keyboard-inset: 0px;
+}
+
+html.is-native-app,
+html.is-native-app body,
+html.is-native-app #root {
+    height: 100%;
 }
 
 html.is-native-app .auth-install {
@@ -567,8 +574,24 @@ html.is-native-app .auth-install {
 }
 
 html.is-native-app .auth-page {
+    box-sizing: border-box;
+    min-height: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     padding-top: calc(1.5rem + var(--tn-safe-top));
-    padding-bottom: calc(1.5rem + var(--tn-safe-bottom));
+    padding-bottom: calc(1.5rem + var(--tn-safe-bottom) + var(--keyboard-inset));
+}
+
+html.is-native-app.keyboard-open .auth-page {
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+html.is-native-app.keyboard-open .auth-illu {
+    height: 5.25rem;
+    margin-bottom: 0.35rem;
 }
 
 html.is-native-app .page-header {
