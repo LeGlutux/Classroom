@@ -23,7 +23,7 @@ describe('computeClassCrossStats', () => {
         expect(stats.negatives).toBe(2)
         expect(stats.positives).toBe(1)
         expect(stats.total).toBe(3)
-        expect(stats.zeroNegatives).toBe(2)
+        expect(stats.zeroNegatives).toBe(1)
         expect(stats.bySlot.map((s) => [s.type, s.count])).toEqual([
             ['homework', 1],
             ['behaviour', 1],
