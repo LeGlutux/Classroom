@@ -1,14 +1,26 @@
 import React, { useContext, useMemo, useState } from 'react'
 import firebase from 'firebase/app'
-import { useGroups, usePeriodes, useStudents, useCrosses } from '../hooks'
+import {
+    useGroups,
+    usePeriodes,
+    useStudents,
+    useCrosses,
+    useIcons,
+} from '../hooks'
 import { AuthContext } from '../Auth'
 import SettingsLayout from './SettingsLayout'
 import {
     PERIOD_YEAR,
+    buildCrossSlots,
     crossInSelectedPeriod,
+    handleIcon,
     isPositiveCross,
     studentInClass,
 } from '../functions'
+import {
+    ClassCrossStats,
+    computeClassCrossStats,
+} from '../utils/classCrossStats'
 
 type RankedStudent = {
     id: string
@@ -28,6 +40,62 @@ const readMaxNegatives = () => {
     return 1
 }
 
+const ClassStatsBlock = ({ stats }: { stats: ClassCrossStats }) => {
+    const avg =
+        stats.studentCount > 0
+            ? (stats.total / stats.studentCount).toFixed(1).replace('.', ',')
+            : '0'
+    return (
+        <div className="podium-stats">
+            <div className="podium-stats-label">Statistiques</div>
+            <div className="podium-stats-totals">
+                <span>
+                    {stats.total} croix
+                    {stats.studentCount > 0 ? ' · moy. ' + avg + '/élève' : ''}
+                </span>
+                <span className="podium-scores">
+                    <span className="podium-neg">{stats.negatives}</span>
+                    <span className="podium-pos">{stats.positives}</span>
+                </span>
+            </div>
+            {stats.bySlot.length > 0 ? (
+                <div
+                    className="podium-stats-types"
+                    aria-label="Croix par type"
+                >
+                    {stats.bySlot.map((slot) => (
+                        <span
+                            key={slot.type}
+                            className={
+                                'podium-stats-type' +
+                                (slot.polarity === 'positive'
+                                    ? ' is-pos'
+                                    : ' is-neg')
+                            }
+                        >
+                            {slot.src && slot.src !== 'none' ? (
+                                <img src={slot.src} alt="" />
+                            ) : null}
+                            <span>{slot.count}</span>
+                        </span>
+                    ))}
+                </div>
+            ) : null}
+            <div className="podium-stats-extra">
+                {stats.zeroNegatives} élève
+                {stats.zeroNegatives > 1 ? 's' : ''} sans croix négative
+                {stats.studentCount > 0
+                    ? ' (' +
+                      Math.round(
+                          (100 * stats.zeroNegatives) / stats.studentCount
+                      ) +
+                      ' %)'
+                    : ''}
+            </div>
+        </div>
+    )
+}
+
 export default () => {
     const { currentUser } = useContext(AuthContext)
     const uid = currentUser ? currentUser.uid : ''
@@ -35,12 +103,24 @@ export default () => {
     const { students, loading: studentsLoading, allIds } = useStudents(uid)
     const { crosses } = useCrosses(uid, allIds)
     const { periodes, runningPeriode } = usePeriodes(uid)
+    const userIcons = useIcons(uid)
     const [maxNegatives, setMaxNegatives] = useState(readMaxNegatives)
     const [periodChoice, setPeriodChoice] = useState<number | null>(null)
     const selectedPeriod =
         periodChoice === null ? runningPeriode : periodChoice
 
-    const rankedByClass = useMemo(() => {
+    const slots = useMemo(
+        () =>
+            buildCrossSlots(userIcons.icons, userIcons.positiveIcons).map(
+                (slot) => ({
+                    ...slot,
+                    src: handleIcon(slot.icon),
+                })
+            ),
+        [userIcons.icons, userIcons.positiveIcons]
+    )
+
+    const classBlocks = useMemo(() => {
         const crossesByStudent: {
             [id: string]: firebase.firestore.DocumentData[]
         } = {}
@@ -49,13 +129,23 @@ export default () => {
         })
 
         return (groups || []).map((group) => {
-            const ranked = students
-                .filter((student) => studentInClass(student, group))
-                .map((student) => {
-                    const docs = crossesByStudent[student.id] || []
-                    const inPeriod = docs.filter((doc) =>
-                        crossInSelectedPeriod(doc, periodes, selectedPeriod)
-                    )
+            const classStudents = students.filter((student) =>
+                studentInClass(student, group)
+            )
+            const docsInPeriod = classStudents.map((student) => {
+                const docs = crossesByStudent[student.id] || []
+                return docs.filter((doc) =>
+                    crossInSelectedPeriod(doc, periodes, selectedPeriod)
+                )
+            })
+            const stats = computeClassCrossStats(
+                docsInPeriod,
+                slots,
+                userIcons.crossIconMap
+            )
+            const ranked = classStudents
+                .map((student, index) => {
+                    const inPeriod = docsInPeriod[index] || []
                     let negatives = 0
                     let positives = 0
                     inPeriod.forEach((doc) => {
@@ -80,15 +170,25 @@ export default () => {
                         sensitivity: 'base',
                     })
                 })
-            return { group, ranked }
+            return { group, ranked, stats }
         })
-    }, [groups, students, crosses, periodes, selectedPeriod, maxNegatives])
+    }, [
+        groups,
+        students,
+        crosses,
+        periodes,
+        selectedPeriod,
+        maxNegatives,
+        slots,
+        userIcons.crossIconMap,
+    ])
 
     if (currentUser === null) return <div />
 
     const loading =
         groupsLoading ||
         studentsLoading ||
+        userIcons.loading ||
         crosses === undefined ||
         (allIds.length > 0 && crosses.length !== allIds.length)
 
@@ -100,12 +200,12 @@ export default () => {
               } ou moins`
 
     return (
-        <SettingsLayout title="Podium" backTo="/create">
+        <SettingsLayout title="Statistiques et podium" backTo="/create">
             {loading ? (
-                <p className="settings-panel-note">Chargement du podium…</p>
+                <p className="settings-panel-note">Chargement…</p>
             ) : groups.length === 0 ? (
                 <p className="settings-panel-note">
-                    Créez une classe pour afficher un podium.
+                    Créez une classe pour afficher les statistiques.
                 </p>
             ) : (
                 <React.Fragment>
@@ -135,7 +235,7 @@ export default () => {
                     </label>
                     <label className="podium-filter">
                         <span className="podium-filter-label">
-                            Maximum de croix négatives
+                            Podium · max. croix négatives
                         </span>
                         <select
                             className="modal-select"
@@ -168,40 +268,41 @@ export default () => {
                               (selectedPeriod === runningPeriode
                                   ? ' en cours.'
                                   : '.')}{' '}
-                        Le rouge compte les croix négatives, le bleu les
-                        positives.
+                        Rouge = négatives, bleu = positives.
                     </p>
-                    {rankedByClass.map(({ group, ranked }) => (
-                    <div key={group} className="podium-class">
-                        <div className="podium-class-title">{group}</div>
-                        {ranked.length === 0 ? (
-                            <div className="podium-empty">{emptyLabel}</div>
-                        ) : (
-                            ranked.map((student, index) => (
-                                <div key={student.id} className="podium-row">
-                                    <span className="podium-rank">
-                                        {index + 1}
-                                    </span>
-                                    <span className="podium-name">
-                                        <span className="podium-firstname">
-                                            {student.surname}
+                    {classBlocks.map(({ group, ranked, stats }) => (
+                        <div key={group} className="podium-class">
+                            <div className="podium-class-title">{group}</div>
+                            <ClassStatsBlock stats={stats} />
+                            <div className="podium-section-label">Podium</div>
+                            {ranked.length === 0 ? (
+                                <div className="podium-empty">{emptyLabel}</div>
+                            ) : (
+                                ranked.map((student, index) => (
+                                    <div key={student.id} className="podium-row">
+                                        <span className="podium-rank">
+                                            {index + 1}
                                         </span>
-                                        <span className="podium-lastname">
-                                            {student.name}
+                                        <span className="podium-name">
+                                            <span className="podium-firstname">
+                                                {student.surname}
+                                            </span>
+                                            <span className="podium-lastname">
+                                                {student.name}
+                                            </span>
                                         </span>
-                                    </span>
-                                    <span className="podium-scores">
-                                        <span className="podium-neg">
-                                            {student.negatives}
+                                        <span className="podium-scores">
+                                            <span className="podium-neg">
+                                                {student.negatives}
+                                            </span>
+                                            <span className="podium-pos">
+                                                {student.positives}
+                                            </span>
                                         </span>
-                                        <span className="podium-pos">
-                                            {student.positives}
-                                        </span>
-                                    </span>
-                                </div>
-                            ))
-                        )}
-                    </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
                     ))}
                 </React.Fragment>
             )}

@@ -48,6 +48,8 @@ export default () => {
 
     useEffect(() => {
         openSheet = (next) => {
+            const focused = document.activeElement
+            if (focused instanceof HTMLElement) focused.blur()
             setStudent(next)
             setSelectedId('')
             setConfirmOpen(false)
