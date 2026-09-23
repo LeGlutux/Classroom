@@ -11,10 +11,10 @@ describe('computeClassCrossStats', () => {
         const stats = computeClassCrossStats(
             [
                 [
-                    { type: 'homework', polarity: 'negative' },
-                    { type: 'pos0', polarity: 'positive' },
+                    { type: 'homework', polarity: 'negative', icon: 1 },
+                    { type: 'pos0', polarity: 'positive', icon: 10 },
                 ],
-                [{ type: 'behaviour', polarity: 'negative' }],
+                [{ type: 'behaviour', polarity: 'negative', icon: 2 }],
                 [],
             ],
             slots
