@@ -214,8 +214,8 @@ const SettingsMenu = () => {
                 <SettingsRow
                     to="/create/podium"
                     icon={<IconTrophy />}
-                    title="Podium"
-                    subtitle="Les meilleurs élèves de chaque classe"
+                    title="Statistiques et podium"
+                    subtitle="Croix par classe et meilleurs élèves"
                 />
             </div>
 
