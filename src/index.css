@@ -941,6 +941,32 @@ html.is-native-app * {
     color: #3b6ea5;
 }
 
+.podium-stats-delta {
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-left: 0.05rem;
+}
+
+.podium-stats-delta.is-up {
+    color: #3b6ea5;
+}
+
+.podium-stats-delta.is-down {
+    color: #b45c55;
+}
+
+.podium-stats-dominant-icon {
+    width: 0.95rem;
+    height: 0.95rem;
+    object-fit: contain;
+    vertical-align: -0.12rem;
+    margin: 0 0.2rem;
+}
+
+.podium-stats-vs {
+    font-weight: 400;
+}
+
 .podium-stats-extra {
     margin-top: 0.55rem;
     font-size: 0.82rem;

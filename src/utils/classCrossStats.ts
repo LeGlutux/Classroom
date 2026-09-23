@@ -22,6 +22,11 @@ export type SlotCount = {
     count: number
 }
 
+export type SlotDelta = SlotCount & {
+    previous: number
+    delta: number
+}
+
 export type ClassCrossStats = {
     studentCount: number
     total: number
@@ -29,6 +34,7 @@ export type ClassCrossStats = {
     positives: number
     bySlot: SlotCount[]
     zeroNegatives: number
+    dominant: SlotCount | null
 }
 
 export const computeClassCrossStats = (
@@ -61,18 +67,64 @@ export const computeClassCrossStats = (
         if (studentNeg === 0) zeroNegatives += 1
     })
 
+    const bySlot = slots.map((slot) => ({
+        type: slot.type,
+        icon: slot.icon,
+        polarity: slot.polarity,
+        src: handleIcon(slot.icon),
+        count: counts[slot.type] || 0,
+    }))
+
     return {
         studentCount: docsByStudent.length,
         total: negatives + positives,
         negatives,
         positives,
         zeroNegatives,
-        bySlot: slots.map((slot) => ({
-            type: slot.type,
-            icon: slot.icon,
-            polarity: slot.polarity,
-            src: handleIcon(slot.icon),
-            count: counts[slot.type] || 0,
-        })),
+        bySlot,
+        dominant: findDominantSlot(bySlot),
     }
+}
+
+export const findDominantSlot = (bySlot: SlotCount[]): SlotCount | null => {
+    let best: SlotCount | null = null
+    bySlot.forEach((slot) => {
+        if (slot.count <= 0) return
+        if (!best || slot.count > best.count) best = slot
+    })
+    return best
+}
+
+export const diffSlotCounts = (
+    current: SlotCount[],
+    previous: SlotCount[]
+): SlotDelta[] => {
+    const prevByType: { [type: string]: number } = {}
+    previous.forEach((slot) => {
+        prevByType[slot.type] = slot.count
+    })
+    return current.map((slot) => {
+        const prev = prevByType[slot.type] || 0
+        return {
+            ...slot,
+            previous: prev,
+            delta: slot.count - prev,
+        }
+    })
+}
+
+export const formatDelta = (delta: number) => {
+    if (delta > 0) return '+' + delta
+    return String(delta)
+}
+
+export const previousPeriodNumber = (
+    selectedPeriod: number,
+    periodCount: number,
+    yearSentinel: number
+) => {
+    if (selectedPeriod === yearSentinel) return null
+    if (selectedPeriod <= 1) return null
+    if (selectedPeriod > periodCount) return null
+    return selectedPeriod - 1
 }
