@@ -6,6 +6,7 @@ import React, {
     useState,
 } from 'react'
 import { Link } from 'react-router-dom'
+import firebase from 'firebase/app'
 import { AuthContext } from '../Auth'
 import Firebase from '../firebase'
 import NavBar from './NavBar'
@@ -44,6 +45,8 @@ import {
     parseStoredPlans,
     prunePositions,
     samePositions,
+    shouldPersistMergedPlan,
+    stampSeatIdentities,
     screenToWorld,
     seatCaption,
     linkedSeatGroups,
@@ -166,6 +169,8 @@ export default () => {
 
     const canvasRef = useRef<HTMLDivElement>(null)
     const plansRef = useRef<StoredPlans>({})
+    const plansServerReadyRef = useRef(false)
+    const rosterRef = useRef<StudentInterface[]>([])
     const positionsRef = useRef(positions)
     const viewRef = useRef(view)
     const lockedRef = useRef(locked)
@@ -194,15 +199,23 @@ export default () => {
     const persistPlan = useCallback(
         (classe: string, nextLocked: boolean, nextPositions: Positions) => {
             if (!uid || !classe || classe === 'tous') return
-            const ids = Object.keys(nextPositions)
-            const pruned = prunePositions(ids, nextPositions)
+            if (!plansServerReadyRef.current) return
+            const stamped = stampSeatIdentities(
+                nextPositions,
+                rosterRef.current
+            )
+            const ids = Object.keys(stamped)
+            const pruned = prunePositions(ids, stamped)
             const nextPlans: StoredPlans = { ...plansRef.current }
             nextPlans[classe] = { locked: nextLocked, positions: pruned }
             plansRef.current = nextPlans
             Firebase.firestore()
                 .collection('users')
                 .doc(uid)
-                .update({ seatingPlans: nextPlans })
+                .update(
+                    new firebase.firestore.FieldPath('seatingPlans', classe),
+                    { locked: nextLocked, positions: pruned }
+                )
                 .catch(() => {
                     // hors-ligne / règles : on garde l'état local
                 })
@@ -245,9 +258,9 @@ export default () => {
                     plansRef.current = parseStoredPlans(
                         data ? data.seatingPlans : undefined
                     )
-                    setPlansReady(true)
-                },
-                () => {
+                    if (!doc.metadata.fromCache) {
+                        plansServerReadyRef.current = true
+                    }
                     setPlansReady(true)
                 }
             )
@@ -275,6 +288,7 @@ export default () => {
     const skipSeatClickRef = useRef(false)
     const classStudentsRef = useRef(classStudents)
     classStudentsRef.current = classStudents
+    rosterRef.current = classStudents
 
     useEffect(() => {
         if (!plansReady || studentsLoading || displayedGroup === 'tous') return
@@ -283,7 +297,7 @@ export default () => {
         const ids = classStudents.map((student) => student.id)
         const saved = plansRef.current[displayedGroup]
         const savedPos = saved ? saved.positions : {}
-        const merged = mergePositions(ids, savedPos)
+        const merged = mergePositions(ids, savedPos, classStudents)
         const nextLocked = saved ? saved.locked === true : false
         const unchanged =
             nextLocked === lockedRef.current &&
@@ -296,8 +310,10 @@ export default () => {
             setGhost(null)
             setShouldFit(true)
         }
-        const hadNew = ids.some((id) => !savedPos[id])
-        if (ids.length > 0 && hadNew) {
+        if (
+            plansServerReadyRef.current &&
+            shouldPersistMergedPlan(savedPos, merged, ids)
+        ) {
             persistPlan(displayedGroup, nextLocked, merged)
         }
         // classStudents is derived from students + displayedGroup (studentIdsKey)

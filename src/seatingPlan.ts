@@ -34,8 +34,57 @@ export const clampScale = (scale: number) =>
 export const steppedZoomScale = (scale: number, steps: number) =>
     clampScale(scale * Math.pow(ZOOM_STEP, steps))
 
-export type Point = { x: number; y: number }
+export type Point = { x: number; y: number; name?: string; surname?: string }
 export type Positions = { [id: string]: Point }
+
+export type SeatIdentity = {
+    id: string
+    name?: string
+    surname?: string
+}
+
+const normalizePersonPart = (value?: string) =>
+    String(value || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+
+export const seatPersonKey = (name?: string, surname?: string) => {
+    const key = normalizePersonPart(name) + '|' + normalizePersonPart(surname)
+    return key === '|' ? '' : key
+}
+
+export const copySeat = (point: Point, identity?: SeatIdentity): Point => {
+    const next: Point = { x: point.x, y: point.y }
+    const name =
+        identity && identity.name != null && String(identity.name).trim()
+            ? String(identity.name).trim()
+            : point.name
+    const surname =
+        identity && identity.surname != null && String(identity.surname).trim()
+            ? String(identity.surname).trim()
+            : point.surname
+    if (name) next.name = name
+    if (surname) next.surname = surname
+    return next
+}
+
+export const stampSeatIdentities = (
+    positions: Positions,
+    roster: SeatIdentity[]
+): Positions => {
+    const byId: { [id: string]: SeatIdentity } = {}
+    roster.forEach((item) => {
+        if (item && item.id) byId[item.id] = item
+    })
+    const next: Positions = {}
+    Object.keys(positions).forEach((id) => {
+        next[id] = copySeat(positions[id], byId[id])
+    })
+    return next
+}
 
 export const EMPTY_SEAT_PREFIX = 'blank:'
 
@@ -218,29 +267,78 @@ export const boundingBox = (positions: Positions) => {
     return { x: minX, y: minY, w: maxX - minX, h: maxY - minY }
 }
 
-export const mergePositions = (ids: string[], saved: Positions): Positions => {
+export const mergePositions = (
+    ids: string[],
+    saved: Positions,
+    roster: SeatIdentity[] = []
+): Positions => {
     const result: Positions = {}
     Object.keys(saved).forEach((id) => {
         if (!isEmptySeatId(id)) return
         const point = saved[id]
         if (!point) return
         if (!Number.isFinite(point.x) || !Number.isFinite(point.y)) return
-        result[id] = { x: point.x, y: point.y }
+        result[id] = copySeat(point)
     })
-    const missing: string[] = []
+
+    const rosterById: { [id: string]: SeatIdentity } = {}
+    roster.forEach((item) => {
+        if (item && item.id) rosterById[item.id] = item
+    })
+
+    const takenSaved: { [id: string]: boolean } = {}
     ids.forEach((id) => {
         if (isEmptySeatId(id)) return
-        if (saved[id]) {
-            result[id] = { x: saved[id].x, y: saved[id].y }
-        } else {
-            missing.push(id)
-        }
+        const point = saved[id]
+        if (!point || !Number.isFinite(point.x) || !Number.isFinite(point.y))
+            return
+        result[id] = copySeat(point, rosterById[id])
+        takenSaved[id] = true
     })
+
+    const nameToSaved: { [key: string]: string } = {}
+    const nameCount: { [key: string]: number } = {}
+    Object.keys(saved).forEach((savedId) => {
+        if (isEmptySeatId(savedId) || takenSaved[savedId]) return
+        const point = saved[savedId]
+        if (!point || !Number.isFinite(point.x) || !Number.isFinite(point.y))
+            return
+        const key = seatPersonKey(point.name, point.surname)
+        if (!key) return
+        nameCount[key] = (nameCount[key] || 0) + 1
+        nameToSaved[key] = savedId
+    })
+    Object.keys(nameCount).forEach((key) => {
+        if (nameCount[key] !== 1) delete nameToSaved[key]
+    })
+
+    const missing: string[] = []
+    ids.forEach((id) => {
+        if (isEmptySeatId(id) || result[id]) return
+        const student = rosterById[id]
+        const key = student
+            ? seatPersonKey(student.name, student.surname)
+            : ''
+        const savedId = key ? nameToSaved[key] : ''
+        const point = savedId ? saved[savedId] : undefined
+        if (savedId && point) {
+            result[id] = copySeat(point, student)
+            delete nameToSaved[key]
+            takenSaved[savedId] = true
+            return
+        }
+        missing.push(id)
+    })
+
     if (missing.length === 0) {
         return result
     }
     if (Object.keys(result).length === 0) {
-        return defaultLayout(missing)
+        const layout = defaultLayout(missing)
+        missing.forEach((id) => {
+            layout[id] = copySeat(layout[id], rosterById[id])
+        })
+        return layout
     }
     const box = boundingBox(result)
     const cols = layoutColumns(Math.max(missing.length, 1))
@@ -249,12 +347,45 @@ export const mergePositions = (ids: string[], saved: Positions): Positions => {
     missing.forEach((id, index) => {
         const col = index % cols
         const row = Math.floor(index / cols)
-        result[id] = {
-            x: startX + col * (CARD_W + CARD_GAP),
-            y: startY + row * (CARD_H + CARD_GAP),
-        }
+        result[id] = copySeat(
+            {
+                x: startX + col * (CARD_W + CARD_GAP),
+                y: startY + row * (CARD_H + CARD_GAP),
+            },
+            rosterById[id]
+        )
     })
     return result
+}
+
+export const shouldPersistMergedPlan = (
+    saved: Positions,
+    merged: Positions,
+    studentIds: string[]
+) => {
+    if (studentIds.length === 0) return false
+    const savedStudents = Object.keys(saved).filter((id) => !isEmptySeatId(id))
+    if (savedStudents.length === 0) return true
+    const matchedIds = studentIds.filter((id) => !!saved[id]).length
+    if (matchedIds > 0) {
+        const hadNew = studentIds.some((id) => !saved[id])
+        const missingNames = studentIds.some((id) => {
+            const point = saved[id]
+            return !!(point && (!point.name || !point.surname))
+        })
+        return hadNew || missingNames
+    }
+    const fresh = defaultLayout(studentIds)
+    const pick = (source: Positions) => {
+        const next: Positions = {}
+        studentIds.forEach((id) => {
+            const point = source[id]
+            if (!point) return
+            next[id] = { x: point.x, y: point.y }
+        })
+        return next
+    }
+    return !samePositions(pick(merged), pick(fresh))
 }
 
 export const prunePositions = (ids: string[], positions: Positions): Positions => {
@@ -263,7 +394,11 @@ export const prunePositions = (ids: string[], positions: Positions): Positions =
         const point = positions[id]
         if (!point) return
         if (!Number.isFinite(point.x) || !Number.isFinite(point.y)) return
-        next[id] = roundPoint(point)
+        next[id] = copySeat(roundPoint(point), {
+            id,
+            name: point.name,
+            surname: point.surname,
+        })
     })
     return next
 }
@@ -560,7 +695,18 @@ export const parseStoredPlans = (raw: unknown): StoredPlans => {
                 if (!point || typeof point !== 'object') return
                 const xy = point as { x?: unknown; y?: unknown }
                 if (typeof xy.x === 'number' && typeof xy.y === 'number') {
-                    positions[id] = { x: xy.x, y: xy.y }
+                    const seat: Point = { x: xy.x, y: xy.y }
+                    if (typeof (xy as { name?: unknown }).name === 'string') {
+                        const name = String((xy as { name: string }).name).trim()
+                        if (name) seat.name = name
+                    }
+                    if (typeof (xy as { surname?: unknown }).surname === 'string') {
+                        const surname = String(
+                            (xy as { surname: string }).surname
+                        ).trim()
+                        if (surname) seat.surname = surname
+                    }
+                    positions[id] = seat
                 }
             })
         }

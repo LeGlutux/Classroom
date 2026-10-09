@@ -24,6 +24,7 @@ import {
     mergePositions,
     parseStoredPlans,
     prunePositions,
+    shouldPersistMergedPlan,
     seatCaption,
     seatsTouching,
     linkedSeatGroups,
@@ -98,6 +99,72 @@ describe('mergePositions', () => {
             a: { x: 10, y: 20 },
             'blank:2': { x: 80, y: 40 },
         })
+    })
+
+    it('recollage une place au nom si l’id a changé', () => {
+        const merged = mergePositions(
+            ['new-id'],
+            {
+                'old-id': {
+                    x: 42,
+                    y: 18,
+                    name: 'Martin',
+                    surname: 'Léa',
+                },
+                'blank:1': { x: 80, y: 40 },
+            },
+            [{ id: 'new-id', name: 'Martin', surname: 'Léa' }]
+        )
+        expect(merged['new-id']).toEqual({
+            x: 42,
+            y: 18,
+            name: 'Martin',
+            surname: 'Léa',
+        })
+        expect(merged['old-id']).toBeUndefined()
+        expect(merged['blank:1']).toEqual({ x: 80, y: 40 })
+    })
+})
+
+describe('shouldPersistMergedPlan', () => {
+    it('sauve une classe encore sans plan', () => {
+        expect(
+            shouldPersistMergedPlan({}, defaultLayout(['a', 'b']), ['a', 'b'])
+        ).toBe(true)
+    })
+
+    it('sauve les nouveaux élèves d’un plan déjà connu', () => {
+        expect(
+            shouldPersistMergedPlan(
+                { a: { x: 10, y: 20, name: 'A', surname: 'A' } },
+                mergePositions(
+                    ['a', 'b'],
+                    { a: { x: 10, y: 20, name: 'A', surname: 'A' } }
+                ),
+                ['a', 'b']
+            )
+        ).toBe(true)
+    })
+
+    it('n’écrase pas un plan existant par une grille par défaut', () => {
+        const saved = {
+            old: { x: 10, y: 20, name: 'X', surname: 'Y' },
+        }
+        const merged = mergePositions(['a', 'b'], saved)
+        expect(merged).toEqual(defaultLayout(['a', 'b']))
+        expect(shouldPersistMergedPlan(saved, merged, ['a', 'b'])).toBe(false)
+    })
+
+    it('sauve après un recollage par nom', () => {
+        const saved = {
+            old: { x: 42, y: 18, name: 'Martin', surname: 'Léa' },
+        }
+        const merged = mergePositions(
+            ['new'],
+            saved,
+            [{ id: 'new', name: 'Martin', surname: 'Léa' }]
+        )
+        expect(shouldPersistMergedPlan(saved, merged, ['new'])).toBe(true)
     })
 })
 
@@ -407,7 +474,7 @@ describe('parseStoredPlans', () => {
                 '6A': {
                     locked: true,
                     positions: {
-                        s1: { x: 8, y: 9 },
+                        s1: { x: 8, y: 9, name: 'Dupont', surname: 'Léa' },
                         bad: { x: 'no' },
                     },
                 },
@@ -415,7 +482,9 @@ describe('parseStoredPlans', () => {
         ).toEqual({
             '6A': {
                 locked: true,
-                positions: { s1: { x: 8, y: 9 } },
+                positions: {
+                    s1: { x: 8, y: 9, name: 'Dupont', surname: 'Léa' },
+                },
             },
         })
     })
