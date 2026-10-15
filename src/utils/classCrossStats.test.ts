@@ -1,5 +1,7 @@
 import {
+    compareBySlotCount,
     computeClassCrossStats,
+    countSlotMatches,
     diffSlotCounts,
     findDominantSlot,
     formatDelta,
@@ -97,6 +99,54 @@ describe('diffSlotCounts', () => {
                 ['homework', 2, '+2'],
                 ['pos0', -1, '-1'],
             ]
+        )
+    })
+})
+
+describe('countSlotMatches', () => {
+    const homework = {
+        type: 'homework',
+        icon: 1,
+        polarity: 'negative' as const,
+    }
+
+    it('compte les croix du type choisi', () => {
+        expect(
+            countSlotMatches(
+                [
+                    { type: 'homework', polarity: 'negative', icon: 1 },
+                    { type: 'homework', polarity: 'negative', icon: 1 },
+                    { type: 'behaviour', polarity: 'negative', icon: 2 },
+                    { type: 'pos0', polarity: 'positive', icon: 10 },
+                ],
+                homework
+            )
+        ).toBe(2)
+    })
+
+    it('renvoie 0 sans slot', () => {
+        expect(countSlotMatches([{ type: 'homework', icon: 1 }], null)).toBe(0)
+    })
+})
+
+describe('compareBySlotCount', () => {
+    it('classe une croix négative du moins au plus', () => {
+        expect(
+            compareBySlotCount(2, 0, 'negative', 'Benoit', 'Alice')
+        ).toBeGreaterThan(0)
+    })
+
+    it('classe une croix positive du plus au moins', () => {
+        expect(
+            compareBySlotCount(2, 0, 'positive', 'Benoit', 'Alice')
+        ).toBeLessThan(0)
+    })
+
+    it('départage à égalité par le nom', () => {
+        expect(compareBySlotCount(1, 1, 'negative', 'Dupont', 'Martin')).toBe(
+            String('Dupont').localeCompare('Martin', 'fr', {
+                sensitivity: 'base',
+            })
         )
     })
 })

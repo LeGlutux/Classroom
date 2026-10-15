@@ -10,6 +10,7 @@ import {
 import { AuthContext } from '../Auth'
 import SettingsLayout from './SettingsLayout'
 import {
+    CrossPolarity,
     PERIOD_YEAR,
     buildCrossSlots,
     crossInSelectedPeriod,
@@ -20,7 +21,9 @@ import {
 import {
     ClassCrossStats,
     SlotDelta,
+    compareBySlotCount,
     computeClassCrossStats,
+    countSlotMatches,
     diffSlotCounts,
     formatDelta,
     previousPeriodNumber,
@@ -32,6 +35,7 @@ type RankedStudent = {
     surname: string
     negatives: number
     positives: number
+    slotCount: number
 }
 
 const readStoredInt = (key: string, fallback: number) => {
@@ -44,14 +48,34 @@ const readStoredInt = (key: string, fallback: number) => {
     return fallback
 }
 
+const readStoredSlotType = () => {
+    try {
+        return window.localStorage.getItem('podiumRankSlot') || ''
+    } catch (e) {
+        return ''
+    }
+}
+
+const persistValue = (key: string, value: string) => {
+    try {
+        window.localStorage.setItem(key, value)
+    } catch (e) {
+        // ignore
+    }
+}
+
 const ClassStatsBlock = ({
     stats,
     slotDeltas,
     previousLabel,
+    selectedType,
+    onSelectType,
 }: {
     stats: ClassCrossStats
     slotDeltas: SlotDelta[] | null
     previousLabel: string | null
+    selectedType: string
+    onSelectType: (type: string) => void
 }) => {
     const avg =
         stats.studentCount > 0
@@ -82,14 +106,21 @@ const ClassStatsBlock = ({
                 >
                     {stats.bySlot.map((slot) => {
                         const delta = deltaByType[slot.type]
+                        const selected = selectedType === slot.type
                         return (
-                            <span
+                            <button
+                                type="button"
                                 key={slot.type}
                                 className={
                                     'podium-stats-type' +
                                     (slot.polarity === 'positive'
                                         ? ' is-pos'
-                                        : ' is-neg')
+                                        : ' is-neg') +
+                                    (selected ? ' is-on' : '')
+                                }
+                                aria-pressed={selected}
+                                onClick={() =>
+                                    onSelectType(selected ? '' : slot.type)
                                 }
                             >
                                 {slot.src && slot.src !== 'none' ? (
@@ -108,7 +139,7 @@ const ClassStatsBlock = ({
                                         {formatDelta(delta.delta)}
                                     </span>
                                 ) : null}
-                            </span>
+                            </button>
                         )
                     })}
                 </div>
@@ -154,9 +185,11 @@ const ClassStatsBlock = ({
 const StudentRankList = ({
     students,
     emptyLabel,
+    scorePolarity,
 }: {
     students: RankedStudent[]
     emptyLabel: string
+    scorePolarity?: CrossPolarity | null
 }) => {
     if (students.length === 0) {
         return <div className="podium-empty">{emptyLabel}</div>
@@ -173,8 +206,26 @@ const StudentRankList = ({
                         <span className="podium-lastname">{student.name}</span>
                     </span>
                     <span className="podium-scores">
-                        <span className="podium-neg">{student.negatives}</span>
-                        <span className="podium-pos">{student.positives}</span>
+                        {scorePolarity ? (
+                            <span
+                                className={
+                                    scorePolarity === 'positive'
+                                        ? 'podium-pos is-solo'
+                                        : 'podium-neg'
+                                }
+                            >
+                                {student.slotCount}
+                            </span>
+                        ) : (
+                            <React.Fragment>
+                                <span className="podium-neg">
+                                    {student.negatives}
+                                </span>
+                                <span className="podium-pos">
+                                    {student.positives}
+                                </span>
+                            </React.Fragment>
+                        )}
                     </span>
                 </div>
             ))}
@@ -196,6 +247,7 @@ export default () => {
     const [minPositives, setMinPositives] = useState(() =>
         readStoredInt('podiumMinPositives', 1)
     )
+    const [rankSlotType, setRankSlotType] = useState(readStoredSlotType)
     const [periodChoice, setPeriodChoice] = useState<number | null>(null)
     const selectedPeriod =
         periodChoice === null ? runningPeriode : periodChoice
@@ -215,6 +267,14 @@ export default () => {
             ),
         [userIcons.icons, userIcons.positiveIcons]
     )
+
+    const selectedSlot =
+        slots.find((slot) => slot.type === rankSlotType) || null
+
+    const chooseSlotType = (type: string) => {
+        setRankSlotType(type)
+        persistValue('podiumRankSlot', type)
+    }
 
     const classBlocks = useMemo(() => {
         const crossesByStudent: {
@@ -278,6 +338,11 @@ export default () => {
                     surname: student.surname,
                     negatives,
                     positives,
+                    slotCount: countSlotMatches(
+                        inPeriod,
+                        selectedSlot,
+                        userIcons.crossIconMap
+                    ),
                 } as RankedStudent
             })
 
@@ -305,10 +370,25 @@ export default () => {
                     })
                 })
 
+            const rankedSlot = selectedSlot
+                ? scored
+                      .slice()
+                      .sort((a, b) =>
+                          compareBySlotCount(
+                              a.slotCount,
+                              b.slotCount,
+                              selectedSlot.polarity,
+                              String(a.name),
+                              String(b.name)
+                          )
+                      )
+                : []
+
             return {
                 group,
                 rankedNeg,
                 rankedPos,
+                rankedSlot,
                 stats,
                 slotDeltas,
             }
@@ -322,6 +402,7 @@ export default () => {
         previousPeriod,
         maxNegatives,
         minPositives,
+        selectedSlot,
         slots,
         userIcons.crossIconMap,
     ])
@@ -351,6 +432,12 @@ export default () => {
 
     const previousLabel =
         previousPeriod === null ? null : 'période ' + previousPeriod
+
+    const slotRankLabel = selectedSlot
+        ? selectedSlot.polarity === 'positive'
+            ? 'Classement · plus de cette croix'
+            : 'Classement · moins de cette croix'
+        : ''
 
     return (
         <SettingsLayout title="Statistiques et podium" backTo="/create">
@@ -386,60 +473,106 @@ export default () => {
                             <option value={PERIOD_YEAR}>Année</option>
                         </select>
                     </label>
-                    <label className="podium-filter">
-                        <span className="podium-filter-label">
-                            Podium · max. croix négatives
-                        </span>
-                        <select
-                            className="modal-select"
-                            value={maxNegatives}
-                            onChange={(event) => {
-                                const next = Number(event.target.value)
-                                setMaxNegatives(next)
-                                try {
-                                    window.localStorage.setItem(
-                                        'podiumMaxNegatives',
-                                        String(next)
-                                    )
-                                } catch (e) {
-                                    // ignore
-                                }
-                            }}
+                    <div className="podium-filter podium-filter-stack">
+                        <span className="podium-filter-label">Classer par</span>
+                        <div
+                            className="podium-slot-picker"
+                            role="listbox"
+                            aria-label="Croix pour le classement"
                         >
-                            {[0, 1, 2, 3, 4, 5, 6].map((n) => (
-                                <option key={n} value={n}>
-                                    {n}
-                                </option>
-                            ))}
-                        </select>
-                    </label>
-                    <label className="podium-filter">
-                        <span className="podium-filter-label">
-                            Top positives · min. croix positives
-                        </span>
-                        <select
-                            className="modal-select"
-                            value={minPositives}
-                            onChange={(event) => {
-                                const next = Number(event.target.value)
-                                setMinPositives(next)
-                                try {
-                                    window.localStorage.setItem(
-                                        'podiumMinPositives',
-                                        String(next)
-                                    )
-                                } catch (e) {
-                                    // ignore
+                            <button
+                                type="button"
+                                className={
+                                    'podium-slot-choice' +
+                                    (!selectedSlot ? ' is-on' : '')
                                 }
-                            }}
-                        >
-                            {[0, 1, 2, 3, 4, 5, 6].map((n) => (
-                                <option key={n} value={n}>
-                                    {n}
-                                </option>
-                            ))}
-                        </select>
-                    </label>
+                                aria-pressed={!selectedSlot}
+                                onClick={() => chooseSlotType('')}
+                            >
+                                Toutes
+                            </button>
+                            {slots.map((slot) => {
+                                const on = selectedSlot
+                                    ? selectedSlot.type === slot.type
+                                    : false
+                                return (
+                                    <button
+                                        type="button"
+                                        key={slot.type}
+                                        className={
+                                            'podium-slot-choice' +
+                                            (slot.polarity === 'positive'
+                                                ? ' is-pos'
+                                                : ' is-neg') +
+                                            (on ? ' is-on' : '')
+                                        }
+                                        aria-pressed={on}
+                                        onClick={() =>
+                                            chooseSlotType(
+                                                on ? '' : slot.type
+                                            )
+                                        }
+                                    >
+                                        {slot.src && slot.src !== 'none' ? (
+                                            <img src={slot.src} alt="" />
+                                        ) : (
+                                            slot.type
+                                        )}
+                                    </button>
+                                )
+                            })}
+                        </div>
+                    </div>
+                    {!selectedSlot ? (
+                        <React.Fragment>
+                            <label className="podium-filter">
+                                <span className="podium-filter-label">
+                                    Podium · max. croix négatives
+                                </span>
+                                <select
+                                    className="modal-select"
+                                    value={maxNegatives}
+                                    onChange={(event) => {
+                                        const next = Number(event.target.value)
+                                        setMaxNegatives(next)
+                                        persistValue(
+                                            'podiumMaxNegatives',
+                                            String(next)
+                                        )
+                                    }}
+                                >
+                                    {[0, 1, 2, 3, 4, 5, 6].map((n) => (
+                                        <option key={n} value={n}>
+                                            {n}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+                            <label className="podium-filter">
+                                <span className="podium-filter-label">
+                                    Top positives · min. croix positives
+                                </span>
+                                <select
+                                    className="modal-select"
+                                    value={minPositives}
+                                    onChange={(event) => {
+                                        const next = Number(event.target.value)
+                                        setMinPositives(next)
+                                        persistValue(
+                                            'podiumMinPositives',
+                                            String(next)
+                                        )
+                                    }}
+                                >
+                                    {[0, 1, 2, 3, 4, 5, 6].map((n) => (
+                                        <option key={n} value={n}>
+                                            {n}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+                        </React.Fragment>
+                    ) : null}
                     <p className="settings-panel-note">
                         {selectedPeriod === PERIOD_YEAR
                             ? 'Année entière.'
@@ -448,17 +581,19 @@ export default () => {
                               (selectedPeriod === runningPeriode
                                   ? ' en cours.'
                                   : '.')}{' '}
-                        Rouge = négatives, bleu = positives
-                        {previousLabel
-                            ? ' · deltas vs ' + previousLabel
-                            : ''}
-                        .
+                        {selectedSlot
+                            ? selectedSlot.polarity === 'positive'
+                                ? 'Classement de la croix positive choisie, du plus au moins.'
+                                : 'Classement de la croix négative choisie, du moins au plus.'
+                            : 'Rouge = négatives, bleu = positives'}
+                        {previousLabel ? ' · deltas vs ' + previousLabel : ''}.
                     </p>
                     {classBlocks.map(
                         ({
                             group,
                             rankedNeg,
                             rankedPos,
+                            rankedSlot,
                             stats,
                             slotDeltas,
                         }) => (
@@ -470,21 +605,42 @@ export default () => {
                                     stats={stats}
                                     slotDeltas={slotDeltas}
                                     previousLabel={previousLabel}
+                                    selectedType={
+                                        selectedSlot ? selectedSlot.type : ''
+                                    }
+                                    onSelectType={chooseSlotType}
                                 />
-                                <div className="podium-section-label">
-                                    Podium
-                                </div>
-                                <StudentRankList
-                                    students={rankedNeg}
-                                    emptyLabel={emptyNegLabel}
-                                />
-                                <div className="podium-section-label">
-                                    Top positives
-                                </div>
-                                <StudentRankList
-                                    students={rankedPos}
-                                    emptyLabel={emptyPosLabel}
-                                />
+                                {selectedSlot ? (
+                                    <React.Fragment>
+                                        <div className="podium-section-label">
+                                            {slotRankLabel}
+                                        </div>
+                                        <StudentRankList
+                                            students={rankedSlot}
+                                            emptyLabel="Aucun élève dans cette classe"
+                                            scorePolarity={
+                                                selectedSlot.polarity
+                                            }
+                                        />
+                                    </React.Fragment>
+                                ) : (
+                                    <React.Fragment>
+                                        <div className="podium-section-label">
+                                            Podium
+                                        </div>
+                                        <StudentRankList
+                                            students={rankedNeg}
+                                            emptyLabel={emptyNegLabel}
+                                        />
+                                        <div className="podium-section-label">
+                                            Top positives
+                                        </div>
+                                        <StudentRankList
+                                            students={rankedPos}
+                                            emptyLabel={emptyPosLabel}
+                                        />
+                                    </React.Fragment>
+                                )}
                             </div>
                         )
                     )}

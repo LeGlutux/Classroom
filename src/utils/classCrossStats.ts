@@ -118,6 +118,32 @@ export const formatDelta = (delta: number) => {
     return String(delta)
 }
 
+export const countSlotMatches = (
+    docs: CrossDoc[] | null | undefined,
+    slot: SlotInput | null | undefined,
+    iconMap?: LegacyIconMap
+) => {
+    if (!slot || !slot.icon) return 0
+    return (docs || []).filter((doc) =>
+        crossMatchesSlot(doc, slot, iconMap)
+    ).length
+}
+
+export const compareBySlotCount = (
+    aCount: number,
+    bCount: number,
+    polarity: CrossPolarity,
+    aName: string,
+    bName: string
+) => {
+    if (aCount !== bCount) {
+        return polarity === 'positive' ? bCount - aCount : aCount - bCount
+    }
+    return String(aName).localeCompare(String(bName), 'fr', {
+        sensitivity: 'base',
+    })
+}
+
 export const previousPeriodNumber = (
     selectedPeriod: number,
     periodCount: number,
