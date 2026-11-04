@@ -4,10 +4,10 @@ describe('formatListStudentName', () => {
     it('n’affiche que le prénom s’il est unique', () => {
         expect(
             formatListStudentName(
-                { surname: 'Pat', name: 'Mercier' },
-                [{ surname: 'Pat' }]
+                { surname: 'Amandine', name: 'Mizab' },
+                [{ surname: 'Amandine' }]
             )
-        ).toBe('Pat')
+        ).toBe('Amandine')
         expect(
             formatListStudentName(
                 { surname: 'Christophe', name: 'Dupont' },

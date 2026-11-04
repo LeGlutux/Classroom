@@ -3799,30 +3799,69 @@ html.is-native-app * {
     }
 }
 
-.tutorial-fake-plan {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.45rem;
-    margin: 0.45rem auto 0.55rem;
-}
-
-.tutorial-fake-table {
-    display: flex;
-    gap: 3px;
-    padding: 3px;
-    background: #18181b;
-    border-radius: 4px;
-}
-
-.tutorial-fake-table .seating-seat {
+.tutorial-fake-plan-body {
     position: relative;
-    left: auto;
-    top: auto;
-    transform: none;
-    cursor: default;
-    touch-action: auto;
-    box-shadow: none;
+    padding-top: 0.55rem;
+}
+
+.tutorial-plan-tools {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0 0 0.45rem;
+}
+
+.tutorial-plan-tools .seating-lock {
+    position: static;
+    top: auto !important;
+    right: auto;
+    transform: none !important;
+    background: #fff;
+    border: 1px solid var(--tn-line);
+}
+
+.tutorial-plan-tools .seating-add-blank {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border: 1px solid var(--tn-line);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--tn-muted);
+    cursor: pointer;
+}
+
+.tutorial-fake-plan {
+    position: relative;
+    margin: 0 auto 0.4rem;
+    background: #ececee;
+    border-radius: 10px;
+    overflow: hidden;
+    min-height: 15rem;
+}
+
+.tutorial-plan-card-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem;
+    background: rgba(24, 24, 27, 0.35);
+}
+
+.tutorial-plan-card {
+    position: relative;
+    width: 100%;
+    max-width: 22rem;
+    padding: 1.5rem 0.4rem 0.5rem;
+    background: #fff;
+    border-radius: 14px;
 }
 
 .tutorial-fake-list-body {

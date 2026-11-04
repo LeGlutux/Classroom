@@ -12,6 +12,7 @@ import {
     notifyTutorialCompleted,
 } from '../tutorial'
 import {
+    IconCalendar,
     IconChat,
     IconCheck,
     IconGrid,
@@ -31,7 +32,8 @@ const stepIcon = (id: TutorialStep['id']) => {
     if (id.indexOf('cards') === 0) return <IconUser />
     if (id === 'plan' || id === 'plan-nav') return <IconGrid />
     if (id === 'lists' || id === 'lists-nav') return <IconNote />
-    if (id === 'ready') return <IconCheck />
+    if (id === 'periodes') return <IconCalendar />
+    if (id === 'more') return <IconCheck />
     return <IconPlay />
 }
 

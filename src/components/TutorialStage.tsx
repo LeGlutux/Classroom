@@ -1,14 +1,21 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import addPage from '../images/addPage.png'
 import home from '../images/home.png'
 import list from '../images/list.png'
 import up from '../images/up.png'
 import down from '../images/down.png'
 import {
+    IconCalendar,
     IconChat,
     IconChevronRight,
+    IconClose,
     IconDrop,
     IconGrid,
+    IconLock,
+    IconSeatBlank,
+    IconTrash,
+    IconTrophy,
+    IconUnlock,
     IconUpload,
     IconUser,
     IconUsers,
@@ -16,13 +23,27 @@ import {
 import { handleIcon } from '../functions'
 import TutorialDemoCard from './TutorialDemoCard'
 import {
+    TUTORIAL_CLASS,
+    TUTORIAL_DEMO_STUDENT,
+    TUTORIAL_LIST_STUDENTS,
     TUTORIAL_NEGATIVE_ICONS,
     TUTORIAL_POSITIVE_ICONS,
     TutorialHighlight,
     TutorialScreen,
 } from '../tutorial'
 import { SESSION_FOLLOW_OPTIONS } from '../sessionFollow'
-import { seatCaption, CARD_H, CARD_W } from '../seatingPlan'
+import {
+    addEmptySeat,
+    boundingBox,
+    CARD_H,
+    CARD_W,
+    defaultLayout,
+    isEmptySeatId,
+    LAYOUT_PAD,
+    Positions,
+    removeSeat,
+    seatCaption,
+} from '../seatingPlan'
 import { formatListStudentName } from '../utils/listNames'
 import { sortStudentsByListColumn } from '../utils/listSort'
 import { listStatusClass, ListStatusMark } from './ListStatusButton'
@@ -32,28 +53,8 @@ type FakeHighlight = TutorialHighlight
 const navIconClass = (active: boolean) =>
     `self-center${active ? '' : ' nav-icon-inactive'}`
 
-const TUTORIAL_PLAN_STUDENTS = [
-    { surname: 'Pat', name: 'Mercier' },
-    { surname: 'Léa', name: 'Dupont' },
-    { surname: 'Léa', name: 'Martin' },
-    { surname: 'Noah', name: 'Petit' },
-]
-
-const TUTORIAL_LIST_STUDENTS = [
-    { id: 'pat', surname: 'Pat', name: 'Mercier' },
-    { id: 'lea-d', surname: 'Léa', name: 'Dupont' },
-    { id: 'lea-m', surname: 'Léa', name: 'Martin' },
-    { id: 'chris', surname: 'Christophe', name: 'Bernard' },
-    { id: 'noah', surname: 'Noah', name: 'Petit' },
-]
-
-const TUTORIAL_PLAN_TABLES = [
-    [TUTORIAL_PLAN_STUDENTS[0], TUTORIAL_PLAN_STUDENTS[1]],
-    [TUTORIAL_PLAN_STUDENTS[2], TUTORIAL_PLAN_STUDENTS[3]],
-]
-
 const TUTORIAL_LIST_START: { [id: string]: number } = {
-    pat: 1,
+    amandine: 1,
     'lea-d': 0,
     'lea-m': 2,
     chris: 3,
@@ -166,50 +167,87 @@ const FakeSettings = ({
 }: {
     highlight?: FakeHighlight
     onCrosses?: () => void
-}) => (
-    <div className="tutorial-fake-body">
-        <div className="settings-group-label">Classes et élèves</div>
-        <div className="settings-group">
-            <div className={highlight === 'classes' ? 'tutorial-lit' : ''}>
+}) => {
+    const periodesRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        if (highlight !== 'periodes') return
+        const node = periodesRef.current
+        if (!node || !node.scrollIntoView) return
+        node.scrollIntoView({ block: 'center', behavior: 'smooth' })
+    }, [highlight])
+
+    return (
+        <div className="tutorial-fake-body">
+            <div className="settings-group-label">Classes et élèves</div>
+            <div className="settings-group">
+                <div className={highlight === 'classes' ? 'tutorial-lit' : ''}>
+                    <FakeRow
+                        icon={<IconUpload />}
+                        title="Importer depuis Pronote"
+                        subtitle="À partir d’un export CSV"
+                    />
+                    <FakeRow
+                        icon={<IconUsers />}
+                        title="Créer une classe manuellement"
+                        subtitle="Une classe à la fois"
+                    />
+                    <FakeRow
+                        icon={<IconUser />}
+                        title="Ajouter des élèves manuellement"
+                        subtitle="Un élève à la fois, dans une classe"
+                    />
+                </div>
+            </div>
+            <div className="settings-group-label">Personnalisation</div>
+            <div className="settings-group">
                 <FakeRow
-                    icon={<IconUpload />}
-                    title="Importer depuis Pronote"
-                    subtitle="À partir d’un export CSV"
+                    icon={<IconGrid />}
+                    title="Personnaliser les croix"
+                    subtitle="Croix négatives et positives"
+                    lit={highlight === 'crosses-row'}
+                    onClick={onCrosses}
                 />
                 <FakeRow
-                    icon={<IconUsers />}
-                    title="Créer une classe manuellement"
-                    subtitle="Une classe à la fois"
+                    icon={<IconDrop />}
+                    title="Personnaliser les couleurs élèves"
+                    subtitle="Selon les notes de fiche (PAP, PAI…)"
                 />
                 <FakeRow
-                    icon={<IconUser />}
-                    title="Ajouter des élèves manuellement"
-                    subtitle="Un élève à la fois, dans une classe"
+                    icon={<IconChat />}
+                    title="Personnaliser les SMS"
+                    subtitle="Modifier les modèles de SMS à envoyer aux parents"
+                />
+            </div>
+            <div className="settings-group-label">Suivi</div>
+            <div className="settings-group">
+                <FakeRow
+                    icon={<IconTrophy />}
+                    title="Statistiques et podium"
+                    subtitle="Croix par classe et meilleurs élèves"
+                />
+            </div>
+            <div className="settings-group-label">Année</div>
+            <div className="settings-group">
+                <div
+                    ref={periodesRef}
+                    className={highlight === 'periodes' ? 'tutorial-lit' : ''}
+                >
+                    <FakeRow
+                        icon={<IconCalendar />}
+                        title="Périodes"
+                        subtitle="Changer de période ou en commencer une nouvelle"
+                    />
+                </div>
+                <FakeRow
+                    icon={<IconTrash />}
+                    title="Réinitialiser l’année"
+                    subtitle="Supprimer classes, élèves et listes"
                 />
             </div>
         </div>
-        <div className="settings-group-label">Personnalisation</div>
-        <div className="settings-group">
-            <FakeRow
-                icon={<IconGrid />}
-                title="Personnaliser les croix"
-                subtitle="Croix négatives et positives"
-                lit={highlight === 'crosses-row'}
-                onClick={onCrosses}
-            />
-            <FakeRow
-                icon={<IconDrop />}
-                title="Personnaliser les couleurs élèves"
-                subtitle="Selon les notes de fiche (PAP, PAI…)"
-            />
-            <FakeRow
-                icon={<IconChat />}
-                title="Personnaliser les SMS"
-                subtitle="Modifier les modèles de SMS à envoyer aux parents"
-            />
-        </div>
-    </div>
-)
+    )
+}
 
 const FakeCrossBlock = ({
     title,
@@ -224,10 +262,10 @@ const FakeCrossBlock = ({
             <div className="flex justify-between flex-col">
                 <div className="flex flex-row">
                     <div className="font-studentName ml-2 mt-1 text-gray-900 font-medium leading-none">
-                        Pat
+                        {TUTORIAL_DEMO_STUDENT.surname}
                     </div>
                     <div className="font-studentName ml-2 mt-1 text-gray-900 font-bold leading-none">
-                        Mercier
+                        {TUTORIAL_DEMO_STUDENT.name}
                     </div>
                 </div>
                 <div className="w-full tutorial-cross-icons flex items-center justify-center">
@@ -337,30 +375,208 @@ const FakePlanSeatName = ({
 }
 
 const FakePlan = () => {
-    const classmates = TUTORIAL_PLAN_STUDENTS
+    const classmates = TUTORIAL_CLASS
+    const [positions, setPositions] = useState<Positions>(() =>
+        defaultLayout(TUTORIAL_CLASS.map((student) => student.id))
+    )
+    const [locked, setLocked] = useState(false)
+    const [openId, setOpenId] = useState<string | null>(null)
+    const [draggingId, setDraggingId] = useState<string | null>(null)
+    const positionsRef = useRef(positions)
+    const dragRef = useRef<{
+        id: string
+        dx: number
+        dy: number
+        moved: boolean
+    } | null>(null)
+    positionsRef.current = positions
+
+    const byId: { [id: string]: { surname: string; name: string } } = {}
+    TUTORIAL_CLASS.forEach((student) => {
+        byId[student.id] = student
+    })
+
+    const box = boundingBox(positions)
+    const canvasH = Math.max(box.y + box.h + LAYOUT_PAD, 240)
+    const canvasW = Math.max(box.x + box.w + LAYOUT_PAD, 280)
+
+    const onSeatPointerDown = (
+        event: React.PointerEvent<HTMLButtonElement>,
+        id: string
+    ) => {
+        if (locked) return
+        event.preventDefault()
+        event.stopPropagation()
+        const pos = positionsRef.current[id]
+        if (!pos) return
+        dragRef.current = {
+            id,
+            dx: event.clientX - pos.x,
+            dy: event.clientY - pos.y,
+            moved: false,
+        }
+        setDraggingId(id)
+        try {
+            event.currentTarget.setPointerCapture(event.pointerId)
+        } catch (error) {
+            // ignore
+        }
+    }
+
+    const onSeatPointerMove = (event: React.PointerEvent<HTMLButtonElement>) => {
+        const drag = dragRef.current
+        if (!drag) return
+        const x = event.clientX - drag.dx
+        const y = event.clientY - drag.dy
+        const origin = positionsRef.current[drag.id]
+        if (
+            origin &&
+            (Math.abs(x - origin.x) > 6 || Math.abs(y - origin.y) > 6)
+        ) {
+            drag.moved = true
+        }
+        const next = {
+            ...positionsRef.current,
+            [drag.id]: { ...origin, x, y },
+        }
+        positionsRef.current = next
+        setPositions(next)
+    }
+
+    const onSeatPointerUp = () => {
+        dragRef.current = null
+        setDraggingId(null)
+    }
+
+    const openStudent = openId ? byId[openId] : null
+
     return (
-        <div className="tutorial-fake-body">
-            <div className="tutorial-fake-plan">
-                {TUTORIAL_PLAN_TABLES.map((table, index) => (
-                    <div className="tutorial-fake-table" key={index}>
-                        {table.map((student) => (
-                            <div
-                                key={student.surname + student.name}
-                                className="seating-seat"
-                                style={{ width: CARD_W, height: CARD_H }}
-                                aria-label={
-                                    student.surname + ' ' + student.name
-                                }
-                            >
+        <div className="tutorial-fake-body tutorial-fake-plan-body">
+            <div className="tutorial-plan-tools">
+                {locked ? null : (
+                    <button
+                        type="button"
+                        className="seating-add-blank"
+                        aria-label="Ajouter un cadre vide"
+                        onClick={() =>
+                            setPositions((current) => {
+                                const box = boundingBox(current)
+                                return addEmptySeat(current, {
+                                    x: LAYOUT_PAD,
+                                    y: box.y + box.h,
+                                })
+                            })
+                        }
+                    >
+                        <IconSeatBlank />
+                    </button>
+                )}
+                <button
+                    type="button"
+                    className={`seating-lock${locked ? ' is-on' : ''}`}
+                    onClick={() => setLocked((value) => !value)}
+                    aria-label={
+                        locked ? 'Déverrouiller le plan' : 'Verrouiller le plan'
+                    }
+                    aria-pressed={locked}
+                >
+                    {locked ? <IconLock /> : <IconUnlock />}
+                </button>
+            </div>
+            <div
+                className="tutorial-fake-plan"
+                style={{ width: canvasW, height: canvasH }}
+            >
+                {Object.keys(positions).map((id) => {
+                    const pos = positions[id]
+                    if (!pos) return null
+                    const empty = isEmptySeatId(id)
+                    const student = empty ? null : byId[id]
+                    const label = empty
+                        ? 'Cadre vide'
+                        : student
+                          ? student.surname + ' ' + student.name
+                          : id
+                    return (
+                        <button
+                            type="button"
+                            key={id}
+                            className={
+                                'seating-seat' +
+                                (empty ? ' is-empty' : '') +
+                                (locked ? ' is-locked' : '') +
+                                (draggingId === id ? ' is-dragging' : '')
+                            }
+                            style={{
+                                transform:
+                                    'translate(' + pos.x + 'px, ' + pos.y + 'px)',
+                                width: CARD_W,
+                                height: CARD_H,
+                            }}
+                            aria-label={label}
+                            onPointerDown={(event) =>
+                                onSeatPointerDown(event, id)
+                            }
+                            onPointerMove={onSeatPointerMove}
+                            onPointerUp={onSeatPointerUp}
+                            onPointerCancel={onSeatPointerUp}
+                            onClick={() => {
+                                if (empty) return
+                                if (!locked) return
+                                if (dragRef.current && dragRef.current.moved)
+                                    return
+                                setOpenId(id)
+                            }}
+                        >
+                            {empty ? null : student ? (
                                 <FakePlanSeatName
                                     student={student}
                                     classmates={classmates}
                                 />
-                            </div>
-                        ))}
-                    </div>
-                ))}
+                            ) : null}
+                            {empty && !locked ? (
+                                <span
+                                    className="seating-blank-remove"
+                                    onClick={(event) => {
+                                        event.stopPropagation()
+                                        setPositions((current) =>
+                                            removeSeat(current, id)
+                                        )
+                                    }}
+                                    aria-label="Supprimer le cadre vide"
+                                >
+                                    <IconClose />
+                                </span>
+                            ) : null}
+                        </button>
+                    )
+                })}
             </div>
+            {openStudent ? (
+                <div
+                    className="tutorial-plan-card-overlay"
+                    onClick={() => setOpenId(null)}
+                >
+                    <div
+                        className="tutorial-plan-card"
+                        onClick={(event) => event.stopPropagation()}
+                    >
+                        <button
+                            type="button"
+                            className="seating-modal-close"
+                            onClick={() => setOpenId(null)}
+                            aria-label="Fermer"
+                        >
+                            <IconClose />
+                        </button>
+                        <TutorialDemoCard
+                            surname={openStudent.surname}
+                            name={openStudent.name}
+                            interactive
+                        />
+                    </div>
+                </div>
+            ) : null}
         </div>
     )
 }

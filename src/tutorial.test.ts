@@ -61,7 +61,8 @@ describe('getTutorialSteps', () => {
             'plan',
             'lists-nav',
             'lists',
-            'ready',
+            'periodes',
+            'more',
         ])
         expect(withSms).toEqual([
             'welcome',
@@ -77,7 +78,8 @@ describe('getTutorialSteps', () => {
             'plan',
             'lists-nav',
             'lists',
-            'ready',
+            'periodes',
+            'more',
         ])
     })
 
@@ -93,7 +95,7 @@ describe('getTutorialSteps', () => {
         expect(classes && classes.stage).toBe('settings')
         expect(classes && classes.highlight).toBe('classes')
         expect(crossesNav && crossesNav.highlight).toBe('crosses-row')
-        expect(crossesNav && crossesNav.body).toMatch(/Personnalisation/)
+        expect(crossesNav && crossesNav.body).toMatch(/Personnaliser les croix/)
         expect(crosses && crosses.stage).toBe('crosses')
         expect(crosses && crosses.body).toMatch(/négatives/)
         expect(crosses && crosses.body).toMatch(/positives/)
@@ -104,9 +106,10 @@ describe('getTutorialSteps', () => {
         const tryCross = steps.find((step) => step.id === 'cards-cross')
         expect(tryCross && tryCross.body).toMatch(/appui/)
         expect(tryCross && tryCross.body).toMatch(/quotidien/)
+        expect(tryCross && tryCross.body).toMatch(/Amandine/)
     })
 
-    it('présente Pat Mercier sur l’accueil, puis le plan et les listes', () => {
+    it('présente Amandine Mizab, un plan manipulable, puis les périodes', () => {
         const steps = getTutorialSteps(true)
         const card = steps.find((step) => step.id === 'cards-i')
         const sms = steps.find((step) => step.id === 'cards-sms')
@@ -114,25 +117,34 @@ describe('getTutorialSteps', () => {
         const plan = steps.find((step) => step.id === 'plan')
         const listsNav = steps.find((step) => step.id === 'lists-nav')
         const lists = steps.find((step) => step.id === 'lists')
+        const periodes = steps.find((step) => step.id === 'periodes')
+        const more = steps.find((step) => step.id === 'more')
         expect(card && card.demo).toBe('card')
         expect(card && card.stage).toBe('home')
-        expect(card && card.body).toMatch(/Pat Mercier/)
+        expect(card && card.body).toMatch(/carte d’une élève/)
+        expect(card && card.body).not.toMatch(/Pat Mercier/)
         expect(sms && sms.demo).toBe('swipe')
         expect(sms && sms.body).toMatch(/droite/)
+        expect(sms && sms.body).toMatch(/contacts/)
         expect(sms && sms.body).not.toMatch(/gauche/)
+        expect(sms && sms.body).not.toMatch(/6A/)
         expect(planNav && planNav.highlight).toBe('nav-plan')
         expect(planNav && planNav.advanceOnHighlight).toBe(true)
         expect(plan && plan.stage).toBe('plan')
-        expect(plan && plan.body).toMatch(/comme vous voulez/)
+        expect(plan && plan.body).toMatch(/cadenas/)
+        expect(plan && plan.body).toMatch(/table vide/)
         expect(plan && plan.body).not.toMatch(/deux tables/)
-        expect(plan && plan.body).not.toMatch(/Glissez/)
-        expect(plan && plan.body).not.toMatch(/lettres/)
         expect(listsNav && listsNav.highlight).toBe('nav-lists')
         expect(listsNav && listsNav.advanceOnHighlight).toBe(true)
         expect(lists && lists.stage).toBe('lists')
         expect(lists && lists.body).toMatch(/appui long/)
-        expect(lists && lists.body).not.toMatch(/lettres/)
-        expect(lists && lists.body).not.toMatch(/Pas besoin/)
+        expect(lists && lists.body).toMatch(/couleur/)
+        expect(periodes && periodes.stage).toBe('settings')
+        expect(periodes && periodes.highlight).toBe('periodes')
+        expect(periodes && periodes.body).toMatch(/mémoire/)
+        expect(more && more.stage).toBe('settings')
+        expect(more && more.body).toMatch(/podium/)
+        expect(more && more.body).not.toMatch(/Aide/)
     })
 
     it('parle de visite guidée, pas de tour', () => {

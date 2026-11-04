@@ -3,6 +3,7 @@ import info from '../images/info.png'
 import pen from '../images/edit.png'
 import { buildCrossSlots, handleIcon } from '../functions'
 import {
+    TUTORIAL_DEMO_STUDENT,
     TUTORIAL_NEGATIVE_ICONS,
     TUTORIAL_POSITIVE_ICONS,
 } from '../tutorial'
@@ -74,13 +75,19 @@ const TutorialDemoCard = ({
     swipe,
     interactive,
     focus,
+    surname,
+    name,
 }: {
     swipe?: boolean
     interactive?: boolean
     focus?: 'demo-i' | 'demo-cross' | 'demo-note' | 'demo-card'
+    surname?: string
+    name?: string
 }) => {
     const [counts, setCounts] = useState<{ [type: string]: number }>({})
     const [note, setNote] = useState('')
+    const firstName = surname || TUTORIAL_DEMO_STUDENT.surname
+    const lastName = name || TUTORIAL_DEMO_STUDENT.name
 
     return (
         <div
@@ -98,10 +105,10 @@ const TutorialDemoCard = ({
                             <div className="flex flex-row w-full justify-between items-center">
                                 <div className="flex flex-row flex-nowrap items-center">
                                     <div className="student-name ml-2 text-gray-900 font-medium">
-                                        Pat
+                                        {firstName}
                                     </div>
                                     <div className="student-name ml-2 text-gray-900 font-bold">
-                                        Mercier
+                                        {lastName}
                                     </div>
                                 </div>
                                 <span
@@ -159,9 +166,7 @@ const TutorialDemoCard = ({
                                 }`}
                                 onClick={() => {
                                     if (!interactive) return
-                                    setNote(
-                                        note ? '' : 'Oubli du cahier aujourd’hui'
-                                    )
+                                    setNote(note ? '' : 'PAP — rdv parents')
                                 }}
                             >
                                 <img src={pen} alt="" />
