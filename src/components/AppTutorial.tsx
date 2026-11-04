@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import { AuthContext } from '../Auth'
 import Firebase from '../firebase'
 import { markTutorialCompleted } from '../database'
@@ -40,6 +40,7 @@ const stepIcon = (id: TutorialStep['id']) => {
 const AppTutorialHost = () => {
     const { currentUser } = useContext(AuthContext)
     const location = useLocation()
+    const history = useHistory()
     const [smsEnabled, setSmsEnabled] = useState(false)
     const [open, setOpen] = useState(false)
     const [step, setStep] = useState(0)
@@ -90,6 +91,7 @@ const AppTutorialHost = () => {
         setOpen(false)
         setStep(0)
         notifyTutorialCompleted()
+        history.push('/')
         if (currentUser) {
             try {
                 await markTutorialCompleted(currentUser.uid)
@@ -134,6 +136,13 @@ const AppTutorialHost = () => {
                 {current.title}
             </div>
             <p className="tutorial-body">{current.body}</p>
+            {current.bullets && current.bullets.length ? (
+                <ul className="tutorial-bullets">
+                    {current.bullets.map((item) => (
+                        <li key={item}>{item}</li>
+                    ))}
+                </ul>
+            ) : null}
             {current.hint ? (
                 <div className="tutorial-hint">{current.hint}</div>
             ) : null}
@@ -169,13 +178,15 @@ const AppTutorialHost = () => {
                             Retour
                         </button>
                     ) : null}
-                    <button
-                        type="button"
-                        className="modal-btn modal-btn-primary"
-                        onClick={goNext}
-                    >
-                        {last ? 'C’est parti' : 'Continuer'}
-                    </button>
+                    {current.advanceOnHighlight ? null : (
+                        <button
+                            type="button"
+                            className="modal-btn modal-btn-primary"
+                            onClick={goNext}
+                        >
+                            {last ? 'C’est parti' : 'Continuer'}
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

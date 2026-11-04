@@ -248,6 +248,29 @@ export const defaultLayout = (ids: string[]): Positions => {
     return positions
 }
 
+export const PAIR_TABLE_AISLE = 40
+export const PAIR_TABLE_ROW_GAP = 16
+
+export const pairedTableLayout = (ids: string[]): Positions => {
+    const pairW = 2 * CARD_W + CARD_GAP
+    const rowStride = CARD_H + PAIR_TABLE_ROW_GAP
+    const positions: Positions = {}
+    ids.forEach((id, index) => {
+        const group = Math.floor(index / 6)
+        const inGroup = index % 6
+        const row = Math.floor(inGroup / 2)
+        const seat = inGroup % 2
+        positions[id] = {
+            x:
+                LAYOUT_PAD +
+                group * (pairW + PAIR_TABLE_AISLE) +
+                seat * (CARD_W + CARD_GAP),
+            y: LAYOUT_PAD + row * rowStride,
+        }
+    })
+    return positions
+}
+
 export const boundingBox = (positions: Positions) => {
     const ids = Object.keys(positions)
     if (ids.length === 0) {

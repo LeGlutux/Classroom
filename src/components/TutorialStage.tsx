@@ -34,15 +34,20 @@ import {
 import { SESSION_FOLLOW_OPTIONS } from '../sessionFollow'
 import {
     addEmptySeat,
+    applyDrop,
     boundingBox,
     CARD_H,
     CARD_W,
-    defaultLayout,
+    CLUSTER_OUTLINE,
+    findSwapTarget,
     isEmptySeatId,
     LAYOUT_PAD,
+    linkedSeatGroups,
+    pairedTableLayout,
     Positions,
     removeSeat,
     seatCaption,
+    snapPosition,
 } from '../seatingPlan'
 import { formatListStudentName } from '../utils/listNames'
 import { sortStudentsByListColumn } from '../utils/listSort'
@@ -377,17 +382,19 @@ const FakePlanSeatName = ({
 const FakePlan = () => {
     const classmates = TUTORIAL_CLASS
     const [positions, setPositions] = useState<Positions>(() =>
-        defaultLayout(TUTORIAL_CLASS.map((student) => student.id))
+        pairedTableLayout(TUTORIAL_CLASS.map((student) => student.id))
     )
     const [locked, setLocked] = useState(false)
     const [openId, setOpenId] = useState<string | null>(null)
     const [draggingId, setDraggingId] = useState<string | null>(null)
+    const [swapTarget, setSwapTarget] = useState<string | null>(null)
     const positionsRef = useRef(positions)
     const dragRef = useRef<{
         id: string
         dx: number
         dy: number
         moved: boolean
+        origin: { x: number; y: number }
     } | null>(null)
     positionsRef.current = positions
 
@@ -397,8 +404,18 @@ const FakePlan = () => {
     })
 
     const box = boundingBox(positions)
-    const canvasH = Math.max(box.y + box.h + LAYOUT_PAD, 240)
-    const canvasW = Math.max(box.x + box.w + LAYOUT_PAD, 280)
+    const canvasH = Math.max(box.y + box.h + LAYOUT_PAD * 2, 320)
+    const canvasW = Math.max(box.x + box.w + LAYOUT_PAD * 2, 360)
+    const clusterSvgW = Math.max(
+        1,
+        box.x + box.w + CLUSTER_OUTLINE * 6
+    )
+    const clusterSvgH = Math.max(
+        1,
+        box.y + box.h + CLUSTER_OUTLINE * 6
+    )
+    const seatClusters = linkedSeatGroups(positions)
+    const ghost = draggingId ? dragRef.current : null
 
     const onSeatPointerDown = (
         event: React.PointerEvent<HTMLButtonElement>,
@@ -414,6 +431,7 @@ const FakePlan = () => {
             dx: event.clientX - pos.x,
             dy: event.clientY - pos.y,
             moved: false,
+            origin: { x: pos.x, y: pos.y },
         }
         setDraggingId(id)
         try {
@@ -426,26 +444,45 @@ const FakePlan = () => {
     const onSeatPointerMove = (event: React.PointerEvent<HTMLButtonElement>) => {
         const drag = dragRef.current
         if (!drag) return
-        const x = event.clientX - drag.dx
-        const y = event.clientY - drag.dy
-        const origin = positionsRef.current[drag.id]
+        const raw = {
+            x: event.clientX - drag.dx,
+            y: event.clientY - drag.dy,
+        }
         if (
-            origin &&
-            (Math.abs(x - origin.x) > 6 || Math.abs(y - origin.y) > 6)
+            Math.abs(raw.x - drag.origin.x) > 6 ||
+            Math.abs(raw.y - drag.origin.y) > 6
         ) {
             drag.moved = true
         }
+        if (!drag.moved) return
+        const snapped = snapPosition(drag.id, raw, positionsRef.current)
         const next = {
             ...positionsRef.current,
-            [drag.id]: { ...origin, x, y },
+            [drag.id]: { ...positionsRef.current[drag.id], ...snapped },
         }
         positionsRef.current = next
         setPositions(next)
+        setSwapTarget(findSwapTarget(drag.id, snapped, next))
     }
 
     const onSeatPointerUp = () => {
+        const drag = dragRef.current
+        if (drag && drag.moved) {
+            const dropped = positionsRef.current[drag.id]
+            if (dropped) {
+                const next = applyDrop(
+                    positionsRef.current,
+                    drag.id,
+                    dropped,
+                    drag.origin
+                )
+                positionsRef.current = next
+                setPositions(next)
+            }
+        }
         dragRef.current = null
         setDraggingId(null)
+        setSwapTarget(null)
     }
 
     const openStudent = openId ? byId[openId] : null
@@ -487,6 +524,65 @@ const FakePlan = () => {
                 className="tutorial-fake-plan"
                 style={{ width: canvasW, height: canvasH }}
             >
+                <svg
+                    className="seating-clusters"
+                    width={clusterSvgW}
+                    height={clusterSvgH}
+                >
+                    {seatClusters.map((ids) => (
+                        <g key={ids.slice().sort().join('-')}>
+                            {ids.map((id) => {
+                                const pos = positions[id]
+                                if (!pos) return null
+                                return (
+                                    <rect
+                                        key={'o-' + id}
+                                        x={pos.x - CLUSTER_OUTLINE}
+                                        y={pos.y - CLUSTER_OUTLINE}
+                                        width={CARD_W + CLUSTER_OUTLINE * 2}
+                                        height={CARD_H + CLUSTER_OUTLINE * 2}
+                                        rx="3"
+                                        fill="#18181b"
+                                    />
+                                )
+                            })}
+                            {ids.map((id) => {
+                                const pos = positions[id]
+                                if (!pos) return null
+                                return (
+                                    <rect
+                                        key={'f-' + id}
+                                        x={pos.x - 1}
+                                        y={pos.y - 1}
+                                        width={CARD_W + 2}
+                                        height={CARD_H + 2}
+                                        rx="2"
+                                        fill="#fff"
+                                    />
+                                )
+                            })}
+                        </g>
+                    ))}
+                </svg>
+                {ghost && ghost.origin ? (
+                    <div
+                        className={
+                            'seating-seat is-ghost' +
+                            (isEmptySeatId(ghost.id) ? ' is-empty' : '')
+                        }
+                        style={{
+                            transform:
+                                'translate(' +
+                                ghost.origin.x +
+                                'px, ' +
+                                ghost.origin.y +
+                                'px)',
+                            width: CARD_W,
+                            height: CARD_H,
+                        }}
+                        aria-hidden="true"
+                    />
+                ) : null}
                 {Object.keys(positions).map((id) => {
                     const pos = positions[id]
                     if (!pos) return null
@@ -505,7 +601,8 @@ const FakePlan = () => {
                                 'seating-seat' +
                                 (empty ? ' is-empty' : '') +
                                 (locked ? ' is-locked' : '') +
-                                (draggingId === id ? ' is-dragging' : '')
+                                (draggingId === id ? ' is-dragging' : '') +
+                                (swapTarget === id ? ' is-swap' : '')
                             }
                             style={{
                                 transform:

@@ -92,15 +92,26 @@ describe('getTutorialSteps', () => {
         expect(nav && nav.stage).toBe('home')
         expect(nav && nav.highlight).toBe('nav-settings')
         expect(nav && nav.advanceOnHighlight).toBe(true)
+        expect(crossesNav && crossesNav.advanceOnHighlight).toBe(true)
         expect(classes && classes.stage).toBe('settings')
         expect(classes && classes.highlight).toBe('classes')
         expect(crossesNav && crossesNav.highlight).toBe('crosses-row')
         expect(crossesNav && crossesNav.body).toMatch(/Personnaliser les croix/)
         expect(crosses && crosses.stage).toBe('crosses')
-        expect(crosses && crosses.body).toMatch(/négatives/)
-        expect(crosses && crosses.body).toMatch(/positives/)
-        expect(crosses && crosses.body).toMatch(/oubli de matériel/)
-        expect(crosses && crosses.body).toMatch(/bonne séance/)
+        expect(crosses && crosses.body).toMatch(/fiches élèves/)
+        expect(crosses && crosses.body).not.toMatch(/:/)
+        expect(crosses && crosses.bullets && crosses.bullets[0]).toMatch(
+            /négatives/
+        )
+        expect(crosses && crosses.bullets && crosses.bullets[1]).toMatch(
+            /positives/
+        )
+        expect(crosses && crosses.bullets && crosses.bullets.join(' ')).toMatch(
+            /oubli de matériel/
+        )
+        expect(crosses && crosses.bullets && crosses.bullets.join(' ')).toMatch(
+            /bonne séance/
+        )
         expect(crosses && crosses.body).not.toMatch(/appui/)
         expect(crossesNav && crossesNav.body).not.toMatch(/quotidien/)
         const tryCross = steps.find((step) => step.id === 'cards-cross')

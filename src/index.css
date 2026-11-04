@@ -3801,6 +3801,8 @@ html.is-native-app * {
 
 .tutorial-fake-plan-body {
     position: relative;
+    display: flex;
+    flex-direction: column;
     padding-top: 0.55rem;
 }
 
@@ -3837,11 +3839,13 @@ html.is-native-app * {
 
 .tutorial-fake-plan {
     position: relative;
+    flex: 1 1 auto;
+    width: 100%;
+    min-height: 20rem;
     margin: 0 auto 0.4rem;
     background: #ececee;
     border-radius: 10px;
     overflow: hidden;
-    min-height: 15rem;
 }
 
 .tutorial-plan-card-overlay {
@@ -3947,7 +3951,7 @@ html.is-native-app * {
     letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--tn-muted);
-    text-align: center;
+    text-align: left;
 }
 
 .tutorial-icon {
@@ -3972,7 +3976,7 @@ html.is-native-app * {
     font-size: 1.35rem;
     font-weight: 700;
     letter-spacing: -0.03em;
-    text-align: center;
+    text-align: left;
     color: var(--tn-ink);
     line-height: 1.25;
 }
@@ -3981,8 +3985,21 @@ html.is-native-app * {
     margin: 0.55rem 0 0;
     font-size: 0.92rem;
     line-height: 1.45;
-    text-align: center;
+    text-align: left;
     color: var(--tn-ink);
+}
+
+.tutorial-bullets {
+    margin: 0.45rem 0 0;
+    padding: 0 0 0 1.15rem;
+    font-size: 0.92rem;
+    line-height: 1.45;
+    text-align: left;
+    color: var(--tn-ink);
+}
+
+.tutorial-bullets li + li {
+    margin-top: 0.2rem;
 }
 
 .tutorial-hint {
@@ -3992,7 +4009,7 @@ html.is-native-app * {
     border-radius: 8px;
     font-size: 0.85rem;
     line-height: 1.4;
-    text-align: center;
+    text-align: left;
     color: var(--tn-ink);
 }
 

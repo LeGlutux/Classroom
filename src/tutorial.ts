@@ -72,6 +72,7 @@ export type TutorialStep = {
     id: TutorialStepId
     title: string
     body: string
+    bullets?: string[]
     hint?: string
     stage?: TutorialScreen
     highlight?: TutorialHighlight
@@ -136,7 +137,11 @@ export const getTutorialSteps = (showSms: boolean): TutorialStep[] => {
             id: 'crosses',
             title: 'Croix négatives et positives',
             body:
-                'Choisissez les icônes qui apparaîtront sur les fiches élèves : négatives (oubli de matériel, travail non fait…) ou positives (bonne séance, effort…).',
+                'Choisissez les icônes qui apparaîtront sur les fiches élèves.',
+            bullets: [
+                'négatives (oubli de matériel, travail non fait…)',
+                'positives (bonne séance, effort…)',
+            ],
             stage: 'crosses',
             highlight: 'crosses',
         },

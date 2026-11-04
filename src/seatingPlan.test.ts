@@ -18,6 +18,7 @@ import {
     seatsOverlap,
     clampScale,
     defaultLayout,
+    pairedTableLayout,
     findSwapTarget,
     fitView,
     layoutColumns,
@@ -64,6 +65,19 @@ describe('defaultLayout', () => {
             x: LAYOUT_PAD,
             y: LAYOUT_PAD + CARD_H + CARD_GAP,
         })
+    })
+})
+
+describe('pairedTableLayout', () => {
+    it('fait 6 tables de deux, en deux colonnes de 3', () => {
+        const ids = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l']
+        const positions = pairedTableLayout(ids)
+        expect(seatsTouching(positions.a, positions.b)).toBe(true)
+        expect(seatsTouching(positions.a, positions.c)).toBe(false)
+        expect(seatsTouching(positions.g, positions.h)).toBe(true)
+        const groups = linkedSeatGroups(positions)
+        expect(groups.length).toBe(6)
+        groups.forEach((group) => expect(group.length).toBe(2))
     })
 })
 
